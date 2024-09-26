@@ -7,24 +7,6 @@ import { useState } from "react";
 const Header = () => {
   const [token, setToken] = useState(false);
 
-  // SignIn
-  const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái điều khiển modal
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleOverlayClick = (e) => {
-    // Kiểm tra nếu click vào overlay, nếu có thì đóng modal
-    if (e.target.className === 'overlay') {
-      closeModal();
-    }
-  };
-  //End Signin
-
   return (
     <div className="header">
       <div className="logo">
@@ -44,11 +26,7 @@ const Header = () => {
 
         {/* Chờ chèn token vào  */}
         {!token ? (
-          <>
-            <button onClick={openModal} >Sign in</button>
-            {isModalOpen && <SignIn onClose={closeModal} />}
-            {isModalOpen && <div className="overlay" onClick={handleOverlayClick}></div>}
-          </>
+          <SignIn />
         ) : (
           <div className="header-profile">
             <img src={profile_icon} alt="" />
