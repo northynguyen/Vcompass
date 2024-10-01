@@ -1,15 +1,15 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import "./Header.css";
 import profile_icon from "../../assets/profile_icon.png";
-import SignIn from "../../pages/SignIn/SignIn";
 import { Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { CiViewList, CiSettings, CiLogout } from "react-icons/ci"; // Import icons from react-icons
 import { AiOutlineSchedule } from "react-icons/ai"; // Import icons from react-icons
 import { useNavigate } from 'react-router-dom'
 
-const Header = () => {
-  const [token, setToken] = useState(true);
+const Header = ({setShowLogin}) => {
+  const [token, setToken] = useState(false);
   const [activeTab, setActiveTab] = useState('');
   const [menuVisible, setMenuVisible] = useState(false); // State for menu visibility
   const menuRef = useRef(null); // Reference for the menu
@@ -46,23 +46,7 @@ const Header = () => {
     };
   }, [menuVisible]);
 
-  // SignIn
-  const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái điều khiển modal
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleOverlayClick = (e) => {
-    // Kiểm tra nếu click vào overlay, nếu có thì đóng modal
-    if (e.target.className === 'overlay') {
-      closeModal();
-    }
-  };
-  //End Signin
 
   return (
     <div className="header">
@@ -80,13 +64,7 @@ const Header = () => {
         </ul>
 
         {/* Chờ chèn token vào  */}
-        {!token ? (
-          <>
-            <button onClick={openModal} >Sign in</button>
-            {isModalOpen && <SignIn onClose={closeModal} />}
-            {isModalOpen && <div className="overlay" onClick={handleOverlayClick}></div>}
-          </>
-        ) : (
+        {!token ?   <button onClick={()=>setShowLogin(true)}>Sign in</button>: 
           <div className="header-profile" ref={menuRef}>
             <div className="profile-section" onClick={toggleMenu}>
               <img src={profile_icon} alt="Profile" className="profile-pic" />
@@ -123,7 +101,7 @@ const Header = () => {
               </div>
             )}
           </div>
-        )}
+        }
       </div>
     </div>
   );
