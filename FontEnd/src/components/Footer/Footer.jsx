@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './Footer.css';
 import vietnam_flag from '../../assets/vietnam-flag.svg';
 import usa_flag from '../../assets/usa-flag.svg';

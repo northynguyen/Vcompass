@@ -7,7 +7,6 @@ const PlaceDetails = () => {
     <div className='place-details'>
       <PlaceDetailsInfo />
       <PlaceReview />
-
     </div>
   )
 }
