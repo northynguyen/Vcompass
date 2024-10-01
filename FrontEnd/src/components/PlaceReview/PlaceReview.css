@@ -116,3 +116,59 @@
     margin-top: 20px;
   }
   
+  /* Thêm vào PlaceReview.css */
+
+.additional-info {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.additional-info p {
+  margin: 4px 0;
+}
+
+.review-card {
+  display: flex;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+}
+.review-avatar {
+  flex-shrink: 0;
+  margin-right: 15px;
+}
+.review-avatar img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.review-content {
+  flex: 1;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.star-rating {
+  color: #f5c518;
+  margin: 5px 0;
+}
+
+.filter-container button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.filter-container button.active {
+  background-color: #f5c518;
+  color: white;
+}

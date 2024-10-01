@@ -1,0 +1,67 @@
+/* src/components/CancelBooking/CancelBooking.css */
+
+.cancel-booking {
+    max-width: 100%;
+}
+
+.cancel-booking h3 {
+    margin-top: 0;
+}
+
+.confirmation {
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #f44336;
+}
+
+.rating-group {
+    margin-bottom: 15px;
+}
+
+.rating-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.rating-group select,
+.rating-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.comment-section {
+    margin-bottom: 20px;
+}
+
+.comment-section label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.comment-section textarea {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.submit-btn {
+    padding: 10px 20px;
+    background-color: #f44336;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #d32f2f;
+}

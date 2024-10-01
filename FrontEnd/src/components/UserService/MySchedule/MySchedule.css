@@ -1,0 +1,77 @@
+
+.my-schedule .search-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.my-schedule .schedule-item {
+    display: flex; /* Sử dụng flexbox để căn chỉnh */
+    justify-content: space-between; /* Căn chỉnh không gian giữa các phần tử */
+    align-items: flex-start; /* Căn giữa theo chiều dọc */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 15px 0;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.my-schedule .schedule-details {
+    flex: 1; /* Làm cho phần thông tin chiếm không gian còn lại */
+    margin-right: 20px; /* Khoảng cách bên phải cho phần hình ảnh */
+}
+
+.my-schedule .trip-image {
+    width: 300px; /* Đặt chiều rộng cho hình ảnh */
+    height: auto; /* Để chiều cao tự động theo tỷ lệ */
+    border-radius: 8px; /* Thêm góc tròn cho hình ảnh */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Thêm bóng cho hình ảnh */
+}
+
+.my-schedule .schedule-details p {
+    margin: 10px 0; /* Thêm khoảng cách giữa các đoạn văn */
+}
+
+.my-schedule .schedule-buttons {
+    margin-top: 15px;
+}
+
+.my-schedule .schedule-buttons button {
+    margin-right: 10px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.my-schedule .schedule-buttons button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.my-schedule .schedule-buttons .edit-btn {
+    background-color: #28a745;
+}
+
+.my-schedule .schedule-buttons .edit-btn:hover {
+    background-color: #218838;
+}
+
+.my-schedule .schedule-buttons .share-btn {
+    background-color: #17a2b8;
+}
+
+.my-schedule .schedule-buttons .share-btn:hover {
+    background-color: #138496;
+}
+
+.my-schedule .schedule-item:last-child {
+    margin-bottom: 0; /* Remove margin from the last item */
+}

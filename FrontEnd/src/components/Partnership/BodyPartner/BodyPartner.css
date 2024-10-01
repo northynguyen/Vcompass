@@ -1,0 +1,223 @@
+/* General body styles */
+
+  
+  /* Top Navigation styles */
+  .top-navigation {
+    display: flex;
+    justify-content: center;
+    background-color: #007BFF;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+  }
+  
+  .top-navigation button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .top-navigation button:hover {
+    background-color: #0056b3;
+    color: #fff;
+    border-radius: 5px;
+  }
+  
+  /* Section Styles */
+  #an-tam ul {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 0;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+    background-color: #fff;
+    border-radius: 10px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .section h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: #000000;
+  }
+  
+  .section ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+  }
+  
+  .section ul li {
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: left;
+    justify-content: left;
+  }
+  
+  .section ul li::before {
+    content: "✔";
+    color: green;
+    margin-right: 10px;
+    font-size: 1.5rem;
+  }
+  
+  /* Feature Section */
+  .features {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  
+  .feature {
+    text-align: left;
+    flex: 1;
+    margin: 0 15px;
+  }
+  
+  .feature img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 15px;
+  }
+  .feature h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #000000;
+  }
+  .feature p {
+    font-size: 1.2rem;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    color: #555;
+  }
+  
+  /* Stats Section */
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    flex-wrap: wrap;
+    margin-top: 40px;
+  }
+  
+  .stat {
+    background-color: #f0f4f8;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+    flex: 1;
+    min-width: 200px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stat strong {
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 10px;
+    color: #007BFF;
+  }
+  
+  .stat p {
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  /* Testimonials Section */
+  .testimonials {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-gap: 20px;
+    margin-top: 40px;
+  }
+  
+  .testimonial {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .testimonial p {
+    font-style: italic;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .testimonial strong {
+    font-weight: bold;
+    display: block;
+    text-align: right;
+    margin-top: 15px;
+    color: #007BFF;
+  }
+  
+  /* Hover effect for testimonials */
+  .testimonial:hover {
+    transform: translateY(-10px);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  /* FAQ Section */
+  .faq details {
+    background-color: #f0f4f8;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .faq summary {
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .faq p {
+    margin-top: 10px;
+    padding-left: 20px;
+    color: #666;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .features, .stats, .testimonials {
+      flex-direction: column;
+    }
+  
+    .top-navigation {
+      flex-wrap: wrap;
+    }
+  
+    .top-navigation button {
+      padding: 10px;
+      margin: 5px 0;
+    }
+  
+    .section {
+      padding: 40px 10px;
+    }
+  
+    .stat {
+      margin-bottom: 20px;
+    }
+  }
+  

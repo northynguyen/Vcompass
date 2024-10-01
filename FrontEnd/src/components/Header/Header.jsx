@@ -1,51 +1,32 @@
-import "./Header.css";
-import SignIn from "../../pages/SignIn/SignIn";
-import { Link } from "react-router-dom";
-import profile_icon from "../../assets/profile_icon.png";
-import logout_icon from "../../assets/logout_icon.png";
-import { useState } from "react";
-const Header = () => {
-  const [token, setToken] = useState(false);
+/* eslint-disable no-unused-vars */
+import React, { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import PlaceDetails from './pages/PlaceDetails/PlaceDetails'
+import UserService from './pages/UserService/UserService'
+import Partnership from './pages/Partnership/Partnership'
+import Header from './components/Header/Header'
+import './index.css'
+import { Route, Routes } from 'react-router-dom'
+import Footer from './components/Footer/Footer'
+import SignIn from './components/SignIn/SignIn'
 
+function App() {
+  const [showLogin, setShowLogin] = useState(false)
   return (
-    <div className="header">
-      <div className="logo">
-        <h1>VCompass</h1>
+    <>
+      {showLogin && <SignIn setShowLogin={setShowLogin} />}
+      <div className="app">
+        <Header setShowLogin={setShowLogin} />
+        <Routes>
+          <Route path="/" element={<PlaceDetails />} />
+          <Route path="/partnership" element={<Partnership />} />
+          <Route path="/user-service" element={<UserService />} />
+        </Routes>
+        <Footer />
       </div>
+    </>
 
-      <div className="header-right">
-        <ul className="header-menu">
-          <a href="" className="">
-            Home
-          </a>
-          <a href="">About Us</a>
-          <a href="">Booking</a>
-          <a href="">Partnership</a>
-          <a href="">Help</a>
-        </ul>
+  )
+}
 
-        {/* Chờ chèn token vào  */}
-        {!token ? (
-          <SignIn />
-        ) : (
-          <div className="header-profile">
-            <img src={profile_icon} alt="" />
-            <ul className="nav-profile-dropdown">
-              <li>
-                <img src={logout_icon} alt="" />
-                <p>Orders</p>
-              </li>
-              <hr />
-              <li>
-                <img src={logout_icon} alt="" />
-                <p>Logout</p>
-              </li>
-            </ul>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default Header;
+export default App

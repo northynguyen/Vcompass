@@ -1,0 +1,141 @@
+
+
+.my-account .tab-navigation {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.my-account .tab-navigation button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.my-account .tab-navigation .active-tab {
+    background-color: #007bff;
+    color: white;
+}
+
+.my-account .personal-data, 
+.my-account .reset-password {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.my-account label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.my-account input, 
+.my-account select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.my-account .save-btn, .my-account .edit-btn ,
+.my-account .cancel-btn {
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    
+}
+
+.my-account .cancel-btn {
+    background-color: #b21d13;
+}
+
+.mobile-section {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0 auto;
+    margin-bottom: 30px;
+    gap: 10px;
+
+}
+
+.mobile-section  button{
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.mobile-section p {
+    font-size: 14px;
+    color: #e15959;
+}
+/* Email and Mobile Sections */
+.my-account .email-section h3,
+.my-account .linked-accounts h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.my-account .email-section input,
+.my-account .mobile-section input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.my-account .linked-accounts .linked-buttons button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.my-account .linked-accounts .linked-buttons .facebook-btn {
+    background-color: #3b5998;
+}
+
+.my-account .linked-accounts .linked-buttons .google-btn {
+    background-color: #db4437;
+}
+
+
+.password-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Optional: add space between input fields */
+}
+
+.password-input input {
+    flex: 1; /* Make input take up available space */
+    margin-right: 10px; /* Space between input and button */
+    max-width: 80%; /* Optional: set maximum width of input field */
+}
+
+.password-input .toggle-password {
+    padding: 8px 12px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self: flex-start; /* Align toggle-password to the left */
+}
+
+.password-input .toggle-password:hover {
+    background-color: #e0e0e0; /* Change background on hover */
+}
