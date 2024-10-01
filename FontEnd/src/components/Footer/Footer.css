@@ -1,0 +1,128 @@
+.footer {
+    background-color: #0F1E32;
+    width: 100%;
+}
+
+.footer-container {
+    background-color: #13253F;
+    width: 100%;
+}
+
+.footer-header {
+    color: white;
+    font-size: 15px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.footer-title {
+    color: white;
+    font-size: 13px;
+    font-weight: 300;
+}
+
+
+
+.footer-columns {
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 0px 40px 0px;
+    display: flex;
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-self: center;
+    max-width: 1200px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin: 0 auto;
+}
+
+.custom-select {
+    position: relative;
+    width: 200px;
+
+}
+
+.selected-option {
+    display: flex;
+    cursor: pointer;
+    padding: 10px;
+    border: 1px solid black;
+    background-color: #13253F;
+}
+
+.selected-option::after {
+    content: '';
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 6px solid white;
+    position: absolute;
+    right: 10px;
+    top: 30%;
+    transition: transform 0.1s ease;
+}
+
+.selected-option.open::after {
+    transform: translateY(20%) rotate(-90deg);
+}
+
+.footer-img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.footer-logo {
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+}
+
+.footer-payment {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 180px;
+    gap: 5px;
+
+}
+
+.footer-payment-img {
+    width: 30px;
+    height: 20px;
+    background-color: white;
+}
+
+.options {
+    position: absolute;
+    width: 100%;
+    top: 100%;
+    left: 0;
+    background-color: #13253F;
+    border: 1px solid black;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    align-items: center;
+}
+
+.option {
+    display: flex;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.option:hover {
+    background-color: #0F1E32;
+}

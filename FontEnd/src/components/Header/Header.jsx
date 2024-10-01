@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import "./Header.css";
 import profile_icon from "../../assets/profile_icon.png";
+import SignIn from "../../pages/SignIn/SignIn";
 import { Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { CiViewList, CiSettings, CiLogout } from "react-icons/ci"; // Import icons from react-icons
@@ -45,6 +46,24 @@ const Header = () => {
     };
   }, [menuVisible]);
 
+  // SignIn
+  const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái điều khiển modal
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleOverlayClick = (e) => {
+    // Kiểm tra nếu click vào overlay, nếu có thì đóng modal
+    if (e.target.className === 'overlay') {
+      closeModal();
+    }
+  };
+  //End Signin
+
   return (
     <div className="header">
       <div className="logo">
@@ -62,7 +81,11 @@ const Header = () => {
 
         {/* Chờ chèn token vào  */}
         {!token ? (
-          <button>Sign in</button>
+          <>
+            <button onClick={openModal} >Sign in</button>
+            {isModalOpen && <SignIn onClose={closeModal} />}
+            {isModalOpen && <div className="overlay" onClick={handleOverlayClick}></div>}
+          </>
         ) : (
           <div className="header-profile" ref={menuRef}>
             <div className="profile-section" onClick={toggleMenu}>
