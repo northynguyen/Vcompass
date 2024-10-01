@@ -2,31 +2,31 @@ import React, { useState } from 'react';
 import './SignIn.css'; // Đảm bảo rằng bạn có CSS cho form
 
 const SignIn = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false); // Trạng thái điều khiển modal
+    const [isFormOpen, setIsFormOpen] = useState(false); // Trạng thái điều khiển Form
 
-    const openModal = () => {
-        setIsModalOpen(true);
+    const openForm = () => {
+        setIsFormOpen(true);
     };
 
-    const closeModal = () => {
-        setIsModalOpen(false);
+    const closeForm = () => {
+        setIsFormOpen(false);
     };
 
     const handleOverlayClick = (e) => {
-        // Đảm bảo chỉ đóng modal khi người dùng nhấp vào overlay, không phải nội dung modal
+        // Đảm bảo chỉ đóng Form khi người dùng nhấp vào overlay, không phải nội dung Form
         if (e.target.className === 'overlay') {
-            closeModal();
+            closeForm();
         }
     };
 
     return (
         <>
-            <button onClick={openModal}>Sign in</button>
-            {isModalOpen && (
+            <button onClick={openForm}>Sign in</button>
+            {isFormOpen && (
                 <>
                     <div className="overlay" onClick={handleOverlayClick}></div>
-                    <div className="modal-content">
-                        <span className="close" onClick={closeModal}>&times;</span>
+                    <div className="form-content">
+                        <span className="close" onClick={closeForm}>&times;</span>
                         <h2>Sign In</h2>
                         <form>
                             <div>
