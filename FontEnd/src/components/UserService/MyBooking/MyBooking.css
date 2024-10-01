@@ -1,0 +1,154 @@
+
+.my-booking  h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Ô tìm kiếm */
+.my-booking  .search-input {
+    padding: 8px 12px;
+    width: 100%;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Nút lọc trạng thái */
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.my-booking  .filter-buttons button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    transition: background-color 0.2s ease;
+}
+
+.my-booking  .filter-buttons .active-filter {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Danh sách đặt phòng */
+.my-booking  .booking-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+    transition: box-shadow 0.3s ease;
+}
+
+.my-booking  .booking-item:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.my-booking  .hotel-img {
+    width: 200px;
+    height: 200px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 20px;
+}
+
+.my-booking  .booking-info {
+    flex-grow: 1;
+}
+
+.my-booking  .booking-info h3 {
+    font-size: 18px;
+    margin: 0 0 5px;
+    color: #333;
+}
+
+.my-booking  .booking-info p {
+    font-size: 14px;
+    margin: 5px 0;
+    color: #666;
+}
+
+.my-booking  .booking-info p strong {
+    color: #333;
+}
+
+.my-booking  .booking-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.my-booking  .review-btn, .cancel-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.my-booking  .review-btn {
+    background-color: #4caf50;
+    color: white;
+}
+
+.my-booking  .review-btn:hover {
+    background-color: #45a049;
+}
+
+.my-booking  .cancel-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.my-booking  .cancel-btn:hover {
+    background-color: #e53935;
+}
+
+.popup {
+    position: fixed;
+    top: 0 ;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.popup-content {
+    margin-top: 30px;
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 1200px;
+    max-height: 78vh;
+    overflow-y: auto;
+    width: 100%;
+    position: relative;
+}
+
+.close-popup {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #000000;
+    width: 30px;
+}
+
+.close-popup:hover {
+    color: #ffffff;
+    background-color: #b12727;
+    border: none;
+}

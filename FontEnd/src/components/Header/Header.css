@@ -1,4 +1,4 @@
-.header{  
+.header {  
     background-color: rgb(255, 255, 255);
     display: flex;
     align-items: center;
@@ -15,84 +15,106 @@
     cursor: pointer;
 }
 
-.header hr{
+.header hr {
     width: 1px;
     height: 40px;
     background-color: rgb(0, 0, 0);
     border: none;
 }
-.header-menu{
+
+.header-menu {
     display: flex;
     list-style: none;
     gap: 40px;
     font-size: 18px;
 }
 
-.header-menu a{
+.header-menu a {
     color: rgb(0, 0, 0);
     text-decoration: none;
     font-size: medium;
+    transition: color 0.3s; /* Add transition for hover effect */
 }
 
-.header-right{
+.header-menu a:hover {
+    color: tomato; /* Change color on hover */
+}
+
+.header-right {
     display: flex;
     align-items: center;
     gap: 40px;
 }
 
-.header-right button   {
+.header-right button {
     width: 120px;
-    background-color: transparent;
-    color: #000000;
     padding: 10px 30px;
     background-color: #FFDA32;
     border: none;
     border-radius: 10px;
     cursor: pointer;
     font-size: 18px;
-    transition: 0.5s;
+    transition: background-color 0.5s, color 0.5s; /* Smooth transitions */
 }
 
-.header-right button:hover{
+.header-right button:hover {
     background-color: rgba(28, 27, 27, 0.563);
     color: white;
 }
 
-.header-profile{
+.header-profile {
     position: relative;
 }
 
-.header-profile .nav-profile-dropdown{
-    position: absolute;
-    right: 0;
-    z-index: 1;
-    display: none;
-
-}
-
-.header-profile:hover .nav-profile-dropdown{
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    gap: 10px;
-    padding:  12px 25px;
-    border-radius: 5px;
-    border: 1px solid tomato;
-    outline: 2px solid white;
+.header-profile .profile-menu {
+    width: 250px;
     list-style: none;
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    background-color: white; /* Ensure background for visibility */
+    border-radius: 5px;
+    border: 1px solid #ddd ; /* Add border for clarity */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+.header-profile .profile-name {
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    gap: 10px;
+    padding: 10px;
+    font-weight: bold;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(11, 11, 11, 0.1);
+    background-color: rgb(9, 178, 239);
+}
+.profile-name img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.header-profile hr {
+    width: 100%; /* Đặt chiều rộng đầy đủ */
+    height: 1px; /* Đặt chiều cao thấp để nằm ngang */
+    background-color: rgba(0, 0, 0, 0.1); /* Màu sắc nhẹ nhàng */
+    border: none; /* Xóa đường viền mặc định */
+    margin: 10px 0; /* Khoảng cách hợp lý ở trên và dưới */
 }
 
-.nav-profile-dropdown li{
+.profile-menu li {
     display: flex;
     align-items: center;
     gap: 10px;
+    padding: 10px; /* Add padding for clickable area */
     cursor: pointer;
+    transition: background-color 0.3s; /* Transition for hover effect */
 }
 
-.nav-profile-dropdown  img{
-    width: 20px;
+.profile-menu li:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* Highlight on hover */
 }
 
-.nav-profile-dropdown li:hover{
-    color: tomato;
-}
+
