@@ -5,7 +5,7 @@ import './SignIn.css';
 import { toast } from 'react-toastify';
 import cross from '../../assets/cross_icon.png';
 
-const SignIn =  ({ setShowLogin }) => {
+const SignIn = ({ setShowLogin }) => {
 
     const [curentState, setCurrentState] = useState("Login");
     const [data, setData] = useState({
@@ -33,7 +33,7 @@ const SignIn =  ({ setShowLogin }) => {
     }
 
     const onForgetPassword = async (event) => {
-        event.preventDefault(); 
+        event.preventDefault();
     }
 
     const onLogin = async (event) => {
@@ -50,16 +50,17 @@ const SignIn =  ({ setShowLogin }) => {
     return (
         <div className='login-popup'>
             <form onSubmit={curentState === "Forgot Password" ? onForgetPassword : onLogin} className="login-popup-container">
-                <div className="login-popup-title">
+                <div className="login-popup-title" >
+                    <div className='login-popup-close'>
+                        <img
+                            src={cross}
+                            onClick={() => setShowLogin(false)}
+                            className="close"
+                            alt="close"
+                        />
+                    </div>
                     <h2>{curentState}</h2>
-                    <img 
-                        src={cross}
-                        onClick={() => setShowLogin(false)} 
-                        className="close" 
-                        alt="close" 
-                    />
                 </div>
-
                 <div className="login-popup-inputs">
                     {curentState === "Sign Up" && <input name="name" onChange={onChangeHandler} value={data.name} type="text" placeholder="Name" required />}
                     <input name="email" onChange={onChangeHandler} value={data.email} type="email" placeholder="Email" required />
@@ -72,7 +73,7 @@ const SignIn =  ({ setShowLogin }) => {
                                 type={passwordVisible ? "text" : "password"}
                                 placeholder="Password"
                                 required
-                            />              
+                            />
                             <a onClick={togglePasswordVisibility}> {passwordVisible ? "Hide" : "Show"}</a>
                         </div>
                     )}
@@ -90,6 +91,13 @@ const SignIn =  ({ setShowLogin }) => {
                                 {passwordConfirm ? "Hide" : "Show"}
                             </a>
                         </div>
+                    )}
+                    {curentState === "Login" && (
+                        <p style={{ textAlign: "right", color: "#0B69A3 ", }}>
+                            <span className="link " onClick={() => setCurrentState("Forgot Password")}>
+                                &nbsp;Forgot password?
+                            </span>
+                        </p>
                     )}
                     <button type="submit" disabled={isLoading}>
                         {isLoading ? (
@@ -110,22 +118,31 @@ const SignIn =  ({ setShowLogin }) => {
                 {curentState === "Login" && (
                     <div>
                         <p>
-                            Create a new account. 
+                            Create a new account.
                             <span className="link" onClick={() => setCurrentState("Sign Up")}>
-                                &nbsp;Click here   
+                                &nbsp;Click here
                             </span>
                         </p>
-                        <p style={{ marginTop: "30px", textAlign: "center" }}>
-                            <span className="link" onClick={() => setCurrentState("Forgot Password")}>
-                                &nbsp;Forgot password?
-                            </span>
-                        </p>
+                        <div className="divider-container">
+                            <hr className="divider" />
+                            <span className="divider-text">OR</span>
+                            <hr className="divider" />
+
+                        </div>
+                        <div className='button-container'>
+                            <button className="continue-google" >
+                                <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="google" />
+                                <span>Continue with Google</span>
+                            </button>
+                        </div>
+
                     </div>
+
                 )}
 
                 {curentState === "Sign Up" && (
                     <p>
-                        Already have an account? 
+                        Already have an account?
                         <span className="link" onClick={() => setCurrentState("Login")}>
                             &nbsp;Login here
                         </span>
@@ -134,7 +151,7 @@ const SignIn =  ({ setShowLogin }) => {
 
                 {curentState === "Forgot Password" && (
                     <p>
-                        Remembered your password? 
+                        Remembered your password?
                         <span className="link" onClick={() => setCurrentState("Login")}>
                             &nbsp;Login here
                         </span>
@@ -145,4 +162,4 @@ const SignIn =  ({ setShowLogin }) => {
     );
 }
 
-export default SignIn ;
+export default SignIn;
