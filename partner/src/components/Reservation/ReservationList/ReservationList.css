@@ -1,0 +1,92 @@
+.reservation-list {
+    padding: 20px;
+  }
+  
+  .reservation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .filters input[type="text"],
+  .filters select,
+  .filters input[type="date"] {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .add-booking-btn {
+    background-color: #a1e057;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th,
+  td {
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .status-label {
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: white;
+  }
+  
+  .confirmed {
+    background-color: #28a745;
+  }
+  
+  .pending {
+    background-color: #ffc107;
+  }
+  
+  .cancelled {
+    background-color: #dc3545;
+  }
+  
+  .action-btn {
+    border: none;
+    padding: 5px 10px;
+    margin: 2px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .action-btn.view {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .action-btn.edit {
+    background-color: #17a2b8;
+    color: white;
+  }
+  
+  .action-btn.confirm {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .action-btn.cancel {
+    background-color: #dc3545;
+    color: white;
+  }
+  
