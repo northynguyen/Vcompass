@@ -9,7 +9,7 @@ import { AiOutlineSchedule } from "react-icons/ai"; // Import icons from react-i
 import { useNavigate } from 'react-router-dom'
 
 const Header = ({ setShowLogin }) => {
-  const [token, setToken] = useState(true);
+  const [token, setToken] = useState(false);
   const [activeTab, setActiveTab] = useState('');
   const [menuVisible, setMenuVisible] = useState(false); // State for menu visibility
   const menuRef = useRef(null); // Reference for the menu
