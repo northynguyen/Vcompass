@@ -1,4 +1,4 @@
-.login-popup{
+.login-popup {
     position: fixed;
     z-index: 1;
     width: 100%;
@@ -7,72 +7,94 @@
     display: grid;
 }
 
-.login-popup-container{
+.login-popup-container {
     place-self: center;
     background-color: white;
     color: #808080;
     display: flex;
     flex-direction: column;
     gap: 25px;
-    padding:  25px 40px;
+    padding: 25px 40px;
     border-radius: 10px;
-    width: min(600px, 90%);
-    height: min(520px, 60%);
+    width: min(500px, 90%);
+    height: min(800px, 75%);
     font-size: max(1vw, 12px);
     animation: fadeIn 0.5s;
 }
 
-.login-popup-title{
-    display: flex;;
-    justify-content: space-between;
-    align-items: center;
+.login-popup-title {
+    position: relative;
     color: black;
+    width: 100%;
+    text-align: center;
 }
 
-.login-popup-title img{
+.login-popup-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.login-popup-title img {
     width: 16px;
     cursor: pointer;
 }
 
-.login-popup-inputs{
+.login-popup-title h2 {
+    margin: 10px;
+    position: relative;
+    top: 20px;
+    font-size: 50px;
+    font-weight: bold;
+    padding-bottom: 20px;
+    background: linear-gradient(90deg, #0B69A3 30%, #40C3F7 70%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+
+
+.login-popup-inputs {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    
+
 }
 
-.login-popup-inputs .password-container{
+.login-popup-inputs .password-container {
     position: relative;
     display: flex;
     align-items: center;
     gap: 1px;
 }
 
-.login-popup-inputs .password-container a{
+.login-popup-inputs .password-container a {
     position: absolute;
     right: 10px;
     color: #808080;
     cursor: pointer;
 }
 
-.login-popup-inputs .password-container a:hover{
+.login-popup-inputs .password-container a:hover {
     color: tomato;
     cursor: pointer;
 }
-.login-popup-inputs input{
+
+.login-popup-inputs input {
     width: 100%;
-    padding: 10px 15px;
+    padding: 13px 18px;
     border: 1px solid #808080;
-    border-radius: 5px;
+    border-radius: 10px;
     font-size: max(1vw, 12px);
 }
 
-.login-popup-inputs button{
+.login-popup-inputs button {
     width: 100%;
     border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    background-color: tomato;
+    border-radius: 10px;
+    padding: 13px 18px;
+    background-color: #40C2F6;
     color: white;
     font-size: max(1vw, 12px);
     font-weight: 500;
@@ -80,7 +102,7 @@
     transition: 0.5s;
 }
 
-.login-popup-condition{
+.login-popup-condition {
     display: flex;
     align-items: start;
     gap: 5px;
@@ -88,13 +110,17 @@
     font-size: max(1vw, 12px);
 }
 
-.login-popup-condition input{
+.login-popup-condition input {
     margin-top: 5px;
 }
 
 .login-popup-container .link {
-    color: tomato;
+    color: #0B69A3;
     cursor: pointer;
+}
+
+.login-popup-container .link :hover {
+    text-decoration: underline;
 }
 
 .spinner-1 {
@@ -112,7 +138,54 @@
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
+}
+
+.divider-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.divider {
+    flex: 1;
+    border: 1px solid #ccc;
+    margin: 0;
+}
+
+.divider-text {
+    margin: 0 10px;
+    color: black;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.continue-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 85%;
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 15px 20px;
+    background-color: white;
+    color: black;
+    font-size: max(1vw, 12px);
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.continue-google img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
 }
