@@ -1,0 +1,195 @@
+.message-container {
+    margin-top: 20px;
+    display: flex;  /* Flexbox layout for the entire message container */
+    height: 90%;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+ 
+  }
+  
+  /* Sidebar styles */
+  .message-sidebar {
+    width: 30%;
+    background-color: white;
+    border-right: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .message-container h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .message-container .search-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+  
+  .conversation-list {
+    overflow-y: auto;
+    height: calc(100vh - 100px);
+  }
+  
+  .conversation-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .conversation-item:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .conversation-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .conversation-info h3 {
+    margin: 0;
+    font-size: 16px;
+  }
+  
+  .conversation-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .conversation-info small {
+    font-size: 12px;
+    color: #888;
+  }
+  
+  .unread {
+    font-weight: bold;
+  }
+  
+  /* Chat Window styles */
+  .chat-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5;
+    border-left: 1px solid #ddd;
+    border-radius: 10px;
+   
+    
+  }
+  
+  .chat-header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .header-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: white;
+    border-top: 1px solid #ddd;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  
+  .chat-input input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+  }
+  
+  .chat-input button {
+    margin-left: 10px;
+    padding: 10px;
+    background-color: #0084ff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+ /* Message bubble styles */
+.message-bubble {
+    max-width: 60%;
+    padding: 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column; /* Chuyển thành cột để thời gian nằm dưới tin nhắn */
+  }
+  
+  /* For sent messages (align to the right) */
+  .sent {
+    background-color: #0084ff;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+    text-align: left; /* Đảm bảo tin nhắn text thẳng hàng với thời gian */
+  }
+  
+  /* For received messages (align to the left) */
+  .received {
+    background-color: #e4e6eb;
+    color: black;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+    text-align: left;
+  }
+  
+  /* Adjust message content */
+  .message-bubble p {
+    margin: 0;
+    word-wrap: break-word; /* Giúp các từ dài được bọc nếu tin nhắn dài */
+  }
+  
+  /* Adjust timestamp */
+  .message-bubble span {
+    font-size: 10px;
+    color: #999;
+    margin-top: 5px; /* Tạo khoảng cách nhỏ giữa tin nhắn và thời gian */
+    align-self: flex-end; /* Đặt thời gian ở cuối tin nhắn */
+  }
+  /* Placeholder when no conversation is selected */
+  .chat-placeholder {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: #888;
+  }
+  

@@ -5,9 +5,9 @@
     padding: 10px 20px;
     background-color: #fff;
     border-bottom: 1px solid #eaeaea;
-    max-width: 80%;
+    max-width: 100%;
     margin: 0 auto;
-    padding-top: 30px;
+    padding-top: 10px;
     
   }
   .header-left {
@@ -62,8 +62,8 @@
 
     list-style: none;
     position: absolute;
-    top: 80px;
-    right: 10%;
+    top: 60px;
+    right:5px;
     z-index: 1;
     display: flex;
     flex-direction: column;

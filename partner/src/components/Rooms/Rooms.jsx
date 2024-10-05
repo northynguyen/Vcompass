@@ -87,7 +87,7 @@ const Rooms = () => {
             onClick={() => handleRoomSelect(room)}
           >
             <img
-              src="https://via.placeholder.com/150"
+              src="https://via.placeholder.com/96"
               alt={room.type}
               className="room-image"
             />
