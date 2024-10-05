@@ -1,0 +1,331 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .card-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    background-color: white;
+    margin: 20px auto;
+    overflow: hidden;
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0px;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .verified {
+    color: #009688;
+  }
+  
+  .user-date {
+    color: gray;
+    font-size: 12px;
+  }
+  
+  .location {
+    display: flex;
+    align-items: center;
+  }
+  
+  .location i {
+    margin-right: 5px;
+  }
+  
+  .content-image {
+    width: 100%;
+    height: 450px;
+    object-fit: cover; /* Giữ tỷ lệ và lấp đầy khung */
+    object-position: center; 
+  }
+  
+  .card-content {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  
+  .details {
+    width: 60%;
+  }
+  
+  .details h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .details p {
+    color: gray;
+    line-height: 1.2;
+    font-size: 18px;
+}
+  
+  .pricing-box {
+    width: 38%;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 15px;
+  }
+  
+  .pricing-box ul {
+    list-style: none;
+    margin-bottom: 20px;
+  }
+  
+  .pricing-box ul li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 18px;
+  }
+  
+  .discount {
+    color: green;
+  }
+  
+  .see-more {
+    width: 100%;
+    background-color: #00bcd4;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  .total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+  }
+  
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .actions {
+    display: flex;
+    align-items: center;
+  }
+  
+  .actions i {
+    margin-right: 5px;
+  }
+  
+  .custom-now {
+    background-color: #ffc107;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+.content-container{
+    position: relative;
+    width: 100%;
+    max-width: 850px;
+    background-color: white;
+    margin: -100px 25px 50px 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+}
+.post-location {
+    font-size: 15px;
+    font-weight: 500;
+    margin-left: 100px;
+    margin-top: -15px;
+}
+.location-text {
+    margin-left: 10px;
+}
+label.rating-text {
+    font-size: 20px;
+    font-weight: 800;
+    margin-right: 10px;
+}
+label.review-text {
+    font-size: 14px;
+    font-weight: 300;
+    color: #6d6b6b;
+    margin-right: 40px;
+}
+.icon-rating {
+    font-size: 15px;
+    color: #ece50c;
+    margin-right: 2px;
+}
+.icon-not-rating{
+    font-size: 15px;
+    margin-right: 2px;
+}
+label.action-text {
+    font-size: 12px;
+    font-weight: 300;
+    margin: 5px 25px 0px 0px;
+}
+.accommodation-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+  color: #fff;
+  height: 400px;
+  margin-bottom: 50px;
+}
+.banner-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://www.travelalaska.com/sites/default/files/2022-03/PlanYourTrip_Places%20to%20Stay_Hotels%20%26%20Motels_Hero3_%28ATIA%29.jpg'); /* Thay bằng đường dẫn ảnh của bạn */
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px); /* Làm mờ ảnh */
+  z-index: 1;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Màu sắc của lớp phủ với độ trong suốt */
+  z-index: 2; /* Đặt lớp phủ lên trên ảnh */
+}
+
+.banner-content {
+  position: relative;
+  z-index: 3;
+  color: #fff;
+  width: 40%;
+  margin-right: 150px;
+}
+.image-container {
+  position: relative;
+  width: 45%;
+  height: 90%;
+  margin-bottom: 20px;
+  margin-right: 100px;
+  z-index: 100;
+}
+
+.banner-image {
+  width: 500px;
+  height: 350px;
+  margin-left: 100px;
+  border-radius: 9999px;
+}
+
+.custom-shape-divider {
+  position: relative;
+  width: 100%;
+}
+
+.custom-shape-divider::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+  z-index: 1;
+  clip-path: circle(50% at 50% 50%);
+}
+
+
+
+.trending {
+  font-size: 14px;
+  background-color: #60D394;
+  padding: 5px 10px;
+  color: #000;
+  border-radius: 12px;
+  font-weight: 550;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.location {
+  display: flex;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.rating {
+  font-weight: bold;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 15px 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}
+
+.book-now {
+  background-color: #FFD700;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.icon {
+  font-size: 24px;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.book-now:hover, .custom-now:hover{
+  background-color:  #00bcd4;
+  color: white;
+}
+.accom-banner{
+  margin-right: 10px;
+  margin-left: 10px;
+  font-weight: 300;
+}
+.book-icon{
+  margin-left: 30px;
+  cursor: pointer;
+}
+.book-icon:hover{
+  color: red;
+}
