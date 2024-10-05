@@ -1,34 +1,50 @@
-import React from 'react'
-import './Sidebar.css'
-import add from '../../assets/bx-plus-circle.svg'
-import { NavLink } from 'react-router-dom'
-const Sidebar = () => {
-    return (
-        <div className='sidebar'>
-            <div className='sidebar-options'>
-                <NavLink to={'/dashboard'} className='sidebar-option'>
-                    <img src={add} alt="" />
-                    <p>Dashboard</p>
-                </NavLink>
-                <NavLink to={'/users'} className='sidebar-option'>
-                    <img src={add} alt="" className='sidebar-icon' />
-                    <p>Users</p>
-                </NavLink>
-                <NavLink to={'/services'} className='sidebar-option' >
-                    <img src={add} alt="" className='sidebar-icon' />
-                    <p>Services</p>
-                </NavLink>
-                <NavLink to={'/tours'} className='sidebar-option'>
-                    <img src={add} alt="" className='sidebar-icon' />
-                    <p>Tours</p>
-                </NavLink>
-                <NavLink to={'/notifications'} className='sidebar-option'>
-                    <img src={add} alt="" className='sidebar-icon' />
-                    <p>Notifications</p>
-                </NavLink>
-            </div>
-        </div>
-    )
-}
+/* eslint-disable react/prop-types */
+import { useState } from 'react';
+import './Sidebar.css';
+import { FaThLarge, FaUser, FaCalendarAlt, FaConciergeBell, FaEnvelope, FaBell, FaServicestack } from 'react-icons/fa'; // Import icons
 
-export default Sidebar
+const Sidebar = ({ onTabChange }) => {
+    // State to manage the active tab
+    const [activeTab, setActiveTab] = useState('Dashboard');
+
+    const onClickTab = (tab) => {
+        setActiveTab(tab); // Set the active tab
+        onTabChange(tab);  // Notify the parent component of the tab change
+    };
+
+    return (
+        <aside className="sidebar">
+            {/* Menu Items */}
+            <nav className="menu">
+                <ul>
+                    <li className={activeTab === 'Dashboard' ? 'active' : ''} onClick={() => onClickTab('Dashboard')}>
+                        <FaThLarge />
+                        Dashboard
+                    </li>
+                    <li className={activeTab === 'Users' ? 'active' : ''} onClick={() => onClickTab('Users')}>
+                        <FaUser />
+                        Users
+                    </li>
+                    <li className={activeTab === 'Tours' ? 'active' : ''} onClick={() => onClickTab('Tours')}>
+                        <FaCalendarAlt />
+                        Tours
+                    </li>
+                    <li className={activeTab === 'Services' ? 'active' : ''} onClick={() => onClickTab('Services')}>
+                        <FaServicestack />
+                        Services
+                    </li>
+                    <li className={activeTab === 'Notification' ? 'active' : ''} onClick={() => onClickTab('Notification')}>
+                        <FaBell />
+                        Notification
+                    </li>
+                    <li className={activeTab === 'Message' ? 'active' : ''} onClick={() => onClickTab('Message')}>
+                        <FaEnvelope />
+                        Message
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    );
+};
+
+export default Sidebar;
