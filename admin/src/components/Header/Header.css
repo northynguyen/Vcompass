@@ -1,0 +1,234 @@
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #fff;
+  border-bottom: 1px solid #eaeaea;
+  max-width: 80%;
+  margin: 0 auto;
+  padding-top: 30px;
+
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-left h1 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  margin-right: 15px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  /* Make cursor a pointer */
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user-info p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.user-info span {
+  font-size: 12px;
+  color: #888;
+}
+
+/* Popup menu */
+.profile-popup {
+
+  list-style: none;
+  position: absolute;
+  top: 80px;
+  right: 10%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  /* Stack items vertically */
+  background-color: white;
+  /* Ensure background for visibility */
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  /* Add border for clarity */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Add shadow for depth */
+}
+
+.profile-popup .menu {
+  padding: 10px;
+  margin: 0;
+  width: 200px;
+  border: none;
+
+}
+
+.profile-popup ul {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+.profile-popup ul li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  /* Add padding for clickable area */
+  cursor: pointer;
+  transition: background-color 0.3s;
+  /* Transition for hover effect */
+}
+
+.profile-popup ul li:hover {
+  background-color: #f0f0f0;
+}
+
+/* Notification Icon and Badge */
+.notification-container {
+  position: relative;
+  margin-right: 15px;
+  /* Ensure some spacing from other elements */
+}
+
+.notification-container .notification-badge {
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  font-size: 10px;
+  padding: 2px 6px;
+  position: absolute;
+  top: -5px;
+  /* Adjust this based on the size of the bell icon */
+  right: -5px;
+  /* Adjust for positioning the badge */
+  font-weight: bold;
+}
+
+/* Notifications Dropdown */
+.notifications-dropdown {
+  position: absolute;
+  top: 40px;
+  right: -200px;
+
+  background-color: rgb(192, 189, 189);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  z-index: 2;
+}
+
+.notifications-list {
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+}
+
+.notifications-list li {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.notifications-list li:last-child {
+  border-bottom: none;
+}
+
+.notifications-list li:hover {
+  background-color: #f0f0f0;
+}
+
+
+.notifications-dropdown {
+  width: 350px;
+  background-color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.notifications-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-time {
+  color: #888;
+  font-size: 12px;
+}
+
+.notification-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.unread-dot {
+  width: 10px;
+  height: 10px;
+  background-color: rgb(13, 189, 243);
+  border-radius: 50%;
+  position: absolute;
+  right: 0px;
+}
+
+.unread {
+  font-weight: bold;
+}
+
+.unread .notification-time {
+  font-weight: normal;
+  color: rgb(13, 189, 243);
+}
