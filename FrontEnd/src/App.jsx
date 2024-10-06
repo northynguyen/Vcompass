@@ -8,6 +8,7 @@ import './index.css'
 import Partnership from './pages/Partnership/Partnership'
 import PlaceDetails from './pages/PlaceDetails/PlaceDetails'
 import UserService from './pages/UserService/UserService'
+import Home from './pages/Home/Home'
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
@@ -17,7 +18,8 @@ function App() {
       <div className="app">
         <Header setShowLogin={setShowLogin} />
         <Routes>
-          <Route path="/" element={<PlaceDetails />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/place-details" element={<PlaceDetails />} />
           <Route path="/partnership" element={<Partnership />} />
           <Route path="/user-service" element={<UserService />} />
         </Routes>

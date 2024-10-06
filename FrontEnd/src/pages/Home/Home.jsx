@@ -3,9 +3,10 @@ import Header from '../../components/Header/Header';
 import AccommodationBanner from '../../components/Poster/AccommodationBanner ';
 import PostCard from '../../components/Poster/PostCard';
 import "./Home.css";
+import SlideBar from '../../components/SlideBar/SlideBar';
 const Home = () => {
   return (
-   <div>
+   <div className="home-container">
       <Header/>
     <div className='tour-search-container'> 
     <div className="tour-search">
@@ -65,7 +66,7 @@ const Home = () => {
     <div>
       <AccommodationBanner/>
     </div>
-
+    <SlideBar/>
 
    </div>
   );
