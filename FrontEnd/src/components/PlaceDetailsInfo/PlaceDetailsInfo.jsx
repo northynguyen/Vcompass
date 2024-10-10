@@ -119,7 +119,6 @@ const PlaceDetailsInfo = () => {
           <label htmlFor="guests">No. of Guests</label>
           <select
             id="guests"
-            // eslint-disable-next-line no-undef
             onChange={(e) => setGuests(e.target.value)}
           >
             <option value="1">1 adult</option>

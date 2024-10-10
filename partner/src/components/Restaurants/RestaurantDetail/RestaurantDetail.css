@@ -1,0 +1,427 @@
+/* RestaurantDetail.css */
+
+
+/* Container cho toàn bộ chi tiết nhà hàng */
+.restaurant {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Định dạng các tiêu đề */
+.restaurant h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.restaurant h2 {
+    font-size: 1.8rem;
+    margin: 30px 0 15px;
+    color: #34495e;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 5px;
+}
+
+/* Định dạng đoạn văn và nhãn */
+.restaurant p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.restaurant label {
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+/* Định dạng các trường nhập liệu */
+.edit-input,
+.edit-input-small,
+.edit-textarea,
+.day-select,
+.time-input {
+    width: 100%;
+    padding: 10px 15px;
+    margin: 5px 0 15px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.edit-input:focus,
+.edit-input-small:focus,
+.edit-textarea:focus,
+.day-select:focus,
+.time-input:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+/* Định dạng các trường nhập liệu nhỏ */
+.edit-input-small {
+    width: 45%;
+    display: inline-block;
+    margin-right: 5%;
+}
+
+.edit-input-small:last-child {
+    margin-right: 0;
+}
+
+/* Định dạng textarea */
+.edit-textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+/* Định dạng thư viện chọn ngày */
+.day-select {
+    width: 120px;
+}
+
+/* Định dạng các trường thời gian */
+.time-input {
+    width: 150px;
+}
+
+/* Định dạng thư viện hình ảnh */
+.image-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.image-rest,
+.image-container img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.image-rest:hover,
+.image-container img:hover {
+    transform: scale(1.05);
+}
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.delete-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(231, 76, 60, 0.8);
+    border: none;
+    color: #fff;
+    padding: 5px 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+    background-color: rgba(231, 76, 60, 1);
+}
+
+/* Định dạng các trường upload file */
+.file-upload {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+/* Định dạng phần tiện nghi */
+.amenities {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.amenities li {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    padding: 5px 10px;
+    background-color: #ecf0f1;
+    border-radius: 20px;
+}
+
+.amenities li svg {
+    margin-right: 5px;
+    color: #3498db;
+}
+
+.amenities-edit {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.amenity-option {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.amenity-option input {
+    margin-right: 8px;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+/* Định dạng thông tin liên hệ */
+.restaurant p svg {
+    margin-right: 8px;
+    color: #2980b9;
+}
+
+/* Định dạng danh sách giờ mở cửa */
+.operating-hours-list {
+    list-style: none;
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+.operating-hours-edit-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.operating-hours-entry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f2f2f2;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.operating-hours-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    flex: 1;
+}
+
+.operating-hours-fields label {
+    margin-right: 5px;
+}
+
+.remove-oh-button {
+    background-color: #e74c3c;
+    color: #fff;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.remove-oh-button:hover {
+    background-color: #c0392b;
+}
+
+.add-oh-button {
+    background-color: #2ecc71;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    align-self: flex-start;
+}
+
+.add-oh-button:hover {
+    background-color: #27ae60;
+}
+
+/* Định dạng các nút */
+.restaurant .buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.restaurant button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.edit-button {
+    background-color: #3498db;
+    color: #fff;
+}
+
+.edit-button:hover {
+    background-color: #2980b9;
+}
+
+.save-button {
+    background-color: #2ecc71;
+    color: #fff;
+}
+
+.save-button:hover {
+    background-color: #27ae60;
+}
+
+.cancel-button {
+    background-color: #95a5a6;
+    color: #fff;
+}
+
+.cancel-button:hover {
+    background-color: #7f8c8d;
+}
+
+/* Định dạng phần bản đồ */
+.map {
+    margin-top: 15px;
+}
+
+.map p {
+    margin-bottom: 5px;
+}
+
+/* Định dạng phần tìm kiếm địa điểm */
+.location-search-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.location-search-input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.location-search-input:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.location-search-form button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+}
+
+.location-search-form button:hover {
+    background-color: #2980b9;
+}
+
+/* Định dạng danh sách kết quả tìm kiếm */
+.location-search-results {
+    list-style: none;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    background-color: #fff;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.location-search-results li {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.location-search-results li:hover {
+    background-color: #ecf0f1;
+}
+
+/* Định dạng nút sử dụng vị trí hiện tại */
+.current-location-button {
+    background-color: #2ecc71;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.current-location-button:hover {
+    background-color: #27ae60;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .edit-input-small {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .operating-hours-entry {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .operating-hours-fields {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .restaurant .buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .restaurant button {
+        width: 80%;
+    }
+
+    .image-rest,
+    .image-container img {
+        max-width: 100%;
+    }
+
+    .amenities {
+        flex-direction: column;
+    }
+
+    .day-select,
+    .time-input {
+        width: 100%;
+    }
+
+    .location-search-form {
+        flex-direction: column;
+    }
+
+    .location-search-form button {
+        width: 100%;
+    }
+}

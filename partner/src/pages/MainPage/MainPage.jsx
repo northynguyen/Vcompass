@@ -3,9 +3,9 @@ import { useState } from 'react';
 import MenuBar from '../../components/MenuBar/MenuBar';
 import Dashboard from '../../components/DashBoard/DashBoard';
 import Reservation from '../../components/Reservation/Reservation';
-import Rooms from '../../components/Rooms/Rooms';
 import Message from '../../components/Message/Message';
-import Calendar from '../../components/Calendar/Calendar';
+import Hotels from '../../components/Hotels/Hotels';
+import Restaurent from '../../components/Restaurants/Restaurants';
 import './MainPage.css';
 
 const MainPage = () => {
@@ -17,12 +17,12 @@ const MainPage = () => {
         return <Dashboard />;
       case 'Reservation':
         return <Reservation />;
-      case 'Rooms':
-        return <Rooms />;
+      case 'Hotels':
+        return <Hotels />;
       case 'Messages':
         return <Message />;
-      case 'Calendar':
-        return <Calendar />
+      case 'Concierge':
+        return <Restaurent />
       default:
         return <Dashboard />;
     }

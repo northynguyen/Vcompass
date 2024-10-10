@@ -6,10 +6,11 @@ const GuestProfile = ({ guestData, onBack }) => {
   const { profile, bookingInfo, roomInfo, priceSummary, bookingHistory } = guestData;
 
   return (
+    <div className="guest-profile-container">
+      <div className="guest-profile-header">
+        <button onClick={onBack}>← Back to Reservations</button>
+      </div>
     <div className="guest-profile">
-      <button onClick={onBack} className="back-btn">
-        ← Back to Reservations
-      </button>
       {/* Profile Section */}
       <div className="profile">
         <div className="profile-info">
@@ -102,6 +103,7 @@ const GuestProfile = ({ guestData, onBack }) => {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 };

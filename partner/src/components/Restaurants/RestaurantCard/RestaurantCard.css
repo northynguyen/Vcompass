@@ -1,0 +1,69 @@
+/* src/components/FABS/RestaurantCard.css */
+.restaurant-card {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 10px 0;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    position: relative;
+    width: 300px;
+}
+
+.restaurant-image {
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.restaurant-info {
+    padding: 10px;
+    flex: 1;
+}
+
+.restaurant-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.2em;
+}
+
+.restaurant-info p {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+.status-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #fff;
+    margin-left: 5px;
+    font-size: 0.8em;
+}
+
+.status-badge.active {
+    background-color: #28a745;
+}
+
+.status-badge.pending {
+    background-color: #ffc107;
+}
+
+.status-badge.locked {
+    background-color: #dc3545;
+}
+
+.restaurant-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.actions-icon {
+    color: #555;
+    cursor: pointer;
+}
+
+.actions-icon:hover {
+    color: #000;
+}
