@@ -1,0 +1,353 @@
+.custom-schedule {
+    margin: auto;
+    font-family: Arial, sans-serif;
+  }
+
+  .schedule-container{
+    padding: 20px 8%;
+    background: #F9FAFD;
+  }
+  
+  .activity-header h2 {
+    margin-bottom: 20px;
+  }
+  .activity-header p {
+    font-weight: 300;
+  }
+  .activity-header {
+    color: #7BBCB0;
+    display: flex;
+    text-align: center;
+    padding: 20px 40px;
+    background-color: #FFF;
+    border-radius: 5px;
+    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+}
+  
+  .activity-details {
+    display: flex;
+    margin: 20px 0;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .activity-details img {
+    width: 200px;
+    height: auto;
+    margin-right: 20px;
+    border-radius: 5px 0px 0px 5px;
+  }
+  
+  .activity-info {
+    flex-grow: 1;
+  }
+  
+  .time-selection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  .confirm-booking button {
+    padding: 13px 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+  .confirm-booking {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    margin: 0px 40px 0px 80px;
+}
+.save-and-share-btn{
+    color: #778088;
+    background-color: #FFF;
+}
+.title-des{
+    flex: 3;
+}
+.book-icon{
+    color: #778088;
+    margin-right: 10px;
+    margin-left: -10px;
+}
+.confirm-btn{
+    border: 0px;
+    background-color: #7BBCB0;
+    color: #FFF;
+}
+  .header-accom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+  }
+  .num-title {
+    margin-bottom: 5px;
+  }
+
+  .header-left {
+    font-size: 1em;
+    margin-left: 8%;
+    padding: 10px 0px;
+  }
+  .num-text{
+    font-size: 16px;
+    color: #807d7d;
+  }
+  .activity-infor {
+    display: flex;
+    border-radius: 10px;
+    background-color: #FFF;
+    width: 100%;
+    box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.1);
+    height: 200px;
+    gap:10px;
+    align-items: center;
+}
+.time-schedule-item {
+    height: 150px;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+}
+.time-schedule-item {
+    height: 200px;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+}
+.time-schedule-list {
+    width: 100%;
+    padding: 0px;
+    flex: 5;
+}
+.date-schedule {
+  align-items: center;
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+input[type="date"] {
+  border: 1px;
+  color: #7BBCB0;
+}
+.numday-title {
+  display: flex;
+  gap: 10px;
+  width: 120px;
+}
+p.des-schedule {
+  margin-top: 15px;
+  text-align: left;
+}
+.header-container {
+  margin: 0px 10%;
+}
+.detail-container {
+  background: #FFF;
+  padding: 20px;
+  margin-top: 20px;
+}
+.time-container {
+  display: flex;
+  border-radius: 10px;
+  background-color: #FFF;
+  width: 100%;
+  box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+  height: 200px;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  font-size: 30px;
+  color: #888888;
+  flex: 1;
+  padding: 0px 20px;
+}
+.circle-num {
+  color: #FFF;
+  background: #7BBCB0;
+  border-radius: 99px;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+.num-activity {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+.time-select-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 10px;
+}
+
+.icon {
+  position: absolute;
+  left: 0px; /* Căn chỉnh biểu tượng bên trái */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #171515; /* Màu của biểu tượng */
+  font-size: 20px;
+}
+
+.time-schedule {
+  padding-left: 30px; 
+  width: 200px;
+  font-size: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  appearance: none;
+  background-color: #fff;
+  padding: 10px;
+  text-align: center;
+  border-radius: 15px;
+}
+
+.time-container  h6 {
+  text-align: center;
+}
+/* Tùy chỉnh scrollbar */
+.time-schedule::-webkit-scrollbar {
+  width: 8px; /* Độ rộng của thanh cuộn */
+}
+
+.time-schedule::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Màu nền của thanh cuộn */
+}
+
+.time-schedule::-webkit-scrollbar-thumb {
+  background-color: #888; /* Màu của thanh cuộn */
+  border-radius: 10px;
+}
+
+.time-schedule::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Thay đổi màu khi hover */
+} 
+.date-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.add-new button {
+  width: 250px;
+  border-radius: 99px;
+  padding: 10px 15px;
+  background-color: #7BBCB0;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+i.fa-solid.fa-plus.add-icon {
+  margin-right: 10px;
+}
+
+.time-schedule-list {
+  width: 100%;
+}
+
+.time-schedule-item {
+  height: 200px;
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #ddd;
+  margin-top: 10px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+}
+
+.time-schedule-image {
+  width: 200px;
+  height: auto;
+  border-radius: 4px 0px 0px 4px;
+}
+
+.time-schedule-details {
+  flex-grow: 1;
+  padding-left: 15px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: 15px;
+}
+
+.time-schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.time-schedule-tag {
+  background-color: #d1f7ff;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.time-schedule-rating {
+  color: #ffae00;
+}
+
+.time-schedule-info {
+  display: flex;
+  margin-top: 15px;
+  margin-right: 10px;
+  color: #666666;
+  font-size: 16px;
+  gap: 10px;
+}
+
+.time-schedule-price {
+  width: 100px;
+  margin-right: 20px;
+  display: flex;
+  text-align: right;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
+  flex-direction: column;
+}
+.price-text{
+  font-weight: bold;
+  color: #7BBCB0;
+  font-size: 25px;
+}
+.persion-text{
+  color: #989797;
+  font-size: 15px;
+}
+.time-schedule-list-container{
+width: 100%;
+}
+.type-activity {
+  background: #AFFFF0;
+  font-weight: 600;
+  padding: 5px;
+  width: 180px;
+  text-align: center;
+  border-radius: 99px;
+  margin-bottom: 5px;
+  font-size: 17px;
+}

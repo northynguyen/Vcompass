@@ -5,10 +5,12 @@ import Footer from './components/Footer/Footer'
 import Header from './components/Header/Header'
 import SignIn from './components/SignIn/SignIn'
 import './index.css'
+import Home from './pages/Home/Home'
+import ListAccom from './pages/ListAccommodation/ListAccommodation'
 import Partnership from './pages/Partnership/Partnership'
 import PlaceDetails from './pages/PlaceDetails/PlaceDetails'
+import Schedule from './pages/Schedule/Schedule'
 import UserService from './pages/UserService/UserService'
-import Home from './pages/Home/Home'
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
@@ -21,7 +23,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/place-details" element={<PlaceDetails />} />
           <Route path="/partnership" element={<Partnership />} />
+          <Route path="/about" element={<Schedule />} />
           <Route path="/user-service" element={<UserService />} />
+          <Route path="/booking" element={<ListAccom />} />
         </Routes>
         <Footer />
       </div>

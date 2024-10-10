@@ -1,13 +1,11 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import "./Header.css";
-import profile_icon from "../../assets/profile_icon.png";
-import { Link } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
-import { CiViewList, CiSettings, CiLogout } from "react-icons/ci"; // Import icons from react-icons
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineSchedule } from "react-icons/ai"; // Import icons from react-icons
-import { useNavigate } from 'react-router-dom'
-import { useLocation } from 'react-router-dom';
+import { CiLogout, CiSettings, CiViewList } from "react-icons/ci"; // Import icons from react-icons
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import profile_icon from "../../assets/profile_icon.png";
+import "./Header.css";
 
 
 const Header = ({ setShowLogin }) => {

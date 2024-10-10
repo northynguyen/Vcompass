@@ -1,0 +1,205 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .header-accom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+  }
+  .main-content-container{
+    background: #F9FAFD;
+  }
+
+  .num-title {
+    margin-bottom: 5px;
+  }
+
+  .header-left {
+    font-size: 1em;
+    margin-left: 6%;
+  }
+  .num-text{
+    font-size: 16px;
+    color: #807d7d;
+  }
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+    margin-right: 5%;
+  }
+  
+  .header-right label {
+    margin-right: 10px;
+    width: 100px;
+    font-weight: 500;
+    font-size: 17px;
+  }
+  
+  .main-content {
+    display: flex;
+    margin: 0px 5%;
+  }
+  
+  .filters {
+    margin: 15px;
+    width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filter-section {
+    margin-bottom: 20px;
+  }
+  
+  .filter-section h4 {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  .filter-section label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #555;
+  }
+  
+  .filter-section input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 1em;
+    color: #333;
+    background-color: #f7f7f7;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+  }
+  
+  .filter-section input[type="date"]:focus {
+    border-color: #5bc0de;
+    background-color: #fff;
+  }
+
+  select {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 0.8em;
+    color: #333;
+    background-color: #f7f7f7;
+    transition: all 0.3s ease;
+    padding: 10px 40px 10px 5px;
+  }
+  .filter-section select:focus {
+    border-color: #5bc0de;
+    background-color: #fff;
+  }
+  
+  .filter-section button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #5bc0de;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .filter-section button:hover {
+    background-color: #31a0d4;
+  }
+  
+  
+  .tour-list {
+    width: 100%;
+    padding: 5px 20px 5px 20px;
+  }
+  
+  .tour-item {
+    height: 150px;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+}
+  
+  .tour-image {
+    width: 150px;
+    height: auto;
+    border-radius: 4px 0px 0px 4px;
+  }
+  
+  .tour-details {
+    flex-grow: 1;
+    padding-left: 15px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: 15px;
+  }
+  
+  .tour-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .tour-tag {
+    background-color: #d1f7ff;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  
+  .tour-rating {
+    color: #ffae00;
+  }
+  
+  .tour-info {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .tour-price {
+    width: 100px;
+    margin-right: 20px;
+    display: flex;
+    text-align: right;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    flex-direction: column;
+  }
+  .price-text{
+    font-weight: bold;
+    color: #7BBCB0;
+    font-size: 25px;
+  }
+  .persion-text{
+    color: #989797;
+    font-size: 15px;
+  }
+  .tour-info span:not(:first-child)::before {
+    content: "|"; /* Thêm dấu gạch thẳng đứng */
+    margin: 0 8px; /* Khoảng cách giữa gạch và nội dung */
+    color: #807d7d; /* Màu sắc của gạch thẳng */
+}
+.tour-list-container{
+  width: 100%;
+}
