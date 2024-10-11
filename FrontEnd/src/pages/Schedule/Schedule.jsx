@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "./Schedule.css";
 import ActivityTime from "./ActivityTime/ActivityTime";
 import AddActivity from "./AddActivity/AddActivity";
-
+import Expense from "./Expense/Expense";
 
 const Activity = ({ activity }) => {
   return (
@@ -146,7 +146,7 @@ const Schedule = () => {
                 timeStart: "00:10",
                 timeEnd: "10:10",
               },
-            price: "$35.00",
+            price: "$350000",
             type: "Hotel",
           },
           {
@@ -158,7 +158,7 @@ const Schedule = () => {
                 timeStart: "00:10",
                 timeEnd: "10:10",
               },          
-            price: "$35.00",
+            price: "$3500000",
             type: "Hotel",
           },
         ]
@@ -176,13 +176,32 @@ const Schedule = () => {
                 timeEnd: "10:10",
               },
             
-            price: "$35.00",
+            price: "$3500000",
             type: "Hotel",
           },
         ]
       },
     ]
 };
+const extractExpenses = (tour) => {
+  const expenses = [];
+
+  tour.schedule.forEach((day) => {
+    day.activity.forEach((activity) => {
+      const expense = {
+        id: Math.random(), // Tạo id ngẫu nhiên, bạn có thể thay đổi cách tạo id
+        name: activity.title,
+        location: tour.address, // Dùng address chung từ MyTour
+        cost: parseFloat(activity.price.replace(/[^0-9.-]+/g,"")), // Lấy giá và chuyển về số
+        icon: activity.imgSrc, // Dùng ảnh từ activity
+      };
+      expenses.push(expense);
+    });
+  });
+
+  return expenses;
+};
+
 const convertDateFormat = (date) => {
   const [day, month, year] = date.split("-");
   return `${day}-${month}-${year}`;
@@ -275,6 +294,9 @@ const calculateDaysAndNights = (dateStart, dateEnd) => {
         ) : (
           <p>No schedule available</p>
         )}
+      </div>
+      <div className="footer-schedule">
+        <Expense expenses={extractExpenses(MyTour)} />
       </div>
     </div>
   );
