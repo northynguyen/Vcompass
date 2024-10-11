@@ -1,0 +1,67 @@
+/* Style cho modal overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Style cho nội dung modal */
+  .add-activity-modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+  }
+  
+  /* Style cho header của modal */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Style cho phần body */
+  .modal-body {
+    padding-top: 10px;
+  }
+  
+  /* Các input và textarea */
+  .input-field {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Style cho footer của modal */
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .save-btn {
+    background-color: #f90;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .close-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  

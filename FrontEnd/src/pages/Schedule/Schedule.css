@@ -31,13 +31,6 @@
     gap: 20px;
   }
   
-  .activity-details img {
-    width: 200px;
-    height: auto;
-    margin-right: 20px;
-    border-radius: 5px 0px 0px 5px;
-  }
-  
   .activity-info {
     flex-grow: 1;
   }
@@ -109,26 +102,8 @@
     gap:10px;
     align-items: center;
 }
-.time-schedule-item {
-    height: 150px;
-    display: flex;
-    justify-content: space-between;
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-    background-color: #fff;
-    border-radius: 4px;
-    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
-}
-.time-schedule-item {
-    height: 200px;
-    display: flex;
-    justify-content: space-between;
-    border: 1px solid #ddd;
-    margin-bottom: 10px;
-    background-color: #fff;
-    border-radius: 4px;
-    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
-}
+
+
 .time-schedule-list {
     width: 100%;
     padding: 0px;
@@ -140,10 +115,10 @@
   gap: 15px;
   margin-bottom: 10px;
 }
-input[type="date"]::-webkit-calendar-picker-indicator {
-  display: none;
+.date-schedule input::-webkit-calendar-picker-indicator {
+ 
 }
-input[type="date"] {
+.date-schedule input {
   border: 1px;
   color: #7BBCB0;
 }
@@ -248,7 +223,7 @@ p.des-schedule {
 .date-section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 60px;
 }
 .add-new button {
   width: 250px;
@@ -265,10 +240,14 @@ i.fa-solid.fa-plus.add-icon {
 
 .time-schedule-list {
   width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
 }
 
 .time-schedule-item {
-  height: 200px;
+  padding: 10px;
+  height: 240px;
   display: flex;
   justify-content: space-between;
   border: 1px solid #ddd;
@@ -281,7 +260,7 @@ i.fa-solid.fa-plus.add-icon {
 .time-schedule-image {
   width: 200px;
   height: auto;
-  border-radius: 4px 0px 0px 4px;
+  border-radius: 4px ;
 }
 
 .time-schedule-details {
