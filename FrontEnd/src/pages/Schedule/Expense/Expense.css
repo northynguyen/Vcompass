@@ -33,12 +33,37 @@
     margin: 0;
     font-size: 16px;
   }
-  
+  .add-expense{
+    margin-top: 5px;
+  }
+  label.expense-sub-title {
+    font-size: 15px;
+    color: #545353;
+}
+  .add-expense-modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 40%;
+    max-width: 90%;
+    max-height: 70%;
+}
+
   .expense-details p {
     margin: 5px 0 0;
     font-size: 14px;
     color: #777;
   }
+
+  button.delete-btn {
+    background-color: #f42222;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 20px;
+}
   
   .expense-cost {
     font-size: 16px;
@@ -114,5 +139,29 @@
   
   .action-buttons button:hover {
     background-color: #ddd;
+  }
+
+  .confirm-delete-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .confirm-btn {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    margin-right: 10px;
+  }
+  
+  .cancel-btn {
+    background-color: gray;
+    color: white;
+    padding: 10px 20px;
   }
   

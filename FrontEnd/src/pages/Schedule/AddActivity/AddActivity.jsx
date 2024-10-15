@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import Modal from "react-modal";
-import "./AddActivity.css";
 import ListAccommodation from "../../ListAccommodation/ListAccommodation";
+import "./AddActivity.css";
 // Thiết lập root element cho modal
 Modal.setAppElement("#root");
 
@@ -16,7 +16,9 @@ const AddActivity = ({ isOpen, closeModal }) => {
       <div className="add-activity">
         <div className="modal-header">
           <h2>Thêm mới hoạt động</h2>
-          <button onClick={closeModal} className="close-btn">X</button>
+          <button onClick={closeModal} className="close-btn">
+          <i className="fa-regular fa-circle-xmark"></i>
+          </button>
         </div>
 
         <div className="modal-body">
@@ -29,40 +31,7 @@ const AddActivity = ({ isOpen, closeModal }) => {
               <option>An uong </option>
               <option>Tự chọn </option>
             </select>
-            <input
-              type="text"
-              placeholder="Nhập nội dung"
-              className="input-field"
-            />
           </div>
-
-          <div className="form-group time-group">
-            <div>
-              <label>Từ</label>
-              <input type="time" className="input-field" />
-            </div>
-            <div>
-              <label>Đến</label>
-              <input type="time" className="input-field" />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <input
-              type="text"
-              placeholder="Nhập địa chỉ"
-              className="input-field"
-            />
-          </div>
-
-          <div className="form-group">
-            <input
-              type="number"
-              placeholder="Nhập chi phí"
-              className="input-field"
-            />
-          </div>
-
           <div className="form-group">
             <textarea placeholder="Ghi chú" className="input-field"></textarea>
           </div>

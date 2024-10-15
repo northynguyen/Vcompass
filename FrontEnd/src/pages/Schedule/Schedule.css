@@ -23,7 +23,11 @@
     border-radius: 5px;
     box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
 }
-  
+.schedule-icon {
+  margin-right: 10px;
+  color: #000;
+}  
+
   .activity-details {
     display: flex;
     margin: 20px 0;
@@ -43,20 +47,56 @@
   }
   
   .confirm-booking button {
-    padding: 13px 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
+    border: 0px;
+    width: 150px;
 }
   .confirm-booking {
     display: flex;
     flex-direction: column;
     justify-content: center;
     flex: 1;
-    margin: 0px 40px 0px 80px;
 }
-.save-and-share-btn{
-    color: #778088;
-    background-color: #FFF;
+.title-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: solid 2px;
+  cursor: pointer;
+}
+.title-button:hover {
+  background-color: #7BBCB0;
+}
+
+.save-and-share-btn {
+  color: #000;
+  background-color: transparent;
+  cursor: pointer;
+}
+button.btn-save-schedule {
+  width: 200px;
+  padding: 15px 20px;
+  background-color: #FFDA32;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  border: solid 1px #FFDA32 ;
+  transition: background-color 0.3s, color 0.3s;
+}
+.btn-save-schedule:hover {
+  background-color: rgba(30, 219, 12, 0.831);
+  color: white;
+  border: solid 1px #024808;
+}
+.save-schedule {
+  display: flex;
+  justify-content: right;
+  margin-right: 8%;
+  margin-bottom: 20px;
 }
 .title-des{
     flex: 3;
@@ -115,9 +155,7 @@
   gap: 15px;
   margin-bottom: 10px;
 }
-.date-schedule input::-webkit-calendar-picker-indicator {
- 
-}
+
 .date-schedule input {
   border: 1px;
   color: #7BBCB0;
@@ -251,9 +289,9 @@ i.fa-solid.fa-plus.add-icon {
   display: flex;
   justify-content: space-between;
   border: 1px solid #ddd;
-  margin-top: 10px;
   background-color: #fff;
   border-radius: 4px;
+  flex: 5;
   box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
 }
 
