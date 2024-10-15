@@ -9,7 +9,7 @@ import "./Header.css";
 
 
 const Header = ({ setShowLogin }) => {
-  const [token, setToken] = useState(false);
+  const [token, setToken] = useState(true);
   const [activeTab, setActiveTab] = useState('');
   const [menuVisible, setMenuVisible] = useState(false); // State for menu visibility
   const menuRef = useRef(null); // Reference for the menu
@@ -25,7 +25,7 @@ const Header = ({ setShowLogin }) => {
   const toggleMenu = () => {
 
     setMenuVisible(!menuVisible);
-  };
+  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {

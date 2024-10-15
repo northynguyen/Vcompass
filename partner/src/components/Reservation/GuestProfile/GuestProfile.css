@@ -36,13 +36,13 @@
     margin-bottom: 10px;
   }
   
-  h2, h3 {
+  .guest-profile h2, h3 {
     font-size: 1.5em;
     color: #333;
     margin-bottom: 10px;
   }
   
-  p {
+  .guest-profile p {
     font-size: 0.9em;
     color: #666;
   }
@@ -99,14 +99,14 @@
     color: #333;
   }
   
-  .guest-profile button {
+  .guest-profile-header button {
     background-color: #dc3545;
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-bottom: 20px;
   }
   
   .guest-profile button:hover {
@@ -171,14 +171,14 @@
   }
   
   /* Input search and date filter */
-  input[type="search"] {
+  .guest-profile input[type="search"] {
     padding: 10px;
     width: 300px;
     border: 1px solid #ccc;
     border-radius: 5px;
   }
   
-  input[type="date"] {
+  .guest-profile input[type="date"] {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;

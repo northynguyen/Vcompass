@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
-import './PlaceDetailsInfo.css'
+import './HotelDetailsInfo.css'
 import { useState } from 'react'
 
 const ImageModal = ({ isOpen, imageSrc, onClose }) => {
@@ -18,7 +18,7 @@ const ImageModal = ({ isOpen, imageSrc, onClose }) => {
   );
 };
 
-const PlaceDetailsInfo = () => {
+const HotelDetailsInfo = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
@@ -43,7 +43,7 @@ const PlaceDetailsInfo = () => {
     <div className="place-details-info">
       {/* Left Column: Tour Details */}
       <div className="tour-details">
-        <h1>Vintage Double Decker Bus Tour & Thames River Cruise</h1>
+        <h1>Khách sạn A</h1>
         <p>Gothenburg ★★★★☆ (348 reviews)</p>
 
         {/* Image Gallery */}
@@ -87,7 +87,7 @@ const PlaceDetailsInfo = () => {
           <h3 style={{ marginBottom: "20px" }}>Location</h3>
           <iframe
             title="map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.4854676752075!2d106.76933817614251!3d10.85063238930265!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752763f23816ab%3A0x282f711441b6916f!2sHCMC%20University%20of%20Technology%20and%20Education!5e0!3m2!1sen!2s!4v1727189441256!5m2!1sen!2s" 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.4854676752075!2d106.76933817614251!3d10.85063238930265!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752763f23816ab%3A0x282f711441b6916f!2sHCMC%20University%20of%20Technology%20and%20Education!5e0!3m2!1sen!2s!4v1727189441256!5m2!1sen!2s"
             width="100%"
             height="300"
             style={{ border: 0 }}
@@ -119,7 +119,6 @@ const PlaceDetailsInfo = () => {
           <label htmlFor="guests">No. of Guests</label>
           <select
             id="guests"
-            // eslint-disable-next-line no-undef
             onChange={(e) => setGuests(e.target.value)}
           >
             <option value="1">1 adult</option>
@@ -148,4 +147,4 @@ const PlaceDetailsInfo = () => {
   )
 }
 
-export default PlaceDetailsInfo
+export default HotelDetailsInfo

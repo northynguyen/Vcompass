@@ -1,0 +1,118 @@
+/* src/components/FABS/RestaurantActionPopup/RestaurantActionPopup.css */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    max-width: 90%;
+    background: #fff;
+    padding: 20px;
+    transform: translate(-50%, -50%);
+    border-radius: 8px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.restaurant-action-form label {
+    display: block;
+    margin-bottom: 15px;
+}
+
+.restaurant-action-form input[type="text"],
+.restaurant-action-form input[type="email"],
+.restaurant-action-form input[type="url"],
+.restaurant-action-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.restaurant-action-form textarea {
+    resize: vertical;
+    height: 80px;
+}
+
+.amenities-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.amenities-checkboxes label {
+    margin-right: 10px;
+    font-size: 0.9em;
+}
+
+.image-preview img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.save-button,
+.cancel-button {
+    padding: 8px 16px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.save-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.save-button:hover {
+    background-color: #218838;
+}
+
+.cancel-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #c82333;
+}
+
+.lock-popup p,
+.view-popup p {
+    margin: 10px 0;
+}
+
+.restaurant-image-view {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.view-popup a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.view-popup a:hover {
+    text-decoration: underline;
+}

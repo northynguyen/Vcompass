@@ -1,0 +1,257 @@
+/* HotelActionPopup.css */
+
+/* Popup Overlay */
+.hap-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+}
+
+/* Popup Content */
+.hap-popup-content {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    text-align: center;
+    animation: hap-slideDown 0.3s ease;
+}
+
+/* Slide Down Animation */
+@keyframes hap-slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Close Button */
+.hap-close-popup {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.hap-close-popup:hover {
+    color: #ff5c5c;
+}
+
+/* Popup Title */
+.hap-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Form Group */
+.hap-form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.hap-form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.hap-form-group input,
+.hap-form-group textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.hap-form-group input:focus,
+.hap-form-group textarea:focus {
+    border-color: #00aaff;
+    outline: none;
+}
+
+.hap-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Submit Button */
+.hap-submit-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #00aaff;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.hap-submit-btn:hover {
+    background-color: #008ecc;
+}
+
+/* View Mode Image */
+.hap-view-hotel-image {
+    max-width: 300px;
+    max-height: 200px;
+    border-radius: 10px;
+    margin-top: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* File Input */
+.hap-file-input {
+    padding: 5px;
+}
+
+/* Single Image Preview */
+.hap-image-preview {
+    margin-top: 10px;
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 5px;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* New Styles for Map Integration */
+
+/* Container for Map and Current Location Button */
+.hap-map-container {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+/* Leaflet Map Container */
+.hap-map-container .react-leaflet-container {
+    height: 200px;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Current Location Button */
+.hap-current-location-btn {
+    padding: 8px 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.hap-current-location-btn:hover {
+    background-color: #218838;
+}
+
+/* New Styles for Multiple Image Uploads */
+
+/* Container for All Image Previews */
+.hap-image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+/* Wrapper for Individual Image Preview and Delete Button */
+.hap-image-preview-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+/* Image within the Preview Wrapper */
+.hap-image-preview-wrapper .hap-image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Delete Button for Image Preview */
+.hap-delete-image-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 2px 6px;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.hap-delete-image-btn:hover {
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+}
+
+/* Read-Only Inputs in View Mode */
+.hap-form-group input[readonly],
+.hap-form-group textarea[readonly] {
+    background-color: #f9f9f9;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 600px) {
+    .hap-popup-content {
+        padding: 15px;
+    }
+
+    .hap-title {
+        font-size: 20px;
+    }
+
+    .hap-submit-btn {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+
+    .hap-current-location-btn {
+        width: 100%;
+        font-size: 12px;
+    }
+
+    .hap-image-preview-wrapper {
+        width: 80px;
+        height: 80px;
+    }
+}

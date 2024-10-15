@@ -25,9 +25,13 @@ const MenuBar = ({ onTabChange }) => {
             <FaCalendarAlt />
             Reservation
           </li>
-          <li className={activeTab === 'Rooms' ? 'active' : ''} onClick={() => onClickTab('Rooms')}>
+          <li className={activeTab === 'Hotels' ? 'active' : ''} onClick={() => onClickTab('Hotels')}>
             <FaHome />
-            Rooms
+            Hotels
+          </li>
+          <li className={activeTab === 'Concierge' ? 'active' : ''} onClick={() => onClickTab('Concierge')}>
+            <FaConciergeBell />
+            FABS
           </li>
           <li className={activeTab === 'Messages' ? 'active' : ''} onClick={() => onClickTab('Messages')}>
             <FaEnvelope />
@@ -61,10 +65,6 @@ const MenuBar = ({ onTabChange }) => {
           <li className={activeTab === 'Reviews' ? 'active' : ''} onClick={() => onClickTab('Reviews')}>
             <FaStar />
             Reviews
-          </li>
-          <li className={activeTab === 'Concierge' ? 'active' : ''} onClick={() => onClickTab('Concierge')}>
-            <FaConciergeBell />
-            Concierge
           </li>
         </ul>
       </nav>
