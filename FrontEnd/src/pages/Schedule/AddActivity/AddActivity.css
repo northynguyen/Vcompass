@@ -1,0 +1,82 @@
+/* Style cho modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+  
+  /* Style cho nội dung modal */
+  .add-activity-modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+  }
+  
+  /* Style cho header của modal */
+  .modal-header {
+    text-align: center;
+    position: relative;
+  }
+  
+  textarea.input-field {
+    min-height: 150px;
+}
+  /* Style cho phần body */
+  .modal-body {
+    padding-top: 10px;
+  }
+  
+  /* Các input và textarea */
+  .input-field {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Style cho footer của modal */
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .save-btn {
+    background-color: #f90;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .close-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: -10px;
+}
+  i.fa-regular.fa-circle-xmark {
+    font-size: 30px;
+    
+}
+i.fa-regular.fa-circle-xmark:hover{
+  color: #ff0000;
+}
+.add-activity-modal::-webkit-scrollbar {
+  width: 8px; /* Độ rộng của thanh cuộn */
+}
+
+  

@@ -1,5 +1,4 @@
 import background from '../../assets/home_bg.jpg';
-import Header from '../../components/Header/Header';
 import AccommodationBanner from '../../components/Poster/AccommodationBanner ';
 import PostCard from '../../components/Poster/PostCard';
 import "./Home.css";

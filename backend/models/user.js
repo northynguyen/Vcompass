@@ -1,13 +1,53 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
+
 
 const UserSchema = new Schema({
-  idUser: { type: String, required: true },
-  email: { type: String, required: true },
-  password: { type: password, required: true },
-  userName: { type: String, required: true },
-  avata: { type: String },
-  createdAt: { type: Date, default: Date.now },
-});
-const User = mongoose.models.User || mongoose.model("user", UserSchema);
+  name: {
+      type: String,
+      required: true,
+      minlength: 3,
+      maxlength: 30,
+  },
+  email: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      // Removed unique: true to allow duplicate emails across roles
+  },
+  phone_number: {
+      type: String,
+      unique: true,
+  },
+  address: {
+      type: String,
+  },
+  avatar: {
+      type: String,
+      required: true,
+  },
+  date_of_birth: {
+      type: Date,
+      required: true,
+  },
+  gender: {
+      type: String,
+      enum: ['male', 'female'],
+      required: true,
+  },
+  
+  password: {
+      type: String,
+      minlength: 8,
+  },
 
-export default User;
+  status: {
+      type: String,
+      enum: ['active', 'inactive'],
+      default: 'active',
+  },
+}, { timestamps: true });
+const userModel = mongoose.models.User || model("user", UserSchema);
+
+export default userModel;

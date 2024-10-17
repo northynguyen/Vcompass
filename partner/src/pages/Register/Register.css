@@ -1,0 +1,63 @@
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+  }
+  
+  .register-form {
+    background-color: #fff; /* White background */
+    padding: 40px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    width: 400px; /* Fixed width */
+  }
+  
+  .register-form h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333; /* Dark gray color for the heading */
+  }
+  
+  .register-form input {
+    width: 100%; /* Full width */
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ced4da; /* Light border */
+    border-radius: 5px;
+    transition: border-color 0.3s; /* Smooth transition for border color */
+  }
+  
+  .register-form input:focus {
+    border-color: #007bff; /* Blue border on focus */
+    outline: none; /* Remove default outline */
+  }
+  
+  .register-form button {
+    width: 100%; /* Full width button */
+    padding: 12px;
+    background-color: #28a745; /* Green button background */
+    color: white; /* White text */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition */
+  }
+  
+  .register-form button:hover {
+    background-color: #218838; /* Darker green on hover */
+  }
+  
+  .register-form .text-center {
+    text-align: center; /* Center align the text */
+    margin-top: 20px;
+  }
+  
+  .register-form .text-center a {
+    color: #007bff; /* Blue link color */
+    text-decoration: none; /* Remove underline */
+  }
+  
+  .register-form .text-center a:hover {
+    text-decoration: underline; /* Underline on hover */
+  }

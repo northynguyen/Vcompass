@@ -1,12 +1,13 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
+// SignIn.js
 import React, { useState, useContext } from 'react';
 import './SignIn.css';
 import { toast } from 'react-toastify';
 import cross from '../../assets/cross_icon.png';
+import { StoreContext } from '../../Context/StoreContext';
+import axios from 'axios';
 
 const SignIn = ({ setShowLogin }) => {
-
+    const { url, setToken ,setUser} = useContext(StoreContext);
     const [curentState, setCurrentState] = useState("Login");
     const [data, setData] = useState({
         name: '',
@@ -32,10 +33,6 @@ const SignIn = ({ setShowLogin }) => {
         setPasswordConfirm(!passwordConfirm);
     }
 
-    const onForgetPassword = async (event) => {
-        event.preventDefault();
-    }
-
     const onLogin = async (event) => {
         event.preventDefault();
         setIsLoading(true); // Set loading to true before the API call
@@ -45,12 +42,49 @@ const SignIn = ({ setShowLogin }) => {
             setIsLoading(false); // Set loading to false if there's an error
             return;
         }
+
+        let newUrl = url;
+        if (curentState === "Login") {
+            newUrl = `${url}/api/user/login/user`;
+        } else if (curentState === "Sign Up") {
+            newUrl = `${url}/api/user/register/user`;
+        } else if (curentState === "Forgot Password") {
+            newUrl = `${url}/api/user/forgot-password`;
+        }
+
+        try {
+            const response = await axios.post(newUrl, data);
+            if (response.data.success) {
+                if (curentState === "Login" || curentState === "Sign Up") {
+                    setToken(response.data.token);
+                    localStorage.setItem("token", response.data.token);
+                    setUser(response.data.user);
+                    toast.success(response.data.message);                
+                }
+                setShowLogin(false);  
+               
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.error("There was an error!", error);
+            toast.error(error.response.data.message);
+        } finally {
+            setIsLoading(false); // Set loading to false after the API call
+        }
+    }
+    
+    const onForgetPassword = async (event) => {
+        event.preventDefault();
+    }
+    const onGoogleLogin = () => {
+        window.open(`${url}/api/user/google`, "_self"); // Redirect to your backend Google login route
     }
 
     return (
         <div className='login-popup'>
             <form onSubmit={curentState === "Forgot Password" ? onForgetPassword : onLogin} className="login-popup-container">
-                <div className="login-popup-title" >
+                <div className="login-popup-title">
                     <div className='login-popup-close'>
                         <img
                             src={cross}
@@ -74,7 +108,7 @@ const SignIn = ({ setShowLogin }) => {
                                 placeholder="Password"
                                 required
                             />
-                            <a onClick={togglePasswordVisibility}> {passwordVisible ? "Hide" : "Show"}</a>
+                            <a onClick={togglePasswordVisibility}>{passwordVisible ? "Hide" : "Show"}</a>
                         </div>
                     )}
                     {curentState === "Sign Up" && (
@@ -93,8 +127,8 @@ const SignIn = ({ setShowLogin }) => {
                         </div>
                     )}
                     {curentState === "Login" && (
-                        <p style={{ textAlign: "right", color: "#0B69A3 ", }}>
-                            <span className="link " onClick={() => setCurrentState("Forgot Password")}>
+                        <p style={{ textAlign: "right", color: "#0B69A3 " }}>
+                            <span className="link" onClick={() => setCurrentState("Forgot Password")}>
                                 &nbsp;Forgot password?
                             </span>
                         </p>
@@ -127,17 +161,14 @@ const SignIn = ({ setShowLogin }) => {
                             <hr className="divider" />
                             <span className="divider-text">OR</span>
                             <hr className="divider" />
-
                         </div>
                         <div className='button-container'>
-                            <button className="continue-google" >
+                            <button type="button" className="continue-google" onClick={onGoogleLogin}>
                                 <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="google" />
                                 <span>Continue with Google</span>
                             </button>
                         </div>
-
                     </div>
-
                 )}
 
                 {curentState === "Sign Up" && (

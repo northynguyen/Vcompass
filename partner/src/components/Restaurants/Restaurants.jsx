@@ -1,5 +1,5 @@
 // src/components/Restaurants/Restaurants.js
-import  { useState } from 'react';
+import { useState } from 'react';
 import './Restaurants.css';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import RestaurantActionPopup from './RestaurantActionPopup/RestaurantActionPopup ';
@@ -8,16 +8,22 @@ import RestaurantDetail from './RestaurantDetail/RestaurantDetail';
 
 const Restaurants = () => {
     const restaurantData = [{
-        id: 1,
-        name: "Quán Ăn Ngon",
+        idFoodService: "1",
+        idPartner: "partner1",
+        serviceType: "restaurant",
+        foodServiceName: "Quán Ăn Ngon",
         description: "Quán ăn phục vụ các món ngon truyền thống.",
         location: {
             address: "123 Đường ABC, Thành phố XYZ",
             latitude: 10.7769,
             longitude: 106.6956,
         },
-        status: "active",
-        newImages: [
+        city: "Thành phố XYZ",
+        price: {
+            maxPrice: 200000,
+            minPrice: 50000,
+        },
+        images: [
             "https://example.com/image1.jpg",
             "https://example.com/image2.jpg",
         ],
@@ -36,20 +42,36 @@ const Restaurants = () => {
                 closeTime: "22:00",
             }
         ],
+        status: "active",
     },
     {
-        id: 2,
-        name: "The Delicious Bistro",
+        idFoodService: "2",
+        idPartner: "partner2",
+        serviceType: "restaurant",
+        foodServiceName: "The Delicious Bistro",
         description: "A cozy spot with delicious meals and a great ambiance.",
-        contactNumber: "123-456-7890",
-        email: "contact@bistro.com",
-        status: "active",
         location: {
             address: "123 Gourmet St, Foodie City",
-            latitude: 10.849735,            
-            longitude: 106.769845 ,
+            latitude: 10.849735,
+            longitude: 106.769845,
         },
+        city: "Foodie City",
+        price: {
+            maxPrice: 300000,
+            minPrice: 70000,
+        },
+        images: [
+            "https://via.placeholder.com/150?text=Image+1",
+            "https://via.placeholder.com/150?text=Image+2",
+            "https://via.placeholder.com/150?text=Image+3"
+        ],
+        menuImages: [
+            "https://via.placeholder.com/150?text=Menu+1",
+            "https://via.placeholder.com/150?text=Menu+2",
+        ],
         amenities: ["Free Wi-Fi", "Outdoor seating"],
+        contactNumber: "123-456-7890",
+        email: "contact@bistro.com",
         operatingHours: [
             {
                 startDay: "Mon",
@@ -58,17 +80,9 @@ const Restaurants = () => {
                 closeTime: "22:00",
             }
         ],
-        newImages: [
-            "https://via.placeholder.com/150?text=Image+1",
-            "https://via.placeholder.com/150?text=Image+2",
-            "https://via.placeholder.com/150?text=Image+3"
-        ],
-        menuImages: [
-            "https://via.placeholder.com/150?text=Menu+1",
-            "https://via.placeholder.com/150?text=Menu+2",
-        ],}];
-    
-    
+        status: "active",
+    }];
+
     const [restaurants, setRestaurants] = useState(restaurantData);
     const [showPopup, setShowPopup] = useState(false);
     const [action, setAction] = useState(''); // 'add', 'edit', 'lock', 'view', 'menu'
@@ -88,82 +102,48 @@ const Restaurants = () => {
     };
 
     const handleSubmit = (formData) => {
-        if (action === 'add') {
-            const newRestaurant = {
-                id: restaurants.length > 0 ? restaurants[restaurants.length - 1].id + 1 : 1,
-                ...formData,
-                status: 'active', // Mặc định trạng thái mới là active
-            };
-            setRestaurants([...restaurants, newRestaurant]);
-        } else if (action === 'edit') {
+       
+         if (action === 'lock') {
             const updatedRestaurants = restaurants.map((restaurant) =>
-                restaurant.id === selectedRestaurant.id ? { ...restaurant, ...formData } : restaurant
+                restaurant.idFoodService === selectedRestaurant.idFoodService ? { ...restaurant, status: 'locked' } : restaurant
             );
             setRestaurants(updatedRestaurants);
-        } else if (action === 'lock') {
+        }
+        else if (action === 'unlock') { // Add unlock logic
             const updatedRestaurants = restaurants.map((restaurant) =>
-                restaurant.id === selectedRestaurant.id ? { ...restaurant, status: 'locked' } : restaurant
+                restaurant.idFoodService === selectedRestaurant.idFoodService ? { ...restaurant, status: 'active' } : restaurant
             );
             setRestaurants(updatedRestaurants);
         }
     };
+
     const openRoomsTab = (restaurant) => {
         setSelectedRestaurant(restaurant);
         setSelectedTab('rooms');
     };
 
-    // const closeRoomsTab = () => {
-    //     setSelectedTab(null);
-    //     setSelectedRestaurant(null);
-    // };
-
     return (
         <div className="Restaurants-container">
-            {/* Điều kiện hiển thị tab Rooms hoặc danh sách nhà hàng/quán nước */}
             {!selectedTab ? (
                 <div className="partner-restaurants-container">
                     <h2>Danh Sách Nhà Hàng/Quán Nước</h2>
                     <div className="restaurants-list">
-
-                        {/* Card Thêm Nhà Hàng/Quán Nước Mới */}
-                        <div className="restaurant-card add-restaurant-card" onClick={ () => openRoomsTab()}>
+                        <div className="restaurant-card add-restaurant-card" onClick={() => openRoomsTab(null)}>
                             <div className="add-restaurant-content">
                                 <FaPlus size={50} color="#007bff" />
                                 <p>Thêm Nhà Hàng/Quán Nước Mới</p>
                             </div>
                         </div>
 
-                        {/* Danh Sách Nhà Hàng/Quán Nước */}
                         {restaurants.map((restaurant) => (
                             <RestaurantCard 
-                                key={restaurant.id} 
+                                key={restaurant.idFoodService} 
                                 restaurant={restaurant} 
-                                onMenuClick={(restaurant) => openPopup('menu', restaurant)} 
+                                onMenuClick={() => openPopup('menu', restaurant)} 
                                 onCardClick={() => openRoomsTab(restaurant)}
                             />
                         ))}
                     </div>
-
-                    {/* Popup Cho Các Tùy Chọn Menu */}
-                    {showPopup && action === 'add' && (
-                        <RestaurantActionPopup 
-                            action="add" 
-                            restaurant={null} 
-                            isOpen={showPopup}
-                            onClose={closePopup} 
-                            onSubmit={handleSubmit} 
-                        />
-                    )}
-
-                    {showPopup && action === 'edit' && selectedRestaurant && (
-                        <RestaurantActionPopup 
-                            action="edit" 
-                            restaurant={selectedRestaurant} 
-                            isOpen={showPopup}
-                            onClose={closePopup} 
-                            onSubmit={handleSubmit} 
-                        />
-                    )}
 
                     {showPopup && action === 'lock' && selectedRestaurant && (
                         <RestaurantActionPopup 
@@ -175,13 +155,13 @@ const Restaurants = () => {
                         />
                     )}
 
-                    {showPopup && action === 'view' && selectedRestaurant && (
+                    {showPopup && action === 'unlock' && selectedRestaurant && (
                         <RestaurantActionPopup 
-                            action="view" 
+                            action="unlock" 
                             restaurant={selectedRestaurant} 
                             isOpen={showPopup}
                             onClose={closePopup} 
-                            onSubmit={() => {}} // Không cần submit khi xem
+                            onSubmit={() => {handleSubmit();}} // No submit needed for view
                         />
                     )}
 
@@ -193,6 +173,11 @@ const Restaurants = () => {
                                     {selectedRestaurant.status !== 'locked' && (
                                         <button onClick={() => { closePopup(); openPopup('lock', selectedRestaurant); }}>
                                             Khóa Nhà Hàng/Quán Nước
+                                        </button>
+                                    )}
+                                     {selectedRestaurant.status !== 'active' && (
+                                        <button onClick={() => { closePopup(); openPopup('unlock', selectedRestaurant); }}>
+                                            Mở Nhà Hàng/Quán Nước
                                         </button>
                                     )}
                                     <button onClick={() => { closePopup(); openPopup('edit', selectedRestaurant); }}>
@@ -207,9 +192,8 @@ const Restaurants = () => {
                     )}
                 </div>
             ) : (
-                <RestaurantDetail RestaurantData={selectedRestaurant} onBack={() => setSelectedTab(null)}></RestaurantDetail>
+                <RestaurantDetail RestaurantData={selectedRestaurant} onBack={() => setSelectedTab(null)} />
             )}
-
         </div>
     );
 };

@@ -2,27 +2,39 @@ import cors from "cors";
 import express from "express";
 import { connectDB } from "./config/connectDB.js";
 import { notificationRoutes } from "./routes/notificationRoutes.js";
+import  userRoutes  from "./routes/userRoute.js";
+import 'dotenv/config';
+import accommRoutes from "./routes/accommRoutes.js";
 
-//app config
+// App config
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000; // Lấy cổng từ biến môi trường hoặc mặc định là 4000
 
-//middlewares
-app.use(express.json());
+// Middleware
 app.use(cors());
+app.use(express.json());
 
-// db connection
+// DB connection
 connectDB();
 
-//api endpoints
-
-//api routes
+// API routes
 app.get("/", (req, res) => {
   res.send("API WORKING");
 });
 
-app.use("/api", notificationRoutes);
-//listen
-app.listen(port, () =>
-  console.log(`Server started on http://localhost:${port}`)
-);
+// Register routes
+app.use("/images", express.static("uploads"))
+app.use("/api/user", userRoutes);
+app.use("/api/notifications", notificationRoutes); // Thêm route cho notification
+app.use("/api/accommodations", accommRoutes);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ success: false, message: "Internal Server Error." });
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server started on http://localhost:${port}`);
+});

@@ -3,22 +3,36 @@
 .rooms-container {
   display: flex;
   gap: 20px;
+  padding: 20px;
+  background-color: #f4f6f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  min-height: 100vh;
 }
 
 .rooms-list {
   flex: 1;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #e0e4e8;
   padding-right: 20px;
 }
+
 .back-button {
-  background-color: #dc3545;
+  background-color: #f44336;
   color: white;
-  padding: 10px 20px;
+  padding: 10px 25px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 14px;
   margin-bottom: 20px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
+
+.back-button:hover {
+  background-color: #d32f2f;
+  box-shadow: 0 2px 10px rgba(244, 67, 54, 0.3);
+}
+
 .rooms-header {
   display: flex;
   justify-content: space-between;
@@ -27,57 +41,64 @@
 }
 
 .rooms-header h2 {
-  color: #333;
+  color: #212121;
+  font-size: 24px;
+  font-weight: 600;
 }
 
 .add-room-button {
-  background-color: #28a745;
+  background-color: #00c853;
   color: #fff;
   border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 5px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .add-room-button:hover {
-  background-color: #218838;
+  background-color: #00b347;
+  transform: scale(1.05);
 }
 
 .rooms-cards {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 20px;
 }
 
 .room-card {
   background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  width: calc(50% - 15px);
+  border: 1px solid #e0e4e8;
+  border-radius: 12px;
+  width: calc(50% - 20px);
   cursor: pointer;
-  padding: 10px;
+  padding: 15px;
   position: relative;
-  transition: box-shadow 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .room-card:hover {
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
 }
 
 .room-image {
   width: 100%;
-  height: 120px;
+  height: 150px;
   object-fit: cover;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 .room-type {
   margin: 10px 0 5px 0;
   color: #007bff;
+  font-size: 18px;
+  font-weight: 500;
 }
 
 .room-details,
@@ -85,40 +106,42 @@
 .price,
 .status {
   margin: 3px 0;
-  color: #555;
+  color: #666;
   font-size: 14px;
 }
 
 .status {
   font-weight: bold;
+  font-size: 15px;
 }
 
 .available {
-  color: #28a745;
-  background-color: #c8efd1;
+  color: #00c853;
+  background-color: #e0f2f1;
   border-radius: 5px;
+  padding: 4px 8px;
 }
 
 .occupied {
-  color: #dc3545;
-  background-color: #f8d7da;
+  color: #f44336;
+  background-color: #ffebee;
   border-radius: 5px;
-  padding: 2px 5px;
+  padding: 4px 8px;
 }
 
 .pagination {
   display: flex;
   justify-content: center;
   margin-top: 20px;
-  gap: 5px;
+  gap: 8px;
 }
 
 .page-button {
   background-color: #fff;
   border: 1px solid #007bff;
   color: #007bff;
-  padding: 5px 10px;
-  border-radius: 3px;
+  padding: 8px 12px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -138,12 +161,14 @@
   color: #777;
   text-align: center;
   margin-top: 50px;
+  font-size: 18px;
 }
 
 .room-detail-content {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .room-detail-header {
@@ -154,6 +179,7 @@
 
 .room-detail-header h2 {
   color: #333;
+  font-size: 22px;
 }
 
 .room-detail-actions {
@@ -163,28 +189,26 @@
 
 .edit-button,
 .delete-button {
-  background-color: #007bff;
+  background-color: #1e88e5;
   color: #fff;
   border: none;
-  padding: 6px 10px;
-  border-radius: 5px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
   transition: background-color 0.3s ease;
 }
 
 .edit-button:hover {
-  background-color: #0056b3;
+  background-color: #1565c0;
 }
 
-.delete-button {
-  background-color: #dc3545;
+.rooms-container .delete-button {
+  background-color: #f44336;
 }
 
-.delete-button:hover {
-  background-color: #c82333;
+.rooms-container .delete-button:hover {
+  background-color: #d32f2f;
 }
 
 .room-detail-info {
@@ -199,104 +223,14 @@
 .room-images {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .detail-image {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
-.add-edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.add-edit-form label {
-  display: flex;
-  flex-direction: column;
-  font-size: 14px;
-  color: #333;
-}
-
-.add-edit-form input[type="text"],
-.add-edit-form select,
-.add-edit-form input[type="file"] ,.add-edit-form input[type="number"] {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-top: 5px;
-}
-
-.add-edit-form select[multiple] {
-  height: 100px;
-}
-
-.image-previews {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.image-preview {
-  position: relative;
-}
-
-.image-preview img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 5px;
-}
-
-.image-preview button {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background-color: rgba(220, 53, 69, 0.8);
-  border: none;
-  color: #fff;
-  border-radius: 50%;
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  font-size: 12px;
-}
-
-.form-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.save-button {
-  background-color: #28a745;
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.save-button:hover {
-  background-color: #218838;
-}
-
-.cancel-button {
-  background-color: #6c757d;
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.cancel-button:hover {
-  background-color: #5a6268;
-}

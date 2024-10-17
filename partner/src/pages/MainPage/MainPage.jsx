@@ -7,6 +7,7 @@ import Message from '../../components/Message/Message';
 import Hotels from '../../components/Hotels/Hotels';
 import Restaurent from '../../components/Restaurants/Restaurants';
 import './MainPage.css';
+import Header from '../../components/Header/Header';
 
 const MainPage = () => {
   const [currentTab, setCurrentTab] = useState('Dashboard');
@@ -29,12 +30,16 @@ const MainPage = () => {
   };
 
   return (
-    <div className="main-page">
+    <>
+      <Header></Header>
+      <div className="main-page">
       <MenuBar onTabChange={setCurrentTab} />
       <div className="content">
         {renderContent()}
       </div>
     </div>
+    </>
+    
   );
 };
 

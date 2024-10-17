@@ -1,0 +1,167 @@
+.expense-container {
+    width: 85%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    margin-top: 30px;
+  }
+  
+  .expense-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    gap: 20px;
+    height: 100px;
+  }
+  
+  .expense-icon img {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .expense-details {
+    flex: 1;
+    margin-left: 15px;
+  }
+  
+  .expense-details h3 {
+    margin: 0;
+    font-size: 16px;
+  }
+  .add-expense{
+    margin-top: 5px;
+  }
+  label.expense-sub-title {
+    font-size: 15px;
+    color: #545353;
+}
+  .add-expense-modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 40%;
+    max-width: 90%;
+    max-height: 70%;
+}
+
+  .expense-details p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #777;
+  }
+
+  button.delete-btn {
+    background-color: #f42222;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 20px;
+}
+  
+  .expense-cost {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .expense-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .expense-actions .edit-btn,
+  .expense-actions .delete-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .expense-summary {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .expense-container h1 {
+    margin: 10px 0;
+    font-size: 40px;
+    font-weight: bold;
+  }
+  
+  .total-cost {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 10px;
+    gap: 10px;
+  }
+  .total-cost h3 {
+    font-size: 16px;
+    color: #878585;
+  }
+
+  .total-cost h1 {
+    font-size: 40px;
+    color: #333;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .action-buttons button {
+    flex: 1;
+    padding: 10px;
+    background-color: #eee;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .action-buttons .add-budget-btn {
+    background-color: #ccc;
+  }
+  
+  .action-buttons .view-details-btn,
+  .action-buttons .add-friend-btn {
+    background-color: #f1f1f1;
+  }
+  
+  .action-buttons button:hover {
+    background-color: #ddd;
+  }
+
+  .confirm-delete-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .confirm-btn {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    margin-right: 10px;
+  }
+  
+  .cancel-btn {
+    background-color: gray;
+    color: white;
+    padding: 10px 20px;
+  }
+  

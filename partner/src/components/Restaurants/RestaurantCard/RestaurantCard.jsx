@@ -6,15 +6,15 @@ import { FaEllipsisV } from 'react-icons/fa';
 const RestaurantCard = ({ restaurant, onMenuClick, onCardClick }) => {
     return (
         <div className="restaurant-card" onClick={onCardClick}>
-            <img src={restaurant.newImages[0]} alt={restaurant.name} className="restaurant-image" />
+            <img src={restaurant.images[0]} alt={restaurant.foodServiceName} className="restaurant-image" />
             <div className="restaurant-info">
-                <h3>{restaurant.name}</h3>
+                <h3>{restaurant.foodServiceName}</h3>
                 <p><strong>Địa Điểm:</strong> {restaurant.location.address}</p>
                 <p><strong>Mô Tả:</strong> {restaurant.description}</p>
                 <p>
                     <strong>Trạng Thái:</strong> 
                     <span className={`status-badge ${restaurant.status}`}>
-                        {restaurant.status === 'active' ? 'Đang hoạt động' : restaurant.status === 'pending' ? 'Đang được duyệt' : 'Đã khóa'}
+                        {restaurant.status === 'active' ? 'Đang hoạt động' : restaurant.status === 'locked' ? 'Đã khóa' : 'Đang được duyệt'}
                     </span>
                 </p>
             </div>
