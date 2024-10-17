@@ -138,7 +138,7 @@
     border-color: #009688; /* Change border color on hover */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional shadow effect on hover */
   }
-  .header{  
+  .home-header{  
     background-color: transparent !important;
     display: flex;
     align-items: center;
@@ -150,12 +150,12 @@
     z-index: 999; 
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
 }
-.header-menu a{
+.home-header .header-menu a{
   color: rgb(255, 255, 255);
   text-decoration: none;
   font-size: medium;
 }
-.header .logo {
+.home-header .header .logo {
   color: rgb(255, 255, 255);
   width: 150px;
   cursor: pointer;

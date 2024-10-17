@@ -1,4 +1,5 @@
-import React from 'react'
+/* eslint-disable no-undef */
+/* eslint-disable react/prop-types */
 import './PlaceDetailsInfo.css'
 import { useState } from 'react'
 
@@ -22,10 +23,6 @@ const PlaceDetailsInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
 
-  const handleBooking = (e) => {
-    e.preventDefault();
-    alert('Booking confirmed!');
-  };
 
   // Open Modal and set the clicked image
   const openModal = (imageSrc) => {
@@ -38,6 +35,8 @@ const PlaceDetailsInfo = () => {
     setIsModalOpen(false);
     setSelectedImage('');
   };
+
+
 
 
   return (
@@ -120,6 +119,7 @@ const PlaceDetailsInfo = () => {
           <label htmlFor="guests">No. of Guests</label>
           <select
             id="guests"
+            // eslint-disable-next-line no-undef
             onChange={(e) => setGuests(e.target.value)}
           >
             <option value="1">1 adult</option>
@@ -142,6 +142,7 @@ const PlaceDetailsInfo = () => {
 
       {/* Modal for displaying clicked images */}
       <ImageModal isOpen={isModalOpen} imageSrc={selectedImage} onClose={closeModal} />
+
 
     </div>
   )

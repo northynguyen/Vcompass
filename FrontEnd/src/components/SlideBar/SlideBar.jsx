@@ -3,8 +3,10 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import './SlideBar.css';
+import { useNavigate } from 'react-router-dom';
 
 const SlideBar = () => {
+    const navigate = useNavigate();
     //Có thể truyền  dữ liệu vô đây {slidesData}
     const slidesData = [
         {
@@ -63,6 +65,10 @@ const SlideBar = () => {
           rating: 4.5,
         },
       ];
+
+    const onClick = () => {
+        navigate('/place-details', {  replace: true }); // Gửi tab qua state
+    };
   return (
    
     <div className="slidebar-container">
@@ -75,7 +81,7 @@ const SlideBar = () => {
       >
         {slidesData.map((slide, index) => (
           <SwiperSlide key={index} className="custom-slide">
-            <div className="card">
+            <div className="card" onClick={onClick} >
               <img src={slide.image} alt={slide.title} className="card-image" />
               <div className="card-content">
                 <h3 className="card-title">{slide.title}</h3>

@@ -7,6 +7,8 @@ import { useState, useRef, useEffect } from "react";
 import { CiViewList, CiSettings, CiLogout } from "react-icons/ci"; // Import icons from react-icons
 import { AiOutlineSchedule } from "react-icons/ai"; // Import icons from react-icons
 import { useNavigate } from 'react-router-dom'
+import { useLocation } from 'react-router-dom';
+
 
 const Header = ({ setShowLogin }) => {
   const [token, setToken] = useState(false);
@@ -14,6 +16,8 @@ const Header = ({ setShowLogin }) => {
   const [menuVisible, setMenuVisible] = useState(false); // State for menu visibility
   const menuRef = useRef(null); // Reference for the menu
   const navigate = useNavigate();
+  const location = useLocation();
+
   const onClick = (tab) => {
     setActiveTab(tab);
     navigate('/user-service', { state: { tab }, replace: true }); // Gửi tab qua state
@@ -46,10 +50,11 @@ const Header = ({ setShowLogin }) => {
     };
   }, [menuVisible]);
 
+  const isHomePage = location.pathname === '/';
 
 
   return (
-    <div className="header">
+    <div className={isHomePage ? 'home-header' : 'header'}>
       <div className="logo">
         <h1>VCompass</h1>
       </div>
