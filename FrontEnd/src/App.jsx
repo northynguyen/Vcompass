@@ -7,7 +7,8 @@ import SignIn from './components/SignIn/SignIn'
 import './index.css'
 
 
-import ListAccom from './pages/ListAttractions/ListAttractions'
+
+import ListAttrac from './pages/ListAttractions/ListAttractions'
 import Partnership from './pages/Partnership/Partnership'
 import PlaceDetails from './pages/PlaceDetails/PlaceDetails'
 import Schedule from './pages/Schedule/Schedule'
@@ -16,6 +17,12 @@ import Home from './pages/Home/Home'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify';
+
+
+
+
+
+
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
@@ -32,8 +39,10 @@ function App() {
           <Route path="/place-details" element={<PlaceDetails />} />
           <Route path="/partnership" element={<Partnership />} />
           <Route path="/about" element={<Schedule />} />
+
           <Route path="/user-service" element={<UserService />} />
-          <Route path="/booking" element={<ListAccom />} />
+          <Route path="/booking" element={<ListAttrac />} />
+
         </Routes>
         <Footer />
       </div>

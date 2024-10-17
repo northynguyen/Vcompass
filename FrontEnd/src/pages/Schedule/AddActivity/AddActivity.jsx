@@ -1,9 +1,13 @@
 import React from "react";
 import Modal from "react-modal";
+
 import ListAttractions from "../../ListAttractions/ListAttractions";
+
+
 import "./AddActivity.css";
 // Thiết lập root element cho modal
 Modal.setAppElement("#root");
+
 
 const Header = ({ option, setOption }) => {
   return (
@@ -31,6 +35,8 @@ const Header = ({ option, setOption }) => {
 
 const AddActivity = ({ isOpen, closeModal }) => {
   const [option, setOption] = React.useState("Attractions");
+
+
   return (
     <Modal
       isOpen={isOpen}
@@ -42,13 +48,17 @@ const AddActivity = ({ isOpen, closeModal }) => {
         <div className="modal-header">
           <h2>Thêm mới hoạt động</h2>
           <button onClick={closeModal} className="close-btn">
+
             <i className="fa-regular fa-circle-xmark"></i>
+
           </button>
         </div>
 
         <div className="modal-body">
+
           <Header setOption={setOption} />
           {option === "Attractions" && <ListAttractions status="Schedule" />}
+
           <div className="form-group">
             <select className="input-field">
               <option>Vui lòng chọn hoạt động</option>
