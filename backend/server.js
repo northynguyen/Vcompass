@@ -2,9 +2,10 @@ import cors from "cors";
 import express from "express";
 import { connectDB } from "./config/connectDB.js";
 import { notificationRoutes } from "./routes/notificationRoutes.js";
-import  userRoutes  from "./routes/userRoute.js";
+import userRoutes from "./routes/userRoute.js";
 import 'dotenv/config';
 import accommRoutes from "./routes/accommRoutes.js";
+import { Attractionrouter } from "./routes/attractionRoutes.js";
 
 // App config
 const app = express();
@@ -27,6 +28,8 @@ app.use("/images", express.static("uploads"))
 app.use("/api/user", userRoutes);
 app.use("/api/notifications", notificationRoutes); // Thêm route cho notification
 app.use("/api/accommodations", accommRoutes);
+
+app.use("/api/attractions", Attractionrouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
