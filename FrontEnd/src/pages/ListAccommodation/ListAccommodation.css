@@ -27,7 +27,30 @@
     font-size: 16px;
     color: #807d7d;
   }
-  
+  .select-container {
+    display: flex;
+    flex: 1;
+    align-items: center;
+}
+button.selection-btn {
+  padding: 10px 30px;
+  border: 0px;
+  border-radius: 5px;
+  background-color: #52d69d;
+  color: white;
+  cursor: pointer;
+}
+
+button.selection-btn:hover {
+  background-color: #0ee789;
+}
+.price-container {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
   .header-right {
     display: flex;
     align-items: center;

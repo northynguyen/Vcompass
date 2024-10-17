@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
+import Modal from "react-modal";
 import ActivityTime from "./ActivityTime/ActivityTime";
 import AddActivity from "./AddActivity/AddActivity";
 import Expense from "./Expense/Expense";
@@ -56,8 +57,55 @@ const ActivityItem = ({ index, imgSrc, title, time, price }) => (
     </div>
   </div>
 );
+const convertDateFormat = (date) => {
+  const [day, month, year] = date.split("-");
+  return `${day}-${month}-${year}`;
+};
+const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedule }) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    startDay: parseDate("16/12/1999"),
+    endDate: parseDate("16/12/1999"),
+    numDays: 0,
+    description: ""
+  });
 
-const InforScheduleMedal = ({ isOpen, closeModal, selectedExpense, setAddtionExpense }) => {
+  useEffect(() => {
+    if (inforSchedule) {
+      setFormData({
+        name: inforSchedule.name || "",
+        startDay: inforSchedule.startDate || parseDate("16/12/1999"),
+        endDate: inforSchedule.endDate || parseDate("16/12/1999"),
+        numDays: inforSchedule.numDays || 0,
+        description: inforSchedule.description || ""
+      });
+    } else {
+      setFormData({
+        name: "",
+        startDay: parseDate("16/12/1999"),
+        endDate: parseDate("16/12/1999"),
+        numDays: 0,
+        description: ""
+      });
+    }
+  }, [inforSchedule]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: name === 'numDays' ? Number(value) : value,
+    }));
+  };
+
+  const handleSubmit = () => {
+    setInforSchedule((prev) => ({
+      ...prev,
+      ...formData,
+    }));
+
+    closeModal();
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -102,20 +150,9 @@ const InforScheduleMedal = ({ isOpen, closeModal, selectedExpense, setAddtionExp
           </div>
         </div>
         <div className="modal-footer">
-          {isEditMode && (
-            <button className="delete-btn" onClick={handleDeleteClick}>
-              Xóa
-            </button>
-          )}
           <button className="save-btn"
             onClick={handleSubmit}>Lưu</button>
         </div>
-        <ConfirmDialog
-          isOpen={isConfirmDeleteOpen}
-          onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
-          message="Bạn có chắc chắn muốn xóa mục này không?"
-        />
       </div>
     </Modal>
   );
@@ -123,8 +160,8 @@ const InforScheduleMedal = ({ isOpen, closeModal, selectedExpense, setAddtionExp
 
 const DateSchedule = ({ schedule }) => {
   const [scheduleDate, setScheduleDate] = useState(schedule);
-  const [isOpen, setIsOpen] = useState(true); // State để quản lý việc thu gọn hoặc mở chi tiết
-  const [isModalOpen, setIsModalOpen] = useState(false); // State để quản lý trạng thái popup
+  const [isOpen, setIsOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     console.log(schedule);
@@ -142,8 +179,9 @@ const DateSchedule = ({ schedule }) => {
   };
 
   const closeModal = () => {
-    setIsModalOpen(false); // Đóng popup
+    setIsModalOpen(false);
   };
+
 
   return (
     <div className="detail-container">
@@ -170,7 +208,7 @@ const DateSchedule = ({ schedule }) => {
             <div className="add-new">
               <button onClick={openModal}>
                 <i className="fa-solid fa-plus add-icon"></i>
-                Add New
+                Thêm mới
               </button>
             </div>
           )}
@@ -189,7 +227,6 @@ const parseDate = (dateString) => {
 };
 
 const Schedule = () => {
-
   const MyTour = {
     name: "Vung Tau 3 ngay 2 dem",
     imgSrc: "https://bazantravel.com/cdn/medias/uploads/83/83317-khu-nghi-duong-lan-rung-700x420.jpg",
@@ -251,6 +288,9 @@ const Schedule = () => {
       },
     ]
   };
+  const [isOpenInforSchedule, setIsOpenInforSchedule] = useState(false);
+  const [dateStart, setDateStart] = useState(convertDateFormat(MyTour.time.dateStart));
+  const [dateEnd, setDateEnd] = useState(convertDateFormat(MyTour.time.dateEnd));
   const [additionExpenses, setAdditionExpenses] = useState([
     {
       id: "123",
@@ -275,6 +315,15 @@ const Schedule = () => {
     }
   );
 
+
+
+  const openInforSchedule = () => {
+    setIsOpenInforSchedule(true); // Mở popup
+  };
+  const closeInforSchedule = () => {
+    setIsOpenInforSchedule(false);
+  };
+
   const extractExpenses = (tour) => {
     const expenses = [];
 
@@ -294,12 +343,6 @@ const Schedule = () => {
     return expenses;
   };
 
-  const convertDateFormat = (date) => {
-    const [day, month, year] = date.split("-");
-    return `${day}-${month}-${year}`;
-  };
-
-
   const calculateDaysAndNights = (dateStart, dateEnd) => {
     const [dayStart, monthStart, yearStart] = dateStart.split("-");
     const [dayEnd, monthEnd, yearEnd] = dateEnd.split("-");
@@ -316,15 +359,9 @@ const Schedule = () => {
     // Return kết quả dạng "X ngày Y đêm"
     return `${daysDifference} ngày ${nights} đêm`;
   };
-
-
-  const [dateStart, setDateStart] = useState(convertDateFormat(MyTour.time.dateStart));
-  const [dateEnd, setDateEnd] = useState(convertDateFormat(MyTour.time.dateEnd));
-
   const handleDateStartChange = (e) => {
     setDateStart(e.target.value);
   };
-
   const handleDateEndChange = (e) => {
     setDateEnd(e.target.value);
   };
@@ -339,7 +376,7 @@ const Schedule = () => {
         <div className="header-container">
           <div className="activity-header">
             <div className="title-des">
-              <h2>{MyTour.name}</h2>
+              <h2>{inforSchedule.name}</h2>
               <div className="date-schedule">
                 <div className="numday-title">
                   <i className="fa-regular fa-calendar-days"></i>
@@ -364,12 +401,14 @@ const Schedule = () => {
                 </div>
                 <p>{calculateDaysAndNights(dateStart, dateEnd)}</p>
               </div>
-              <p className="des-schedule">{MyTour.description}</p>
+              <p className="des-schedule">{inforSchedule.description}</p>
             </div>
             <div className="confirm-booking">
-              <div className="title-button">
+              <div className="title-button"
+                onClick={openInforSchedule}>
                 <i className="fa-solid fa-pen schedule-icon"></i>
-                <button button className="save-and-share-btn">Chỉnh sửa thông tin</button>
+                <button
+                  className="save-and-share-btn">Chỉnh sửa thông tin</button>
               </div>
               <div className="title-button">
                 <i className="fa-solid fa-heart schedule-icon"></i>
@@ -400,6 +439,10 @@ const Schedule = () => {
       <div className="save-schedule">
         <button className="btn-save-schedule">Hoàn thành</button>
       </div>
+      <InforScheduleMedal isOpen={isOpenInforSchedule}
+        closeModal={closeInforSchedule}
+        inforSchedule={inforSchedule}
+        setInforSchedule={setInforSchedule} />
     </div>
   );
 };

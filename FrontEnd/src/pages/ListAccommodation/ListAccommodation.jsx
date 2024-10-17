@@ -3,53 +3,67 @@ import "./ListAccommodation.css";
 
 // Component cho từng mục Tour
 const Header = () => {
-    const [sortOption, setSortOption] = useState("Popularity");
-  
-    return (
-      <div className="header-accom">
-        <div className="header-left">
-          <h1 className="num-title">Things To Do In London</h1>
-          <span className="num-text">49 Activities Found</span>
-        </div>
-        <div className="header-right">
-          <label htmlFor="sort-by">Sort by:</label>
-          <select
-            id="sort-by"
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-          >
-            <option value="Popularity">Popularity</option>
-            <option value="PriceLowToHigh">Price: Low to High</option>
-            <option value="PriceHighToLow">Price: High to Low</option>
-            <option value="Rating">Rating</option>
-          </select>
-        </div>
+  const [sortOption, setSortOption] = useState("Popularity");
+
+  return (
+    <div className="header-accom">
+      <div className="header-left">
+        <h1 className="num-title">Things To Do In London</h1>
+        <span className="num-text">49 Activities Found</span>
       </div>
-    );
-  };
-const TourItem = ({ imgSrc, title, time, price }) => (
+      <div className="header-right">
+        <label htmlFor="sort-by">Sort by:</label>
+        <select
+          id="sort-by"
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+        >
+          <option value="Popularity">Popularity</option>
+          <option value="PriceLowToHigh">Price: Low to High</option>
+          <option value="PriceHighToLow">Price: High to Low</option>
+          <option value="Rating">Rating</option>
+        </select>
+      </div>
+    </div>
+  );
+};
+const TourItem = ({ item, isHaveButton, setCurrentActivity }) => (
   <div className="tour-item">
-    <img src={imgSrc} alt={title} className="tour-image" />
+    <img src={item.imgSrc} alt={item.title} className="tour-image" />
     <div className="tour-details">
       <div className="tour-header">
         <span className="tour-rating">★★★★☆ (584 reviews)</span>
       </div>
-      <h3>{title}</h3>
+      <h3>{item.title}</h3>
       <div className="tour-info">
-        <span>{time}</span>
+        <span>{item.time}</span>
         <span>Transport</span>
         <span>Family Plan</span>
       </div>
     </div>
+
     <div className="tour-price">
-      <span className="price-text" >{price}</span>
-      <span className="persion-text">per person</span>
+      <div className="price-container">
+        <span className="price-text" >{item.price}</span>
+        <span className="persion-text">per person</span>
+      </div>
+      {
+        isHaveButton && <SelectButton onClick={setCurrentActivity} />
+      }
     </div>
   </div>
 );
 
+const SelectButton = () => {
+  return (
+    <div className="select-container">
+      <button className="selection-btn">Chọn</button>
+    </div>
+  );
+}
+
 // Component cho danh sách Tour
-const TourList = () => {
+const TourList = ({ setCurrentActivity }) => {
   const tours = [
     {
       imgSrc: "https://bazantravel.com/cdn/medias/uploads/83/83317-khu-nghi-duong-lan-rung-700x420.jpg",
@@ -65,10 +79,9 @@ const TourList = () => {
       {tours.map((tour, index) => (
         <TourItem
           key={index}
-          imgSrc={tour.imgSrc}
-          title={tour.title}
-          time={tour.time}
-          price={tour.price}
+          item={tour}
+          isHaveButton={true}
+          setCurrentActivity={setCurrentActivity}
         />
       ))}
     </div>
@@ -96,23 +109,24 @@ const Filters = () => {
 };
 
 // Thành phần chính của ứng dụng
-const ListAccom = () => {
+const ListAccom = ({ isSchedule, setCurrentActivity }) => {
   return (
     <div className="app-container">
-    <Header />
-    <div className="main-content-container">
+      <Header />
+      <div className="main-content-container">
         <div className="main-content">
-        <Filters />
-        <div className="tour-list-container">
-          <TourList />
-          <TourList />
-          <TourList />
+          {
+            isSchedule && <Filters />
+          }
+          <div className="tour-list-container">
+            <TourList
+              setCurrentActivity={setCurrentActivity} />
+          </div>
         </div>
-        </div>
+      </div>
     </div>
-  </div>
   );
 };
 
-export default ListAccom;
-export { TourList };
+export { ListAccom, TourItem, TourList };
+
