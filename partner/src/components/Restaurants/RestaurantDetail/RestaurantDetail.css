@@ -117,20 +117,20 @@
     display: inline-block;
 }
 
-.delete-button {
+.restaurant .delete-button {
     position: absolute;
     top: 8px;
     right: 8px;
     background-color: rgba(231, 76, 60, 0.8);
     border: none;
     color: #fff;
-    padding: 5px 8px;
+    padding: 2px 8px;
     border-radius: 50%;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-.delete-button:hover {
+.restaurant  .delete-button:hover {
     background-color: rgba(231, 76, 60, 1);
 }
 
@@ -275,21 +275,21 @@
     background-color: #2980b9;
 }
 
-.save-button {
+.restaurant .save-button {
     background-color: #2ecc71;
     color: #fff;
 }
 
-.save-button:hover {
+.restaurant .save-button:hover {
     background-color: #27ae60;
 }
 
-.cancel-button {
+.restaurant .cancel-button {
     background-color: #95a5a6;
     color: #fff;
 }
 
-.cancel-button:hover {
+.restaurant .cancel-button:hover {
     background-color: #7f8c8d;
 }
 

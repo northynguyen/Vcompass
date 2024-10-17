@@ -1,10 +1,14 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 import mongoose from "mongoose";
-const uri =
-  "mongodb+srv://thienlove161203:kB7MWvnptgsSLiE1@cluster0.phzg1.mongodb.net/VCompass";
+
 
 export const connectDB = async () => {
-  const client = new MongoClient(uri, {
+  const connectionString = process.env.MONGOOSE_URL; // or your specific connection string
+    if (!connectionString) {
+        throw new Error('MongoDB connection string is missing or undefined');
+    }
+
+  const client = new MongoClient(connectionString, {
     serverApi: {
       version: ServerApiVersion.v1,
       strict: true,
@@ -13,7 +17,7 @@ export const connectDB = async () => {
   });
 
   try {
-    await mongoose.connect(uri);
+    await mongoose.connect(connectionString);
     console.log("DB connected");
   } catch (error) {
     console.error("DB connection failed", error);

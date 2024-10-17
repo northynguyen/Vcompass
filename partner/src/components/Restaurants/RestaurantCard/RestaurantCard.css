@@ -1,7 +1,6 @@
 /* src/components/FABS/RestaurantCard.css */
 .restaurant-card {
     display: flex;
-    border: 1px solid #ccc;
     border-radius: 8px;
     margin: 10px 0;
     overflow: hidden;

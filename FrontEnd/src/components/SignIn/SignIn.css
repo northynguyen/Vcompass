@@ -5,6 +5,7 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.8);
     display: grid;
+    z-index: 999;
 }
 
 .login-popup-container {
@@ -20,6 +21,7 @@
     height: min(800px, 75%);
     font-size: max(1vw, 12px);
     animation: fadeIn 0.5s;
+    height: 80%;
 }
 
 .login-popup-title {
