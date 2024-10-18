@@ -51,7 +51,14 @@
     display: flex;
     justify-content: flex-end;
   }
-  
+  .name-price-container {
+    display: flex;
+    gap: 50px;
+    margin-top: 30px;
+}
+.title-container {
+  flex: 1;
+}
   .save-btn {
     background-color: #f90;
     color: white;
