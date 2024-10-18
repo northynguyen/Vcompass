@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 
 import ListAttractions from "../../ListAttractions/ListAttractions";
@@ -36,6 +36,14 @@ const Header = ({ option, setOption }) => {
 const AddActivity = ({ isOpen, closeModal }) => {
   
   const [option, setOption] = React.useState("Attractions");
+  const [currentActivity, setCurrentActivity] = useState({
+    imgSrc: "https://bazantravel.com/cdn/medias/uploads/83/83317-khu-nghi-duong-lan-rung-700x420.jpg",
+    name: "Westminster to Greenwich River Thames",
+    description: "Westminster to Greenwich River Thames",
+    price: "$35.00",
+    totalRate: " ★★★★☆ (2 reviews)"
+  })
+
   const [activity, setActivity] = React.useState(null);
   return (
     <Modal
@@ -60,6 +68,53 @@ const AddActivity = ({ isOpen, closeModal }) => {
         <div className="modal-body">
 
           <Header setOption={setOption} />
+          {option === "Attractions" && <ListAttractions status="Schedule"
+            setCurrentActivity={setCurrentActivity} />}
+
+          <div className="activity-infor-container">
+            <TourItem
+              imgSrc={currentActivity.imgSrc}
+              name={currentActivity.name}
+              description={currentActivity.description}
+              price={currentActivity.price}
+              totalRate={currentActivity.totalRate}
+
+            />
+            <div className="form-group">
+              <div className="name-price-container">
+                <div className="title-container">
+                  <label className="expense-sub-title" htmlFor="name-expense">Tên chi phí</label>
+                  <input className="input-field"
+                    id="name-expense" required
+                    name="name"
+                    placeholder="Nhập tên chi phí"
+                    value={currentActivity.title}
+                  // onChange={handleChange}
+                  ></input>
+                </div>
+                <div className="title-container">
+                  <label className="expense-sub-title" htmlFor="expense">Số tiền</label>
+                  <input className="input-field"
+                    type="number"
+                    id="expense"
+                    name="cost"
+                    required
+                    placeholder="Nhập số tiền"
+                    value={currentActivity.price}
+                  // onChange={handleChange}
+                  >
+                  </input>
+                </div>
+              </div>
+              <label className="expense-sub-title" htmlFor="des">Ghi chú</label>
+              <textarea
+                placeholder="Nhập ghi chú chi tiết"
+                className="input-field" id="des"
+                name="description"
+                value={currentActivity.description}
+              //  onChange={handleChange}
+              ></textarea>
+            </div>
           {option === "Attractions" && <ListAttractions status="Schedule" setActivity={setActivity} />}
           {option === "Accommodations" && <ListAccommodation status="Schedule" setActivity={setActivity}/>}
           {option === "FoodServices" && <ListFoodServices status="Schedule" setActivity={setActivity}/>}
@@ -73,16 +128,18 @@ const AddActivity = ({ isOpen, closeModal }) => {
               <option>Tự chọn </option>
             </select>
           </div>
+
           <div className="form-group">
             <textarea placeholder="Ghi chú" className="input-field"></textarea>
           </div>
         </div>
-
-        <div className="modal-footer">
-          <button className="save-btn">Lưu</button>
-        </div>
       </div>
-    </Modal>
+
+      <div className="modal-footer">
+        <button className="save-btn">Lưu</button>
+      </div>
+
+    </Modal >
   );
 };
 
