@@ -197,15 +197,13 @@ const ListAccom = ({ status, setCurrentActivity }) => {
 
   return (
     <div className="list-accom__container">
-          <Filters sortOption={sortOption} setSortOption={setSortOption} />
-          <div className="tour-list-container">
-            <TourList tours={tours} sortOption={sortOption} status={status}
-              setCurrentActivity={setCurrentActivity} />
-          </div>
-        </div>
+      <Filters sortOption={sortOption} setSortOption={setSortOption} />
+      <div className="tour-list-container">
+        <TourList tours={tours} sortOption={sortOption} status={status}
+          setCurrentActivity={setCurrentActivity} />
       </div>
     </div>
-  );
+  )
 };
 
 export default ListAccom;

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
 
-import ListAttractions from "../../ListAttractions/ListAttractions";
 import ListAccommodation from "../../ListAccommodation/ListAccommodation";
+import ListAttractions from "../../ListAttractions/ListAttractions";
 import ListFoodServices from "../../ListFoodServices/ListFoodServices";
 import "./AddActivity.css";
 // Thiết lập root element cho modal
@@ -34,7 +34,7 @@ const Header = ({ option, setOption }) => {
 };
 
 const AddActivity = ({ isOpen, closeModal }) => {
-  
+
   const [option, setOption] = React.useState("Attractions");
   const [currentActivity, setCurrentActivity] = useState({
     imgSrc: "https://bazantravel.com/cdn/medias/uploads/83/83317-khu-nghi-duong-lan-rung-700x420.jpg",
@@ -70,6 +70,18 @@ const AddActivity = ({ isOpen, closeModal }) => {
           <Header setOption={setOption} />
           {option === "Attractions" && <ListAttractions status="Schedule"
             setCurrentActivity={setCurrentActivity} />}
+          {option === "Accommodations" && <ListAccommodation status="Schedule" setActivity={setActivity} />}
+          {option === "FoodServices" && <ListFoodServices status="Schedule" setActivity={setActivity} />}
+
+          <div className="form-group">
+            <select className="input-field">
+              <option>Vui lòng chọn hoạt động</option>
+              <option>Chỗ nghỉ</option>
+              <option>Vui chơi</option>
+              <option>An uong </option>
+              <option>Tự chọn </option>
+            </select>
+          </div>
 
           <div className="activity-infor-container">
             <TourItem
@@ -115,32 +127,15 @@ const AddActivity = ({ isOpen, closeModal }) => {
               //  onChange={handleChange}
               ></textarea>
             </div>
-          {option === "Attractions" && <ListAttractions status="Schedule" setActivity={setActivity} />}
-          {option === "Accommodations" && <ListAccommodation status="Schedule" setActivity={setActivity}/>}
-          {option === "FoodServices" && <ListFoodServices status="Schedule" setActivity={setActivity}/>}
-          
-          <div className="form-group">
-            <select className="input-field">
-              <option>Vui lòng chọn hoạt động</option>
-              <option>Chỗ nghỉ</option>
-              <option>Vui chơi</option>
-              <option>An uong </option>
-              <option>Tự chọn </option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <textarea placeholder="Ghi chú" className="input-field"></textarea>
           </div>
         </div>
+        <div className="modal-footer">
+          <button className="save-btn">Lưu</button>
+        </div>
       </div>
-
-      <div className="modal-footer">
-        <button className="save-btn">Lưu</button>
-      </div>
-
     </Modal >
-  );
+
+  )
 };
 
 export default AddActivity;
