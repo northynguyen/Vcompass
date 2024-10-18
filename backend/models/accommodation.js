@@ -32,6 +32,7 @@ const AccommodationSchema = new Schema({
     longitude:{ type: Number, required: true },
     address: { type: String, required: true },
    },
+  price: { type: Number },
   city: { type: String, required: true },
   images: [{ type: String }],
   amenities: [{ type: String }],

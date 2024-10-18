@@ -1,9 +1,20 @@
 import Accommodation from "../models/accommodation.js";
 import mongoose from "mongoose";
-import path from "path";
 import fs from "fs";
 
-export const getList = async (req, res) => {
+
+
+export const getListAccomm = async (req, res) => {
+  try {
+    const accommodations = await Accommodation.find();
+    res.json({success: true, message: "Get data accommodation success",accommodations});
+  } catch (error) {
+    res.json({ success: false, message: "Error retrieving accommodations", error });
+  }
+}
+
+
+export const getListAccommbyPartner = async (req, res) => {
   const { partnerId } = req.params;
   try {
     const accommodations = await Accommodation.find({ idPartner: partnerId });
@@ -12,6 +23,7 @@ export const getList = async (req, res) => {
     res.json({ success: false, message: "Error retrieving accommodations", error });
   }
 };
+
 
 
 export const addNew = async (req, res) => {

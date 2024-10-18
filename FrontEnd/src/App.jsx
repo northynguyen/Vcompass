@@ -5,24 +5,43 @@ import Footer from './components/Footer/Footer'
 import Header from './components/Header/Header'
 import SignIn from './components/SignIn/SignIn'
 import './index.css'
-import Home from './pages/Home/Home'
-import ListAccom from './pages/ListAccommodation/ListAccommodation'
-import Home from './pages/Home/Home'
-import ListAccom from './pages/ListAccommodation/ListAccommodation'
+
+
+
+import ListAttrac from './pages/ListAttractions/ListAttractions'
+
+
+
+import ListAttrac from './pages/ListAttractions/ListAttractions'
 import Partnership from './pages/Partnership/Partnership'
 import PlaceDetails from './pages/PlaceDetails/PlaceDetails'
 import Schedule from './pages/Schedule/Schedule'
-import Schedule from './pages/Schedule/Schedule'
 import UserService from './pages/UserService/UserService'
 import Home from './pages/Home/Home'
-import {toast} from 'react-toastify'
+import MySchedule from './pages/MySchedule/MySchedule'
+import CreateSchedule from './pages/CreateSchedule/CreateSchedule'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { ToastContainer} from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+
+
+
+
+
+
+import { ToastContainer } from 'react-toastify';
+
+
+
+
+
+
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
 
-  
+
+
   return (
     <>
       {showLogin && <SignIn setShowLogin={setShowLogin} />}
@@ -34,13 +53,13 @@ function App() {
           <Route path="/place-details" element={<PlaceDetails />} />
           <Route path="/partnership" element={<Partnership />} />
           <Route path="/about" element={<Schedule />} />
-          <Route path="/about" element={<Schedule />} />
+          <Route path="/create-schedule" element={<CreateSchedule />} />
           <Route path="/user-service" element={<UserService />} />
-          <Route path="/booking" element={<ListAccom />} />
-          <Route path="/booking" element={<ListAccom />} />
+          <Route path="/booking" element={<ListAttrac />} />
+          <Route path="/my-schedule" element={<MySchedule />} />
         </Routes>
-        <Footer />
-      </div>
+          <Footer />
+        </div>
     </>
 
   )

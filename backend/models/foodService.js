@@ -1,8 +1,8 @@
 import { Schema } from "mongoose";
 import { RatingSchema } from "./rating.js";
+import mongoose from "mongoose";
 
 const FoodServiceSchema = new Schema({
-  idFoodService: { type: String, required: true },
   idPartner: { type: String, required: true },
   serviceType: { type: String, required: true },
   foodServiceName: { type: String, required: true },
@@ -20,7 +20,7 @@ const FoodServiceSchema = new Schema({
   images: [{ type: String }],
   registerDate: { type: Date, default: Date.now },
   status: { type: String, required: true },
-  ratings: [RatingSchema],
+  ratings: [{ type: RatingSchema, required: false }],
   amenities: [{ type: String }],
   contactNumber: { type: String, required: true },
   email: { type: String, required: true },
@@ -36,6 +36,6 @@ const FoodServiceSchema = new Schema({
 });
 
 const FoodService =
-  mongoose.models.FoodService ||
-  mongoose.model("foodservice", FoodServiceSchema);
+  mongoose.models.FoodService || mongoose.model("foodservice", FoodServiceSchema);
 export default FoodService;
+
