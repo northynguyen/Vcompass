@@ -1,0 +1,93 @@
+/* Container */
+.create-schedule-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    background-image: url('https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists.jpg'); /* Use appropriate background image */
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+  
+  
+  /* Step Indicator */
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .step-number {
+    background-color: #ff5722;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  
+  .step-indicator h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin: 0;
+  }
+  
+  /* Form */
+  .schedule-form {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  .form-group input[type="text"],
+  .form-group input[type="date"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  .form-group input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  /* Button */
+  .submit-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ff5722;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .submit-button:hover {
+    background-color: #e64a19;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+}

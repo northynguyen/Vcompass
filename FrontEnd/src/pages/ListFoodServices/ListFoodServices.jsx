@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import "./ListAccommodation.css";
+import "./ListFoodServices.css";
 import { StoreContext } from "../../Context/StoreContext";
 
 // Helper function for calculating ratings
@@ -13,7 +13,7 @@ const calculateTotalRate = (ratings) => {
 };
 
 // TourItem Component
-const TourItem = ({ imgSrc, name, description, totalRate, location, facilities, url }) => (
+const TourItem = ({ imgSrc, name, description, totalRate, location, facilities, url , price}) => (
   <div className="list-accom__tour-item">
     <img src={`${url}/images/${imgSrc}`} alt={name} className="list-accom__tour-item-image" />
     <div className="list-accom__tour-details">
@@ -30,6 +30,7 @@ const TourItem = ({ imgSrc, name, description, totalRate, location, facilities, 
       <div className="list-accom__tour-rating">{totalRate}</div>
     </div>
     <div className="list-accom__tour-price">
+      <p>{price.minPrice} VND - {price.maxPrice} VND</p>
       <button className="list-accom__show-prices-button">Show prices</button>
     </div>
   </div>
@@ -95,21 +96,22 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => (
 );
 
 // Main ListAccom Component
-const ListAccom = ({ status }) => {
+const ListFoodServices = ({ status }) => {
   const { url } = useContext(StoreContext);
   const [tours, setTours] = useState([]);
   const [sortOption, setSortOption] = useState("Popularity");
 
   useEffect(() => {
-    axios.get(`${url}/api/accommodations/`)
+    axios.get(`${url}/api/foodservices/`)
       .then(response => {
-        const mappedTours = response.data.accommodations.map(accommodation => ({
-          imgSrc: accommodation.images[0],
-          name: accommodation.name,
-          description: accommodation.description,
-          totalRate: calculateTotalRate(accommodation.ratings),
-          location: accommodation.location.address,
-          facilities: accommodation.amenities,
+        const mappedTours = response.data.foodService.map(foodservice => ({
+          imgSrc: foodservice.images[0],
+          name: foodservice.foodServiceName,
+          description: foodservice.description,
+          price: foodservice.price,
+          totalRate: calculateTotalRate(foodservice.ratings),
+          location: foodservice.location.address,
+          facilities: foodservice.amenities,
         }));
         setTours(mappedTours);
       })
@@ -124,4 +126,4 @@ const ListAccom = ({ status }) => {
   );
 };
 
-export default ListAccom;
+export default ListFoodServices;

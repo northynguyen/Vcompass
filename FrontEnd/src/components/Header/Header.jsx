@@ -75,6 +75,7 @@ const Header = ({ setShowLogin }) => {
           <Link to="/" className="">Home</Link>
           <Link to="/about" className="">About Us</Link>
           <Link to="/booking" className="">Booking</Link>
+          <Link to="/my-schedule" className="">My Schedule</Link>
           <Link to="/partnership" className="">Partnership</Link>
           <Link to="/help" className="">Help</Link>
         </ul>

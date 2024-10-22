@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useContext } from "react";
-import "./ListAttractions.css";
 import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
+import "./ListAttractions.css";
 
 // Tính tổng số sao và đánh giá
 const calculateTotalRate = (ratings) => {
@@ -13,27 +13,52 @@ const calculateTotalRate = (ratings) => {
 };
 
 // TourItem Component
-const TourItem = ({ imgSrc, name, description, price, totalRate }) => (
-  <div className="tour-item">
-    <img src={imgSrc} alt={name} className="tour-image" />
-    <div className="tour-details">
-      <div className="tour-header">
-        <span className="tour-rating">{totalRate}</span>
-      </div>
-      <h3>{name}</h3>
-      <div className="tour-info">
-        <p>{description}</p>
-      </div>
-    </div>
-    <div className="tour-price">
-      <span className="price-text">{price}</span>
-      <span className="persion-text">per person</span>
-    </div>
-  </div>
-);
+const TourItem = ({ imgSrc, name, description, price, totalRate, status, setCurrentActivity }) => {
 
+  const handleSelect = () => {
+    setCurrentActivity({
+      imgSrc,
+      name,
+      description,
+      price,
+      totalRate
+    });
+    console.log(name)
+  };
+
+  return (
+    <div className="tour-item">
+      <img src={imgSrc} alt={name} className="tour-image" />
+      <div className="tour-details">
+        <div className="tour-header">
+          <span className="tour-rating">{totalRate}</span>
+        </div>
+        <h3>{name}</h3>
+        <div className="tour-info">
+          <p>{description}</p>
+        </div>
+      </div>
+      <div className="tour-price">
+        <div className="price-container">
+          <span className="price-text" >{price}</span>
+          <span className="persion-text">per person</span>
+        </div>
+        {
+          status === "Schedule" && <SelectButton onClick={handleSelect} />
+        }
+      </div>
+    </div>
+  );
+}
+const SelectButton = () => {
+  return (
+    <div className="select-container">
+      <button className="selection-btn">Chọn</button>
+    </div>
+  );
+}
 // TourList Component
-const TourList = ({ tours, sortOption, status }) => {
+const TourList = ({ tours, sortOption, status, setCurrentActivity }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [toursPerPage] = useState(status === "Schedule" ? 3 : 8);
 
@@ -44,7 +69,6 @@ const TourList = ({ tours, sortOption, status }) => {
       case "PriceHighToLow":
         return parseFloat(b.price.replace(/₫/g, "").replace(/,/g, "")) - parseFloat(a.price.replace(/₫/g, "").replace(/,/g, ""));
       case "Rating":
-        // Assuming rating-based sorting logic can be added here
         return 0; // Placeholder
       case "Popularity":
       default:
@@ -59,7 +83,7 @@ const TourList = ({ tours, sortOption, status }) => {
   );
 
   return (
-    <div className="tour-list">
+    <div className="list-accom__tour-list">
       {currentTours.map((tour, index) => (
         <TourItem
           key={index}
@@ -68,6 +92,8 @@ const TourList = ({ tours, sortOption, status }) => {
           description={tour.description}
           price={tour.price}
           totalRate={tour.totalRate}
+          status={status}
+          setCurrentActivity={setCurrentActivity}
         />
       ))}
       <Pagination
@@ -82,9 +108,8 @@ const TourList = ({ tours, sortOption, status }) => {
 // Component cho Filters
 const Filters = ({ sortOption, setSortOption }) => {
   return (
-    <div className="filters">
+    <div className="list-accom__filters">
       <div className="filter-section">
-
         <h4>Availability</h4>
         <div>
           <label>From</label>
@@ -123,7 +148,7 @@ const Filters = ({ sortOption, setSortOption }) => {
 // Pagination Component
 const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
   return (
-    <div className="pagination">
+    <div className="list-accom__pagination">
       <button
         disabled={currentPage === 1}
         onClick={() => setCurrentPage(currentPage - 1)}
@@ -144,28 +169,26 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
 };
 
 // Main ListAccom Component
-const ListAccom = ({ status }) => {
+const ListAccom = ({ status, setCurrentActivity }) => {
   const { url } = useContext(StoreContext);
   const [tours, setTours] = useState([]);
   const [sortOption, setSortOption] = useState("Popularity");
 
-  // Lấy dữ liệu từ API khi component được render lần đầu
   useEffect(() => {
     axios.get(`${url}/api/attractions/`)
       .then(response => {
         const dbAttractions = response.data.attractions;
-        console.log(dbAttractions); // Lấy dữ liệu trực tiếp từ response
+        console.log(dbAttractions);
 
-        // Chuyển đổi dữ liệu từ API sang định dạng tours
         const mappedTours = dbAttractions.map(attraction => ({
-          imgSrc: attraction.image[0], // Dùng ảnh đầu tiên
+          imgSrc: attraction.image[0],
           name: attraction.attraction_name,
           description: attraction.description,
-          price: `${(attraction.price).toLocaleString()}₫`, // Chuyển đổi giá thành chuỗi
+          price: `${(attraction.price).toLocaleString()}₫`,
           totalRate: calculateTotalRate(attraction.rating),
         }));
 
-        setTours(mappedTours); // Cập nhật state tours với dữ liệu mới
+        setTours(mappedTours);
       })
       .catch(error => {
         console.error('Error fetching data from API:', error);
@@ -173,17 +196,16 @@ const ListAccom = ({ status }) => {
   }, [url]);
 
   return (
-    <div className="app-container">
-      <div className="main-content-container">
-        <div className="main-content">
-          <Filters sortOption={sortOption} setSortOption={setSortOption} />
-          <div className="tour-list-container">
-            <TourList tours={tours} sortOption={sortOption} status={status} />
-          </div>
-        </div>
+    <div className="list-accom__container">
+      <Filters sortOption={sortOption} setSortOption={setSortOption} />
+      <div className="tour-list-container">
+        <TourList tours={tours} sortOption={sortOption} status={status}
+          setCurrentActivity={setCurrentActivity} />
       </div>
     </div>
-  );
+  )
 };
 
 export default ListAccom;
+export { TourItem };
+

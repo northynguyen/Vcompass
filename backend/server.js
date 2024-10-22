@@ -4,8 +4,11 @@ import { connectDB } from "./config/connectDB.js";
 import { notificationRoutes } from "./routes/notificationRoutes.js";
 
 import userRoutes from "./routes/userRoute.js";
+
+import userRoutes from "./routes/userRoute.js";
 import 'dotenv/config';
 import accommRoutes from "./routes/accommRoutes.js";
+import foodServiceRoutes from "./routes/foodServiceRoutes.js";
 import { Attractionrouter } from "./routes/attractionRoutes.js";
 
 
@@ -30,6 +33,7 @@ app.use("/images", express.static("uploads"))
 app.use("/api/user", userRoutes);
 app.use("/api/notifications", notificationRoutes); // Thêm route cho notification
 app.use("/api/accommodations", accommRoutes);
+app.use("/api/foodservices", foodServiceRoutes);
 
 app.use("/api/attractions", Attractionrouter);
 

@@ -1,0 +1,249 @@
+/* General styles */
+.my-schedule-container {
+    padding: 20px 5%;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+
+  
+  /* Hero Section */
+  .hero-section {
+    text-align: center;
+    background-color: #fff;
+    padding: 60px;
+    min-height: 400px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+    background-image: url('https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/full-shot-travel-concept-with-landmarks.jpg'); /* Optional */
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .hero-section h1 {
+    font-size: 2.5rem;
+    color: #222;
+    margin-bottom: 15px;
+  }
+  
+  .hero-section p {
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  .create-schedule-btn {
+    padding: 12px 30px;
+    background-color: #ff5722;
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .create-schedule-btn:hover {
+    background-color: #e64a19;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* My Schedule Section */
+  .my-schedule-section {
+    margin-bottom: 60px;
+  }
+  
+  .my-schedule-section h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .my-schedule-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .my-schedule-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .my-schedule-card img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-right: 20px;
+  }
+  
+  .schedule-info h3 {
+    font-size: 1.6rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  
+  .schedule-info p {
+    font-size: 1rem;
+    color: #666;
+  }
+  
+  /* Steps Section */
+  .steps-section {
+    margin-bottom: 60px;
+  }
+  
+  .steps-section h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .steps-container {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    gap: 20px;
+  }
+  
+  .steps-container .step {
+    flex: 1;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .steps-container .step:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .steps-container img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 15px;
+  }
+  
+  .steps-container h4 {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #222;
+    margin-bottom: 8px;
+  }
+  
+  .steps-container p {
+    font-size: 1rem;
+    color: #666;
+  }
+  
+  /* Featured Schedules Section */
+  .featured-schedules-section h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .schedule-filters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .schedule-filters button {
+    padding: 8px 20px;
+    background-color: #f1f1f1;
+    color: #333;
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .schedule-filters button:hover {
+    background-color: #ff5722;
+    color: white;
+  }
+  
+  .schedule-filters input {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .schedule-filters input:focus {
+    border-color: #ff5722;
+  }
+  
+  /* Featured Schedules Cards */
+  .featured-schedules {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 80%;
+    
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .schedule-card {
+    width: 400px;
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .schedule-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  .schedule-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+  }
+  
+  .schedule-info {
+    padding: 15px;
+    text-align: left;
+  }
+  
+  .schedule-info h3 {
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #333;
+  }
+  
+  .schedule-info p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 6px;
+  }
+}
