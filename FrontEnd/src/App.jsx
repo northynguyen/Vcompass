@@ -7,7 +7,6 @@ import SignIn from './components/SignIn/SignIn'
 import './index.css'
 
 
-
 import ListAttrac from './pages/ListAttractions/ListAttractions'
 
 
@@ -30,6 +29,12 @@ import { ToastContainer } from 'react-toastify';
 
 
 import { ToastContainer } from 'react-toastify';
+
+
+
+
+
+
 
 
 

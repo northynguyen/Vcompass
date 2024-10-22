@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
 import './Sidebar.css';
-import { FaThLarge, FaUser, FaCalendarAlt, FaConciergeBell, FaEnvelope, FaBell, FaServicestack } from 'react-icons/fa'; // Import icons
+import { FaThLarge, FaUser, FaCalendarAlt, FaLocationArrow, FaConciergeBell, FaEnvelope, FaBell, FaServicestack } from 'react-icons/fa'; // Import icons
 
 const Sidebar = ({ onTabChange }) => {
     // State to manage the active tab
@@ -20,6 +20,10 @@ const Sidebar = ({ onTabChange }) => {
                     <li className={activeTab === 'Dashboard' ? 'active' : ''} onClick={() => onClickTab('Dashboard')}>
                         <FaThLarge />
                         Dashboard
+                    </li>
+                    <li className={activeTab === 'Attractions' ? 'active' : ''} onClick={() => onClickTab('Attraction')}>
+                        <FaLocationArrow />
+                        Attraction
                     </li>
                     <li className={activeTab === 'Users' ? 'active' : ''} onClick={() => onClickTab('Users')}>
                         <FaUser />

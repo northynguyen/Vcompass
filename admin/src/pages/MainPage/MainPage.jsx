@@ -8,14 +8,18 @@ import Services from '../Services/Services';
 import Tours from '../Tours/Tours';
 import Users from '../Users/Users';
 import Sidebar from '../../components/Sidebar/Sidebar';
-
+import Attraction from '../Attraction/Attraction';
+import Headers from '../../components/Header/Header';
 const MainPage = () => {
   const [currentTab, setCurrentTab] = useState('Dashboard');
 
   const renderContent = () => {
+
     switch (currentTab) {
       case 'Dashboard':
         return <Dashboard />;
+      case 'Attraction':
+        return <Attraction />;
       case 'Notification':
         return <Notification />;
       case 'Services':
@@ -32,12 +36,16 @@ const MainPage = () => {
   };
 
   return (
-    <div className="main-page">
-      <Sidebar onTabChange={setCurrentTab} />
-      <div className="content">
-        {renderContent()}
+    <>
+      <Headers />
+      <div className="main-page">
+        <Sidebar onTabChange={setCurrentTab} />
+        <div className="content">
+          {renderContent()}
+        </div>
       </div>
-    </div>
+    </>
+
   );
 };
 

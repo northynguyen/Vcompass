@@ -18,6 +18,7 @@ const UserSchema = new Schema({
     },
     phone_number: {
         type: String,
+        unique: true,
     },
     address: {
         type: String,
@@ -47,6 +48,6 @@ const UserSchema = new Schema({
         default: 'active',
     },
 }, { timestamps: true });
-const partnerModel = mongoose.models.Partner || model("partner", UserSchema);
+const adminModel = mongoose.models.Admin || model("admin", UserSchema);
 
-export default partnerModel;
+export default adminModel;
