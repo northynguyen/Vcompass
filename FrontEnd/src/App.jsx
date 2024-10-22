@@ -7,11 +7,6 @@ import SignIn from './components/SignIn/SignIn'
 import './index.css'
 
 
-
-import ListAttrac from './pages/ListAttractions/ListAttractions'
-
-
-
 import ListAttrac from './pages/ListAttractions/ListAttractions'
 import Partnership from './pages/Partnership/Partnership'
 import PlaceDetails from './pages/PlaceDetails/PlaceDetails'
@@ -29,7 +24,6 @@ import { ToastContainer } from 'react-toastify';
 
 
 
-import { ToastContainer } from 'react-toastify';
 
 
 
@@ -58,8 +52,8 @@ function App() {
           <Route path="/booking" element={<ListAttrac />} />
           <Route path="/my-schedule" element={<MySchedule />} />
         </Routes>
-          <Footer />
-        </div>
+        <Footer />
+      </div>
     </>
 
   )

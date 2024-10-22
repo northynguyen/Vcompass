@@ -5,7 +5,8 @@ import bcrypt from "bcrypt";
 import validator from "validator";
 import userModel from "../models/user.js";
 import partnerModel from "../models/partner.js";
-import {passport} from "../config/passport.js"; // Import passport
+import adminModel from "../models/admin.js";
+import { passport } from "../config/passport.js"; // Import passport
 
 // Helper function to create JWT
 const createToken = (id) => {
@@ -23,10 +24,10 @@ const handleLogin = async (req, res, model, requiredRole = null) => {
 
     try {
         // Construct query based on requiredRole
-        
+
 
         // Find user by email and role (if required)
-        const user = await model.findOne({email});
+        const user = await model.findOne({ email });
 
         if (!user) {
             const roleMessage = requiredRole ? `với vai trò ${requiredRole} ` : '';
@@ -86,7 +87,6 @@ const handleRegister = async (req, res, model, userRole = "user") => {
             email,
             password: hashedPassword,
             roles: [userRole],
-            phone_number: "0123456789",
             address: "Ho Chi Minh City",
             date_of_birth: "01-01-2000",
             gender: "male",
@@ -164,7 +164,6 @@ const googleSignIn = async (req, res) => {
                 email,
                 password: "", // No password as user uses Google OAuth
                 roles: ["user"],
-                phone_number: "0123456789",
                 address: "Ho Chi Minh City",
                 date_of_birth: "01-01-2000",
                 gender: "male",
@@ -195,7 +194,7 @@ const loginPartner = async (req, res) => {
 };
 
 const loginAdmin = async (req, res) => {
-    await handleLogin(req, res, userModel, "admin"); // Require 'admin' role
+    await handleLogin(req, res, adminModel, "admin"); // Require 'admin' role
 };
 
 const registerUser = async (req, res) => {
@@ -204,6 +203,9 @@ const registerUser = async (req, res) => {
 
 const registerPartner = async (req, res) => {
     await handleRegister(req, res, partnerModel, "partner"); // Register as 'partner'
+};
+const registerAdmin = async (req, res) => {
+    await handleRegister(req, res, adminModel, "admin"); // Require 'admin' role
 };
 
 export {
@@ -214,5 +216,6 @@ export {
     registerPartner,
     loginWithGoogle,
     googleCallback,
-    googleSignIn // Export the new function
+    googleSignIn,
+    registerAdmin, // Export the new function
 };

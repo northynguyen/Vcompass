@@ -5,7 +5,6 @@ import { notificationRoutes } from "./routes/notificationRoutes.js";
 
 import userRoutes from "./routes/userRoute.js";
 
-import userRoutes from "./routes/userRoute.js";
 import 'dotenv/config';
 import accommRoutes from "./routes/accommRoutes.js";
 import foodServiceRoutes from "./routes/foodServiceRoutes.js";

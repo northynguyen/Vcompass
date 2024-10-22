@@ -1,18 +1,18 @@
-import { useState, useRef, useEffect,useContext } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import './Header.css';
 import { CiSettings, CiLogout } from "react-icons/ci";
 import { MdManageAccounts } from "react-icons/md";
 import { FaBell } from "react-icons/fa"; // Importing Bell icon from react-icons
-import {StoreContext} from '../../Context/StoreContext';
+import { StoreContext } from '../../Context/StoreContext';
 import { useNavigate } from 'react-router-dom';
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 const Header = () => {
   // State to handle the visibility of the profile popup
   const [isProfilePopupVisible, setProfilePopupVisible] = useState(false);
   const [isNotificationsVisible, setNotificationsVisible] = useState(false); // State for notifications dropdown
   const menuRef = useRef(null);
   const notificationRef = useRef(null); // Reference for the notifications dropdown
-  const {token, setToken, user  } = useContext(StoreContext);
+  const { token, setToken, user } = useContext(StoreContext);
   const navigate = useNavigate();
   // Sample notifications array
   const notifications = [
@@ -100,21 +100,21 @@ const Header = () => {
 
           {/* Notifications Dropdown */}
           {isNotificationsVisible && (
-          <div className="notifications-dropdown" ref={notificationRef}>
-            <ul className="notifications-list">
-              {notifications.map((notification) => (
-                <li key={notification.id} className={`notification-item ${notification.isUnread ? 'unread' : ''}`}>
-                  <img src={notification.image} alt={notification.user} className="notification-image" />
-                  <div className="notification-content">
-                    <p><strong>{notification.user}</strong> {notification.content}</p>
-                    <span className="notification-time">{notification.time}</span>
-                  </div>
-                  {notification.isUnread && <span className="unread-dot"></span>}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+            <div className="notifications-dropdown" ref={notificationRef}>
+              <ul className="notifications-list">
+                {notifications.map((notification) => (
+                  <li key={notification.id} className={`notification-item ${notification.isUnread ? 'unread' : ''}`}>
+                    <img src={notification.image} alt={notification.user} className="notification-image" />
+                    <div className="notification-content">
+                      <p><strong>{notification.user}</strong> {notification.content}</p>
+                      <span className="notification-time">{notification.time}</span>
+                    </div>
+                    {notification.isUnread && <span className="unread-dot"></span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Settings Icon */}
