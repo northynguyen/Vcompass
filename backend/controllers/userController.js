@@ -6,7 +6,8 @@ import validator from "validator";
 import userModel from "../models/user.js";
 import partnerModel from "../models/partner.js";
 import adminModel from "../models/admin.js";
-import { passport } from "../config/passport.js"; // Import passport
+import { passport } from "../config/passport.js";
+// Import passport
 
 // Helper function to create JWT
 const createToken = (id) => {
@@ -208,6 +209,23 @@ const registerAdmin = async (req, res) => {
     await handleRegister(req, res, adminModel, "admin"); // Require 'admin' role
 };
 
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await userModel.find();
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+const getAllPartners = async (req, res) => {
+    try {
+        const users = await partnerModel.find();
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
 export {
     loginUser,
     registerUser,
@@ -217,5 +235,7 @@ export {
     loginWithGoogle,
     googleCallback,
     googleSignIn,
-    registerAdmin, // Export the new function
+    registerAdmin,
+    getAllUsers,
+    getAllPartners,// Export the new function
 };

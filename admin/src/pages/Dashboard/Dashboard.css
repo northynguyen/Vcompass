@@ -1,5 +1,6 @@
 .dashboard-container {
   padding: 20px;
+  max-width: 98%;
 }
 
 .summary-cards {

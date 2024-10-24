@@ -36,6 +36,8 @@ app.use("/api/accommodations", accommRoutes);
 app.use("/api/foodservices", foodServiceRoutes);
 
 app.use("/api/attractions", Attractionrouter);
+app.use("/api/users", userRoutes);
+app.use("/api/partners", userRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

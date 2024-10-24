@@ -8,27 +8,24 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const { token } = React.useContext(StoreContext);
-
   return (
     <div>
       <ToastContainer />
       <Routes>
-
-        <Route
-          path="/"
-          element={token ? <MainPage /> : <Navigate to="/login" replace />}
-        />
-        <Route
-          path="/login"
-          element={token ? <Navigate to="/" replace /> : <Login />}
-        />
-        <Route
-          path="/register"
-          element={token ? <Navigate to="/" replace /> : <Register />}
-        />
+        {token ? (
+          <>
+            <Route path="/*" element={<MainPage />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          </>
+        ) : (
+          <>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
+          </>
+        )}
       </Routes>
     </div>
-
   );
 }
 
