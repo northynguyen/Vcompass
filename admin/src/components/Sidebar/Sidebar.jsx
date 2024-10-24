@@ -1,47 +1,72 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './Sidebar.css';
-import { FaThLarge, FaUser, FaCalendarAlt, FaLocationArrow, FaConciergeBell, FaEnvelope, FaBell, FaServicestack } from 'react-icons/fa'; // Import icons
+import { FaThLarge, FaUser, FaCalendarAlt, FaLocationArrow, FaBell, FaEnvelope, FaServicestack } from 'react-icons/fa'; // Import icons
 
-const Sidebar = ({ onTabChange }) => {
-    // State to manage the active tab
-    const [activeTab, setActiveTab] = useState('Dashboard');
+const Sidebar = () => {
+    const navigate = useNavigate();
+    const location = useLocation(); // Lấy thông tin URL hiện tại
 
-    const onClickTab = (tab) => {
-        setActiveTab(tab); // Set the active tab
-        onTabChange(tab);  // Notify the parent component of the tab change
+    const handleNavigation = (path) => {
+        if (location.pathname !== path) {
+            navigate(path); // Điều hướng nếu URL khác với đường dẫn mong muốn
+        }
     };
+
+    // Hàm kiểm tra nếu đường dẫn hiện tại trùng với đường dẫn của tab
+    const isActive = (path) => location.pathname === path;
 
     return (
         <aside className="sidebar">
             {/* Menu Items */}
             <nav className="menu">
                 <ul>
-                    <li className={activeTab === 'Dashboard' ? 'active' : ''} onClick={() => onClickTab('Dashboard')}>
+                    <li
+                        className={isActive('/dashboard') ? 'active' : ''}
+                        onClick={() => handleNavigation('/dashboard')}
+                    >
                         <FaThLarge />
                         Dashboard
                     </li>
-                    <li className={activeTab === 'Attractions' ? 'active' : ''} onClick={() => onClickTab('Attraction')}>
+                    <li
+                        className={isActive('/attraction') ? 'active' : ''}
+                        onClick={() => handleNavigation('/attraction')}
+                    >
                         <FaLocationArrow />
                         Attraction
                     </li>
-                    <li className={activeTab === 'Users' ? 'active' : ''} onClick={() => onClickTab('Users')}>
+                    <li
+                        className={isActive('/users') ? 'active' : ''}
+                        onClick={() => handleNavigation('/users')}
+                    >
                         <FaUser />
                         Users
                     </li>
-                    <li className={activeTab === 'Tours' ? 'active' : ''} onClick={() => onClickTab('Tours')}>
+                    <li
+                        className={isActive('/tours') ? 'active' : ''}
+                        onClick={() => handleNavigation('/tours')}
+                    >
                         <FaCalendarAlt />
                         Tours
                     </li>
-                    <li className={activeTab === 'Services' ? 'active' : ''} onClick={() => onClickTab('Services')}>
+                    <li
+                        className={isActive('/services') ? 'active' : ''}
+                        onClick={() => handleNavigation('/services')}
+                    >
                         <FaServicestack />
                         Services
                     </li>
-                    <li className={activeTab === 'Notification' ? 'active' : ''} onClick={() => onClickTab('Notification')}>
+                    <li
+                        className={isActive('/notification') ? 'active' : ''}
+                        onClick={() => handleNavigation('/notification')}
+                    >
                         <FaBell />
                         Notification
                     </li>
-                    <li className={activeTab === 'Message' ? 'active' : ''} onClick={() => onClickTab('Message')}>
+                    <li
+                        className={isActive('/message') ? 'active' : ''}
+                        onClick={() => handleNavigation('/message')}
+                    >
                         <FaEnvelope />
                         Message
                     </li>

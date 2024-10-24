@@ -9,7 +9,8 @@ import {
     registerPartner,
     registerAdmin,
     loginWithGoogle,
-    googleCallback
+    googleCallback,
+    getAllUsers,
 } from "../controllers/userController.js";
 
 const userRoutes = express.Router();
@@ -26,4 +27,6 @@ userRoutes.post("/register/admin", registerAdmin);
 userRoutes.get("/google", loginWithGoogle); // Redirect đến Google
 userRoutes.get("/google/callback", googleCallback); // Google callback
 
+//Get all users
+userRoutes.get('/users', getAllUsers);
 export default userRoutes;

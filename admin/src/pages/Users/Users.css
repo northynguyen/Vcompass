@@ -1,0 +1,26 @@
+.users-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* Đưa các thẻ vào giữa */
+    gap: 20px;
+    /* Cách nhau 20px */
+    padding: 20px;
+}
+
+
+.profile-card {
+    width: 100%;
+    max-width: 250px;
+    /* Kích thước tối đa cho mỗi thẻ */
+    min-width: 250px;
+    height: auto;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 10px;
+}

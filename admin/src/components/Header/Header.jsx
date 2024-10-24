@@ -132,7 +132,7 @@ const Header = () => {
           />
           <div className="user-info">
             <p>{user.name}</p>
-            <span>Partner</span>
+            <span>Admin</span>
           </div>
         </div>
 

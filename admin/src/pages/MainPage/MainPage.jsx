@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import './MainPage.css';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Message from '../Message/Message';
 import Dashboard from '../Dashboard/Dashboard';
 import Notification from '../Notification/Notification';
@@ -10,38 +11,27 @@ import Users from '../Users/Users';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import Attraction from '../Attraction/Attraction';
 import Headers from '../../components/Header/Header';
+import UserDetails from '../../components/UserDetails/UserDetails';
 const MainPage = () => {
-  const [currentTab, setCurrentTab] = useState('Dashboard');
-
-  const renderContent = () => {
-
-    switch (currentTab) {
-      case 'Dashboard':
-        return <Dashboard />;
-      case 'Attraction':
-        return <Attraction />;
-      case 'Notification':
-        return <Notification />;
-      case 'Services':
-        return <Services />;
-      case 'Tours':
-        return <Tours />;
-      case 'Users':
-        return <Users />
-      case 'Message':
-        return <Message />
-      default:
-        return <Dashboard />;
-    }
-  };
 
   return (
     <>
       <Headers />
       <div className="main-page">
-        <Sidebar onTabChange={setCurrentTab} />
+        <Sidebar />
         <div className="content">
-          {renderContent()}
+          <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/attraction" element={<Attraction />} />
+            <Route path="/notification" element={<Notification />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/tours" element={<Tours />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/users/user" element={<UserDetails />} />
+            <Route path="/message" element={<Message />} />
+            {/* Default route */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
         </div>
       </div>
     </>
