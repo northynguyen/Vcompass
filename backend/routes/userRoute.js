@@ -11,6 +11,7 @@ import {
     loginWithGoogle,
     googleCallback,
     getAllUsers,
+    getAllPartners,
 } from "../controllers/userController.js";
 
 const userRoutes = express.Router();
@@ -29,4 +30,5 @@ userRoutes.get("/google/callback", googleCallback); // Google callback
 
 //Get all users
 userRoutes.get('/users', getAllUsers);
+userRoutes.get('/partners', getAllPartners);
 export default userRoutes;

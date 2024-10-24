@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Sidebar.css';
-import { FaThLarge, FaUser, FaCalendarAlt, FaLocationArrow, FaBell, FaEnvelope, FaServicestack } from 'react-icons/fa'; // Import icons
+import { FaThLarge, FaUser, FaCalendarAlt, FaLocationArrow, FaBell, FaEnvelope, FaServicestack, FaUserFriends } from 'react-icons/fa'; // Import icons
 
 const Sidebar = () => {
     const navigate = useNavigate();
@@ -41,6 +41,13 @@ const Sidebar = () => {
                     >
                         <FaUser />
                         Users
+                    </li>
+                    <li
+                        className={isActive('/partners') ? 'active' : ''}
+                        onClick={() => handleNavigation('/partners')}
+                    >
+                        <FaUserFriends />
+                        Partners
                     </li>
                     <li
                         className={isActive('/tours') ? 'active' : ''}

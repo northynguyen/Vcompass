@@ -2,15 +2,16 @@ import React from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import './UserDetails.css';
 
-const ProfileDetails = () => {
+const UserDetails = () => {
     const location = useLocation();
-    // Check if the user data is passed via state, fallback to an empty object if not
-    const user = location.state?.user;
+    // Check if the profile data is passed via state
+    const user = location.state?.profile; // Cập nhật để lấy từ profile
 
     if (!user) {
         return <div>Error: No user data available</div>;
     }
-    console.log(user._id);
+
+    console.log(user._id); // Bạn có thể xác nhận user ID tại đây
     return (
         <div className="profile-details">
             <h1>{user.name}</h1>
@@ -19,7 +20,6 @@ const ProfileDetails = () => {
             </div>
             <div className="profile-info">
                 <p><strong>Gender:</strong> {user.gender}</p>
-
                 <p><strong>Date of Birth:</strong> {new Date(user.date_of_birth).toLocaleDateString()}</p>
                 <p><strong>Email:</strong> {user.email}</p>
                 <p><strong>Phone:</strong> {user.phone_number}</p>
@@ -30,4 +30,4 @@ const ProfileDetails = () => {
     );
 };
 
-export default ProfileDetails;
+export default UserDetails;

@@ -217,7 +217,14 @@ const getAllUsers = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
-
+const getAllPartners = async (req, res) => {
+    try {
+        const users = await partnerModel.find();
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
 
 export {
     loginUser,
@@ -229,5 +236,6 @@ export {
     googleCallback,
     googleSignIn,
     registerAdmin,
-    getAllUsers// Export the new function
+    getAllUsers,
+    getAllPartners,// Export the new function
 };

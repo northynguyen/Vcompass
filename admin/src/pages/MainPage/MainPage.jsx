@@ -12,6 +12,8 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 import Attraction from '../Attraction/Attraction';
 import Headers from '../../components/Header/Header';
 import UserDetails from '../../components/UserDetails/UserDetails';
+import Partners from '../Partners/Partners';
+import PartnerDetails from '../../components/PartnerDetails/PartnerDetails';
 const MainPage = () => {
 
   return (
@@ -27,7 +29,9 @@ const MainPage = () => {
             <Route path="/services" element={<Services />} />
             <Route path="/tours" element={<Tours />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/partners" element={<Partners />} />
             <Route path="/users/user" element={<UserDetails />} />
+            <Route path="/partners/partner" element={<PartnerDetails />} />
             <Route path="/message" element={<Message />} />
             {/* Default route */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
