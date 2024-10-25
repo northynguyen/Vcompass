@@ -13,32 +13,37 @@ const calculateTotalRate = (ratings) => {
 };
 
 // TourItem Component
-const TourItem = ({ imgSrc, name, description, price, totalRate, status, setCurrentActivity }) => {
-
+const AttractionItem = ({ imgSrc, name, description, price,
+  totalRate, status, setCurrentActivity, idDestination }) => {
+  const { url } = useContext(StoreContext);
+  console.log("id:", idDestination)
   const handleSelect = () => {
     setCurrentActivity({
+      idDestination,
       imgSrc,
       name,
       description,
       price,
-      totalRate
+      totalRate,
+      activityType: "Attraction",
+      visible: true
     });
     console.log(name)
   };
 
   return (
-    <div className="tour-item">
-      <img src={imgSrc} alt={name} className="tour-image" />
-      <div className="tour-details">
+    <div className="list-accom__tour-item">
+      <img src={`${url}/images/${imgSrc}`} alt={name} className="list-accom__tour-item-image" />
+      <div className="list-accom__tour-details">
         <div className="tour-header">
-          <span className="tour-rating">{totalRate}</span>
+          <span className="list-accom__tour-rating">{totalRate}</span>
         </div>
         <h3>{name}</h3>
         <div className="tour-info">
           <p>{description}</p>
         </div>
       </div>
-      <div className="tour-price">
+      <div className="list-accom__tour-price">
         <div className="price-container">
           <span className="price-text" >{price}</span>
           <span className="persion-text">per person</span>
@@ -50,9 +55,9 @@ const TourItem = ({ imgSrc, name, description, price, totalRate, status, setCurr
     </div>
   );
 }
-const SelectButton = () => {
+const SelectButton = ({ onClick }) => {
   return (
-    <div className="select-container">
+    <div onClick={onClick} className="select-container">
       <button className="selection-btn">Chọn</button>
     </div>
   );
@@ -81,12 +86,13 @@ const TourList = ({ tours, sortOption, status, setCurrentActivity }) => {
     (currentPage - 1) * toursPerPage,
     currentPage * toursPerPage
   );
-
+  console.log("currrentTour:", currentTours)
   return (
     <div className="list-accom__tour-list">
       {currentTours.map((tour, index) => (
-        <TourItem
+        <AttractionItem
           key={index}
+          idDestination={tour.idDestination}
           imgSrc={tour.imgSrc}
           name={tour.name}
           description={tour.description}
@@ -178,10 +184,9 @@ const ListAccom = ({ status, setCurrentActivity }) => {
     axios.get(`${url}/api/attractions/`)
       .then(response => {
         const dbAttractions = response.data.attractions;
-        console.log(dbAttractions);
-
         const mappedTours = dbAttractions.map(attraction => ({
-          imgSrc: attraction.image[0],
+          idDestination: attraction._id,
+          imgSrc: attraction.images[0],
           name: attraction.attraction_name,
           description: attraction.description,
           price: `${(attraction.price).toLocaleString()}₫`,
@@ -207,5 +212,5 @@ const ListAccom = ({ status, setCurrentActivity }) => {
 };
 
 export default ListAccom;
-export { TourItem };
+export { AttractionItem, SelectButton };
 

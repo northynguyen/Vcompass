@@ -1,55 +1,102 @@
-import Accommodation from "../models/accommodation.js";
-import mongoose from "mongoose";
 import fs from "fs";
-
-
+import mongoose from "mongoose";
+import Accommodation from "../models/accommodation.js";
 
 export const getListAccomm = async (req, res) => {
   try {
     const accommodations = await Accommodation.find();
-    res.json({success: true, message: "Get data accommodation success",accommodations});
+    res.json({
+      success: true,
+      message: "Get data accommodation success",
+      accommodations,
+    });
   } catch (error) {
-    res.json({ success: false, message: "Error retrieving accommodations", error });
+    res.json({
+      success: false,
+      message: "Error retrieving accommodations",
+      error,
+    });
   }
-}
+};
+export const getAccommodationById = async (req, res) => {
+  const { id } = req.params; // Lấy id từ params
+  try {
+    // Kiểm tra xem id có hợp lệ hay không
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid ID format" });
+    }
 
+    const accommodation = await Accommodation.findById(id); // Tìm accommodation theo id
+
+    // Nếu không tìm thấy accommodation, trả về thông báo lỗi
+    if (!accommodation) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Accommodation not found" });
+    }
+
+    // Trả về thông tin accommodation dưới dạng JSON
+    res.json({
+      success: true,
+      message: "Get accommodation success",
+      accommodation,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: "Error retrieving accommodation",
+      error,
+    });
+  }
+};
 
 export const getListAccommbyPartner = async (req, res) => {
   const { partnerId } = req.params;
   try {
     const accommodations = await Accommodation.find({ idPartner: partnerId });
-    res.json({success: true, accommodations});
+    res.json({ success: true, accommodations });
   } catch (error) {
-    res.json({ success: false, message: "Error retrieving accommodations", error });
+    res.json({
+      success: false,
+      message: "Error retrieving accommodations",
+      error,
+    });
   }
 };
 
-
-
 export const addNew = async (req, res) => {
   const { partnerId } = req.params;
-  const accommodationData =  req.body ;
-  if (typeof accommodationData.location === 'string') {
+  const accommodationData = req.body;
+  if (typeof accommodationData.location === "string") {
     accommodationData.location = JSON.parse(accommodationData.location);
   }
 
   // Parse contact if it's a string
-  if (typeof accommodationData.contact === 'string') {
+  if (typeof accommodationData.contact === "string") {
     accommodationData.contact = JSON.parse(accommodationData.contact);
   }
 
   try {
     const newAccommodation = new Accommodation({
-      ...accommodationData, 
+      ...accommodationData,
       idPartner: partnerId,
-      images: req.files ? req.files.map(file => file.filename) : [] // Store uploaded images
+      images: req.files ? req.files.map((file) => file.filename) : [], // Store uploaded images
     });
 
-   
     await newAccommodation.save();
-    res.json({ success: true, message: "Accommodation added successfully", accommodation: newAccommodation });
+    res.json({
+      success: true,
+      message: "Accommodation added successfully",
+      accommodation: newAccommodation,
+    });
   } catch (error) {
-    res.json({ success: false, message: "Error adding new accommodation", error });
+    res.json({
+      success: false,
+      message: "Error adding new accommodation",
+      error,
+    });
     console.error(error);
   }
 };
@@ -60,14 +107,20 @@ export const updateAccommodation = async (req, res) => {
   const updateData = req.body;
 
   try {
-    const accommodation = await Accommodation.findOne({ _id: id, idPartner: partnerId });
+    const accommodation = await Accommodation.findOne({
+      _id: id,
+      idPartner: partnerId,
+    });
     if (!accommodation) {
-      return res.json({ success: false, message: "Accommodation not found or partner mismatch" });
+      return res.json({
+        success: false,
+        message: "Accommodation not found or partner mismatch",
+      });
     }
 
     // Ensure updateData.images is an array
     const updatedImages = updateData.images ? updateData.images : [];
-    
+
     // Handle new uploaded images, if any
     if (req.files && req.files.length > 0) {
       const newImagePaths = req.files.map((file) => file.filename);
@@ -78,18 +131,20 @@ export const updateAccommodation = async (req, res) => {
     const existingImages = accommodation.images ? accommodation.images : [];
 
     // Filter out images that should be removed
-    const imagesToRemove = existingImages.filter(img => updatedImages.includes(img) === false);
+    const imagesToRemove = existingImages.filter(
+      (img) => updatedImages.includes(img) === false
+    );
 
     // Update accommodation images
     updateData.images = updatedImages;
 
     // Parse location if it's a string
-    if (typeof updateData.location === 'string') {
+    if (typeof updateData.location === "string") {
       updateData.location = JSON.parse(updateData.location);
     }
 
     // Parse contact if it's a string
-    if (typeof updateData.contact === 'string') {
+    if (typeof updateData.contact === "string") {
       updateData.contact = JSON.parse(updateData.contact);
     }
 
@@ -111,41 +166,63 @@ export const updateAccommodation = async (req, res) => {
     };
 
     // Delete all images that are no longer associated with the accommodation
-    await Promise.all(imagesToRemove.map(image => deleteImage(image)));
+    await Promise.all(imagesToRemove.map((image) => deleteImage(image)));
 
     // Save the updated accommodation
     await accommodation.save();
 
-    res.json({ success: true, message: "Accommodation updated successfully", accommodation });
+    res.json({
+      success: true,
+      message: "Accommodation updated successfully",
+      accommodation,
+    });
   } catch (error) {
-    res.json({ success: false, message: "Error updating accommodation", error });
+    res.json({
+      success: false,
+      message: "Error updating accommodation",
+      error,
+    });
     console.error(error);
   }
 };
-
-
-
 
 // Add a new room type to an accommodation by partnerId and accommodationId
 export const addNewRoom = async (req, res) => {
   const { accommodationId } = req.params;
   const roomTypeData = req.body;
 
-  const requiredFields = ['nameRoomType', 'roomSize', 'pricePerNight', 'status', 'numPeople', 'amenities'];
-  
+  const requiredFields = [
+    "nameRoomType",
+    "roomSize",
+    "pricePerNight",
+    "status",
+    "numPeople",
+    "amenities",
+  ];
+
   for (const field of requiredFields) {
     if (!roomTypeData[field]) {
-      return res.json({ success: false, message: `Missing required field: ${field}` });
+      return res.json({
+        success: false,
+        message: `Missing required field: ${field}`,
+      });
     }
   }
 
   try {
     const accommodation = await Accommodation.findOne({ _id: accommodationId });
     if (!accommodation) {
-      return res.json({ success: false, message: "Accommodation not found or partner mismatch" });
+      return res.json({
+        success: false,
+        message: "Accommodation not found or partner mismatch",
+      });
     }
 
-    const existingRoomType = accommodation.roomTypes.find(room => room.nameRoomType.toLowerCase() === roomTypeData.nameRoomType.toLowerCase());
+    const existingRoomType = accommodation.roomTypes.find(
+      (room) =>
+        room.nameRoomType.toLowerCase() ===
+        roomTypeData.nameRoomType.toLowerCase()
+    );
     if (existingRoomType) {
       return res.json({ success: false, message: "Room type already exists" });
     }
@@ -153,30 +230,38 @@ export const addNewRoom = async (req, res) => {
     const newRoomType = {
       idRoomType: new mongoose.Types.ObjectId(),
       ...roomTypeData,
-      images: req.files ? req.files.map(file => file.filename) : [] // Store uploaded images
+      images: req.files ? req.files.map((file) => file.filename) : [], // Store uploaded images
     };
 
     accommodation.roomTypes.push(newRoomType); // Add new room type
     await accommodation.save();
 
-    res.json({ success: true, message: "Room type added successfully", rooms: accommodation.roomTypes });
+    res.json({
+      success: true,
+      message: "Room type added successfully",
+      rooms: accommodation.roomTypes,
+    });
   } catch (error) {
-    console.error('Error adding new room type:', error);
+    console.error("Error adding new room type:", error);
     res.json({ success: false, message: "Error adding new room type" });
   }
 };
 
-
 export const deleteRoom = async (req, res) => {
   const { accommodationId, roomTypeId } = req.params;
-  
+
   try {
     const accommodation = await Accommodation.findOne({ _id: accommodationId });
     if (!accommodation) {
-      return res.json({ success: false, message: "Accommodation not found or partner mismatch" });
+      return res.json({
+        success: false,
+        message: "Accommodation not found or partner mismatch",
+      });
     }
 
-    const roomTypeIndex = accommodation.roomTypes.findIndex(element => element.idRoomType === roomTypeId);
+    const roomTypeIndex = accommodation.roomTypes.findIndex(
+      (element) => element.idRoomType === roomTypeId
+    );
     if (roomTypeIndex === -1) {
       return res.json({ success: false, message: "Room type not found" });
     }
@@ -184,8 +269,8 @@ export const deleteRoom = async (req, res) => {
     const roomType = accommodation.roomTypes[roomTypeIndex];
 
     // Remove images from server before deleting room type
-    roomType.images.forEach(image => {
-      fs.unlink(`uploads/${image}`, err => {
+    roomType.images.forEach((image) => {
+      fs.unlink(`uploads/${image}`, (err) => {
         if (err) console.error("Error deleting old image:", err);
         else console.log(`Successfully deleted old image: ${imagePath}`);
       });
@@ -195,27 +280,32 @@ export const deleteRoom = async (req, res) => {
 
     await accommodation.save();
 
-    res.json({ success: true, message: "Room type deleted successfully", rooms: accommodation.roomTypes });
+    res.json({
+      success: true,
+      message: "Room type deleted successfully",
+      rooms: accommodation.roomTypes,
+    });
   } catch (error) {
     res.json({ success: false, message: "Error deleting room type", error });
     console.error(error);
   }
 };
 
-
-export const  listRooms = async (req, res) => {
-  const {  accommodationId } = req.params;
+export const listRooms = async (req, res) => {
+  const { accommodationId } = req.params;
   try {
-    const accommodation = await Accommodation.findOne({ _id: accommodationId});
+    const accommodation = await Accommodation.findOne({ _id: accommodationId });
     if (!accommodation) {
-      return res.json({success: false, message: "Accommodation not found or partner mismatch" });
+      return res.json({
+        success: false,
+        message: "Accommodation not found or partner mismatch",
+      });
     }
-    res.json({success: true, rooms: accommodation.roomTypes});
+    res.json({ success: true, rooms: accommodation.roomTypes });
   } catch (error) {
-    res.json({success: false, message: "Error getting rooms", error });
+    res.json({ success: false, message: "Error getting rooms", error });
   }
-}
-
+};
 
 export const updateRoomType = async (req, res) => {
   const { accommodationId, roomTypeId } = req.params;
@@ -224,13 +314,19 @@ export const updateRoomType = async (req, res) => {
     // Fetch the accommodation by ID
     const accommodation = await Accommodation.findById(accommodationId);
     if (!accommodation) {
-      return res.status(404).json({ success: false, message: "Accommodation not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Accommodation not found." });
     }
 
     // Find the specific room type within the accommodation
-    const roomType = accommodation.roomTypes.find((element) => element.idRoomType === roomTypeId);
+    const roomType = accommodation.roomTypes.find(
+      (element) => element.idRoomType === roomTypeId
+    );
     if (!roomType) {
-      return res.status(404).json({ success: false, message: "Room type not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Room type not found." });
     }
 
     const roomTypeUpdate = JSON.parse(req.body.roomTypeUpdate);
@@ -242,16 +338,17 @@ export const updateRoomType = async (req, res) => {
     }
 
     const existingImages = roomType.images || [];
-    const imagesToRemove = existingImages.filter(img => !roomTypeUpdate.images.includes(img));
+    const imagesToRemove = existingImages.filter(
+      (img) => !roomTypeUpdate.images.includes(img)
+    );
 
     roomTypeUpdate.images = updatedImages;
 
     Object.assign(roomType, roomTypeUpdate);
 
-
     const deleteImage = (imageName) => {
       return new Promise((resolve, reject) => {
-        fs.unlink((`uploads/${imageName}`), (err) => {
+        fs.unlink(`uploads/${imageName}`, (err) => {
           if (err) {
             console.error(`Failed to delete image ${imageName}:`, err);
             // Decide whether to reject or resolve based on your needs
@@ -265,7 +362,7 @@ export const updateRoomType = async (req, res) => {
     };
 
     // Delete all images that are no longer associated with the room
-    await Promise.all(imagesToRemove.map(image => deleteImage(image)));
+    await Promise.all(imagesToRemove.map((image) => deleteImage(image)));
     await accommodation.save();
 
     res.json({
@@ -275,6 +372,10 @@ export const updateRoomType = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating room type:", error);
-    res.status(500).json({ success: false, message: "Error updating room type.", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: "Error updating room type.",
+      error: error.message,
+    });
   }
 };

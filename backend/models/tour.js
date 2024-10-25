@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { ScheduleSchema } from "./Schedule.js";
+import { ScheduleSchema } from "./schedule.js";
 
 const TourSchema = new Schema({
   idTour: { type: String, required: true },

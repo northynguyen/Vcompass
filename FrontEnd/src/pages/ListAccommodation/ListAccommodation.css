@@ -1,7 +1,7 @@
 /* Container */
 .list-accom__container {
   display: flex;
-  max-width: 80%;
+  max-width: 95%;
   margin: 0 auto;
   margin-top: 40px;
   margin-bottom: 40px;
@@ -58,7 +58,7 @@
 
 /* Tour List */
 .list-accom__tour-list {
-  flex-grow: 1;
+  width: 100%;
 }
 
 /* Individual Tour Item */
@@ -71,6 +71,7 @@
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .list-accom__tour-item:hover {
@@ -137,12 +138,6 @@
   gap: 10px;
   min-width: 120px;
   margin-left: 20px;
-}
-
-.list-accom__tour-price p {
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
 }
 
 .list-accom__show-prices-button {

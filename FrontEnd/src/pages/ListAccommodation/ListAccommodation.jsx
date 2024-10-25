@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import "./ListAccommodation.css";
+import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
+import { SelectButton } from "../ListAttractions/ListAttractions";
+import "./ListAccommodation.css";
 
 // Helper function for calculating ratings
 const calculateTotalRate = (ratings) => {
@@ -13,30 +14,50 @@ const calculateTotalRate = (ratings) => {
 };
 
 // TourItem Component
-const TourItem = ({ imgSrc, name, description, totalRate, location, facilities, url }) => (
-  <div className="list-accom__tour-item">
-    <img src={`${url}/images/${imgSrc}`} alt={name} className="list-accom__tour-item-image" />
-    <div className="list-accom__tour-details">
-      <h3>{name}</h3>
-      <div className="list-accom__tour-location">
-        <a href="#">{location}</a>
+const AccomItem = ({ imgSrc, name, description, totalRate,
+  location, facilities, url, status, setCurrentActivity, idDestination }) => {
+  const handleSelect = () => {
+    setCurrentActivity({
+      idDestination,
+      imgSrc,
+      name,
+      description,
+      totalRate,
+      location,
+      facilities,
+      url,
+      activityType: "Accommodation",
+      visible: true
+    });
+  };
+
+  return (
+    <div className="list-accom__tour-item">
+      <img src={`${url}/images/${imgSrc}`} alt={name} className="list-accom__tour-item-image" />
+      <div className="list-accom__tour-details">
+        <h3>{name}</h3>
+        <div className="list-accom__tour-location">
+          <a href="#">{location}</a>
+        </div>
+        <div className="list-accom__tour-facilities">
+          {facilities.map((facility, index) => (
+            <span key={index}>{facility}</span>
+          ))}
+        </div>
+        <p>{description}</p>
+        <div className="list-accom__tour-rating">{totalRate}</div>
       </div>
-      <div className="list-accom__tour-facilities">
-        {facilities.map((facility, index) => (
-          <span key={index}>{facility}</span>
-        ))}
+      <div className="list-accom__tour-price">
+        {
+          status === "Schedule" && <SelectButton onClick={handleSelect} />
+        }
       </div>
-      <p>{description}</p>
-      <div className="list-accom__tour-rating">{totalRate}</div>
     </div>
-    <div className="list-accom__tour-price">
-      <button className="list-accom__show-prices-button">Show prices</button>
-    </div>
-  </div>
-);
+  );
+}
 
 // TourList Component
-const TourList = ({ tours, sortOption, status, url }) => {
+const TourList = ({ tours, sortOption, status, url, setCurrentActivity }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const toursPerPage = status === "Schedule" ? 3 : 8;
   const sortedTours = [...tours].sort((a, b) => {
@@ -56,7 +77,8 @@ const TourList = ({ tours, sortOption, status, url }) => {
   return (
     <div className="list-accom__tour-list">
       {currentTours.map((tour, index) => (
-        <TourItem key={index} {...tour} url={url} />
+        <AccomItem key={index} {...tour} url={url}
+          status={status} setCurrentActivity={setCurrentActivity} />
       ))}
       <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
     </div>
@@ -95,7 +117,7 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => (
 );
 
 // Main ListAccom Component
-const ListAccom = ({ status }) => {
+const ListAccom = ({ status, setCurrentActivity }) => {
   const { url } = useContext(StoreContext);
   const [tours, setTours] = useState([]);
   const [sortOption, setSortOption] = useState("Popularity");
@@ -104,6 +126,7 @@ const ListAccom = ({ status }) => {
     axios.get(`${url}/api/accommodations/`)
       .then(response => {
         const mappedTours = response.data.accommodations.map(accommodation => ({
+          idDestination: accommodation._id,
           imgSrc: accommodation.images[0],
           name: accommodation.name,
           description: accommodation.description,
@@ -119,9 +142,12 @@ const ListAccom = ({ status }) => {
   return (
     <div className="list-accom__container">
       <Filters sortOption={sortOption} setSortOption={setSortOption} />
-      <TourList tours={tours} sortOption={sortOption} status={status} url={url} />
+      <TourList tours={tours} sortOption={sortOption}
+        status={status} url={url} setCurrentActivity={setCurrentActivity} />
     </div>
   );
 };
 
 export default ListAccom;
+export { AccomItem };
+

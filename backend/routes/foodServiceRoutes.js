@@ -1,24 +1,40 @@
 import express from "express";
-import { getListFoodService, getListByPartner, createFoodService, updateFoodService, deleteFoodService } from "../controllers/foodServiceController.js";
-import {upload} from "../middleware/upload.js";
+import {
+  createFoodService,
+  deleteFoodService,
+  getFoodServiceById,
+  getListByPartner,
+  getListFoodService,
+  updateFoodService,
+} from "../controllers/foodServiceController.js";
 import authMiddleware from "../middleware/auth.js";
-
+import { upload } from "../middleware/upload.js";
 
 const foodServiceRoutes = express.Router();
 
 foodServiceRoutes.get("/", getListFoodService);
 foodServiceRoutes.get("/partner", authMiddleware, getListByPartner);
 
-foodServiceRoutes.post("/add", authMiddleware, upload.fields([
-    { name: 'images', maxCount: 5 }, 
-    { name: 'menuImages', maxCount: 5 }
-]), createFoodService);
+foodServiceRoutes.post(
+  "/add",
+  authMiddleware,
+  upload.fields([
+    { name: "images", maxCount: 5 },
+    { name: "menuImages", maxCount: 5 },
+  ]),
+  createFoodService
+);
 
-foodServiceRoutes.post("/update", authMiddleware, upload.fields([
-    { name: 'images', maxCount: 5 }, 
-    { name: 'menuImages', maxCount: 5 }
-]), updateFoodService);
+foodServiceRoutes.post(
+  "/update",
+  authMiddleware,
+  upload.fields([
+    { name: "images", maxCount: 5 },
+    { name: "menuImages", maxCount: 5 },
+  ]),
+  updateFoodService
+);
 
 foodServiceRoutes.post("/delete", authMiddleware, deleteFoodService);
-
+foodServiceRoutes.get("/:id", getFoodServiceById);
 export default foodServiceRoutes;
