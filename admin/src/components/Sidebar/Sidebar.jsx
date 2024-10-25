@@ -43,7 +43,7 @@ const Sidebar = () => {
                         Users
                     </li>
                     <li
-                        className={isActive('/partners') ? 'active' : ''}
+                        className={isActive('/partners') || isActive('/partners/partner/') ? 'active' : ''}
                         onClick={() => handleNavigation('/partners')}
                     >
                         <FaUserFriends />

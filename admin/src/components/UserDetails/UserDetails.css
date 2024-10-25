@@ -1,0 +1,100 @@
+.user-details {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-details h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #343a40;
+}
+
+.user-info-avatar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.user-info-avatar img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #007bff;
+}
+
+.user-details-info {
+    font-size: 1.1em;
+    color: #495057;
+}
+
+.user-details-info p {
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+.user-details-info strong {
+    color: #007bff;
+}
+
+.user-details-info p {
+    background-color: #f1f3f5;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.block-user-form {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.block-user-form div {
+    margin-bottom: 15px;
+}
+
+.block-user-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.block-user-form input,
+.block-user-form textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+.block-user-form textarea {
+    height: 100px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-buttons button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-buttons button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+}
+
+.form-buttons button[type="button"] {
+    background-color: #dc3545;
+    color: white;
+}
