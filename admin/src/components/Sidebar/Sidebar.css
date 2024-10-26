@@ -1,3 +1,4 @@
+/* Sidebar styles */
 .menu {
     width: 300px;
     background-color: #fff;
@@ -7,8 +8,11 @@
     border-radius: 10px;
     border: 1px solid #ccc;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease;
+    /* Smooth transition for width changes */
 }
 
+/* Menu items */
 .menu ul li {
     padding: 15px 15px;
     display: flex;
@@ -21,9 +25,7 @@
 
 .menu ul li svg {
     margin-right: 10px;
-    /* Space between icon and text */
     font-size: 18px;
-    /* Adjust icon size */
 }
 
 .menu ul li.active {
@@ -32,6 +34,7 @@
     border-radius: 10px;
 }
 
+/* Badge for notifications */
 .notification-badge {
     background-color: red;
     color: white;
@@ -41,12 +44,50 @@
     margin-left: auto;
 }
 
-.submenu {
-    padding-left: 20px;
-}
+/* Responsive styles for small screens */
+@media (max-width: 768px) {
+    .menu {
+        width: 80px;
+        /* Sidebar width reduced */
+        padding: 10px;
+    }
 
-.highlight {
-    background-color: #e9f9a3;
-    border-radius: 4px;
-    padding: 5px 10px;
+    .menu ul li {
+        justify-content: center;
+        padding: 10px 0;
+    }
+
+    .menu ul li svg {
+        margin-right: 0;
+        font-size: 24px;
+        /* Increase icon size */
+    }
+
+    .menu ul li {
+        font-size: 0;
+        /* Hide text */
+    }
+
+    .menu ul li.active {
+        background-color: #f0f0f0;
+    }
+
+    .menu ul li:hover {
+        background-color: #f0f0f0;
+        /* Hover effect to give feedback */
+    }
+
+    /* Show tooltip on hover for better UX */
+    .menu ul li:hover:after {
+        content: attr(data-title);
+        /* Show the title from a custom attribute */
+        position: absolute;
+        left: 100px;
+        background-color: #333;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
 }

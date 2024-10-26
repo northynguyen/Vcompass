@@ -11,7 +11,7 @@ const AttractionSchema = new Schema({
   },
   city: { type: String, required: true },
   price: { type: Number, required: true },
-  image: [{ type: String }],
+  images: [{ type: String }],
   openTime: { type: String },
   closeTime: { type: String },
   amenities: [{ type: String }],

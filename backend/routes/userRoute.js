@@ -1,14 +1,17 @@
 // routes/authRoutes.js
 
 import express from "express";
-import { 
-    loginUser, 
-    registerUser, 
-    loginPartner, 
-    loginAdmin, 
+import {
+    loginUser,
+    registerUser,
+    loginPartner,
+    loginAdmin,
     registerPartner,
+    registerAdmin,
     loginWithGoogle,
-    googleCallback
+    googleCallback,
+    getAllUsers,
+    getAllPartners,
 } from "../controllers/userController.js";
 
 const userRoutes = express.Router();
@@ -19,9 +22,13 @@ userRoutes.post("/register/user", registerUser);
 userRoutes.post("/login/partner", loginPartner);
 userRoutes.post("/register/partner", registerPartner);
 userRoutes.post("/login/admin", loginAdmin);
+userRoutes.post("/register/admin", registerAdmin);
 
 // Routes cho đăng nhập bằng Google
 userRoutes.get("/google", loginWithGoogle); // Redirect đến Google
 userRoutes.get("/google/callback", googleCallback); // Google callback
 
+//Get all users
+userRoutes.get('/users', getAllUsers);
+userRoutes.get('/partners', getAllPartners);
 export default userRoutes;

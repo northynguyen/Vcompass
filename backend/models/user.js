@@ -1,5 +1,4 @@
-import { Schema, model } from "mongoose";
-import mongoose from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
 
 const UserSchema = new Schema({
@@ -43,11 +42,15 @@ const UserSchema = new Schema({
       minlength: 8,
   },
 
-  status: {
-      type: String,
-      enum: ['active', 'inactive'],
-      default: 'active',
-  },
+    status: {
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'active',
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    }
 }, { timestamps: true });
 const userModel = mongoose.models.User || model("user", UserSchema);
 

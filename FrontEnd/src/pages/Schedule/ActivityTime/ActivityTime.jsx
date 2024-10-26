@@ -1,12 +1,13 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
-import { FaRegClock } from 'react-icons/fa';
+import { useContext, useEffect, useState } from "react";
+import { FaEdit, FaRegClock } from 'react-icons/fa';
+import { StoreContext } from "../../../Context/StoreContext";
 
-const ActivityTime = ({ time }) => {
+const ActivityTime = ({ timeStart, timeEnd }) => {
   const generateTimeOptions = () => {
     const options = [];
     for (let hour = 0; hour < 24; hour++) {
-      for (let minute = 0; minute < 60; minute += 10) {
+      for (let minute = 0; minute < 60; minute += 30) {
         const formattedTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
         options.push(formattedTime);
       }
@@ -15,18 +16,17 @@ const ActivityTime = ({ time }) => {
   };
 
   const timeOptions = generateTimeOptions();
-  
+
   // Initialize with the start and end times passed from props (time.dateStart, time.dateEnd)
-  const [startTime, setStartTime] = useState(time?.dateStart || timeOptions[0]);
-  const [endTime, setEndTime] = useState(time?.dateEnd || timeOptions[1]);
+  const [startTime, setStartTime] = useState(timeStart || timeOptions[0]);
+  const [endTime, setEndTime] = useState(timeEnd || timeOptions[1]);
 
   useEffect(() => {
-    console.log(time);
-    if (time?.timeStart && time?.timeEnd) {
-      setStartTime(time.timeStart);
-      setEndTime(time.timeEnd);
+    if (timeStart && timeEnd) {
+      setStartTime(timeStart);
+      setEndTime(timeEnd);
     }
-  }, [time]);
+  }, [timeStart, timeEnd]);
 
   const handleStartChange = (e) => {
     setStartTime(e.target.value);
@@ -40,15 +40,13 @@ const ActivityTime = ({ time }) => {
       alert('Thời gian kết thúc phải lớn hơn thời gian bắt đầu.');
     }
   };
-
-  // Filter the end time options to only show times later than the selected start time
+  console.log("Time:", timeStart)
   const filteredEndTimeOptions = timeOptions.filter(option => option > startTime);
-
   return (
     <div className="time-container ">
       <div className="time-select-wrapper">
         <FaRegClock className='icon' />
-        <select className='time-schedule' value={startTime} onChange={handleStartChange}>
+        <select className='time-schedule' value={timeStart} onChange={handleStartChange}>
           {timeOptions.map((option, index) => (
             <option key={index} value={option}>
               {option}
@@ -59,7 +57,7 @@ const ActivityTime = ({ time }) => {
       <h6>To</h6>
       <div className="time-select-wrapper">
         <FaRegClock className='icon' />
-        <select className='time-schedule' value={endTime} onChange={handleEndChange}>
+        <select className='time-schedule' value={timeEnd} onChange={handleEndChange}>
           {filteredEndTimeOptions.map((option, index) => (
             <option key={index} value={option}>
               {option}
@@ -70,5 +68,102 @@ const ActivityTime = ({ time }) => {
     </div>
   );
 };
+
+export const AccomActivity = ({ data, handleEdit }) => {
+  const { url } = useContext(StoreContext);
+  return (
+    <div className="time-schedule-item">
+      <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
+      <div className="time-schedule-details">
+        <div className="type-activity">
+          <p>NGHỈ NGƠI</p>
+        </div>
+        <div className="expense-actions">
+          <button className="edit-btn"
+            onClick={handleEdit}>
+            <FaEdit />
+          </button>
+        </div>
+        <div className="time-schedule-header">
+          <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
+        </div>
+        <h3>{data.name}</h3>
+        <div className="time-schedule-info">
+          <i className="fa-solid fa-file"></i>
+          <span>
+            {data.description}
+          </span>
+        </div>
+      </div>
+    </div>
+  )
+}
+export const FoodServiceActivity = ({ data, handleEdit }) => {
+  const { url } = useContext(StoreContext);
+  return (
+    <div className="time-schedule-item">
+      <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
+      <div className="time-schedule-details">
+        <div className="type-activity">
+          <p>ĂN UỐNG</p>
+        </div>
+        <div className="expense-actions">
+          <button className="edit-btn"
+            onClick={handleEdit}>
+            <FaEdit />
+          </button>
+        </div>
+        <div className="time-schedule-header">
+          <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
+        </div>
+        <h3>{data.name}</h3>
+        <div className="time-schedule-info">
+          <i className="fa-solid fa-file"></i>
+          <span>
+            {data.description}
+          </span>
+        </div>
+      </div>
+    </div>
+  )
+}
+export const AttractionActivity = ({ data, handleEdit }) => {
+  const { url } = useContext(StoreContext);
+  return (
+    <div className="time-schedule-item">
+      <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
+      <div className="time-schedule-details">
+        <div className="type-activity">
+          <p>THAM QUAN</p>
+        </div>
+        <div className="expense-actions">
+          <button className="edit-btn"
+            onClick={handleEdit}>
+            <FaEdit />
+          </button>
+        </div>
+        <div className="time-schedule-header">
+          <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
+        </div>
+        <h3>{data.name}</h3>
+        <div className="time-schedule-info">
+          <i className="fa-solid fa-file"></i>
+          <span>
+            {data.description}
+          </span>
+        </div>
+      </div>
+      <div className="list-accom__tour-price">
+        <div className="price-container">
+          <span className="price-text" >{data.price}</span>
+          <span className="persion-text">per person</span>
+        </div>
+        {
+          status === "Schedule" && <SelectButton onClick={handleSelect} />
+        }
+      </div>
+    </div>
+  )
+}
 
 export default ActivityTime;

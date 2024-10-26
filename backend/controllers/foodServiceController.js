@@ -12,7 +12,28 @@ const getListFoodService = async (req, res) => {
         console.log(error);
     }
 };
+export const getFoodServiceById = async (req, res) => {
+    const { id } = req.params; // Lấy id từ params
+    try {
+        // Kiểm tra xem id có hợp lệ hay không
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ success: false, message: 'Invalid ID format' });
+        }
 
+        const foodService = await FoodService.findById(id); // Tìm food service theo id
+
+        // Nếu không tìm thấy food service, trả về thông báo lỗi
+        if (!foodService) {
+            return res.status(404).json({ success: false, message: 'Food service not found' });
+        }
+
+        // Trả về thông tin food service dưới dạng JSON
+        res.status(200).json({ success: true, message: "Get food service successfully", foodService });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error getting food service", error });
+        console.log(error);
+    }
+};
 
 const getListByPartner = async (req, res) => {
     const  partnerId  = req.body.userId;

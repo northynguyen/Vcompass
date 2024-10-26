@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
 import "./ListAttractions.css";
 
@@ -13,27 +13,57 @@ const calculateTotalRate = (ratings) => {
 };
 
 // TourItem Component
-const TourItem = ({ imgSrc, name, description, price, totalRate }) => (
-  <div className="list-accom__tour-item">
-    <img src={imgSrc} alt={name} className="list-accom__tour-item-image" />
-    <div className="list-accom__tour-details">
-      <div className="tour-header">
-        <span className="list-accom__tour-rating">{totalRate}</span>
-      </div>
-      <h3>{name}</h3>
-      <div className="tour-info">
-        <p>{description}</p>
-      </div>
-    </div>
-    <div className="list-accom__tour-price">
-      <p>{price}</p>
-      <span className="persion-text">per person</span>
-    </div>
-  </div>
-);
+const AttractionItem = ({ imgSrc, name, description, price,
+  totalRate, status, setCurrentActivity, idDestination }) => {
+  const { url } = useContext(StoreContext);
+  console.log("id:", idDestination)
+  const handleSelect = () => {
+    setCurrentActivity({
+      idDestination,
+      imgSrc,
+      name,
+      description,
+      price,
+      totalRate,
+      activityType: "Attraction",
+      visible: true
+    });
+    console.log(name)
+  };
 
+  return (
+    <div className="list-accom__tour-item">
+      <img src={`${url}/images/${imgSrc}`} alt={name} className="list-accom__tour-item-image" />
+      <div className="list-accom__tour-details">
+        <div className="tour-header">
+          <span className="list-accom__tour-rating">{totalRate}</span>
+        </div>
+        <h3>{name}</h3>
+        <div className="tour-info">
+          <p>{description}</p>
+        </div>
+      </div>
+      <div className="list-accom__tour-price">
+        <div className="price-container">
+          <span className="price-text" >{price}</span>
+          <span className="persion-text">per person</span>
+        </div>
+        {
+          status === "Schedule" && <SelectButton onClick={handleSelect} />
+        }
+      </div>
+    </div>
+  );
+}
+const SelectButton = ({ onClick }) => {
+  return (
+    <div onClick={onClick} className="select-container">
+      <button className="selection-btn">Chọn</button>
+    </div>
+  );
+}
 // TourList Component
-const TourList = ({ tours, sortOption, status }) => {
+const TourList = ({ tours, sortOption, status, setCurrentActivity }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [toursPerPage] = useState(status === "Schedule" ? 3 : 8);
 
@@ -56,17 +86,20 @@ const TourList = ({ tours, sortOption, status }) => {
     (currentPage - 1) * toursPerPage,
     currentPage * toursPerPage
   );
-
+  console.log("currrentTour:", currentTours)
   return (
     <div className="list-accom__tour-list">
       {currentTours.map((tour, index) => (
-        <TourItem
+        <AttractionItem
           key={index}
+          idDestination={tour.idDestination}
           imgSrc={tour.imgSrc}
           name={tour.name}
           description={tour.description}
           price={tour.price}
           totalRate={tour.totalRate}
+          status={status}
+          setCurrentActivity={setCurrentActivity}
         />
       ))}
       <Pagination
@@ -142,7 +175,7 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
 };
 
 // Main ListAccom Component
-const ListAttractions = ({ status }) => {
+const ListAccom = ({ status, setCurrentActivity }) => {
   const { url } = useContext(StoreContext);
   const [tours, setTours] = useState([]);
   const [sortOption, setSortOption] = useState("Popularity");
@@ -151,10 +184,9 @@ const ListAttractions = ({ status }) => {
     axios.get(`${url}/api/attractions/`)
       .then(response => {
         const dbAttractions = response.data.attractions;
-        console.log(dbAttractions);
-
         const mappedTours = dbAttractions.map(attraction => ({
-          imgSrc: attraction.image[0],
+          idDestination: attraction._id,
+          imgSrc: attraction.images[0],
           name: attraction.attraction_name,
           description: attraction.description,
           price: `${(attraction.price).toLocaleString()}₫`,
@@ -170,12 +202,15 @@ const ListAttractions = ({ status }) => {
 
   return (
     <div className="list-accom__container">
-          <Filters sortOption={sortOption} setSortOption={setSortOption} />
-          <div className="tour-list-container">
-            <TourList tours={tours} sortOption={sortOption} status={status} />
-          </div>
+      <Filters sortOption={sortOption} setSortOption={setSortOption} />
+      <div className="tour-list-container">
+        <TourList tours={tours} sortOption={sortOption} status={status}
+          setCurrentActivity={setCurrentActivity} />
+      </div>
     </div>
-  );
+  )
 };
 
-export default ListAttractions;
+export default ListAccom;
+export { AttractionItem, SelectButton };
+
