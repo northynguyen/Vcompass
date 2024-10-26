@@ -86,12 +86,11 @@ const handleRegister = async (req, res, model, userRole = "user") => {
             email,
             password: hashedPassword,
             roles: [userRole],
-            phone_number: "0123456789",
             address: "Ho Chi Minh City",
             date_of_birth: "01-01-2000",
             gender: "male",
             avatar: "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg",
-            status: "active" // Initialize roles array with the specified role
+            status: "active" // Initialize roles array with the specified role\
         });
 
         const savedUser = await newUser.save();
@@ -102,7 +101,7 @@ const handleRegister = async (req, res, model, userRole = "user") => {
         res.json({ success: true, token, message: "Đăng ký thành công.", user: savedUser });
     } catch (error) {
         console.error(error);
-        res.json({ success: false, message: "Đã xảy ra lỗi máy chủ." });
+        res.json({ success: false, message: "Đã xảy ra lỗi máy chủ 23423452345." });
     }
 };
 

@@ -5,13 +5,6 @@ import Footer from './components/Footer/Footer'
 import Header from './components/Header/Header'
 import SignIn from './components/SignIn/SignIn'
 import './index.css'
-
-
-
-import ListAttrac from './pages/ListAttractions/ListAttractions'
-
-
-
 import ListAttrac from './pages/ListAttractions/ListAttractions'
 import Partnership from './pages/Partnership/Partnership'
 import PlaceDetails from './pages/PlaceDetails/PlaceDetails'
@@ -25,23 +18,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify';
 
 
-
-
-
-
-import { ToastContainer } from 'react-toastify';
-
-
-
-
-
-
-
 function App() {
   const [showLogin, setShowLogin] = useState(false)
-
-
-
   return (
     <>
       {showLogin && <SignIn setShowLogin={setShowLogin} />}
@@ -50,7 +28,7 @@ function App() {
         <Header setShowLogin={setShowLogin} />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/place-details" element={<PlaceDetails />} />
+          <Route path="/place-details/:type/:serviceId" element={<PlaceDetails/>} />
           <Route path="/partnership" element={<Partnership />} />
           <Route path="/about" element={<Schedule />} />
           <Route path="/create-schedule" element={<CreateSchedule />} />

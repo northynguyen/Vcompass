@@ -14,6 +14,7 @@ const UserSchema = new Schema({
       required: true,
       lowercase: true,
       trim: true,
+      unique: true,
       // Removed unique: true to allow duplicate emails across roles
   },
   phone_number: {
