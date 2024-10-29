@@ -125,7 +125,7 @@ const Header = () => {
         {/* User Profile */}
         <div className="user-profile">
           <img
-            src={user.image}
+            src={user.avatar}
             alt="User Avatar"
             className="user-avatar"
             onClick={toggleProfilePopup} // Toggle profile popup on click

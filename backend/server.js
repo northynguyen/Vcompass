@@ -39,6 +39,7 @@ app.use("/api/schedule", scheduleRouter);
 app.use("/api/attractions", Attractionrouter);
 app.use("/api/users", userRoutes);
 app.use("/api/partners", userRoutes);
+app.use("/api/user/update", userRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
