@@ -35,4 +35,14 @@ const getAttractionById = async (req, res) => {
     }
 };
 
-export { getAttractions, getAttractionById }; // Export the getAttractions;
+const createAttraction = async (req, res) => {
+    try {
+        const attraction = await Attraction.create(req.body.attraction); // Create a new attraction
+        res.status(201).json({ success: true, message: 'Attraction created successfully', attraction }); // Send the created attraction as JSON
+    } catch (error) {
+        console.error(error); // Log linaire debug
+        res.status(500).json({ message: 'Server error' }); // Trả về lỗi server
+    }
+};
+
+export { getAttractions, getAttractionById,createAttraction }; // Export the getAttractions;

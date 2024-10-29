@@ -1,0 +1,160 @@
+.room-detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.room-detail-content {
+    background: white;
+    display: flex;
+    max-width: 1000px;
+    width: 90%; /* Adjusted for better responsiveness */
+    height: 80vh;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added shadow for depth */
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    color: rgb(4, 4, 4);
+    transition: transform 0.3s ease, color 0.3s ease; /* Added transition for smoothness */
+}
+
+.close-button:hover {
+    transform: scale(1.2);
+    color: red;
+}
+
+.room-detail-image {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    gap: 20px;
+    padding: 20px; /* Added padding for spacing */
+}
+
+.main-room-image {
+    width: auto;
+    height: 70%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+    padding: 20px 10px 0 10px; /* Adjusted padding for consistency */
+}
+
+.room-thumbnails {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+    max-height: 30vh;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.room-thumbnails img {
+    width: 60px;
+    height: 50px;
+    object-fit: cover;
+    margin: 0 5px;
+    cursor: pointer;
+    opacity: 0.5;
+    border: 2px solid transparent;
+    transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+.thumbnail.active {
+    opacity: 1;
+    border: 2px solid #007bff;
+}
+
+.back-btn, .next-btn {
+    position: absolute;
+    top: 30%;
+    opacity: 0.5;
+    background: transparent;
+    border: none;
+    font-size: 60px;
+    cursor: pointer;
+    color: rgb(13, 81, 169);
+    transition: opacity 0.3s ease;
+}
+
+.back-btn:hover, .next-btn:hover {
+    opacity: 1;
+}
+
+.back-btn {
+    left: 10px;
+}
+
+.next-btn {
+    right: 10px;
+}
+
+.room-detail-info {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.room-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    max-height: fit-content;
+}
+
+.room-features {
+    margin-top: 20px;
+}
+
+.room-price {
+    margin-top: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.booking-container {
+    position: sticky;
+    bottom: 0;
+    background-color: white;
+    padding: 10px 0;
+    text-align: center;
+    width: 100%;
+}
+
+.booking-now-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: background-color 0.3s ease; /* Added transition for smoothness */
+}
+
+.booking-now-btn:hover {
+    background-color: #218838;
+}

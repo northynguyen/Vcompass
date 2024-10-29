@@ -98,3 +98,25 @@
     background-color: #dc3545;
     color: white;
 }
+
+.user-details-info select {
+    width: 100px;
+    height: 40px;
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    color: #333;
+}
+
+.user-details-info .select:focus {
+    border-color: #4a90e2;
+
+}
+
+.user-details-info option {
+    padding: 10px;
+    /* Khoảng cách giữa nội dung của từng option */
+}

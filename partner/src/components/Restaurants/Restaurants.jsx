@@ -76,6 +76,15 @@ const Restaurants = () => {
         setSelectedTab('rooms');
     };
 
+    if(restaurants.length === 0) {
+        return (
+            <div className="Restaurants-container">
+                <h2>Danh Sách Nhà Hàng/Quán Nước</h2>
+                <p></p>
+            </div>
+        );
+    }
+
     return (
         <div className="Restaurants-container">
             {!selectedTab ? (
@@ -96,6 +105,7 @@ const Restaurants = () => {
                                         restaurant={restaurant} 
                                         onMenuClick={() => openPopup('menu', restaurant)} 
                                         onCardClick={() => openRoomsTab(restaurant)}
+                                        url={url}
                                     />
                                 ))
                             ) : (
@@ -149,7 +159,7 @@ const Restaurants = () => {
                     )}
                 </div>
             ) : (
-                <RestaurantDetail RestaurantData={selectedRestaurant} onBack={() => setSelectedTab(null)}  />
+                <RestaurantDetail RestaurantData={selectedRestaurant} onBack={() => { setSelectedTab(null); fetchRestaurants(); }}  />
             )}
         </div>
     );

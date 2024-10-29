@@ -1,93 +1,94 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import './AttractionDetailsInfo.css'
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
+import ImagesModal from '../ImagesModal/ImagesModal';
+import {StoreContext} from '../../Context/StoreContext'
+import {toast as Toast} from 'react-toastify'
+import axios from 'axios'
 
-const ImageModal = ({ isOpen, imageSrc, onClose }) => {
-    if (!isOpen) return null; // Don't render the modal if it's not open
 
-    return (
-        <div className="modal-backdrop" onClick={onClose}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <img src={imageSrc} alt="Modal" />
-                <button className="close-btn" onClick={onClose}>
-                    &times;
-                </button>
-            </div>
-        </div>
-    );
-};
-
-const AttractionDetailsInfo = () => {
-
+const AttractionDetailsInfo = ({serviceId}) => {
+    const { url } = useContext(StoreContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedImage, setSelectedImage] = useState('');
+    const [selectedImageIndex, setSelectedImageIndex] = useState('');
+    const [attraction, setAttraction] = useState(null);
 
-
-    // Open Modal and set the clicked image
-    const openModal = (imageSrc) => {
-        setSelectedImage(imageSrc);
+    const openModal = (index) => {
+        setSelectedImageIndex(index)
         setIsModalOpen(true);
     };
 
     // Close the Modal
     const closeModal = () => {
         setIsModalOpen(false);
-        setSelectedImage('');
+       
     };
 
+    useEffect(() => {
+        const fetchAttraction = async () => {
+            try {
+                const response = await axios.get(`${url}/api/attractions/`);
+                console.log("API Response:", response.data); // Log the entire response for debugging
+                if (response.data.success) {
+                    setAttraction(response.data.attractions.find((attraction) => attraction._id === serviceId));
+                    Toast.success(response.data.message);
+                } else {
+                    console.error('Attraction not found for serviceId:', serviceId);
+                    Toast.error(response.data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching attraction:', error);
+            }
+        };
+        fetchAttraction();
+    }, [serviceId, url]);
 
-
+        
+    if (!attraction) {
+        return <p>Loading...</p>;
+    }
 
     return (
         <div className="place-details-info">
-            {/* Left Column: Tour Details */}
             <div className="tour-details">
                 <h1>Điểm đến A</h1>
                 <p>Gothenburg ★★★★☆ (348 reviews)</p>
 
-                {/* Image Gallery */}
                 <div className="gallery">
-                    <img src="https://media.istockphoto.com/id/501057465/vi/anh/d%C3%A3y-n%C3%BAi-himalaya-ph%E1%BB%A7-%C4%91%E1%BA%A7y-s%C6%B0%C6%A1ng-m%C3%B9-v%C3%A0-s%C6%B0%C6%A1ng-m%C3%B9.jpg?s=612x612&w=0&k=20&c=eN_J5-6a4z5g3XOZUanHCmkma-ljDgxG-CFUS5ey8gc=" alt="Main" className="main-img" />
+                    <img src={`${url}/images/${attraction.images[0]}`}  alt="Main" className="main-img" />
                     <div className="thumbnails">
-                        <img src="https://png.pngtree.com/thumb_back/fh260/background/20230511/pngtree-nature-background-sunset-wallpaer-with-beautiful-flower-farms-image_2592160.jpg" alt="Thumb 1" onClick={() => openModal('https://png.pngtree.com/thumb_back/fh260/background/20230511/pngtree-nature-background-sunset-wallpaer-with-beautiful-flower-farms-image_2592160.jpg')} />
-                        <img src="https://vcdn1-vnexpress.vnecdn.net/2019/07/30/anh-thien-nhien-dep-thang-7-1564483719.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=Nl3znv-VRtPyhJYhLwwRfA" alt="Thumb 2" />
-                        <img src="https://cdn.vntrip.vn/cam-nang/wp-content/uploads/2020/03/sapa-ruong-bac-thang.jpg" alt="Thumb 3" />
-                        <img src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474111PXL/anh-dep-nhat-the-gioi-ve-thien-nhien_041753462.jpg" onClick={() => openModal('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474111PXL/anh-dep-nhat-the-gioi-ve-thien-nhien_041753462.jpg')} alt="Thumb 4" />
-                        <img src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474111PXL/anh-dep-nhat-the-gioi-ve-thien-nhien_041753462.jpg" onClick={() => openModal('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474111PXL/anh-dep-nhat-the-gioi-ve-thien-nhien_041753462.jpg')} alt="Thumb 4" />
-                        <img src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474111PXL/anh-dep-nhat-the-gioi-ve-thien-nhien_041753462.jpg" alt="Thumb 4" />
-                        <img src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474111PXL/anh-dep-nhat-the-gioi-ve-thien-nhien_041753462.jpg" alt="Thumb 4" />
+                        {attraction.images.map((image, index) => (
+                            <img 
+                                key={index} 
+                                src={`${url}/images/${image}`}
+                                alt={`Thumb ${index + 1}`} 
+                                onClick={() => openModal(index+1)} 
+                            />
+                        ))}
                     </div>
                 </div>
 
-                {/* Features */}
-                <div className="features">
-                    <p>✔️ Free Cancellation</p>
-                    <p>✔️ Mobile Ticketing</p>
-                    <p>✔️ Instant Confirmation</p>
-                    <p>✔️ Health Precautions</p>
-                    <p>✔️ Live Tour Guide in English</p>
-                    <p>✔️ Duration 3.5 Hours</p>
+                 {/* Features */}
+                 <div className="features">
+                    {attraction.amenities.map((amenity, index) => (
+                        <p key={index}>✔️ {amenity}</p>
+                    ))}
                 </div>
 
                 {/* Description */}
                 <div className="description">
                     <h3>Description</h3>
-                    <p>
-                        See the highlights of London via 2 classic modes of transport on
-                        this half-day adventure. First, you will enjoy great views of
-                        Westminster Abbey, the Houses of Parliament, and the London Eye, as
-                        you meander through the historic streets on board a vintage double
-                        decker bus...
-                    </p>
+                    <p>{attraction.description}</p>
                 </div>
 
                 {/* Embed Google Map */}
                 <div className="map">
-                    <h3 style={{ marginBottom: "20px" }}>Location</h3>
+                    <h3 style={{ marginBottom: '20px' }}>Location</h3>
+                    <p>{attraction.location.address}</p>
                     <iframe
                         title="map"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.4854676752075!2d106.76933817614251!3d10.85063238930265!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752763f23816ab%3A0x282f711441b6916f!2sHCMC%20University%20of%20Technology%20and%20Education!5e0!3m2!1sen!2s!4v1727189441256!5m2!1sen!2s"
+                        src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=${attraction.location.latitude},${attraction.location.longitude}`}
                         width="100%"
                         height="300"
                         style={{ border: 0 }}
@@ -139,10 +140,14 @@ const AttractionDetailsInfo = () => {
                     </button>
                 </form>
             </div>
-
+        
             {/* Modal for displaying clicked images */}
-            <ImageModal isOpen={isModalOpen} imageSrc={selectedImage} onClose={closeModal} />
-
+            <ImagesModal
+                isOpen={isModalOpen}
+                images={attraction.images}
+                selectedIndex={selectedImageIndex}
+                onClose={closeModal}
+            />
 
         </div>
     )

@@ -13,27 +13,28 @@ const UserSchema = new Schema({
         required: true,
         lowercase: true,
         trim: true,
+        unique: true,
         // Removed unique: true to allow duplicate emails across roles
     },
     phone_number: {
         type: String,
-        unique: true,
+        // unique: true,
     },
     address: {
         type: String,
     },
     avatar: {
         type: String,
-        required: true,
+
     },
     date_of_birth: {
         type: Date,
-        required: true,
+
     },
     gender: {
         type: String,
         enum: ['male', 'female'],
-        required: true,
+
     },
 
     password: {
@@ -43,7 +44,7 @@ const UserSchema = new Schema({
 
     status: {
         type: String,
-        enum: ['active', 'inactive'],
+        enum: ['active', 'blocked'],
         default: 'active',
     },
     createdAt: {

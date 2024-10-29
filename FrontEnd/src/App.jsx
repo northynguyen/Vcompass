@@ -27,7 +27,7 @@ function App() {
         <Header setShowLogin={setShowLogin} />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/place-details" element={<PlaceDetails />} />
+          <Route path="/place-details/:type/:serviceId" element={<PlaceDetails/>} />
           <Route path="/partnership" element={<Partnership />} />
           <Route path="/about" element={<Schedule />} />
           <Route path="/create-schedule" element={<CreateSchedule />} />

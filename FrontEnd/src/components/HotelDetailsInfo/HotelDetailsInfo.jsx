@@ -1,93 +1,264 @@
-/* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
-import './HotelDetailsInfo.css'
-import { useState } from 'react'
+import './HotelDetailsInfo.css';
+import React,{ useState , useRef, useEffect} from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import ImagesModal from '../ImagesModal/ImagesModal';
+import RoomDetail from './RoomDetail/RoomDetail';
+import axios from 'axios';
+import { StoreContext } from '../../Context/StoreContext';
+import RoomCard from './RoomCard'; // Nhập RoomCard từ file mới
 
-const ImageModal = ({ isOpen, imageSrc, onClose }) => {
-  if (!isOpen) return null; // Don't render the modal if it's not open
 
-  return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <img src={imageSrc} alt="Modal" />
-        <button className="close-btn" onClick={onClose}>
-          &times;
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const HotelDetailsInfo = () => {
-
+const HotelDetailsInfo = ({serviceId}) => {
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [startDate, endDate] = dateRange;
+  const [showGuestDropdown, setShowGuestDropdown] = useState(false);
+  const [adults, setAdults] = useState(2);
+  const [children, setChildren] = useState(1);
+  const [numRooms, setNumRooms] = useState(1);
+  const { url } = React.useContext(StoreContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState('');
+  const dropdownRef = useRef(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [accommodation, setAccommodation] = useState(null);
 
+  
+  useEffect(() => {
+    console.log("useEffect called"); // Log khi useEffect được gọi
+  }, []); // Không có phụ thuộc
+
+  useEffect(() => {
+    let isMounted = true; // Track if the component is mounted
+    const fetchAccommodation = async () => {
+      try {
+        const response = await axios.get(`${url}/api/accommodations/`);
+        console.log("API Response:", response.data); // Log the entire response for debugging
+        const accommodationData = response.data.accommodations.find((accommodation) => accommodation._id === serviceId);
+        if (isMounted) {
+          if (accommodationData) {
+            setAccommodation(accommodationData);
+          } else {
+            console.error('Accommodation not found for serviceId:', serviceId);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching accommodation:', error);
+      }
+    };
+
+    fetchAccommodation();
+
+    return () => {
+      isMounted = false; // Cleanup function to set isMounted to false
+    };
+  }, [serviceId, url]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowGuestDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef]);
+
+  console.log("Accommodation",accommodation);
+
+
+  const calculateNights = (start, end) => {
+    if (!start || !end) return '';  
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return `${diffDays} night(s)`;
+  };
+  
+
+  const handleRoomClick = (room,e) => {
+    e.preventDefault();
+    setSelectedRoom(room);
+  };
+
+  const handleRoomClose = () => {
+    setSelectedRoom(null);
+  };
+
+  // Handle click outside dropdown to close it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowGuestDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   // Open Modal and set the clicked image
-  const openModal = (imageSrc) => {
-    setSelectedImage(imageSrc);
+  const openModal = (index) => {
+    setSelectedImageIndex(index);
     setIsModalOpen(true);
   };
 
   // Close the Modal
   const closeModal = () => {
     setIsModalOpen(false);
-    setSelectedImage('');
+   
   };
 
 
-
+  const handleButtonClick = (action, type, event) => {
+    event.preventDefault(); // Ngăn việc tải lại trang
+    event.stopPropagation(); // Ngăn đóng dropdown
+  
+    if (type === 'adults') {
+      setAdults((prev) => (action === 'increment' ? prev + 1 : Math.max(1, prev - 1)));
+    } else if (type === 'children') {
+      setChildren((prev) => (action === 'increment' ? prev + 1 : Math.max(0, prev - 1)));
+    } else if (type === 'rooms') {
+      setNumRooms((prev) => (action === 'increment' ? prev + 1 : Math.max(1, prev - 1)));
+    }
+  };
+  
+  if (!accommodation) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="place-details-info">
-      {/* Left Column: Tour Details */}
+    <div className="hotel-details-info">
+      {/* Search Bar */}
+      <form className="search-form-hotel" onSubmit={(e) => e.preventDefault()}>
+        {/* Ô nhập vị trí */}
+        <div className="search-item">
+          <span role="img" aria-label="location">📍</span>
+          <input type="text" placeholder="Milan Homestay - The Song Vung Tau" />
+        </div>
+
+        {/* Chọn ngày */}
+        <div className="search-item">
+          <span role="img" aria-label="calendar">📅</span>
+          <DatePicker
+            selected={startDate}
+            onChange={(update) => setDateRange(update)}
+            startDate={startDate}
+            endDate={endDate}
+            selectsRange
+            placeholderText="Chọn ngày"
+          />
+          {startDate && endDate && (
+            <span>{calculateNights(startDate, endDate)}</span>
+          )}
+        </div>
+
+        {/* Số người và phòng */}
+        <div className="search-item" onClick={() => setShowGuestDropdown(!showGuestDropdown)}>
+          <span role="img" aria-label="people">👥</span>
+          <input
+            type="text"
+            value={`${adults} người lớn, ${children} trẻ em, ${numRooms} phòng`}
+            readOnly
+          />
+          {showGuestDropdown && (
+            <div className="guest-dropdown" ref={dropdownRef}>
+              <div className="guest-option">
+                <span>Người lớn</span>
+                <button onClick={(e) => handleButtonClick('decrement', 'adults', e)}>-</button>
+                <span>{adults}</span>
+                <button onClick={(e) => handleButtonClick('increment', 'adults', e)}>+</button>
+              </div>
+              <div className="guest-option">
+                <span>Trẻ em</span>
+                <button onClick={(e) => handleButtonClick('decrement', 'children', e)}>-</button>
+                <span>{children}</span>
+                <button onClick={(e) => handleButtonClick('increment', 'children', e)}>+</button>
+              </div>
+              <div className="guest-option">
+                <span>Phòng</span>
+                <button onClick={(e) => handleButtonClick('decrement', 'rooms', e)}>-</button>
+                <span>{numRooms}</span>
+                <button onClick={(e) => handleButtonClick('increment', 'rooms', e)}>+</button>
+              </div>
+
+              <button onClick={() => setShowGuestDropdown(false)}>Xong</button>
+            </div>
+          )}
+        </div>
+
+        {/* Nút tìm kiếm */}
+        <button type="submit" className="search-btn">Tìm kiếm</button>
+      </form>
+
+      {/* Left Column: Hotel Details */}
       <div className="tour-details">
-        <h1>Khách sạn A</h1>
-        <p>Gothenburg ★★★★☆ (348 reviews)</p>
+        <h1>{accommodation.name}</h1>
+        <p>{accommodation.city} ★★★★☆ (348 reviews)</p>
 
         {/* Image Gallery */}
         <div className="gallery">
-          <img src="https://media.istockphoto.com/id/501057465/vi/anh/d%C3%A3y-n%C3%BAi-himalaya-ph%E1%BB%A7-%C4%91%E1%BA%A7y-s%C6%B0%C6%A1ng-m%C3%B9-v%C3%A0-s%C6%B0%C6%A1ng-m%C3%B9.jpg?s=612x612&w=0&k=20&c=eN_J5-6a4z5g3XOZUanHCmkma-ljDgxG-CFUS5ey8gc=" alt="Main" className="main-img" />
+          <div className="main-image">
+            <img src={`${url}/images/${accommodation.images[0]}`} alt="Main" className="main-img" />
+          </div>
           <div className="thumbnails">
-            <img src="https://png.pngtree.com/thumb_back/fh260/background/20230511/pngtree-nature-background-sunset-wallpaer-with-beautiful-flower-farms-image_2592160.jpg" alt="Thumb 1" onClick={() => openModal('https://png.pngtree.com/thumb_back/fh260/background/20230511/pngtree-nature-background-sunset-wallpaer-with-beautiful-flower-farms-image_2592160.jpg')} />
-            <img src="https://vcdn1-vnexpress.vnecdn.net/2019/07/30/anh-thien-nhien-dep-thang-7-1564483719.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=Nl3znv-VRtPyhJYhLwwRfA" alt="Thumb 2" />
-            <img src="https://cdn.vntrip.vn/cam-nang/wp-content/uploads/2020/03/sapa-ruong-bac-thang.jpg" alt="Thumb 3" />
-            <img src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474111PXL/anh-dep-nhat-the-gioi-ve-thien-nhien_041753462.jpg" onClick={() => openModal('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474111PXL/anh-dep-nhat-the-gioi-ve-thien-nhien_041753462.jpg')} alt="Thumb 4" />
-            <img src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474111PXL/anh-dep-nhat-the-gioi-ve-thien-nhien_041753462.jpg" onClick={() => openModal('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474111PXL/anh-dep-nhat-the-gioi-ve-thien-nhien_041753462.jpg')} alt="Thumb 4" />
-            <img src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474111PXL/anh-dep-nhat-the-gioi-ve-thien-nhien_041753462.jpg" alt="Thumb 4" />
-            <img src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474111PXL/anh-dep-nhat-the-gioi-ve-thien-nhien_041753462.jpg" alt="Thumb 4" />
+            {accommodation.images.slice(1).map((img, index) => {
+              if (index < 5) {
+                return (
+                  <img
+                    key={index}
+                    src={`${url}/images/${img}`}
+                    alt={`Thumb ${index + 1}`}
+                    className="thumbnail-img"
+                    onClick={() => openModal(index + 1)}
+                  />
+                );
+              } else if (index === 5) {
+                return (
+                  <div
+                    key={index}
+                    className="thumbnail-img overlay"
+                    onClick={() => openModal(index + 1)}
+                    style={{ position: 'relative', cursor: 'pointer' }}
+                  >
+                    <img
+                      src={img}
+                      alt={`Thumb ${index + 1}`}
+                      style={{ filter: 'blur(2px)', opacity: 0.7 }}
+                    />
+                    <div className="overlay-text">
+                      See All Photos
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })}
           </div>
         </div>
 
         {/* Features */}
         <div className="features">
-          <p>✔️ Free Cancellation</p>
-          <p>✔️ Mobile Ticketing</p>
-          <p>✔️ Instant Confirmation</p>
-          <p>✔️ Health Precautions</p>
-          <p>✔️ Live Tour Guide in English</p>
-          <p>✔️ Duration 3.5 Hours</p>
+          {accommodation.amenities.map((amenity, index) => (
+            <p key={index}>✔️ {amenity}</p>
+          ))}
         </div>
 
         {/* Description */}
         <div className="description">
           <h3>Description</h3>
-          <p>
-            See the highlights of London via 2 classic modes of transport on
-            this half-day adventure. First, you will enjoy great views of
-            Westminster Abbey, the Houses of Parliament, and the London Eye, as
-            you meander through the historic streets on board a vintage double
-            decker bus...
-          </p>
+          <p>{accommodation.description}</p>
         </div>
 
         {/* Embed Google Map */}
         <div className="map">
-          <h3 style={{ marginBottom: "20px" }}>Location</h3>
+          <h3 style={{ marginBottom: '20px' }}>Location</h3>
           <iframe
             title="map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.4854676752075!2d106.76933817614251!3d10.85063238930265!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752763f23816ab%3A0x282f711441b6916f!2sHCMC%20University%20of%20Technology%20and%20Education!5e0!3m2!1sen!2s!4v1727189441256!5m2!1sen!2s"
+            src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=${accommodation.location.latitude},${accommodation.location.longitude}`}
             width="100%"
             height="300"
             style={{ border: 0 }}
@@ -97,54 +268,32 @@ const HotelDetailsInfo = () => {
         </div>
       </div>
 
-      {/* Right Column: Booking Form */}
-      <div className="booking-form">
-        <form >
-          <h2>Booking</h2>
-
-          <label htmlFor="from">From</label>
-          <input
-            type="date"
-            id="from"
-            onChange={(e) => setFromDate(e.target.value)}
-          />
-
-          <label htmlFor="to">To</label>
-          <input
-            type="date"
-            id="to"
-            onChange={(e) => setToDate(e.target.value)}
-          />
-
-          <label htmlFor="guests">No. of Guests</label>
-          <select
-            id="guests"
-            onChange={(e) => setGuests(e.target.value)}
-          >
-            <option value="1">1 adult</option>
-            <option value="2">2 adults</option>
-          </select>
-
-          <div className="total-price">
-            <h3>Subtotal: $78.90</h3>
-          </div>
-
-          <button type="submit" className="book-btn">Confirm Booking</button>
-          <button type="button" className="wishlist-btn" onClick={() => alert('Saved to wishlist')}>
-            Save to Wishlist
-          </button>
-          <button type="button" className="share-btn" onClick={() => alert('Shared the activity')}>
-            Share the Activity
-          </button>
-        </form>
+      {/* Rooms Section */}
+      <div className="rooms-section">
+        <h2>Available Rooms</h2>
+        {accommodation.roomTypes.map((room, index) => (
+          <RoomCard key={index} room={room} handleRoomClick={handleRoomClick} url={url} />
+        ))}
       </div>
 
+
       {/* Modal for displaying clicked images */}
-      <ImageModal isOpen={isModalOpen} imageSrc={selectedImage} onClose={closeModal} />
+      <ImagesModal
+        isOpen={isModalOpen}
+        images={accommodation.images}
+        selectedIndex={selectedImageIndex}
+        onClose={closeModal}
+      />
 
-
+    {selectedRoom && <RoomDetail room={selectedRoom} onClose={handleRoomClose} />}
     </div>
-  )
-}
+  );
+};
 
-export default HotelDetailsInfo
+
+
+
+export default HotelDetailsInfo;
+
+
+

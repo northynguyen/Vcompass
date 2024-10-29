@@ -4,9 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { StoreContext } from '../../Context/StoreContext';
 import './CreateSchedule.css';
 
+const cities = [
+  // List of cities as before
+  'Hà Nội', 'TP Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ', 
+  'Bà Rịa - Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu', 'Bắc Ninh',
+  // Add other cities here
+];
+
 const CreateSchedule = () => {
   const navigate = useNavigate();
   const [destination, setDestination] = useState('');
+  const [filteredCities, setFilteredCities] = useState([]);
   const [departureDate, setDepartureDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
   const { url, token } = useContext(StoreContext);
@@ -44,6 +52,41 @@ const CreateSchedule = () => {
 
   };
 
+  const handleInputChange = (e) => {
+    const input = e.target.value;
+    setDestination(input);
+
+    if (input.length > 0) {
+      const filtered = cities.filter(city =>
+        city.toLowerCase().includes(input.toLowerCase())
+      );
+      setFilteredCities(filtered);
+    } else {
+      setFilteredCities([]);
+    }
+  };
+
+  const handleCityClick = (city) => {
+    setDestination(city);
+    setFilteredCities([]);
+  };
+
+  // Get today's date in 'YYYY-MM-DD' format
+  const today = new Date().toISOString().split('T')[0];
+
+  const handleDepartureDateChange = (e) => {
+    setDepartureDate(e.target.value);
+  };
+
+  const handleReturnDateChange = (e) => {
+    setReturnDate(e.target.value);
+    
+    // Reset departure date if it is before the selected return date
+    if (departureDate && e.target.value > departureDate) {
+      setDepartureDate('');
+    }
+  };
+
   return (
     <div className="create-schedule-container">
       <div className="step-indicator">
@@ -58,8 +101,18 @@ const CreateSchedule = () => {
             id="destination"
             placeholder="Nhập tên điểm đến"
             value={destination}
-            onChange={(e) => setDestination(e.target.value)}
+            onChange={handleInputChange}
+            autoComplete="off"
           />
+          {filteredCities.length > 0 && (
+            <ul className="suggestions-list">
+              {filteredCities.map((city, index) => (
+                <li key={index} onClick={() => handleCityClick(city)}>
+                  {city}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="departureDate">Ngày đi</label>

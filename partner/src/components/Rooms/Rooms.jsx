@@ -64,7 +64,7 @@ const Rooms = ({ onBack, hotel }) => {
   const handleSave = async (formDataToSend) => {
     try {
       const response = await axios.put(
-        `${url}/api/accommodations/${hotel._id}/rooms/${selectedRoom.idRoomType}`,
+        `${url}/api/accommodations/${hotel._id}/rooms/${selectedRoom._id}`,
         formDataToSend,
         {
           headers: {
@@ -88,6 +88,7 @@ const Rooms = ({ onBack, hotel }) => {
   };
 
   const handleAddSave = async (formDataToSend) => {
+    console.log('Form data:', formDataToSend);
     try {
       const response = await axios.post(
         `${url}/api/accommodations/${hotel._id}/rooms`,
@@ -199,7 +200,7 @@ const Rooms = ({ onBack, hotel }) => {
                 <button onClick={handleEditClick} className="edit-button">
                   <FaEdit /> Chỉnh Sửa
                 </button>
-                <button onClick={() => handleDeleteClick(selectedRoom.idRoomType)} className="delete-button">
+                <button onClick={() => handleDeleteClick(selectedRoom._id)} className="delete-button">
                   <FaTrash /> Xóa
                 </button>
               </div>
