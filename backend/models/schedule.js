@@ -1,27 +1,18 @@
-import { Schema } from "mongoose";
-import { RatingSchema } from "./rating.js";
-
-const ScheduleSchema = new Schema({
-  idUser: { type: String, required: true },
-  scheduleName: { type: String, required: true },
-  description: { type: String },
-  address: { type: String, required: true },
-  status: { type: String, required: true },
-  activities: [ActivitySchema],
-  ratings: [RatingSchema],
-  additionalExpenses: [AdditionalExpenseSchema],
-  totalExpenses: { type: Number, required: true },
-  comments: [CommentSchema],
-  likes: [LikeSchema],
-});
+import mongoose, { Schema } from "mongoose";
 
 const ActivitySchema = new Schema({
-  activityType: { type: String, required: true },
-  idDestination: { type: String, required: true },
-  startTime: { type: Date, required: true },
-  endTime: { type: Date },
-  description: { type: String },
-  note: { type: String },
+  day: { type: Number, required: true },
+  activity: [
+    {
+      idActivty: { type: String, required: true },
+      activityType: { type: String, required: true },
+      idDestination: { type: String, required: true },
+      cost: { type: Number, required: true },
+      description: { type: String },
+      timeStart: { type: String, required: true },
+      timeEnd: { type: String, required: true },
+    },
+  ],
 });
 
 const AdditionalExpenseSchema = new Schema({
@@ -40,4 +31,23 @@ const LikeSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-export { ActivitySchema, CommentSchema, LikeSchema, ScheduleSchema };
+const ScheduleSchema = new Schema({
+  idUser: { type: String, required: true },
+  scheduleName: { type: String, required: true },
+  description: { type: String },
+  address: { type: String, required: true },
+  imgSrc: { type: String },
+  numDays: { type: Number, required: true },
+  dateStart: { type: String, required: true },
+  dateEnd: { type: String },
+  status: { type: String, required: true },
+  activities: [ActivitySchema],
+  additionalExpenses: [AdditionalExpenseSchema],
+  comments: [CommentSchema],
+  likes: [LikeSchema],
+});
+
+const Schedule =
+  mongoose.models.ScheduleSchema || mongoose.model("schedule", ScheduleSchema);
+export default Schedule;
+export { ActivitySchema, CommentSchema, LikeSchema };

@@ -1,0 +1,9 @@
+.partners-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* Đưa các thẻ vào giữa */
+    gap: 20px;
+    /* Cách nhau 20px */
+    padding: 20px;
+}

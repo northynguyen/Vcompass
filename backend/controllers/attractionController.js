@@ -12,4 +12,27 @@ const getAttractions = async (req, res) => {
     }
 };
 
-export { getAttractions }; // Export the getAttractions;
+const getAttractionById = async (req, res) => {
+    const { id } = req.params; // Lấy id từ params
+    try {
+        // Kiểm tra xem id có hợp lệ hay không
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ success: false, message: 'Invalid ID format' });
+        }
+
+        const attraction = await Attraction.findById(id); // Tìm attraction theo id
+
+        // Nếu không tìm thấy attraction, trả về thông báo lỗi
+        if (!attraction) {
+            return res.status(404).json({ success: false, message: 'Attraction not found' });
+        }
+
+        // Trả về thông tin attraction dưới dạng JSON
+        res.status(200).json({ success: true, attraction });
+    } catch (error) {
+        console.error(error); // Log lỗi để debug
+        res.status(500).json({ message: 'Server error' }); // Trả về lỗi server
+    }
+};
+
+export { getAttractions, getAttractionById }; // Export the getAttractions;

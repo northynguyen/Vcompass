@@ -1,0 +1,49 @@
+.partner-details {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.partner-details h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #343a40;
+}
+
+.partner-avatar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.partner-avatar img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #007bff;
+}
+
+.partner-info {
+    font-size: 1.1em;
+    color: #495057;
+}
+
+.partner-info p {
+    margin: 10px 0;
+    line-height: 1.6;
+}
+
+.partner-info strong {
+    color: #007bff;
+}
+
+.partner-info p {
+    background-color: #f1f3f5;
+    padding: 10px;
+    border-radius: 5px;
+}

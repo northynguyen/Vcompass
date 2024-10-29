@@ -3,14 +3,14 @@ import express from "express";
 import { connectDB } from "./config/connectDB.js";
 import { notificationRoutes } from "./routes/notificationRoutes.js";
 
-import userRoutes from "./routes/userRoute.js";
 
 
-import 'dotenv/config';
+import "dotenv/config";
 import accommRoutes from "./routes/accommRoutes.js";
-import foodServiceRoutes from "./routes/foodServiceRoutes.js";
 import { Attractionrouter } from "./routes/attractionRoutes.js";
-
+import foodServiceRoutes from "./routes/foodServiceRoutes.js";
+import scheduleRouter from "./routes/scheduleRoutes.js";
+import userRoutes from "./routes/userRoute.js";
 
 // App config
 const app = express();
@@ -29,14 +29,17 @@ app.get("/", (req, res) => {
 });
 
 // Register routes
-app.use("/images", express.static("uploads"))
+app.use("/images", express.static("uploads"));
 app.use("/api/user", userRoutes);
 app.use("/api/notifications", notificationRoutes); // Thêm route cho notification
 app.use("/api/accommodations", accommRoutes);
 app.use("/api/foodservices", foodServiceRoutes);
+app.use("/api/schedule", scheduleRouter);
 
 app.use("/api/attractions", Attractionrouter);
 app.use("/api/users", userRoutes);
+app.use("/api/partners", userRoutes);
+app.use("/api/user/update", userRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

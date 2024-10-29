@@ -5,48 +5,20 @@ import Footer from './components/Footer/Footer'
 import Header from './components/Header/Header'
 import SignIn from './components/SignIn/SignIn'
 import './index.css'
-
-
+import 'react-toastify/dist/ReactToastify.css'
+import CreateSchedule from './pages/CreateSchedule/CreateSchedule'
+import Home from './pages/Home/Home'
 import ListAttrac from './pages/ListAttractions/ListAttractions'
-
-
-
-import ListAttrac from './pages/ListAttractions/ListAttractions'
+import MySchedule from './pages/MySchedule/MySchedule'
 import Partnership from './pages/Partnership/Partnership'
 import PlaceDetails from './pages/PlaceDetails/PlaceDetails'
 import Schedule from './pages/Schedule/Schedule'
 import UserService from './pages/UserService/UserService'
-import Home from './pages/Home/Home'
-import MySchedule from './pages/MySchedule/MySchedule'
-import CreateSchedule from './pages/CreateSchedule/CreateSchedule'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify';
-
-
-
-
-
-
-import { ToastContainer } from 'react-toastify';
-
-
-
-
-
-
-
-
-
-
-
 
 
 function App() {
   const [showLogin, setShowLogin] = useState(false)
-
-
-
   return (
     <>
       {showLogin && <SignIn setShowLogin={setShowLogin} />}
@@ -55,16 +27,17 @@ function App() {
         <Header setShowLogin={setShowLogin} />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/place-details" element={<PlaceDetails />} />
+          <Route path="/place-details/:type/:serviceId" element={<PlaceDetails/>} />
           <Route path="/partnership" element={<Partnership />} />
           <Route path="/about" element={<Schedule />} />
           <Route path="/create-schedule" element={<CreateSchedule />} />
           <Route path="/user-service" element={<UserService />} />
           <Route path="/booking" element={<ListAttrac />} />
           <Route path="/my-schedule" element={<MySchedule />} />
+          <Route path="/schedule-edit" element={<Schedule />} />
         </Routes>
-          <Footer />
-        </div>
+        <Footer />
+      </div>
     </>
 
   )

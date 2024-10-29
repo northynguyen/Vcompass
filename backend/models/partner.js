@@ -24,16 +24,16 @@ const UserSchema = new Schema({
     },
     avatar: {
         type: String,
-        required: true,
+
     },
     date_of_birth: {
         type: Date,
-        required: true,
+
     },
     gender: {
         type: String,
         enum: ['male', 'female'],
-        required: true,
+
     },
 
     password: {

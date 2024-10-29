@@ -3,7 +3,6 @@ import { RatingSchema } from "./rating.js";
 const { Schema } = mongoose;
 
 const RoomTypeSchema = new Schema({
-  idRoomType: { type: String, required: true, unique: true },
   nameRoomType: { type: String, required: true },
   numBed: [
     {

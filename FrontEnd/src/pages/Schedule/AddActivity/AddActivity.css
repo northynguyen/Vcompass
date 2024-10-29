@@ -30,7 +30,17 @@
   }
   
   textarea.input-field {
-    min-height: 150px;
+    min-height: 190px;
+}
+.img-add-activity-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.add-schedule-img {
+  width: 60%;
 }
   /* Style cho phần body */
   .modal-body {
@@ -55,6 +65,7 @@
     display: flex;
     gap: 50px;
     margin-top: 30px;
+    margin-bottom: 30px;
 }
 .title-container {
   flex: 1;

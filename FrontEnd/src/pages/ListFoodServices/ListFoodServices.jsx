@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import "./ListFoodServices.css";
+import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
+import { SelectButton } from "../ListAttractions/ListAttractions";
+import "./ListFoodServices.css";
 
 // Helper function for calculating ratings
 const calculateTotalRate = (ratings) => {
@@ -13,31 +14,55 @@ const calculateTotalRate = (ratings) => {
 };
 
 // TourItem Component
-const TourItem = ({ imgSrc, name, description, totalRate, location, facilities, url , price}) => (
-  <div className="list-accom__tour-item">
-    <img src={`${url}/images/${imgSrc}`} alt={name} className="list-accom__tour-item-image" />
-    <div className="list-accom__tour-details">
-      <h3>{name}</h3>
-      <div className="list-accom__tour-location">
-        <a href="#">{location}</a>
+const FoodServiceItem = ({ imgSrc, name, description, totalRate,
+  location, facilities, url, price, status, setCurrentActivity, idDestination }) => {
+  const handleSelect = () => {
+    setCurrentActivity({
+      idDestination,
+      imgSrc,
+      name,
+      description,
+      totalRate,
+      location,
+      facilities,
+      url,
+      price,
+      activityType: "FoodService",
+      visible: true
+    });
+    console.log(name)
+  };
+
+  return (
+    <div className="list-accom__tour-item">
+      <img src={`${url}/images/${imgSrc}`} alt={name} className="list-accom__tour-item-image" />
+      <div className="list-accom__tour-details">
+        <h3>{name}</h3>
+        <div className="list-accom__tour-location">
+          <a href="#">{location}</a>
+        </div>
+        <div className="list-accom__tour-facilities">
+          {facilities.map((facility, index) => (
+            <span key={index}>{facility}</span>
+          ))}
+        </div>
+        <p>{description}</p>
+        <div className="list-accom__tour-rating">{totalRate}</div>
       </div>
-      <div className="list-accom__tour-facilities">
-        {facilities.map((facility, index) => (
-          <span key={index}>{facility}</span>
-        ))}
+      <div className="list-accom__tour-price">
+        <div className="price-container">
+          <p className="price-text">{price.minPrice} - {price.maxPrice}₫</p>
+        </div>
+        {
+          status === "Schedule" && <SelectButton onClick={handleSelect} />
+        }
       </div>
-      <p>{description}</p>
-      <div className="list-accom__tour-rating">{totalRate}</div>
     </div>
-    <div className="list-accom__tour-price">
-      <p>{price.minPrice} VND - {price.maxPrice} VND</p>
-      <button className="list-accom__show-prices-button">Show prices</button>
-    </div>
-  </div>
-);
+  );
+}
 
 // TourList Component
-const TourList = ({ tours, sortOption, status, url }) => {
+const TourList = ({ tours, sortOption, status, url, setCurrentActivity }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const toursPerPage = status === "Schedule" ? 3 : 8;
   const sortedTours = [...tours].sort((a, b) => {
@@ -57,7 +82,8 @@ const TourList = ({ tours, sortOption, status, url }) => {
   return (
     <div className="list-accom__tour-list">
       {currentTours.map((tour, index) => (
-        <TourItem key={index} {...tour} url={url} />
+        <FoodServiceItem key={index} {...tour} url={url} idDestination={tour.idDestination}
+          status={status} setCurrentActivity={setCurrentActivity} />
       ))}
       <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
     </div>
@@ -65,26 +91,44 @@ const TourList = ({ tours, sortOption, status, url }) => {
 };
 
 // Filters Component
-const Filters = ({ sortOption, setSortOption }) => (
-  <div className="list-accom__filters">
-    <h4>Availability</h4>
-    <label>From</label>
-    <input type="date" />
-    <label>To</label>
-    <input type="date" />
-    <button>Check Availability</button>
-    <hr />
-    <h4>Sort by Price</h4>
-    <label>
-      <input type="radio" value="PriceLowToHigh" checked={sortOption === "PriceLowToHigh"} onChange={() => setSortOption("PriceLowToHigh")} />
-      Price Low to High
-    </label>
-    <label>
-      <input type="radio" value="PriceHighToLow" checked={sortOption === "PriceHighToLow"} onChange={() => setSortOption("PriceHighToLow")} />
-      Price High to Low
-    </label>
-  </div>
-);
+const Filters = ({ sortOption, setSortOption }) => {
+  return (
+    <div className="list-accom__filters">
+      <div className="filter-section">
+        <h4>Availability</h4>
+        <div>
+          <label>From</label>
+          <input type="date" />
+        </div>
+        <div>
+          <label>To</label>
+          <input type="date" />
+        </div>
+        <button>Check Availability</button>
+        <hr />
+        <h4>Sort by Price</h4>
+        <label>
+          <input
+            type="radio"
+            value="PriceLowToHigh"
+            checked={sortOption === "PriceLowToHigh"}
+            onChange={() => setSortOption("PriceLowToHigh")}
+          />
+          Price Low to High
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="PriceHighToLow"
+            checked={sortOption === "PriceHighToLow"}
+            onChange={() => setSortOption("PriceHighToLow")}
+          />
+          Price High to Low
+        </label>
+      </div>
+    </div>
+  );
+};
 
 // Pagination Component
 const Pagination = ({ currentPage, totalPages, setCurrentPage }) => (
@@ -96,7 +140,7 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => (
 );
 
 // Main ListAccom Component
-const ListFoodServices = ({ status }) => {
+const ListFoodServices = ({ status, setCurrentActivity }) => {
   const { url } = useContext(StoreContext);
   const [tours, setTours] = useState([]);
   const [sortOption, setSortOption] = useState("Popularity");
@@ -105,6 +149,7 @@ const ListFoodServices = ({ status }) => {
     axios.get(`${url}/api/foodservices/`)
       .then(response => {
         const mappedTours = response.data.foodService.map(foodservice => ({
+          idDestination: foodservice._id,
           imgSrc: foodservice.images[0],
           name: foodservice.foodServiceName,
           description: foodservice.description,
@@ -121,9 +166,12 @@ const ListFoodServices = ({ status }) => {
   return (
     <div className="list-accom__container">
       <Filters sortOption={sortOption} setSortOption={setSortOption} />
-      <TourList tours={tours} sortOption={sortOption} status={status} url={url} />
+      <TourList tours={tours} sortOption={sortOption}
+        status={status} url={url} setCurrentActivity={setCurrentActivity} />
     </div>
   );
 };
 
 export default ListFoodServices;
+export { FoodServiceItem };
+

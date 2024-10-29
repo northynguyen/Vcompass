@@ -1,0 +1,74 @@
+.block-user-form {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 700px;
+}
+
+.block-user-form div {
+    margin-bottom: 15px;
+}
+
+.block-user-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.block-user-form input,
+.block-user-form textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    resize: none;
+}
+
+.block-user-form textarea {
+    height: 100px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-buttons button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-buttons button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+}
+
+.form-buttons button[type="button"] {
+    background-color: #dc3545;
+    color: white;
+}
+
+.user-details-info select {
+    width: 100px;
+    height: 40px;
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    color: #333;
+}
+
+.user-details-info .select:focus {
+    border-color: #4a90e2;
+
+}
+
+.user-details-info option {
+    padding: 10px;
+    /* Khoảng cách giữa nội dung của từng option */
+}

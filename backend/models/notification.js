@@ -1,7 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
 const NotificationSchema = new Schema({
-  idNotificaion: { type: String, required: true },
   idSender: { type: String, required: true },
   idReceiver: { type: String, required: true },
   content: { type: String, required: true },
@@ -9,6 +8,6 @@ const NotificationSchema = new Schema({
 });
 const Notification =
   mongoose.models.Notification ||
-  mongoose.model("notificaion", NotificationSchema);
+  mongoose.model("notification", NotificationSchema);
 
 export { Notification };
