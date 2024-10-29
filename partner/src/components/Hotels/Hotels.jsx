@@ -7,6 +7,7 @@ import axios from 'axios';
 import { StoreContext } from '../../Context/StoreContext';
 import { useContext } from 'react';
 import {toast} from 'react-toastify';
+import Loading from '../Loading/Loading';
 
 const Hotels = () => {
    
@@ -16,11 +17,14 @@ const Hotels = () => {
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [selectedTab, setSelectedTab] = useState(null);
     const {url , user} = useContext(StoreContext);
+    const [isLoading, setIsLoading] = useState(true); // State loading
+
     const partnerId = user._id;  
     useEffect(() => {
         // Fetch accommodations for the partner
         const fetchAccommodations = async () => {
             try {
+                setIsLoading(true);
                 const response = await axios.get(`${url}/api/accommodations/${partnerId}`);
                 if (response.data.success) {
                     setHotels(response.data.accommodations);
@@ -32,6 +36,9 @@ const Hotels = () => {
             } catch (error) {
                 console.error("Error fetching accommodations:", error);
                 toast.error("Error fetching accommodations. Please try again later.");
+            }
+            finally {
+                setIsLoading(false);
             }
         };
 
@@ -115,9 +122,14 @@ const Hotels = () => {
         setSelectedHotel(null);
     };
 
+    
+
     return (
         <div>
-            {!selectedTab ? (
+           {isLoading ? ( // Kiểm tra trạng thái loading
+                <Loading size="60px" color="#007bff" /> // Hiển thị vòng xoay nếu đang tải dữ liệu
+            ) : (
+                !selectedTab ? (    
                 <div className="partner-hotels-container">
                     <h2>Danh Sách Khách Sạn Đăng Ký</h2>
                     <div className="hotels-list">
@@ -229,7 +241,11 @@ const Hotels = () => {
                 </div>
             ) : (
                 <Rooms hotel={selectedHotel} onBack={closeRoomsTab} />
+            )
             )}
+
+        
+        
         </div>
     );
 };

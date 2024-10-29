@@ -65,7 +65,10 @@ const Home = () => {
         <AccommodationBanner />
       </div>
       <SlideBar  type='accommodation'/>
-
+      <span></span>
+      <SlideBar type='food' />
+      <span></span>
+      <SlideBar type='attraction' />
     </div>
   );
 };

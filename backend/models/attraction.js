@@ -12,11 +12,17 @@ const AttractionSchema = new Schema({
   city: { type: String, required: true },
   price: { type: Number, required: true },
   images: [{ type: String }],
-  openTime: { type: String },
-  closeTime: { type: String },
+  operatingHours: [
+    {
+        startDay: { type: String, required: true },
+        endDay: { type: String, required: true },
+        openTime: { type: String, required: true },
+        closeTime: { type: String, required: true },
+    }
+],
   amenities: [{ type: String }],
-  rating: [RatingSchema],
-  createdAt: { type: Date, default: Date.now },
+  ratings: [RatingSchema],
+  createdAt: { type: Date, default: Date.now }
 });
 
 const Attraction =

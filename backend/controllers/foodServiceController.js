@@ -42,7 +42,7 @@ const getListByPartner = async (req, res) => {
         if (!foodService) {
             return res.status(404).json({success: false, message: "Food service not found or partner mismatch" });
         }
-        res.status(200).json({success: true,message: "Get list food service successfully", foodService: foodService});
+        res.status(200).json({success: true, message: "Get list food service successfully", foodService: foodService});
     } catch (error) {
         res.status(404).json({success: false, message: "Error getting food service" });
         console.log(error);
@@ -51,10 +51,12 @@ const getListByPartner = async (req, res) => {
 
 
 const createFoodService = async (req, res) => {
-    const  idPartner  = req.body.userId;
+
+    const  idPartner  = req.userId
     try {
-        const newFoodService = new FoodService(req.body.foodServiceData);
+        const newFoodService = new FoodService(JSON.parse(req.body.foodServiceData)); 
         newFoodService.idPartner = idPartner;
+        console.log("newFoodService:", newFoodService);
         await newFoodService.save();
 
         // Check and save images if present
@@ -89,9 +91,8 @@ const createFoodService = async (req, res) => {
 
 
 const updateFoodService = async (req, res) => {
-    const foodServiceId = req.body.foodServiceData._id;
-    const updateData = req.body.foodServiceData;
-
+    const foodServiceId = req.body.Id;
+    const updateData = JSON.parse(req.body.foodServiceData); 
     try {
         const foodService = await FoodService.findById(foodServiceId);
         if (!foodService) {
@@ -99,8 +100,8 @@ const updateFoodService = async (req, res) => {
         }
 
         // Handle images and menuImages
-        let updatedImages = foodService.images || [];
-        let updatedMenuImages = foodService.menuImages || [];
+        let updatedImages = updateData.images || [];
+        let updatedMenuImages = updateData.menuImages || [];
 
         if (req.files) {
             if (req.files.images) {
@@ -150,7 +151,8 @@ const updateFoodService = async (req, res) => {
 
 
 const deleteFoodService = async (req, res) => {
-    const { foodServiceId, userId } = req.body; // Corrected
+    const { foodServiceId } = req.body; // Corrected
+    const userId = req.userId;
 
     try {
         const foodService = await FoodService.find({ _id: foodServiceId, idPartner: userId });

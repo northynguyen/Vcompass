@@ -110,22 +110,14 @@ const handleRegister = async (req, res, model, userRole = "user") => {
     const token = createToken(savedUser._id);
 
         res.json({ success: true, token, message: "Đăng ký thành công.", user: savedUser });
-    } catch (error) {
+    } 
+    catch (error) {
         console.error(error);
         res.json({ success: false, message: "Đã xảy ra lỗi máy chủ 23423452345." });
     }
-    res.json({
-      success: true,
-      token,
-      message: "Đăng ký thành công.",
-      user: savedUser,
-    });
-  } catch (error) {
-    console.error(error);
-    res.json({ success: false, message: "Đã xảy ra lỗi máy chủ." });
-  }
 };
-
+    
+ 
 // Login with Google (Redirect-based)
 const loginWithGoogle = async (req, res) => {
   passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
