@@ -62,11 +62,11 @@ const ActivityItem = ({ index, activity, setCurrentId, openModal }) => {
     if (activity?.idDestination && activity?.activityType) {
       fetchData(activity.idDestination, activity.activityType);
     }
-  }, []);
+  }, [activity]);
   const handleEdit = () => {
     setCurrentId(activity._id);
-    openModal()
-  }
+    openModal();
+  };
 
   return (
     <div className="activity-infor">
@@ -108,9 +108,9 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
   useEffect(() => {
     if (inforSchedule) {
       setFormData({
-        name: inforSchedule.name || "",
-        startDay: inforSchedule.startDate || parseDate("16/12/1999"),
-        endDate: inforSchedule.endDate || parseDate("16/12/1999"),
+        name: inforSchedule.scheduleName || "",
+        startDay: inforSchedule.dateStart || parseDate("16/12/1999"),
+        endDate: inforSchedule.dateEnd || parseDate("16/12/1999"),
         numDays: inforSchedule.numDays || 0,
         description: inforSchedule.description || ""
       });
@@ -150,7 +150,7 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
     >
       <div className="add-activity">
         <div className="modal-header">
-          <h4>Thêm chi phí phát sinh</h4>
+          <h4>Chỉnh sửa lịch trình</h4>
           <button onClick={closeModal} className="close-btn">
             <i className="fa-regular fa-circle-xmark"></i>
           </button>
@@ -158,7 +158,7 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
 
         <div className="modal-body">
           <div className="form-group">
-            <label className="expense-sub-title" htmlFor="name-expense">Tên chi phí</label>
+            <label className="expense-sub-title" htmlFor="name-expense">Tên lịch trình</label>
             <input className="input-field"
               id="name-expense" required
               name="name"
@@ -166,16 +166,19 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
               value={formData.name}
               onChange={handleChange}
             ></input>
-            <label className="expense-sub-title" htmlFor="expense">Số tiền</label>
-            <input className="input-field"
-              type="number"
-              id="expense"
-              name="cost"
+            <label className="expense-sub-title" htmlFor="expense-date">Chọn ngày bắt đầu</label>
+            <input
+              className="input-field"
+              type="date"
+              id="expense-date"
+              name="dateTime"
               required
-              placeholder="Nhập số tiền"
-              value={formData.cost}
-              onChange={handleChange}></input>
-            <label className="expense-sub-title" htmlFor="des">Ghi chú</label>
+              min={new Date().toISOString().split("T")[0]}
+              value={formData.dateTime}
+              onChange={handleChange}
+              placeholder="Chọn ngày và giờ"
+            />
+            <label className="expense-sub-title" htmlFor="des">Mô tả</label>
             <textarea
               placeholder="Nhập ghi chú chi tiết"
               className="input-field" id="des"
@@ -202,6 +205,7 @@ const DateSchedule = ({ schedule, setInforSchedule }) => {
   useEffect(() => {
     if (schedule) {
       setScheduleDate(schedule);
+      setCurrentId("")
     }
   }, [schedule]);
 
@@ -314,21 +318,6 @@ const Schedule = ({ mode }) => {
     }
   }, [inforSchedule]);
 
-  const [additionExpenses, setAdditionExpenses] = useState([
-    {
-      id: "123",
-      name: "Tiền ăn ốc",
-      cost: 100000,
-      description: "Ăn ốc ở bãi sau siêu ngon, nên đem nhiều tiền"
-    },
-    {
-      id: "1234",
-      name: "Tiền cà phê võng",
-      cost: 1000000,
-      description: "Khi chưa check-in thì đây là một địa điểm tuyệt vời để nghỉ ngơi sau một chuyến đi dài"
-    }
-  ])
-
   const openInforSchedule = () => {
     setIsOpenInforSchedule(true);
   };
@@ -357,7 +346,7 @@ const Schedule = ({ mode }) => {
     tour.additionalExpenses.forEach((addExpense) => {
       const additonExpense = {
         id: addExpense._id,
-        name: addExpense.title,
+        name: addExpense.name,
         cost: addExpense.cost,
         description: addExpense.description,
       };

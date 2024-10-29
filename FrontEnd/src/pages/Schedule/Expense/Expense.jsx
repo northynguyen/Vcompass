@@ -14,12 +14,16 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule }) =
     cost: 0,
     description: '',
   });
-  const addAdditionalExpense = (newExpense) => {
-    setInforSchedule((prevSchedule) => ({
-      ...prevSchedule,
-      additionalExpenses: [...prevSchedule.additionalExpenses, newExpense],
-    }));
-  };
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        name: '',
+        cost: 0,
+        description: '',
+      });
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     if (selectedExpense) {
       setFormData({
@@ -40,7 +44,10 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule }) =
     setIsConfirmDeleteOpen(true);
   };
   const handleConfirmDelete = () => {
-    setAddtionExpense((prev) => prev.filter((exp) => exp.id !== selectedExpense.id));
+    setInforSchedule((prevSchedule) => ({
+      ...prevSchedule,
+      additionalExpenses: prevSchedule.additionalExpenses.filter((exp) => exp._id !== selectedExpense.id),
+    }));
     closeModal();
     setIsConfirmDeleteOpen(false);
   };
@@ -56,15 +63,16 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule }) =
     }));
   };
   const handleSubmit = () => {
+    const newExpense = { ...formData };
     setInforSchedule((prevSchedule) => ({
       ...prevSchedule,
       additionalExpenses: isEditMode
         ? prevSchedule.additionalExpenses.map((exp) =>
-            exp._id === selectedExpense.id ? { ...exp, ...formData } : exp
-          )
+          exp._id === selectedExpense.id ? { ...exp, ...formData } : exp
+        )
         : [...prevSchedule.additionalExpenses, newExpense],
     }));
-  
+
     console.log(isEditMode ? "Updating expense: " : "Adding new expense: ", isEditMode ? formData : newExpense);
     closeModal();
   };

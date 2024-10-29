@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { v4 as uuidv4 } from 'uuid';
 import ListAccommodation, { AccomItem } from "../../ListAccommodation/ListAccommodation";
@@ -43,12 +43,22 @@ const Header = ({ option, setOption, setCurrentActivity }) => {
 
 const AddActivity = ({ isOpen, closeModal, currentDay, idActivity, setInforSchedule }) => {
   //console.log("currentId", idActivity);
+  console.log("update:", idActivity);
   const [option, setOption] = React.useState("Accommodations");
   const [currentActivity, setCurrentActivity] = useState({
     visible: false,
   })
   const [cost, setCost] = React.useState("")
   const [description, setDescription] = React.useState("")
+  useEffect(() => {
+    if (isOpen) {
+      setCurrentActivity({
+        visible: false
+      });
+    }
+
+  }, [isOpen]);
+
   const handleSave = () => {
     const newActivity = {
       idActivity: idActivity || uuidv4(),

@@ -70,6 +70,11 @@ const ActivityTime = ({ timeStart, timeEnd }) => {
 
 export const AccomActivity = ({ data, handleEdit }) => {
   const { url } = useContext(StoreContext);
+  if (!data) {
+    return (
+      <div className="div">...</div>
+    )
+  }
   return (
     <div className="time-schedule-item">
       <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
@@ -99,6 +104,11 @@ export const AccomActivity = ({ data, handleEdit }) => {
 }
 export const FoodServiceActivity = ({ data, handleEdit }) => {
   const { url } = useContext(StoreContext);
+  if (!data) {
+    return (
+      <div className="div">...</div>
+    )
+  }
   return (
     <div className="time-schedule-item">
       <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
@@ -107,15 +117,17 @@ export const FoodServiceActivity = ({ data, handleEdit }) => {
           <p>ĂN UỐNG</p>
         </div>
         <div className="expense-actions">
-          <button className="edit-btn"
-            onClick={handleEdit}>
+          <button
+            className="edit-btn"
+            onClick={handleEdit}
+          >
             <FaEdit />
           </button>
         </div>
         <div className="time-schedule-header">
           <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
         </div>
-        <h3>{data.name}</h3>
+        <h3>{data.foodServiceName}</h3>
         <div className="time-schedule-info">
           <i className="fa-solid fa-file"></i>
           <span>
@@ -123,11 +135,16 @@ export const FoodServiceActivity = ({ data, handleEdit }) => {
           </span>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 export const AttractionActivity = ({ data, handleEdit }) => {
   const { url } = useContext(StoreContext);
+  if (!data) {
+    return (
+      <div className="div">...</div>
+    )
+  }
   return (
     <div className="time-schedule-item">
       <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
