@@ -6,7 +6,7 @@ import ConfirmDialog from "../../../components/Dialog/ConfirmDialog";
 import "./Expense.css";
 
 
-const AddExpense = ({ isOpen, closeModal, selectedExpense, setAddtionExpense }) => {
+const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule }) => {
   const isEditMode = !!selectedExpense;
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -14,6 +14,12 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setAddtionExpense }) 
     cost: 0,
     description: '',
   });
+  const addAdditionalExpense = (newExpense) => {
+    setInforSchedule((prevSchedule) => ({
+      ...prevSchedule,
+      additionalExpenses: [...prevSchedule.additionalExpenses, newExpense],
+    }));
+  };
   useEffect(() => {
     if (selectedExpense) {
       setFormData({
@@ -50,19 +56,16 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setAddtionExpense }) 
     }));
   };
   const handleSubmit = () => {
-    if (isEditMode) {
-      setAddtionExpense((prev) =>
-        prev.map((exp) => exp.id === selectedExpense.id ? { ...exp, ...formData } : exp)
-      );
-      console.log("Updating expense: ", formData);
-    } else {
-      const newExpense = {
-        id: Date.now().toString(), // Chuyển thành string để đảm bảo tính duy nhất
-        ...formData,
-      };
-      setAddtionExpense((prev) => [...prev, newExpense]);
-      console.log("Adding new expense: ", newExpense);
-    }
+    setInforSchedule((prevSchedule) => ({
+      ...prevSchedule,
+      additionalExpenses: isEditMode
+        ? prevSchedule.additionalExpenses.map((exp) =>
+            exp._id === selectedExpense.id ? { ...exp, ...formData } : exp
+          )
+        : [...prevSchedule.additionalExpenses, newExpense],
+    }));
+  
+    console.log(isEditMode ? "Updating expense: " : "Adding new expense: ", isEditMode ? formData : newExpense);
     closeModal();
   };
 
@@ -129,14 +132,13 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setAddtionExpense }) 
   );
 };
 
-const Expense = ({ expenses, additionExpenses, setAddtionExpense }) => {
+const Expense = ({ expenses, additionExpenses, setInforSchedule }) => {
   const totalCost = [...expenses, ...additionExpenses].reduce((acc, expense) => acc + expense.cost, 0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
-
   const openModalForAdd = () => {
-    setSelectedExpense(null); // Khi thêm mới, không có expense nào được chọn
-    setIsModalOpen(true); // Mở popup
+    setSelectedExpense(null);
+    setIsModalOpen(true);
   };
 
   const openModalForEdit = (expense) => {
@@ -210,7 +212,7 @@ const Expense = ({ expenses, additionExpenses, setAddtionExpense }) => {
         isOpen={isModalOpen}
         closeModal={closeModal}
         selectedExpense={selectedExpense}
-        setAddtionExpense={setAddtionExpense} />
+        setInforSchedule={setInforSchedule} />
     </div>
   );
 };

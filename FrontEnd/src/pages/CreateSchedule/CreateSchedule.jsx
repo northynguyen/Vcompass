@@ -33,7 +33,8 @@ const CreateSchedule = () => {
         { headers: { token } }
       );
       if (response.data.success) {
-        navigate("/schedule-edit"); // Điều hướng sau khi thêm thành công
+        const scheduleId = response.data.schedule._id; // Lấy _id từ phản hồi
+        navigate(`/schedule-edit/${scheduleId}`);
       } else {
         console.error("Error adding schedule:", response.data.message);
       }

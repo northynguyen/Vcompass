@@ -42,6 +42,7 @@ const Header = ({ option, setOption, setCurrentActivity }) => {
 };
 
 const AddActivity = ({ isOpen, closeModal, currentDay, idActivity, setInforSchedule }) => {
+  //console.log("currentId", idActivity);
   const [option, setOption] = React.useState("Accommodations");
   const [currentActivity, setCurrentActivity] = useState({
     visible: false,
@@ -49,7 +50,6 @@ const AddActivity = ({ isOpen, closeModal, currentDay, idActivity, setInforSched
   const [cost, setCost] = React.useState("")
   const [description, setDescription] = React.useState("")
   const handleSave = () => {
-    console.log("currentAcc: ", currentActivity)
     const newActivity = {
       idActivity: idActivity || uuidv4(),
       activityType: currentActivity.activityType,
@@ -57,23 +57,30 @@ const AddActivity = ({ isOpen, closeModal, currentDay, idActivity, setInforSched
       cost: parseInt(cost) || 0,
       description: description,
       timeStart: currentActivity.timeStart || "00:00",
-      timeEnd: currentActivity.timeEnd || "00:10",
+      timeEnd: currentActivity.timeEnd || "00:30",
     };
-    console.log(newActivity)
     setInforSchedule((prevSchedule) => {
       const updatedActivities = prevSchedule.activities.map((day) => {
         if (day.day === currentDay) {
-          const existingActivityIndex = day.activity.findIndex((act) => act.idActivity === idActivity);
-          if (idActivity !== "" && existingActivityIndex !== -1) {
-            day.activity[existingActivityIndex] = { ...day.activity[existingActivityIndex], ...newActivity };
-            console.log("add")
+          if (idActivity) {
+            console.log("update:");
+            const existingActivityIndex = day.activity.findIndex((act) => act._id === idActivity);
+            const updatedActivitiesList = existingActivityIndex !== -1
+              ? [
+                ...day.activity.slice(0, existingActivityIndex),
+                { ...day.activity[existingActivityIndex], ...newActivity },
+                ...day.activity.slice(existingActivityIndex + 1),
+              ]
+              : day.activity;
+            return { ...day, activity: updatedActivitiesList };
           } else {
-            day.activity.push(newActivity);
-            console.log("edit")
+            console.log("add:");
+            return { ...day, activity: [...day.activity, newActivity] };
           }
         }
         return day;
       });
+
       return { ...prevSchedule, activities: updatedActivities };
     });
     closeModal();

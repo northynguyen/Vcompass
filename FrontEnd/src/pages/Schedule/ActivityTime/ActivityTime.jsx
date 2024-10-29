@@ -40,7 +40,6 @@ const ActivityTime = ({ timeStart, timeEnd }) => {
       alert('Thời gian kết thúc phải lớn hơn thời gian bắt đầu.');
     }
   };
-  console.log("Time:", timeStart)
   const filteredEndTimeOptions = timeOptions.filter(option => option > startTime);
   return (
     <div className="time-container ">
