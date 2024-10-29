@@ -259,8 +259,8 @@ const getAllPartners = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {
-  const { id, name, password, address, date_of_birth, gender, avatar, status } = req.body;
+const updateUserOrPartner = async (req, res) => {
+  const { type, id, name, password, address, date_of_birth, gender, avatar, status } = req.body;
   const updates = {};
 
   if (name) updates.name = name;
@@ -274,24 +274,46 @@ const updateUser = async (req, res) => {
   if (avatar) updates.avatar = avatar;
   if (status) updates.status = status;
 
-  try {
-    // Tìm người dùng theo ID và cập nhật thông tin
-    const user = await userModel.findByIdAndUpdate(id, updates, { new: true });
+  if (type === "user") {
+    try {
+      // Tìm người dùng theo ID và cập nhật thông tin
+      const user = await userModel.findByIdAndUpdate(id, updates, { new: true });
 
-    if (!user) {
-      return res.status(404).json({ success: false, message: "Người dùng không tồn tại." });
+      if (!user) {
+        return res.status(404).json({ success: false, message: "Người dùng không tồn tại." });
+      }
+
+      res.json({
+        success: true,
+        message: "Cập nhật thông tin thành công.",
+        user
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Đã xảy ra lỗi máy chủ." });
     }
+  }
+  else if (type === "partner") {
+    try {
+      // Tìm người dùng theo ID và cập nhật thông tin
+      const user = await partnerModel.findByIdAndUpdate(id, updates, { new: true });
 
-    res.json({
-      success: true,
-      message: "Cập nhật thông tin thành công.",
-      user
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Đã xảy ra lỗi máy chủ." });
+      if (!user) {
+        return res.status(404).json({ success: false, message: "Parner không tồn tại." });
+      }
+
+      res.json({
+        success: true,
+        message: "Cập nhật thông tin thành công.",
+        user
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Đã xảy ra lỗi máy chủ." });
+    }
   }
 };
+
 
 export {
   loginUser,
@@ -305,5 +327,5 @@ export {
   registerAdmin,
   getAllUsers,
   getAllPartners,
-  updateUser,// Export the new function
+  updateUserOrPartner,// Export the new function
 };

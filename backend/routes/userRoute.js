@@ -12,7 +12,7 @@ import {
     googleCallback,
     getAllUsers,
     getAllPartners,
-    updateUser,
+    updateUserOrPartner
 } from "../controllers/userController.js";
 
 const userRoutes = express.Router();
@@ -34,5 +34,5 @@ userRoutes.get('/users', getAllUsers);
 userRoutes.get('/partners', getAllPartners);
 
 //update user
-userRoutes.put('/', updateUser);
+userRoutes.put('/', updateUserOrPartner);
 export default userRoutes;

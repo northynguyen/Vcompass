@@ -36,7 +36,7 @@ const Login = () => {
     return (
         <div className='login-container'>
             <form onSubmit={onLogin} className="login-form ">
-                <h2>Login Partner</h2>
+                <h2>Login Admin</h2>
                 <input
                     type="email"
                     placeholder="Email"

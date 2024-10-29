@@ -44,6 +44,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     navigate('/login');
     toast.success('Đăng xuất thành công');
     setToken(null);

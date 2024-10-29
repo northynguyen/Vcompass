@@ -10,9 +10,10 @@ import { useNavigate } from 'react-router-dom'
 import { useLocation } from 'react-router-dom';
 import { StoreContext } from '../../Context/StoreContext'
 import { toast } from 'react-toastify';
- 
+
 const Header = ({ setShowLogin }) => {
-  const {token, setToken,user} = useContext(StoreContext);
+  const { token, setToken, user } = useContext(StoreContext);
+  console.log(user)
   const [activeTab, setActiveTab] = useState('');
   const [menuVisible, setMenuVisible] = useState(false); // State for menu visibility
   const menuRef = useRef(null); // Reference for the menu
@@ -31,6 +32,7 @@ const Header = ({ setShowLogin }) => {
     setShowLogin(false);
     navigate('/');
     localStorage.removeItem('token');
+
     setToken(null);
 
   }
@@ -44,7 +46,7 @@ const Header = ({ setShowLogin }) => {
       // If the click is outside the menu and the menu is visible, hide it
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setMenuVisible(false);
-        
+
       }
     };
 
@@ -81,7 +83,7 @@ const Header = ({ setShowLogin }) => {
         </ul>
 
         {/* Chờ chèn token vào  */}
-        {token===null ? <button onClick={() => setShowLogin(true)}>Sign in</button> :
+        {token === null ? <button onClick={() => setShowLogin(true)}>Sign in</button> :
           <div className="header-profile" ref={menuRef}>
             <div className="profile-section" onClick={toggleMenu}>
               <img src={profile_icon} alt="Profile" className="profile-pic" />
@@ -93,7 +95,7 @@ const Header = ({ setShowLogin }) => {
                 <div className="profile-name">
                   <img src={user.avatar} alt="Profile" className="profile-pic" />
                   <h3>{user.name} </h3>
-                </div>    
+                </div>
 
                 <hr></hr>
                 <ul className="menu">
@@ -111,7 +113,7 @@ const Header = ({ setShowLogin }) => {
                   </li>
                   <hr />
                   <li
-                    onClick={() => handleLogout() }>
+                    onClick={() => handleLogout()}>
                     <CiLogout /> Log Out
                   </li>
                 </ul>

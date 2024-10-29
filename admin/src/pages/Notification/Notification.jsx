@@ -18,7 +18,12 @@ const Notification = ({ userData }) => {
                 idReceiver: userData?._id,  // Truyền ID của user nếu có
                 content,                // Nội dung thông báo
             });
-            await axios.put(`${url}/api/user/update`, { id: userData._id, status: userData.status });
+            if (userData.type === "user") {
+                await axios.put(`${url}/api/user/update`, { type: "user", id: userData._id, status: userData.status });
+            }
+            else if (userData.type === "partner") {
+                await axios.put(`${url}/api/partner/update`, { type: "partner", id: userData._id, status: userData.status });
+            }
             // Reset lại các trường input sau khi gửi
             setContent("");
         } catch (error) {

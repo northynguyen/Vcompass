@@ -13,8 +13,7 @@ const StoreContextProvider = (props) => {
     const user = JSON.parse(localStorage.getItem("user"))
     const admin = JSON.parse(localStorage.getItem("user"))
     setUser(user)
-    setAdmin(user)
-    console.log(admin)
+    setAdmin(admin)
   }, [])
 
   const contextValue = {
