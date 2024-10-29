@@ -2,49 +2,49 @@ import mongoose, { Schema, model } from "mongoose";
 
 
 const UserSchema = new Schema({
-  name: {
-      type: String,
-      required: true,
-      minlength: 3,
-      maxlength: 30,
-  },
-  email: {
-      type: String,
-      required: true,
-      lowercase: true,
-      trim: true,
-      unique: true,
-      // Removed unique: true to allow duplicate emails across roles
-  },
-  phone_number: {
-      type: String,
-      unique: true,
-  },
-  address: {
-      type: String,
-  },
-  avatar: {
-      type: String,
-      required: true,
-  },
-  date_of_birth: {
-      type: Date,
-      required: true,
-  },
-  gender: {
-      type: String,
-      enum: ['male', 'female'],
-      required: true,
-  },
-  
-  password: {
-      type: String,
-      minlength: 8,
-  },
+    name: {
+        type: String,
+        required: true,
+        minlength: 3,
+        maxlength: 30,
+    },
+    email: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+        unique: true,
+        // Removed unique: true to allow duplicate emails across roles
+    },
+    phone_number: {
+        type: String,
+        // unique: true,
+    },
+    address: {
+        type: String,
+    },
+    avatar: {
+        type: String,
+
+    },
+    date_of_birth: {
+        type: Date,
+
+    },
+    gender: {
+        type: String,
+        enum: ['male', 'female'],
+
+    },
+
+    password: {
+        type: String,
+        minlength: 8,
+    },
 
     status: {
         type: String,
-        enum: ['active', 'inactive'],
+        enum: ['active', 'blocked'],
         default: 'active',
     },
     createdAt: {

@@ -23,12 +23,12 @@ const handleLogin = async (req, res, model, requiredRole = null) => {
     return res.json({ success: false, message: "Email không hợp lệ." });
   }
 
-    try {
-        // Construct query based on requiredRole
+  try {
+    // Construct query based on requiredRole
 
 
-        // Find user by email and role (if required)
-        const user = await model.findOne({ email });
+    // Find user by email and role (if required)
+    const user = await model.findOne({ email });
 
     if (!user) {
       const roleMessage = requiredRole ? `với vai trò ${requiredRole} ` : "";
@@ -91,38 +91,34 @@ const handleRegister = async (req, res, model, userRole = "user") => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create new user
-        const newUser = new model({
-            name,
-            email,
-            password: hashedPassword,
-            roles: [userRole],
-            address: "Ho Chi Minh City",
-            date_of_birth: "01-01-2000",
-            gender: "male",
-            avatar: "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg",
-            status: "active" // Initialize roles array with the specified role\
-        });
+    // Create new user
+    const newUser = new model({
+      name,
+      email,
+      password: hashedPassword,
+      roles: [userRole],
+      address: "Ho Chi Minh City",
+      date_of_birth: "01-01-2000",
+      gender: "male",
+      phone_number: "",
+      avatar: "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg",
+      status: "active" // Initialize roles array with the specified role\
+    });
 
     const savedUser = await newUser.save();
 
     // Create JWT token
     const token = createToken(savedUser._id);
 
-        res.json({ success: true, token, message: "Đăng ký thành công.", user: savedUser });
-    } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: "Đã xảy ra lỗi máy chủ 23423452345." });
-    }
     res.json({
       success: true,
       token,
       message: "Đăng ký thành công.",
-      user: savedUser,
+      user: savedUser
     });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: "Đã xảy ra lỗi máy chủ." });
+    res.json({ success: false, message: "Đã xảy ra lỗi máy chủ 23423452345." });
   }
 };
 
@@ -185,24 +181,24 @@ const googleSignIn = async (req, res) => {
     // Find the user by email
     let user = await userModel.findOne({ email });
 
-        if (user) {
-            // If user exists, check if they have 'user' role
-            if (!user.roles.includes("user")) {
-                return res.status(403).json({ success: false, message: "Chỉ người dùng mới có thể đăng nhập." });
-            }
-        } else {
-            // If user does not exist, create a new user with 'user' role
-            user = new userModel({
-                name,
-                email,
-                password: "", // No password as user uses Google OAuth
-                roles: ["user"],
-                address: "Ho Chi Minh City",
-                date_of_birth: "01-01-2000",
-                gender: "male",
-                avatar: "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg",
-                status: "active",
-            });
+    if (user) {
+      // If user exists, check if they have 'user' role
+      if (!user.roles.includes("user")) {
+        return res.status(403).json({ success: false, message: "Chỉ người dùng mới có thể đăng nhập." });
+      }
+    } else {
+      // If user does not exist, create a new user with 'user' role
+      user = new userModel({
+        name,
+        email,
+        password: "", // No password as user uses Google OAuth
+        roles: ["user"],
+        address: "Ho Chi Minh City",
+        date_of_birth: "01-01-2000",
+        gender: "male",
+        avatar: "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg",
+        status: "active",
+      });
 
       await user.save();
     }
@@ -232,7 +228,7 @@ const loginPartner = async (req, res) => {
 };
 
 const loginAdmin = async (req, res) => {
-    await handleLogin(req, res, adminModel, "admin"); // Require 'admin' role
+  await handleLogin(req, res, adminModel, "admin"); // Require 'admin' role
 };
 
 const registerUser = async (req, res) => {
@@ -243,36 +239,71 @@ const registerPartner = async (req, res) => {
   await handleRegister(req, res, partnerModel, "partner"); // Register as 'partner'
 };
 const registerAdmin = async (req, res) => {
-    await handleRegister(req, res, adminModel, "admin"); // Require 'admin' role
+  await handleRegister(req, res, adminModel, "admin"); // Require 'admin' role
 };
 
 const getAllUsers = async (req, res) => {
-    try {
-        const users = await userModel.find();
-        res.json(users);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
+  try {
+    const users = await userModel.find();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 const getAllPartners = async (req, res) => {
-    try {
-        const users = await partnerModel.find();
-        res.json(users);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+  try {
+    const users = await partnerModel.find();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const updateUser = async (req, res) => {
+  const { id, name, password, address, date_of_birth, gender, avatar, status } = req.body;
+  const updates = {};
+
+  if (name) updates.name = name;
+  if (password) {
+    const salt = await bcrypt.genSalt(10);
+    updates.password = await bcrypt.hash(password, salt);
+  }
+  if (address) updates.address = address;
+  if (date_of_birth) updates.date_of_birth = date_of_birth;
+  if (gender) updates.gender = gender;
+  if (avatar) updates.avatar = avatar;
+  if (status) updates.status = status;
+
+  try {
+    // Tìm người dùng theo ID và cập nhật thông tin
+    const user = await userModel.findByIdAndUpdate(id, updates, { new: true });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Người dùng không tồn tại." });
     }
+
+    res.json({
+      success: true,
+      message: "Cập nhật thông tin thành công.",
+      user
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Đã xảy ra lỗi máy chủ." });
+  }
 };
 
 export {
-    loginUser,
-    registerUser,
-    loginPartner,
-    loginAdmin,
-    registerPartner,
-    loginWithGoogle,
-    googleCallback,
-    googleSignIn,
-    registerAdmin,
-    getAllUsers,
-    getAllPartners,// Export the new function
+  loginUser,
+  registerUser,
+  loginPartner,
+  loginAdmin,
+  registerPartner,
+  loginWithGoogle,
+  googleCallback,
+  googleSignIn,
+  registerAdmin,
+  getAllUsers,
+  getAllPartners,
+  updateUser,// Export the new function
 };

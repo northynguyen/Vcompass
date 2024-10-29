@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import './UserDetails.css';
+import { StoreContext } from '../../Context/StoreContext';
+import Notification from '../../pages/Notification/Notification'; // Import Notification component
 
 const UserDetails = () => {
     const location = useLocation();
     const user = location.state?.profile;
-
-    const [status, setStatus] = useState(user.status || "Active");
+    const admin = useContext(StoreContext).admin;
+    const [status, setStatus] = useState(user.status);
+    const [previousStatus, setPreviousStatus] = useState(user.status); // Trạng thái trước đó
     const [showForm, setShowForm] = useState(false);
     const [reason, setReason] = useState("");
 
@@ -16,20 +19,16 @@ const UserDetails = () => {
 
     const handleStatusChange = (event) => {
         const newStatus = event.target.value;
+        setPreviousStatus(status); // Cập nhật trạng thái trước đó
         setStatus(newStatus);
-        if (newStatus === "Blocked") {
-            setShowForm(true); // Hiện form gửi thông báo khi chọn "Blocked"
-        } else {
-            setShowForm(false); // Ẩn form khi chọn "Active"
-        }
-    };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        // Xử lý gửi thông báo ở đây
-        console.log(`Blocking user: ${user.name}, Reason: ${reason}`);
-        setShowForm(false); // Ẩn form sau khi gửi
-        setReason(""); // Đặt lý do về mặc định
+        // Hiện hộp thoại khi trạng thái thay đổi giữa "blocked" và "active"
+        if ((previousStatus === "blocked" && newStatus === "active") ||
+            (previousStatus === "active" && newStatus === "blocked")) {
+            setShowForm(true); // Hiện form khi chuyển đổi trạng thái
+        } else {
+            // Ẩn form khi không có chuyển đổi giữa "blocked" và "active"
+        }
     };
 
     return (
@@ -45,34 +44,17 @@ const UserDetails = () => {
                 <p><strong>Phone:</strong> {user.phone_number || "Not specified"}</p>
                 <p><strong>Address:</strong> {user.address || "Not specified"}</p>
                 <p><strong>Account Created:</strong> {user.createdAt ? new Date(Date.parse(user.createdAt)).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : "Not available"}</p>
-                <div>
+                <p>
                     <strong>Status:</strong>
                     <select value={status} onChange={handleStatusChange}>
-                        <option value="Active">Active</option>
-                        <option value="Blocked">Blocked</option>
+                        <option value="active">Active</option>
+                        <option value="blocked">Blocked</option>
                     </select>
-                </div>
+                </p>
             </div>
 
             {showForm && (
-                <form onSubmit={handleSubmit} className="block-user-form">
-                    <div>
-                        <label>Admin Name:</label>
-                        <input type="text" value="Admin Name" disabled />
-                    </div>
-                    <div>
-                        <label>User Name:</label>
-                        <input type="text" value={user.name} disabled />
-                    </div>
-                    <div>
-                        <label>Reason for Blocking:</label>
-                        <textarea value={reason} onChange={(e) => setReason(e.target.value)} required />
-                    </div>
-                    <div className="form-buttons">
-                        <button type="submit">Send</button>
-                        <button type="button" onClick={() => setShowForm(false)}>Cancel</button>
-                    </div>
-                </form>
+                <Notification userData={{ _id: user._id, name: user.name, status }} />
             )}
         </div>
     );
