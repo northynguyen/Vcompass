@@ -120,8 +120,9 @@ const AddEditRoomForm = ({ room = {}, onSave, onCancel }) => {
         ...formData,
         images: existingImages, // Send the updated list of existing images
       };
+
       formDataToSend.append('roomTypeUpdate', JSON.stringify(roomData));
-  
+      console.log(roomData);
       // Append new image files
       newImages.forEach((file) => {
         formDataToSend.append('newImages', file);
