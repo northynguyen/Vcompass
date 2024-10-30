@@ -37,10 +37,9 @@ app.use("/api/foodservices", foodServiceRoutes);
 app.use("/api/schedule", scheduleRouter);
 
 app.use("/api/attractions", Attractionrouter);
-app.use("/api/users", userRoutes);
-app.use("/api/partners", userRoutes);
-app.use("/api/user/update", userRoutes);
-
+// app.use("/api/partners", userRoutes);
+// app.use("/api/user/update", userRoutes);
+// app.use("/api/partner/update", userRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
