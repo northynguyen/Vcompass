@@ -15,7 +15,7 @@ const accommRoutes = express.Router();
 
 accommRoutes.get("/", getListAccomm);
 accommRoutes.get("/:partnerId", getListAccommbyPartner);
-accommRoutes.post("/:partnerId", upload.array("images", 5), addNew); // Add new accommodation
+accommRoutes.post("/:partnerId", upload.array("newImages", 5), addNew); // Add new accommodation
 accommRoutes.put(
   "/:partnerId/:id",
   upload.array("newImages", 5),
@@ -23,7 +23,7 @@ accommRoutes.put(
 ); // Update accommodation
 accommRoutes.post(
   "/:accommodationId/rooms",
-  upload.array("images", 5),
+  upload.array("newImages", 5),
   addNewRoom
 ); // Add new room type
 accommRoutes.put(

@@ -39,8 +39,13 @@ const SlideBar = ({ type }) => {
         const fetchAttractions = async () => {
             try {
                 const response = await axios.get(`${url}/api/attractions/`);
-                const sortedServices = response.data.attraction.slice(0, 10);
-                setPopularServices(sortedServices);
+                if (response.data.success) {
+                    const sortedServices = response.data.attractions.slice(0, 10);
+                    setPopularServices(sortedServices);
+                }
+                else {
+                    console.error('Error fetching attractions:', response.data.message);
+                }
             } catch (error) {
                 console.error('Error fetching attractions:', error);
             }
@@ -52,8 +57,10 @@ const SlideBar = ({ type }) => {
             fetchFoodServices();
         } else if (type === 'attraction') {
             fetchAttractions();
+            console.log(popularServices);
         }
     }, [type, url]);
+
 
     const onClick = (serviceId) => {
         console.log(serviceId);
@@ -81,9 +88,12 @@ const SlideBar = ({ type }) => {
                 return (
                     <>
                         <h3 className="card-title">{service.foodServiceName}</h3>
-                        <p className="card-duration">
-                            {service.operatingHours[0]?.startDay} - {service.operatingHours[0]?.endDay}
-                        </p>
+                        {service.operatingHours.map((hour, index) => (
+                            <p className="card-duration" key={index}>
+                                {hour.openTime} - {hour.closeTime} &nbsp; | &nbsp; {hour.startDay} - {hour.endDay}
+                            </p>
+                            
+                        ))}
                         <p className="card-facilities">
                             {service.amenities?.join(' • ')}
                         </p>
@@ -94,11 +104,16 @@ const SlideBar = ({ type }) => {
                 return (
                     <>
                         <h3 className="card-title">{service.attraction_name}</h3>
-                        <p className="card-duration">{service.openTime} - {service.closeTime}</p>
+                        {service.operatingHours.map((hour, index) => (
+                            <p className="card-duration" key={index}>
+                                {hour.openTime} - {hour.closeTime} &nbsp; | &nbsp; {hour.startDay} - {hour.endDay}
+                            </p>
+                            
+                        ))}                    
                         <p className="card-facilities">
                             {service.amenities?.join(' • ')}
                         </p>
-                        <p className="card-price">${service.price} entrance fee</p>
+                        <p className="card-price">{service.price.toLocaleString()} entrance fee</p>
                     </>
                 );
             default:
@@ -109,14 +124,16 @@ const SlideBar = ({ type }) => {
     const getRatingInfo = (ratings) => {
         const totalReviews = ratings.length;
         const averageRating = totalReviews > 0
-            ? (ratings.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1)
+            ? (ratings.reduce((sum, r) => sum + (Number(r.rate) || 0), 0) / totalReviews).toFixed(1)
             : 'No reviews';
         return { totalReviews, averageRating };
     };
+    
 
     return (
         <div className="slidebar-container">
             <h2 className="title">Popular {type} Services</h2>
+            {popularServices.length === 0 && <p>No {type} services found.</p>}
             <Swiper
                 modules={[Navigation]}
                 spaceBetween={20}
