@@ -1,27 +1,41 @@
 import { createContext, useState, useEffect } from 'react'
-
+import axios from 'axios'
 
 export const StoreContext = createContext(null)
 const StoreContextProvider = (props) => {
   const [token, setToken] = useState("")
-  const [user, setUser] = useState({})
   const [admin, setAdmin] = useState({})
   const url = "http://localhost:4000"
+
+
+  const fetchAdmin = async (authtoken) => {
+    if (authtoken) {
+      try {
+        const response = await axios.post(`${url}/api/users/admin/getbyid`, {}, { headers: { token: authtoken } });
+        setAdmin(response.data.user);
+      } catch (error) {
+        console.error("Error loading admin data:", error);
+      }
+    }
+  };
+
+
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    setToken(token)
-    const user = JSON.parse(localStorage.getItem("user"))
-    const admin = JSON.parse(localStorage.getItem("user"))
-    setUser(user)
-    setAdmin(admin)
-  }, [])
+    const fetchData = async () => {
+      const storedToken = localStorage.getItem("token");
+      if (storedToken) {
+        setToken(storedToken);
+        await fetchAdmin(storedToken);// Tải dữ liệu giỏ hàng      
+      }
+    };
+    fetchData();
+  }, []);
+
 
   const contextValue = {
     token,
     setToken,
     url,
-    user,
-    setUser,
     admin,
     setAdmin
   }

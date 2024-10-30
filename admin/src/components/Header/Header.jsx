@@ -12,7 +12,7 @@ const Header = () => {
   const [isNotificationsVisible, setNotificationsVisible] = useState(false); // State for notifications dropdown
   const menuRef = useRef(null);
   const notificationRef = useRef(null); // Reference for the notifications dropdown
-  const { token, setToken, user } = useContext(StoreContext);
+  const { token, setToken, admin } = useContext(StoreContext);
   const navigate = useNavigate();
   // Sample notifications array
   const notifications = [
@@ -126,13 +126,13 @@ const Header = () => {
         {/* User Profile */}
         <div className="user-profile">
           <img
-            src={user.avatar}
+            src={admin.avatar}
             alt="User Avatar"
             className="user-avatar"
             onClick={toggleProfilePopup} // Toggle profile popup on click
           />
           <div className="user-info">
-            <p>{user.name}</p>
+            <p>{admin.name}</p>
             <span>Admin</span>
           </div>
         </div>

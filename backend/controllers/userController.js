@@ -7,8 +7,22 @@ import { passport } from "../config/passport.js"; // Import passport
 import partnerModel from "../models/partner.js";
 import adminModel from "../models/admin.js";
 import userModel from "../models/user.js";
+import { model } from 'mongoose';
 // Import passport
+const handlegetInfoById = async (req, res, model) => {
+  const id = req.body.userId;
+  console.log(id);
+  try {
+    const user = await model.findById(id);
+    if (!user) {
+      return res.json({ success: false, message: "Không tìm thấy người dùng." });
+    }
 
+    res.json({ success: true, user });
+  } catch (error) {
+    console.error(error);
+  }
+}
 // Helper function to create JWT
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1h" }); // Token expires in 1 hour
@@ -242,6 +256,18 @@ const registerAdmin = async (req, res) => {
   await handleRegister(req, res, adminModel, "admin"); // Require 'admin' role
 };
 
+const getUserById = async (req, res) => {
+  await handlegetInfoById(req, res, userModel);
+}
+
+const getPartnerById = async (req, res) => {
+  await handlegetInfoById(req, res, partnerModel);
+}
+
+const getAdminById = async (req, res) => {
+  await handlegetInfoById(req, res, adminModel);
+}
+
 const getAllUsers = async (req, res) => {
   try {
     const users = await userModel.find();
@@ -327,5 +353,6 @@ export {
   registerAdmin,
   getAllUsers,
   getAllPartners,
-  updateUserOrPartner,// Export the new function
+  updateUserOrPartner,
+  getUserById, getPartnerById, getAdminById // Export the new function
 };

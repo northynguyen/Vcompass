@@ -6,7 +6,7 @@ import { StoreContext } from '../../Context/StoreContext';
 import axios from 'axios';
 
 const Login = () => {
-    const { url, setToken, setUser } = useContext(StoreContext);
+    const { url, setToken, setAdmin } = useContext(StoreContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -20,8 +20,7 @@ const Login = () => {
             if (response.data.success) {
                 setToken(response.data.token);
                 localStorage.setItem("token", response.data.token);
-                localStorage.setItem("user", JSON.stringify(response.data.user));
-                setUser(response.data.user);
+                setAdmin(response.data.user);
                 toast.success(response.data.message);
             } else {
                 toast.error(response.data.message);

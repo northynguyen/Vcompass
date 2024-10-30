@@ -7,22 +7,33 @@ const Notification = ({ userData }) => {
     const { admin, url } = useContext(StoreContext); // Lấy admin từ StoreContext
     const [userName, setUserName] = useState(userData?.name || ""); // State để nhập tên user
     const [content, setContent] = useState("");   // State để nhập nội dung thông báo
+    const getTypeNo = () => {
+        if (!userData) {
+            return "normal";
+        } else if (userData.status === "blocked") {
+            return "blocked";
+        } else if (userData.status === "unclock") { // Assuming you meant "unclock" should be "unlock"
+            return "unlock";
+        }
+        return "normal"; // Default if no condition matches
+    };
     // Xử lý gửi form
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+        const typeNo = getTypeNo();
         try {
             // Thực hiện gửi yêu cầu POST đến server
             const response = await axios.post(`${url}/api/notifications/notifications/`, {
                 idSender: admin._id,     // Truyền ID của admin
                 idReceiver: userData?._id,  // Truyền ID của user nếu có
-                content,                // Nội dung thông báo
+                content,
+                typeNo,                // Nội dung thông báo
             });
             if (userData.type === "user") {
-                await axios.put(`${url}/api/user/update`, { type: "user", id: userData._id, status: userData.status });
+                await axios.put(`${url}/api/user/users/update`, { type: "user", id: userData._id, status: userData.status });
             }
             else if (userData.type === "partner") {
-                await axios.put(`${url}/api/partner/update`, { type: "partner", id: userData._id, status: userData.status });
+                await axios.put(`${url}/api/user/partners/update`, { type: "partner", id: userData._id, status: userData.status });
             }
             // Reset lại các trường input sau khi gửi
             setContent("");
