@@ -11,7 +11,10 @@ const StoreContextProvider = (props) => {
   const fetchAdmin = async (authtoken) => {
     if (authtoken) {
       try {
+
         const response = await axios.post(`${url}/api/user/admin/getbyid`, {}, { headers: { token: authtoken } });
+
+
         setAdmin(response.data.user);
       } catch (error) {
         console.error("Error loading admin data:", error);
