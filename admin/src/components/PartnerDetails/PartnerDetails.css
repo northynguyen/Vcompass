@@ -47,3 +47,47 @@
     padding: 10px;
     border-radius: 5px;
 }
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-buttons button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-buttons button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+}
+
+.form-buttons button[type="button"] {
+    background-color: #dc3545;
+    color: white;
+}
+
+.partner-info select {
+    width: 100px;
+    height: 40px;
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    color: #333;
+}
+
+.partner-info .select:focus {
+    border-color: #4a90e2;
+
+}
+
+.partner-info option {
+    padding: 10px;
+    /* Khoảng cách giữa nội dung của từng option */
+}

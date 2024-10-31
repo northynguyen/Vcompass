@@ -14,7 +14,7 @@ const calculateTotalRate = (ratings) => {
 
 // TourItem Component
 const AttractionItem = ({ imgSrc, name, description, price,
-  totalRate, status, setCurrentActivity, idDestination }) => {
+  totalRate, location, facilities, status, setCurrentActivity, idDestination }) => {
   const { url } = useContext(StoreContext);
   console.log("id:", idDestination)
   const handleSelect = () => {
@@ -24,6 +24,8 @@ const AttractionItem = ({ imgSrc, name, description, price,
       name,
       description,
       price,
+      location,
+      facilities,
       totalRate,
       activityType: "Attraction",
       visible: true
@@ -35,18 +37,21 @@ const AttractionItem = ({ imgSrc, name, description, price,
     <div className="list-accom__tour-item">
       <img src={`${url}/images/${imgSrc}`} alt={name} className="list-accom__tour-item-image" />
       <div className="list-accom__tour-details">
-        <div className="tour-header">
-          <span className="list-accom__tour-rating">{totalRate}</span>
-        </div>
         <h3>{name}</h3>
-        <div className="tour-info">
-          <p>{description}</p>
+        <div className="list-accom__tour-location">
+          <a href="#">{location}</a>
         </div>
+        <div className="list-accom__tour-facilities">
+          {facilities.map((facility, index) => (
+            <span key={index}>{facility}</span>
+          ))}
+        </div>
+        <p>{description}</p>
+        <div className="list-accom__tour-rating">{totalRate}</div>
       </div>
       <div className="list-accom__tour-price">
         <div className="price-container">
-          <span className="price-text" >{price}</span>
-          <span className="persion-text">per person</span>
+          <p className="price-text">{price}</p>
         </div>
         {
           status === "Schedule" && <SelectButton onClick={handleSelect} />
@@ -92,12 +97,8 @@ const TourList = ({ tours, sortOption, status, setCurrentActivity }) => {
       {currentTours.map((tour, index) => (
         <AttractionItem
           key={index}
+          {...tour}
           idDestination={tour.idDestination}
-          imgSrc={tour.imgSrc}
-          name={tour.name}
-          description={tour.description}
-          price={tour.price}
-          totalRate={tour.totalRate}
           status={status}
           setCurrentActivity={setCurrentActivity}
         />
@@ -187,12 +188,14 @@ const ListAccom = ({ status, setCurrentActivity }) => {
         const mappedTours = dbAttractions.map(attraction => ({
           idDestination: attraction._id,
           imgSrc: attraction.images[0],
-          name: attraction.attraction_name,
+          name: attraction.attractionName,
           description: attraction.description,
           price: `${(attraction.price).toLocaleString()}₫`,
-          totalRate: calculateTotalRate(attraction.rating),
+          totalRate: calculateTotalRate(attraction.ratings),
+          location: attraction.location.address,
+          facilities: attraction.amenities,
         }));
-
+        console.log("attraction", response)
         setTours(mappedTours);
       })
       .catch(error => {

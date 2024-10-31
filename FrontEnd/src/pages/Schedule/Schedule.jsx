@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
+import axios from 'axios';
 import { useContext, useEffect, useState } from "react";
 import Modal from "react-modal";
+import { useParams } from 'react-router-dom';
 import { StoreContext } from "../../Context/StoreContext";
 import ActivityTime, { AccomActivity, AttractionActivity, FoodServiceActivity } from "./ActivityTime/ActivityTime";
 import AddActivity from "./AddActivity/AddActivity";
@@ -29,6 +31,7 @@ const ActivityItem = ({ index, activity, setCurrentId, openModal }) => {
   const { url } = useContext(StoreContext);
   const fetchData = async (id, type) => {
     try {
+      console.log("type: " + type)
       let response;
       switch (type) {
         case 'Accommodation':
@@ -59,11 +62,11 @@ const ActivityItem = ({ index, activity, setCurrentId, openModal }) => {
     if (activity?.idDestination && activity?.activityType) {
       fetchData(activity.idDestination, activity.activityType);
     }
-  }, []);
+  }, [activity]);
   const handleEdit = () => {
-    setCurrentId(idActivity);
-    openModal()
-  }
+    setCurrentId(activity._id);
+    openModal();
+  };
 
   return (
     <div className="activity-infor">
@@ -79,7 +82,7 @@ const ActivityItem = ({ index, activity, setCurrentId, openModal }) => {
             <AccomActivity data={data.accommodation} activity={activity} handleEdit={handleEdit} />
           )}
           {activity.activityType === "FoodService" && (
-            <FoodServiceActivity data={data.foodService} activity={activity} handleEdit={handleEdit} />
+            < FoodServiceActivity data={data.foodService} activity={activity} handleEdit={handleEdit} />
           )}
           {activity.activityType === "Attraction" && (
             <AttractionActivity data={data.attraction} activity={activity} handleEdit={handleEdit} />
@@ -105,9 +108,9 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
   useEffect(() => {
     if (inforSchedule) {
       setFormData({
-        name: inforSchedule.name || "",
-        startDay: inforSchedule.startDate || parseDate("16/12/1999"),
-        endDate: inforSchedule.endDate || parseDate("16/12/1999"),
+        name: inforSchedule.scheduleName || "",
+        startDay: inforSchedule.dateStart || parseDate("16/12/1999"),
+        endDate: inforSchedule.dateEnd || parseDate("16/12/1999"),
         numDays: inforSchedule.numDays || 0,
         description: inforSchedule.description || ""
       });
@@ -147,7 +150,7 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
     >
       <div className="add-activity">
         <div className="modal-header">
-          <h4>Thêm chi phí phát sinh</h4>
+          <h4>Chỉnh sửa lịch trình</h4>
           <button onClick={closeModal} className="close-btn">
             <i className="fa-regular fa-circle-xmark"></i>
           </button>
@@ -155,7 +158,7 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
 
         <div className="modal-body">
           <div className="form-group">
-            <label className="expense-sub-title" htmlFor="name-expense">Tên chi phí</label>
+            <label className="expense-sub-title" htmlFor="name-expense">Tên lịch trình</label>
             <input className="input-field"
               id="name-expense" required
               name="name"
@@ -163,16 +166,19 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
               value={formData.name}
               onChange={handleChange}
             ></input>
-            <label className="expense-sub-title" htmlFor="expense">Số tiền</label>
-            <input className="input-field"
-              type="number"
-              id="expense"
-              name="cost"
+            <label className="expense-sub-title" htmlFor="expense-date">Chọn ngày bắt đầu</label>
+            <input
+              className="input-field"
+              type="date"
+              id="expense-date"
+              name="dateTime"
               required
-              placeholder="Nhập số tiền"
-              value={formData.cost}
-              onChange={handleChange}></input>
-            <label className="expense-sub-title" htmlFor="des">Ghi chú</label>
+              min={new Date().toISOString().split("T")[0]}
+              value={formData.dateTime}
+              onChange={handleChange}
+              placeholder="Chọn ngày và giờ"
+            />
+            <label className="expense-sub-title" htmlFor="des">Mô tả</label>
             <textarea
               placeholder="Nhập ghi chú chi tiết"
               className="input-field" id="des"
@@ -197,9 +203,9 @@ const DateSchedule = ({ schedule, setInforSchedule }) => {
   const [currentId, setCurrentId] = useState("");
 
   useEffect(() => {
-    console.log(schedule);
     if (schedule) {
       setScheduleDate(schedule);
+      setCurrentId("")
     }
   }, [schedule]);
 
@@ -262,66 +268,55 @@ const parseDate = (dateString) => {
   return new Date(parts[2], parts[1] - 1, parts[0]); // Tháng trong Date bắt đầu từ 0
 };
 
-const Schedule = () => {
-  const [inforSchedule, setInforSchedule] = useState({
-    idUser: "123",
-    scheduleName: "Tour Vũng Tàu",
-    description: "Ăn ốc ở bãi sau siêu ngon, nên đem nhiều tiềnm",
-    address: "Vung Tau",
-    imgSrc: "https://bazantravel.com/cdn/medias/uploads/83/83317-khu-nghi-duong-lan-rung-700x420.jpg",
-    numDays: 2,
-    dateStart: "10-11-2022",
-    dateEnd: "15-11-2022",
-    status: "Completed",
-    activities: [
-      {
-        day: 1,
-        activity: [
-          {
-            idActivity: "123",
-            activityType: "Accommodation",
-            idDestination: "670e86affe137be97dd5e67d",
-            cost: 1000000,
-            description: "this is description",
-            timeStart: "00:00",
-            timeEnd: "10:30",
-          },
-          {
-            idActivity: "125",
-            activityType: "FoodService",
-            idDestination: "6710ee6ffcdfa639cc6468e1",
-            cost: 10000,
-            description: "this is description",
-            timeStart: "11:00",
-            timeEnd: "15:30",
-          },
-        ]
-      },
-      {
-        day: 2,
-        activity: [
-
-        ]
-      },
-    ]
-  })
+const Schedule = ({ mode }) => {
+  const { url } = useContext(StoreContext)
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [inforSchedule, setInforSchedule] = useState(null)
   const [isOpenInforSchedule, setIsOpenInforSchedule] = useState(false);
-  const [dateStart, setDateStart] = useState(convertDateFormat(inforSchedule.dateStart));
-  const [dateEnd, setDateEnd] = useState(convertDateFormat(inforSchedule.dateEnd));
-  const [additionExpenses, setAdditionExpenses] = useState([
-    {
-      id: "123",
-      name: "Tiền ăn ốc",
-      cost: 100000,
-      description: "Ăn ốc ở bãi sau siêu ngon, nên đem nhiều tiền"
-    },
-    {
-      id: "1234",
-      name: "Tiền cà phê võng",
-      cost: 1000000,
-      description: "Khi chưa check-in thì đây là một địa điểm tuyệt vời để nghỉ ngơi sau một chuyến đi dài"
+  const [dateStart, setDateStart] = useState("");
+  const [dateEnd, setDateEnd] = useState("");
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const response = await axios.get(`${url}/api/schedule/${id}`);
+        setInforSchedule(response.data.schedule)
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching schedule:", error);
+        setLoading(false);
+      }
+    };
+    fetchSchedule();
+  }, [id]);
+
+  useEffect(() => {
+    if (inforSchedule) {
+      console.log("inforSchedule", inforSchedule);
+      console.log("mode:", mode);
+      setDateStart(convertDateFormat(inforSchedule.dateStart))
+      setDateEnd(convertDateFormat(inforSchedule.dateEnd))
     }
-  ])
+  }, [loading]);
+  useEffect(() => {
+    if (inforSchedule) {
+      const updateSchedule = async () => {
+        try {
+          const response = await axios.put(`${url}/api/schedule/update/${inforSchedule._id}`, {
+            ...inforSchedule,
+          });
+          if (response.data.success) {
+            console.log("Cập nhật lịch trình thành công:", response.data);
+          } else {
+            console.error("Lỗi khi cập nhật lịch trình:", response.data.message);
+          }
+        } catch (error) {
+          console.error("Lỗi:", error);
+        }
+      };
+      updateSchedule();
+    }
+  }, [inforSchedule]);
 
   const openInforSchedule = () => {
     setIsOpenInforSchedule(true);
@@ -335,33 +330,39 @@ const Schedule = () => {
     tour.activities.forEach((day) => {
       day.activity.forEach((activity) => {
         const expense = {
-          id: Math.random(), // Tạo id ngẫu nhiên, bạn có thể thay đổi cách tạo id
+          id: Math.random(),
           name: activity.title,
-          location: tour.address, // Dùng address chung từ MyTour
-          cost: activity.cost, // Lấy giá và chuyển về số
-          icon: activity.imgSrc, // Dùng ảnh từ activity
+          location: tour.address,
+          cost: activity.cost,
+          icon: activity.imgSrc,
         };
         expenses.push(expense);
       });
     });
-
     return expenses;
   };
+  const extractAdditionExpenses = (tour) => {
+    const additonExpenses = [];
+    tour.additionalExpenses.forEach((addExpense) => {
+      const additonExpense = {
+        id: addExpense._id,
+        name: addExpense.name,
+        cost: addExpense.cost,
+        description: addExpense.description,
+      };
+      additonExpenses.push(additonExpense);
+    });
+    return additonExpenses;
+  };
 
-const calculateDaysAndNights = (dateStart, dateEnd) => {
+  const calculateDaysAndNights = (dateStart, dateEnd) => {
     const [dayStart, monthStart, yearStart] = dateStart.split("-");
     const [dayEnd, monthEnd, yearEnd] = dateEnd.split("-");
-
     const startDate = new Date(`${yearStart}-${monthStart}-${dayStart}`);
     const endDate = new Date(`${yearEnd}-${monthEnd}-${dayEnd}`);
-
-    const timeDifference = endDate - startDate; // kết quả là số mili giây
-    const daysDifference = timeDifference / (1000 * 3600 * 24); // chuyển mili giây thành số ngày
-
-    // Tính số đêm (số đêm = số ngày - 1)
+    const timeDifference = endDate - startDate;
+    const daysDifference = timeDifference / (1000 * 3600 * 24);
     const nights = daysDifference - 1;
-
-    // Return kết quả dạng "X ngày Y đêm"
     return `${daysDifference} ngày ${nights} đêm`;
   };
   const handleDateStartChange = (e) => {
@@ -370,7 +371,9 @@ const calculateDaysAndNights = (dateStart, dateEnd) => {
   const handleDateEndChange = (e) => {
     setDateEnd(e.target.value);
   };
-
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="custom-schedule">
       <div className="header-left">
@@ -387,7 +390,6 @@ const calculateDaysAndNights = (dateStart, dateEnd) => {
                   <i className="fa-regular fa-calendar-days"></i>
                   <p>Từ</p>
                 </div>
-                {/* Bind the date input to dateStart state */}
                 <input
                   value={dateStart}
                   onChange={handleDateStartChange}
@@ -440,8 +442,8 @@ const calculateDaysAndNights = (dateStart, dateEnd) => {
       <div className="footer-schedule">
         <Expense
           expenses={extractExpenses(inforSchedule)}
-          additionExpenses={additionExpenses}
-          setAddtionExpense={setAdditionExpenses} />
+          additionExpenses={extractAdditionExpenses(inforSchedule)}
+          setInforSchedule={setInforSchedule} />
       </div>
 
       <div className="save-schedule">

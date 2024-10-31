@@ -1,6 +1,9 @@
 // routes/authRoutes.js
 
 import express from "express";
+
+import authMiddleware from './../middleware/auth.js';
+
 import {
     loginUser,
     registerUser,
@@ -12,7 +15,8 @@ import {
     googleCallback,
     getAllUsers,
     getAllPartners,
-    updateUser,
+    updateUserOrPartner,
+    getAdminById
 } from "../controllers/userController.js";
 
 const userRoutes = express.Router();
@@ -30,9 +34,13 @@ userRoutes.get("/google", loginWithGoogle); // Redirect đến Google
 userRoutes.get("/google/callback", googleCallback); // Google callback
 
 //Get all users
-userRoutes.get('/users', getAllUsers);
-userRoutes.get('/partners', getAllPartners);
+userRoutes.get('/users/getall', getAllUsers);
+userRoutes.get('/partners/getall', getAllPartners);
 
 //update user
-userRoutes.put('/', updateUser);
+userRoutes.put('/partners/update', updateUserOrPartner);
+userRoutes.put('/users/update', updateUserOrPartner);
+
+userRoutes.post('/admin/getbyid', authMiddleware, getAdminById);
+
 export default userRoutes;

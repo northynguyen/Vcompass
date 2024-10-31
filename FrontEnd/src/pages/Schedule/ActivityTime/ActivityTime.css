@@ -1,48 +1,55 @@
 .time-select-wrapper {
-    position: relative;
-    display: inline-block;
-    margin: 10px;
-  }
-  
-  .time-select-wrapper .icon {
-    position: absolute;
-    left: 0px; /* Căn chỉnh biểu tượng bên trái */
-    top: 50%;
-    transform: translateY(-50%);
-    color: #171515; /* Màu của biểu tượng */
-    font-size: 20px;
-  }
-  
-  .time-select-wrapper .time-schedule {
-    padding-left: 30px; 
-    width: 200px;
-    font-size: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    appearance: none;
-    background-color: #fff;
-    padding: 10px;
-    text-align: center;
-    border-radius: 15px;
-  }
-  
- .time-container  h6 {
-    text-align: center;
-  }
-  /* Tùy chỉnh scrollbar */
-  .time-select-wrapper .time-schedule::-webkit-scrollbar {
-    width: 8px; /* Độ rộng của thanh cuộn */
-  }
-  
-  .time-schedule::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Màu nền của thanh cuộn */
-  }
-  
-  .time-schedule::-webkit-scrollbar-thumb {
-    background-color: #888; /* Màu của thanh cuộn */
-    border-radius: 10px;
-  }
-  
-  .time-schedule::-webkit-scrollbar-thumb:hover {
-    background: #555; /* Thay đổi màu khi hover */
-  } 
+  position: relative;
+  display: inline-block;
+  margin: 10px;
+}
+
+.time-select-wrapper .icon {
+  position: absolute;
+  left: 0px;
+  /* Căn chỉnh biểu tượng bên trái */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #171515;
+  /* Màu của biểu tượng */
+  font-size: 20px;
+}
+
+.time-select-wrapper .time-schedule {
+  padding-left: 30px;
+  width: 200px;
+  font-size: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  appearance: none;
+  background-color: #fff;
+  padding: 10px;
+  text-align: center;
+  border-radius: 15px;
+}
+
+.time-container h6 {
+  text-align: center;
+}
+
+/* Tùy chỉnh scrollbar */
+.time-select-wrapper .time-schedule::-webkit-scrollbar {
+  width: 8px;
+  /* Độ rộng của thanh cuộn */
+}
+
+.time-schedule::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  /* Màu nền của thanh cuộn */
+}
+
+.time-schedule::-webkit-scrollbar-thumb {
+  background-color: #888;
+  /* Màu của thanh cuộn */
+  border-radius: 10px;
+}
+
+.time-schedule::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  /* Thay đổi màu khi hover */
+}

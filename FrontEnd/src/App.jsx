@@ -35,7 +35,7 @@ function App() {
           <Route path="/user-service/*" element={<UserService />} />
           <Route path="/booking" element={<ListAttrac />} />
           <Route path="/my-schedule" element={<MySchedule />} />
-          <Route path="/schedule-edit" element={<Schedule />} />
+          <Route path="/schedule-edit/:id" element={<Schedule mode = {"edit"}/>} />
           <Route path="/booking-process/step2" element={<BookingProcess />}>
           </Route>
           <Route path="/booking-process/finalstep" element={<BookingProcess />}/>    

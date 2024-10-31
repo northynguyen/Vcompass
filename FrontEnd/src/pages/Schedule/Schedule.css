@@ -1,61 +1,66 @@
 .custom-schedule {
-    margin: auto;
-    font-family: Arial, sans-serif;
-  }
-
-  .schedule-container{
-    padding: 20px 8%;
-    background: #F9FAFD;
-  }
-  
-  .activity-header h2 {
-    margin-bottom: 20px;
-  }
-  .activity-header p {
-    font-weight: 300;
-  }
-  .activity-header {
-    color: #7BBCB0;
-    display: flex;
-    text-align: center;
-    padding: 20px 40px;
-    background-color: #FFF;
-    border-radius: 5px;
-    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  font-family: Arial, sans-serif;
 }
+
+.schedule-container {
+  padding: 20px 8%;
+  background: #F9FAFD;
+}
+
+.activity-header h2 {
+  margin-bottom: 20px;
+}
+
+.activity-header p {
+  font-weight: 300;
+}
+
+.activity-header {
+  color: #7BBCB0;
+  display: flex;
+  text-align: center;
+  padding: 20px 40px;
+  background-color: #FFF;
+  border-radius: 5px;
+  box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+}
+
 .schedule-icon {
   margin-right: 10px;
   color: #000;
-}  
+}
 
-  .activity-details {
-    display: flex;
-    margin: 20px 0;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .activity-info {
-    flex-grow: 1;
-  }
-  
-  .time-selection {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px 0;
-  }
-  
-  .confirm-booking button {
-    border: 0px;
-    width: 150px;
+.activity-details {
+  display: flex;
+  margin: 20px 0;
+  flex-direction: column;
+  gap: 20px;
 }
-  .confirm-booking {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
+
+.activity-info {
+  flex-grow: 1;
 }
+
+.time-selection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.confirm-booking button {
+  border: 0px;
+  width: 150px;
+}
+
+.confirm-booking {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
 .title-button {
   width: 100%;
   display: flex;
@@ -67,6 +72,7 @@
   border: solid 2px;
   cursor: pointer;
 }
+
 .title-button:hover {
   background-color: #7BBCB0;
 }
@@ -76,6 +82,7 @@
   background-color: transparent;
   cursor: pointer;
 }
+
 button.btn-save-schedule {
   width: 200px;
   padding: 15px 20px;
@@ -84,71 +91,81 @@ button.btn-save-schedule {
   border-radius: 10px;
   cursor: pointer;
   font-size: 18px;
-  border: solid 1px #FFDA32 ;
+  border: solid 1px #FFDA32;
   transition: background-color 0.3s, color 0.3s;
 }
+
 .btn-save-schedule:hover {
   background-color: rgba(30, 219, 12, 0.831);
   color: white;
   border: solid 1px #024808;
 }
+
 .save-schedule {
   display: flex;
   justify-content: right;
   margin-right: 8%;
   margin-bottom: 20px;
 }
-.title-des{
-    flex: 3;
-}
-.book-icon{
-    color: #778088;
-    margin-right: 10px;
-    margin-left: -10px;
-}
-.confirm-btn{
-    border: 0px;
-    background-color: #7BBCB0;
-    color: #FFF;
-}
-  .header-accom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: #ffffff;
-    border-bottom: 1px solid #ddd;
-  }
-  .num-title {
-    margin-bottom: 5px;
-  }
 
-  .header-left {
-    font-size: 1em;
-    margin-left: 8%;
-    padding: 10px 0px;
-  }
-  .num-text{
-    font-size: 16px;
-    color: #807d7d;
-  }
-  .activity-infor {
-    display: flex;
-    border-radius: 10px;
-    background-color: #FFF;
-    width: 100%;
-    box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.1);
-    height: 200px;
-    gap:10px;
-    align-items: center;
+.title-des {
+  flex: 3;
+}
+
+.book-icon {
+  color: #778088;
+  margin-right: 10px;
+  margin-left: -10px;
+}
+
+.confirm-btn {
+  border: 0px;
+  background-color: #7BBCB0;
+  color: #FFF;
+}
+
+.header-accom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ddd;
+}
+
+.num-title {
+  margin-bottom: 5px;
+}
+
+.header-left {
+  font-size: 1em;
+  margin-left: 8%;
+  padding: 10px 0px;
+}
+
+.num-text {
+  font-size: 16px;
+  color: #807d7d;
+}
+
+.activity-infor {
+  display: flex;
+  border-radius: 10px;
+  background-color: #FFF;
+  width: 100%;
+  box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.1);
+  height: 200px;
+  gap: 10px;
+  align-items: center;
 }
 
 
 .time-schedule-list {
-    width: 100%;
-    padding: 0px;
-    flex: 5;
+  width: 100%;
+  padding: 0px;
+  flex: 5;
 }
+
 .date-schedule {
   align-items: center;
   display: flex;
@@ -160,23 +177,28 @@ button.btn-save-schedule {
   border: 1px;
   color: #7BBCB0;
 }
+
 .numday-title {
   display: flex;
   gap: 10px;
   width: 120px;
 }
+
 p.des-schedule {
   margin-top: 15px;
   text-align: left;
 }
+
 .header-container {
   margin: 0px 10%;
 }
+
 .detail-container {
   background: #FFF;
   padding: 20px;
   margin-top: 20px;
 }
+
 .time-container {
   display: flex;
   border-radius: 10px;
@@ -193,6 +215,7 @@ p.des-schedule {
   flex: 1;
   padding: 0px 20px;
 }
+
 .circle-num {
   color: #FFF;
   background: #7BBCB0;
@@ -204,12 +227,14 @@ p.des-schedule {
   align-items: center;
   font-weight: 500;
 }
+
 .num-activity {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 5px;
 }
+
 .time-select-wrapper {
   position: relative;
   display: inline-block;
@@ -218,15 +243,17 @@ p.des-schedule {
 
 .custom-schedule .icon {
   position: absolute;
-  left: 0px; /* Căn chỉnh biểu tượng bên trái */
+  left: 0px;
+  /* Căn chỉnh biểu tượng bên trái */
   top: 50%;
   transform: translateY(-50%);
-  color: #171515; /* Màu của biểu tượng */
+  color: #171515;
+  /* Màu của biểu tượng */
   font-size: 20px;
 }
 
 .time-schedule {
-  padding-left: 30px; 
+  padding-left: 30px;
   width: 200px;
   font-size: 20px;
   border: 1px solid #ccc;
@@ -238,31 +265,38 @@ p.des-schedule {
   border-radius: 15px;
 }
 
-.time-container  h6 {
+.time-container h6 {
   text-align: center;
 }
+
 /* Tùy chỉnh scrollbar */
 .time-schedule::-webkit-scrollbar {
-  width: 8px; /* Độ rộng của thanh cuộn */
+  width: 8px;
+  /* Độ rộng của thanh cuộn */
 }
 
 .time-schedule::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Màu nền của thanh cuộn */
+  background: #f1f1f1;
+  /* Màu nền của thanh cuộn */
 }
 
 .time-schedule::-webkit-scrollbar-thumb {
-  background-color: #888; /* Màu của thanh cuộn */
+  background-color: #888;
+  /* Màu của thanh cuộn */
   border-radius: 10px;
 }
 
 .time-schedule::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Thay đổi màu khi hover */
-} 
+  background: #555;
+  /* Thay đổi màu khi hover */
+}
+
 .date-section {
   display: flex;
   flex-direction: column;
   gap: 60px;
 }
+
 .add-new button {
   width: 250px;
   border-radius: 99px;
@@ -272,20 +306,21 @@ p.des-schedule {
   border: none;
   cursor: pointer;
 }
+
 i.fa-solid.fa-plus.add-icon {
   margin-right: 10px;
 }
 
 .time-schedule-list {
   width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
 }
 
 .time-schedule-item {
   padding: 10px;
-  height: 240px;
+  height: fit-content;
   display: flex;
   justify-content: space-between;
   border: 1px solid #ddd;
@@ -295,25 +330,31 @@ i.fa-solid.fa-plus.add-icon {
   box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
 }
 
+.time-schedule-location a {
+  margin-left: 10px;
+}
+
 .time-schedule-image {
-  width: 200px;
-  height: auto;
-  border-radius: 4px ;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 4px;
+  height: 200px;
 }
 
 .time-schedule-details {
+  padding-top: 35px;
   flex-grow: 1;
   padding-left: 15px;
   display: flex;
-  justify-content: center;
   flex-direction: column;
   margin-left: 15px;
+  justify-content: space-between;
 }
 
 .time-schedule-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   margin-bottom: 5px;
 }
 
@@ -334,37 +375,73 @@ i.fa-solid.fa-plus.add-icon {
   color: #666666;
   font-size: 16px;
   gap: 10px;
+  margin-bottom: 10px;
 }
 
 .time-schedule-price {
   width: 100px;
   margin-right: 20px;
   display: flex;
-  text-align: right;
+  text-align: center;
   justify-content: center;
   align-items: center;
   text-align: left;
   flex-direction: column;
 }
-.price-text{
-  font-weight: bold;
+
+.price-text {
+  font-weight: bolder;
   color: #7BBCB0;
-  font-size: 25px;
+  font-size: 30px;
 }
-.persion-text{
+
+.persion-text {
   color: #989797;
   font-size: 15px;
 }
-.time-schedule-list-container{
-width: 100%;
+
+.time-schedule-list-container {
+  width: 100%;
 }
+
 .type-activity {
   background: #AFFFF0;
   font-weight: 600;
   padding: 5px;
   width: 180px;
+  height: fit-content;
   text-align: center;
   border-radius: 99px;
   margin-bottom: 5px;
   font-size: 17px;
+}
+
+.time-schedule-left {
+  width: 200px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.time-schedule-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.expense-actions {
+  align-self: flex-end;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+
+.time-schedule-usernote {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  margin-right: 50px;
 }

@@ -2,11 +2,12 @@ import { Notification } from "../models/notification.js";
 
 const addNotification = async (req, res) => {
   try {
-    const { idSender, idReceiver, content } = req.body;
+    const { idSender, idReceiver, content, typeNo } = req.body;
     const newNotification = new Notification({
       idSender,
       idReceiver,
       content,
+      typeNo
     });
     await newNotification.save();
     res.json({ success: true, message: "Notification added successfully" });
