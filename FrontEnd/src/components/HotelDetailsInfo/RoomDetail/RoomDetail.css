@@ -51,6 +51,7 @@
 }
 
 .main-room-image {
+    max-width: 100%;
     width: auto;
     height: 70%;
     object-fit: cover;

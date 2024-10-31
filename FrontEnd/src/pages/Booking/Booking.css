@@ -1,0 +1,288 @@
+.booking-process-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    min-height: 80vh;
+
+
+.status-bar {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #999;
+}
+
+.status-item.active {
+    color: #0071c2;
+}
+
+.status-item span {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ddd;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.status-item.active span {
+    background-color: #0071c2;
+    color: white;
+}
+
+.status-item p {
+    margin-top: 5px;
+    font-size: 14px;
+    text-align: center;
+    font-weight: 500;
+    color: inherit;
+}
+
+.step-content {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: flex;
+}
+  
+.left-panel {
+    flex: 1; 
+}
+
+.right-panel, .final-step-container {
+    flex: 2;
+}
+
+.left-panel {
+    padding: 10px;
+    border-radius: 12px;
+    margin: 10px;
+    background-color: #fff; /* White background for sections */
+  }
+
+  .section-box{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .hotel-info {
+    background-color: #fff; /* Màu nền trắng */
+    border: 1px solid #ddd; /* Đường viền xung quanh */
+    border-radius: 5px; /* Bo góc */
+    padding: 15px; /* Padding cho phần thông tin khách sạn */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Bóng đổ */
+  }
+  
+  .booking-details {
+    background-color: #fff; /* Màu nền trắng */
+    border: 1px solid #ddd; /* Đường viền xung quanh */
+    border-radius: 5px; /* Bo góc */
+    padding: 15px; /* Padding cho phần chi tiết đặt phòng */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Bóng đổ */
+  }
+  
+  .price-summary {
+    background-color: #fff; /* Màu nền trắng */
+    border: 1px solid #ddd; /* Đường viền xung quanh */
+    border-radius: 5px; /* Bo góc */
+    padding: 15px; /* Padding cho phần tóm tắt giá */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Bóng đổ */
+  }
+  
+  .rating {
+    color: #f39c12; /* Màu vàng cho đánh giá */
+    font-weight: bold;
+  }
+  
+  .review {
+    color: #34495e; /* Màu xám cho đánh giá */
+  }
+  
+  .amenities {
+    color: #34495e; /* Màu xám cho tiện nghi */
+  }
+  
+  .important-info {
+    color: #e74c3c; /* Màu đỏ cho thông tin quan trọng */
+    font-weight: bold;
+  }
+  
+  .total-price {
+    font-size: 18px; /* Kích thước chữ lớn hơn cho tổng giá */
+    font-weight: bold; /* In đậm */
+    color: #333; /* Màu chữ tối */
+  }
+ 
+  .bookingdetail {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .bookingdetail h2 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    color: #333;
+  }
+  
+  .bookingdetail .check-in-out {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .bookingdetail .check-in-out > div {
+    text-align: left;
+  }
+  
+  .bookingdetail .divider {
+    width: 1px;
+    background-color: #ddd;
+    height: 50px;
+  }
+  
+  .bookingdetail p {
+    margin: 8px 0;
+    color: #555;
+  }
+  
+  .bookingdetail p strong {
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .bookingdetail .time-info {
+    color: #888;
+    font-size: 12px;
+  }
+  
+  .bookingdetail .important-info {
+    color: #d9534f;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    margin: 12px 0;
+  }
+  
+  .bookingdetail .important-info .icon {
+    margin-right: 5px;
+    font-size: 14px;
+  }
+  
+  .bookingdetail hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 16px 0;
+  }
+  
+  .bookingdetail a {
+    display: inline-block;
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+  }
+  
+  .bookingdetail a:hover {
+    text-decoration: underline;
+  }
+  
+  .price-summary {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .price-summary h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 16px;
+  }
+  
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+  }
+  
+  .price-row .discount {
+    color: #d9534f;
+  }
+  
+  .total-section {
+    background-color: #f0f8ff;
+    padding: 16px;
+    border-radius: 8px;
+    margin: 16px 0;
+    text-align: center;
+  }
+  
+  .total-section .total-label {
+    font-size: 18px;
+    color: #333;
+    text-decoration: line-through;
+  }
+  
+  .total-section .total-price {
+    font-size: 24px;
+    color: #d9534f;
+    font-weight: bold;
+    margin: 8px 0;
+  }
+  
+  .total-section .total-subtext {
+    color: #555;
+    font-size: 12px;
+  }
+  
+  .price-summary h3 {
+    font-size: 16px;
+    color: #333;
+    margin-top: 16px;
+  }
+  
+  .price-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0;
+    color: #555;
+    font-size: 14px;
+  }
+  
+  .price-info-list li {
+    display: flex;
+    justify-content: space-between;
+    margin: 4px 0;
+  }
+  
+  .hide-details {
+    display: inline-block;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  
+  .hide-details:hover {
+    text-decoration: underline;
+  }
+  
+}

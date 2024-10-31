@@ -11,7 +11,7 @@ import { Attractionrouter } from "./routes/attractionRoutes.js";
 import foodServiceRoutes from "./routes/foodServiceRoutes.js";
 import scheduleRouter from "./routes/scheduleRoutes.js";
 import userRoutes from "./routes/userRoute.js";
-
+import bookingRouter from "./routes/bookingRoutes.js";
 // App config
 const app = express();
 const port = process.env.PORT || 4000; // Lấy cổng từ biến môi trường hoặc mặc định là 4000
@@ -37,9 +37,7 @@ app.use("/api/foodservices", foodServiceRoutes);
 app.use("/api/schedule", scheduleRouter);
 
 app.use("/api/attractions", Attractionrouter);
-app.use("/api/users", userRoutes);
-app.use("/api/partners", userRoutes);
-app.use("/api/user/update", userRoutes);
+app.use("/api/bookings", bookingRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

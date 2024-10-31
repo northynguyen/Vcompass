@@ -216,7 +216,7 @@ p.des-schedule {
   margin: 10px;
 }
 
-.icon {
+.custom-schedule .icon {
   position: absolute;
   left: 0px; /* Căn chỉnh biểu tượng bên trái */
   top: 50%;

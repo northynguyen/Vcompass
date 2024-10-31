@@ -20,16 +20,15 @@ const Header = ({ setShowLogin }) => {
   const location = useLocation();
 
   const onClick = (tab) => {
-
-    toast.success("Đăng xuất thành công");
     setActiveTab(tab);
-    navigate('/user-service', { state: { tab }, replace: true }); // Gửi tab qua state
+    navigate(`/user-service/${tab}`, { state: { tab }, replace: true }); // Gửi tab qua state
     setMenuVisible(false);
   };
 
   const handleLogout = () => {
     setShowLogin(false);
     navigate('/');
+    toast.success("Đăng xuất thành công");
     localStorage.removeItem('token');
     setToken(null);
 
