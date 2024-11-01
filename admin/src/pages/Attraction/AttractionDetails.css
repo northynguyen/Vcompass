@@ -1,24 +1,24 @@
-/* RestaurantDetail.css */
+/* AttractionDetail.css */
 
-
-/* Container cho toàn bộ chi tiết nhà hàng */
-.restaurant {
-    max-width: 100%;
+/* Container cho toàn bộ chi tiết điểm tham quan */
+.attraction-details {
+    width: 100%;
     margin: 0 auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: fit-content;
 }
 
 /* Định dạng các tiêu đề */
-.restaurant h1 {
+.attraction-details h1 {
     font-size: 2.5rem;
     margin-bottom: 10px;
     color: #2c3e50;
 }
 
-.restaurant h2 {
+.attraction-details h2 {
     font-size: 1.8rem;
     margin: 30px 0 15px;
     color: #34495e;
@@ -27,18 +27,19 @@
 }
 
 /* Định dạng đoạn văn và nhãn */
-.restaurant p {
+.attraction-details p {
     font-size: 1rem;
     line-height: 1.6;
     margin-bottom: 15px;
 }
 
-.restaurant label {
+.attraction-details label {
     font-weight: 600;
     margin-right: 10px;
 }
 
 /* Định dạng các trường nhập liệu */
+.amenities-input,
 .edit-input,
 .edit-input-small,
 .edit-textarea,
@@ -95,19 +96,12 @@
     flex-wrap: wrap;
     gap: 15px;
     margin-top: 15px;
+
 }
 
-.image-rest,
-.image-container img {
-    width: 100%;
-    max-width: 200px;
-    height: auto;
-    border-radius: 8px;
-    object-fit: cover;
-    transition: transform 0.3s;
-}
 
-.image-rest:hover,
+
+.image-attraction:hover,
 .image-container img:hover {
     transform: scale(1.05);
 }
@@ -115,9 +109,10 @@
 .image-container {
     position: relative;
     display: inline-block;
+    max-width: 300px;
 }
 
-.restaurant .delete-button {
+.attraction-details .delete-button {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -130,7 +125,7 @@
     transition: background-color 0.3s;
 }
 
-.restaurant .delete-button:hover {
+.attraction-details .delete-button:hover {
     background-color: rgba(231, 76, 60, 1);
 }
 
@@ -181,7 +176,7 @@
 }
 
 /* Định dạng thông tin liên hệ */
-.restaurant p svg {
+.attraction-details p svg {
     margin-right: 8px;
     color: #2980b9;
 }
@@ -250,14 +245,14 @@
 }
 
 /* Định dạng các nút */
-.restaurant .buttons {
+.attraction-details .buttons {
     display: flex;
     justify-content: flex-end;
     gap: 15px;
     margin-top: 30px;
 }
 
-.restaurant button {
+.attraction-details button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -275,21 +270,21 @@
     background-color: #2980b9;
 }
 
-.restaurant .save-button {
+.attraction-details .save-button {
     background-color: #2ecc71;
     color: #fff;
 }
 
-.restaurant .save-button:hover {
+.attraction-details.save-button:hover {
     background-color: #27ae60;
 }
 
-.restaurant .cancel-button {
+.attraction-details.cancel-button {
     background-color: #95a5a6;
     color: #fff;
 }
 
-.restaurant .cancel-button:hover {
+.attraction-details .cancel-button:hover {
     background-color: #7f8c8d;
 }
 
@@ -369,59 +364,91 @@
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
-    font-size: 1rem;
-    margin-bottom: 15px;
 }
 
 .current-location-button:hover {
     background-color: #27ae60;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .edit-input-small {
-        width: 100%;
-        margin-right: 0;
-    }
+/* Định dạng phần hướng dẫn */
+.guide {
+    margin-top: 30px;
+    background-color: #f4f6f7;
+    padding: 20px;
+    border-radius: 8px;
+}
 
-    .operating-hours-entry {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+.guide h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #34495e;
+}
 
-    .operating-hours-fields {
-        flex-direction: column;
-        align-items: flex-start;
-    }
+.guide p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
 
-    .restaurant .buttons {
-        flex-direction: column;
-        align-items: stretch;
-    }
+/* Định dạng phần đánh giá */
+.reviews {
+    margin-top: 30px;
+}
 
-    .restaurant button {
-        width: 80%;
-    }
+.reviews h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #34495e;
+}
 
-    .image-rest,
-    .image-container img {
-        max-width: 100%;
-    }
+.review {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #ecf0f1;
+}
 
-    .amenities {
-        flex-direction: column;
-    }
+.review p {
+    font-size: 1rem;
+    line-height: 1.6;
+}
 
-    .day-select,
-    .time-input {
-        width: 100%;
-    }
+.review .review-author {
+    font-weight: bold;
+}
 
-    .location-search-form {
-        flex-direction: column;
-    }
+/* Định dạng phần thêm đánh giá */
+.add-review {
+    margin-top: 20px;
+}
 
-    .location-search-form button {
-        width: 100%;
-    }
+.add-review h2 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #34495e;
+}
+
+.add-review textarea {
+    width: 100%;
+    height: 100px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.add-review button {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-review button:hover {
+    background-color: #2980b9;
 }

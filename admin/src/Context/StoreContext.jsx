@@ -28,9 +28,11 @@ const StoreContextProvider = (props) => {
         await fetchAdmin(storedToken);// Tải dữ liệu giỏ hàng      
       }
     };
+
     fetchData();
   }, []);
 
+  console.log("admin", admin)
 
   const contextValue = {
     token,

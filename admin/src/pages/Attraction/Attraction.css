@@ -1,0 +1,148 @@
+/* Attraction.css */
+
+.time-schedule-list-container {
+    display: flex;
+    flex-direction: column;
+    /* Align items vertically */
+    align-items: center;
+    /* Center items horizontally */
+    margin: 20px;
+}
+
+.attraction-card {
+    width: 90%;
+    /* Set width to 90% of the container */
+    height: 300px;
+    /* Fixed height */
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+    /* Space between cards */
+    display: flex;
+    /* Use flexbox for layout */
+    flex-direction: row;
+    /* Align children in a row */
+    overflow: hidden;
+    /* Hide overflow */
+    justify-content: space-between;
+}
+
+.image-container {
+    flex: 1;
+    /* Allow the image container to take full height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+}
+
+.image-container img {
+    height: 100%;
+    /* Fixed height */
+    width: auto;
+    /* Maintain aspect ratio */
+    max-width: 100%;
+    /* Responsive width */
+}
+
+.button-add {
+    background-color: #4CAF50;
+    /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.content {
+    flex: 2;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 5px;
+}
+
+.content h3 {
+    cursor: pointer;
+}
+
+.content h3 :hover {
+    color: #e46a19;
+    transition: color 0.3s ease;
+
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.attraction-card h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+    /* Remove default margin */
+}
+
+.attraction-card p {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.5;
+    flex-grow: 1;
+    /* Allow description to grow */
+}
+
+.actions {
+    display: flex;
+    justify-content: space-between;
+    /* Space out buttons */
+    margin-top: 10px;
+    gap: 5px;
+    margin-right: 10px;
+}
+
+.content strong {
+    font-weight: bold;
+    color: black;
+}
+
+.actions button {
+    background-color: #4CAF50;
+    /* Green */
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 50px;
+    align-self: center;
+    width: 80px;
+}
+
+.actions button:hover {
+    background-color: #45a049;
+    /* Darker green */
+}
+
+.actions button:last-child {
+    background-color: #f44336;
+    /* Red */
+}
+
+.actions button:last-child:hover {
+    background-color: #d32f2f;
+    /* Darker red */
+}

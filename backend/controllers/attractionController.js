@@ -34,15 +34,78 @@ const getAttractionById = async (req, res) => {
         res.status(500).json({ message: 'Server error' }); // Trả về lỗi server
     }
 };
-
-const createAttraction = async (req, res) => {
+const addAttraction = async (req, res) => {
     try {
-        const attraction = await Attraction.create(req.body.attraction); // Create a new attraction
-        res.status(201).json({ success: true, message: 'Attraction created successfully', attraction }); // Send the created attraction as JSON
+        const newAttraction = new Attraction(req.body.attractionData);
+
+        if (req.files) {
+            if (req.files.images) {
+                newAttraction.images = req.files.images.map((file) => file.filename);
+            }
+        }
+
+        await newAttraction.save();
+
+        res.status(201).json({
+            success: true,
+            message: "Created attraction successfully",
+            newAttraction: newAttraction,
+        });
     } catch (error) {
-        console.error(error); // Log linaire debug
-        res.status(500).json({ message: 'Server error' }); // Trả về lỗi server
+        res.status(400).json({
+            success: false,
+            message: "Error creating attraction",
+        });
+        console.error("Error:", error);
     }
 };
 
-export { getAttractions, getAttractionById,createAttraction }; // Export the getAttractions;
+
+const updateAttraction = async (req, res) => {
+    const attractionId = req.body.attractionData._id;
+    const updateData = req.body.attractionData;
+
+    try {
+        const attraction = await Attraction.findById(attractionId);
+        if (!attraction) {
+            return res.status(404).json({ success: false, message: "Attraction not found" });
+        }
+
+        // Handle images if provided
+        let updatedImages = attraction.images || [];
+
+        if (req.files && req.files.images) {
+            const newImagePaths = req.files.images.map((file) => file.filename);
+            updatedImages.push(...newImagePaths);
+        }
+
+        const imagesToRemove = attraction.images.filter((img) => !updatedImages.includes(img));
+        updateData.images = updatedImages;
+
+        // Assign updated fields
+        Object.assign(attraction, updateData);
+
+        // Delete old images asynchronously
+        const deleteImage = async (imageName) => {
+            try {
+                return await fs.promises.unlink(`uploads/${imageName}`);
+            } catch (err) {
+                console.error(`Failed to delete image ${imageName}:`, err);
+            }
+        };
+
+        await Promise.all(imagesToRemove.map((image) => deleteImage(image)));
+
+        await attraction.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Updated attraction successfully",
+            updatedAttraction: attraction,
+        });
+    } catch (error) {
+        res.status(400).json({ success: false, message: "Error updating attraction" });
+        console.error("Error updating attraction:", error);
+    }
+};
+export { getAttractions, getAttractionById, addAttraction, updateAttraction }; // Export the getAttractions;
