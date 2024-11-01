@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect } from 'react'
 import axios from 'axios'
-import axios from 'axios'
 
 export const StoreContext = createContext(null)
 const StoreContextProvider = (props) => {
@@ -29,32 +28,24 @@ const StoreContextProvider = (props) => {
         await fetchAdmin(storedToken);// Tải dữ liệu giỏ hàng      
       }
     };
+
     fetchData();
   }, []);
 
-  const fetchData = async () => {
-    const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      setToken(storedToken);
-      await fetchAdmin(storedToken);// Tải dữ liệu giỏ hàng      
-    }
-  };
-  fetchData();
-}, []);
+  console.log("admin", admin)
 
-
-const contextValue = {
-  token,
-  setToken,
-  url,
-  admin,
-  setAdmin
-}
-return (
-  <StoreContext.Provider value={contextValue}>
-    {props.children}
-  </StoreContext.Provider>
-)
+  const contextValue = {
+    token,
+    setToken,
+    url,
+    admin,
+    setAdmin
+  }
+  return (
+    <StoreContext.Provider value={contextValue}>
+      {props.children}
+    </StoreContext.Provider>
+  )
 }
 
 export default StoreContextProvider
