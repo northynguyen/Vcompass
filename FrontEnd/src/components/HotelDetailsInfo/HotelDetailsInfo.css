@@ -352,13 +352,20 @@
 }
 
 .book-room-btn {
-  background-color: #ff7f50;
+  max-width: 200px;
+  width: 120px;
+  align-self: end  ;
+  background-color: #1e81d2;
   color: white;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 5px;
   margin-top: 10px;
+}
+
+.book-room-btn:hover {
+  background-color: #135c98;
 }
 
 
