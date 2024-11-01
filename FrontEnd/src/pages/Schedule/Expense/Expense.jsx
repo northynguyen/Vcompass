@@ -72,8 +72,6 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule }) =
         )
         : [...prevSchedule.additionalExpenses, newExpense],
     }));
-
-    console.log(isEditMode ? "Updating expense: " : "Adding new expense: ", isEditMode ? formData : newExpense);
     closeModal();
   };
 
@@ -206,7 +204,7 @@ const Expense = ({ expenses, additionExpenses, setInforSchedule }) => {
       <div className="add-new">
         <button onClick={openModalForAdd} className="add-expense">
           <i className="fa-solid fa-plus add-icon"></i>
-          Add New
+          Thêm chi phí phát sinh 
         </button>
       </div>
       <h1>Ngân sách</h1>

@@ -32,6 +32,7 @@
   border: none;
   background: none;
   font-size: 14px;
+  width: 100%;
 }
 
 .hotel-details-info .search-item input:focus {
@@ -189,19 +190,42 @@
   padding: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  top: 180px;
+  width: 250px;
+}
+
+.guest-dropdown .ok-btn{
+  width: 100%;
+  border: none ;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.guest-dropdown .ok-btn:hover {
+  background-color: #0056b3;
 }
 
 .guest-option {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   align-items: center;
   margin-bottom: 10px;
 }
 
 .guest-option span {
-  margin: 0 10px;
   font-size: 16px;
   font-weight: 500;
+  width: 80px;
+}
+
+.guest-option  .num {
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
 }
 
 .guest-option button {
@@ -328,13 +352,20 @@
 }
 
 .book-room-btn {
-  background-color: #ff7f50;
+  max-width: 200px;
+  width: 120px;
+  align-self: end  ;
+  background-color: #1e81d2;
   color: white;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 5px;
   margin-top: 10px;
+}
+
+.book-room-btn:hover {
+  background-color: #135c98;
 }
 
 

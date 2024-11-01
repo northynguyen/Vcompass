@@ -48,7 +48,7 @@ const ReservationList = ({ onReservationSelect }) => {
       extras: "$0.00",
       vat: "$36.00",
       cityTax: "$49.50",
-      totalPrice: "$535.50",
+      totalPrice: "$535.50",  
     },
     bookingHistory: [
       {

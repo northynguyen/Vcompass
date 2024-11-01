@@ -1,57 +1,35 @@
-import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
-import { SelectButton } from "../ListAttractions/ListAttractions";
+import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import "./ListFoodServices.css";
 
-// Helper function for calculating ratings
-const calculateTotalRate = (ratings) => {
-  const totalReviews = ratings.length;
-  if (totalReviews === 0) return "No reviews";
-  const averageRating = ratings.reduce((sum, review) => sum + review.rate, 0) / totalReviews;
-  const stars = "★".repeat(Math.floor(averageRating)) + "☆".repeat(5 - Math.floor(averageRating));
-  return `${stars} (${totalReviews} reviews)`;
-};
-
 // TourItem Component
-const FoodServiceItem = ({ imgSrc, name, description, totalRate,
-  location, facilities, url, price, status, setCurrentActivity, idDestination }) => {
+const FoodServiceItem = ({ foodService, status, setCurDes }) => {
+  const { url } = useContext(StoreContext);
   const handleSelect = () => {
-    setCurrentActivity({
-      idDestination,
-      imgSrc,
-      name,
-      description,
-      totalRate,
-      location,
-      facilities,
-      url,
-      price,
-      activityType: "FoodService",
-      visible: true
-    });
-    console.log(name)
+    foodService.activityType = "FoodService";
+    setCurDes(foodService);
   };
 
   return (
     <div className="list-accom__tour-item">
-      <img src={`${url}/images/${imgSrc}`} alt={name} className="list-accom__tour-item-image" />
+      <img src={`${url}/images/${foodService.images[0]}`} alt={foodService.name} className="list-accom__tour-item-image" />
       <div className="list-accom__tour-details">
-        <h3>{name}</h3>
+        <h3>{foodService.foodServiceName}</h3>
         <div className="list-accom__tour-location">
-          <a href="#">{location}</a>
+          <a href="#">{foodService.location.address}</a>
         </div>
         <div className="list-accom__tour-facilities">
-          {facilities.map((facility, index) => (
+          {foodService.amenities.map((facility, index) => (
             <span key={index}>{facility}</span>
           ))}
         </div>
-        <p>{description}</p>
-        <div className="list-accom__tour-rating">{totalRate}</div>
+        <p>{foodService.description}</p>
+        <div className="list-accom__tour-rating">{calculateTotalRate(foodService.ratings)}</div>
       </div>
       <div className="list-accom__tour-price">
         <div className="price-container">
-          <p className="price-text">{price.minPrice} - {price.maxPrice}₫</p>
+          <p className="price-text">{foodService.price.minPrice} - {foodService.price.maxPrice}₫</p>
         </div>
         {
           status === "Schedule" && <SelectButton onClick={handleSelect} />
@@ -62,10 +40,10 @@ const FoodServiceItem = ({ imgSrc, name, description, totalRate,
 }
 
 // TourList Component
-const TourList = ({ tours, sortOption, status, url, setCurrentActivity }) => {
+const TourList = ({ foodServices, sortOption, status, setCurDes }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const toursPerPage = status === "Schedule" ? 3 : 8;
-  const sortedTours = [...tours].sort((a, b) => {
+  const sortedTours = Object.values(foodServices).sort((a, b) => {
     switch (sortOption) {
       case "PriceLowToHigh":
         return parseFloat(a.price.replace(/₫/g, "").replace(/,/g, "")) - parseFloat(b.price.replace(/₫/g, "").replace(/,/g, ""));
@@ -82,8 +60,8 @@ const TourList = ({ tours, sortOption, status, url, setCurrentActivity }) => {
   return (
     <div className="list-accom__tour-list">
       {currentTours.map((tour, index) => (
-        <FoodServiceItem key={index} {...tour} url={url} idDestination={tour.idDestination}
-          status={status} setCurrentActivity={setCurrentActivity} />
+        <FoodServiceItem key={tour._id} foodService={tour}
+          status={status} setCurDes={setCurDes} />
       ))}
       <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
     </div>
@@ -140,34 +118,37 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => (
 );
 
 // Main ListAccom Component
-const ListFoodServices = ({ status, setCurrentActivity }) => {
-  const { url } = useContext(StoreContext);
-  const [tours, setTours] = useState([]);
+const ListFoodServices = ({ status, setCurDes }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [foodServices, setFoodServices] = useState();
   const [sortOption, setSortOption] = useState("Popularity");
-
+  const { url } = useContext(StoreContext);
+  const fetchData = async () => {
+    try {
+      let response = await fetch(`${url}/api/foodServices/`)
+      const result = await response.json();
+      setIsLoading(false)
+      if (!response.ok) {
+        throw new Error(result.message || 'Error fetching data');
+      }
+      setFoodServices(result.foodService);
+    } catch (err) {
+      console.log(err)
+    }
+  }
   useEffect(() => {
-    axios.get(`${url}/api/foodservices/`)
-      .then(response => {
-        const mappedTours = response.data.foodService.map(foodservice => ({
-          idDestination: foodservice._id,
-          imgSrc: foodservice.images[0],
-          name: foodservice.foodServiceName,
-          description: foodservice.description,
-          price: foodservice.price,
-          totalRate: calculateTotalRate(foodservice.ratings),
-          location: foodservice.location.address,
-          facilities: foodservice.amenities,
-        }));
-        setTours(mappedTours);
-      })
-      .catch(error => console.error('Error fetching data from API:', error));
+    fetchData();
   }, [url]);
-
+  if (isLoading) {
+    return (
+      <div>...</div>
+    )
+  }
   return (
     <div className="list-accom__container">
       <Filters sortOption={sortOption} setSortOption={setSortOption} />
-      <TourList tours={tours} sortOption={sortOption}
-        status={status} url={url} setCurrentActivity={setCurrentActivity} />
+      <TourList foodServices={foodServices} sortOption={sortOption}
+        status={status} setCurDes={setCurDes} />
     </div>
   );
 };

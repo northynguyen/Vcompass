@@ -1,0 +1,212 @@
+/* BookingStep2.css */
+
+  .right-panel {
+    padding: 10px;
+    border-radius: 12px;
+    margin: 10px;
+    background-color: #fff; /* White background for sections */
+  
+  
+  .section-box {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .section-box h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #2c3e50; /* Darker color for headings */
+  }
+  
+  .section-box p {
+    margin: 5px 0;
+    color: #34495e; /* Grayish-blue text for descriptions */
+  }
+  
+  .rating {
+    color: #f39c12; /* Gold color for ratings */
+    font-weight: bold;
+  }
+  
+  .important-info {
+    color: #e74c3c; /* Red color for important notices */
+    font-weight: bold;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group .error {
+    color: #e74c3c;
+    font-size: small;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500; /* Bold labels */
+    color: #2c3e50;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #3498db; /* Blue focus state */
+    outline: none;
+  }
+  
+  .required {
+    color: #e74c3c; /* Red color for required fields */
+  }
+  
+  .checkbox-group,
+  .radio-group {
+    margin: 10px 0;
+  }
+  
+  .checkbox-group input,
+  .radio-group input {
+    margin-right: 5px;
+  }
+  
+  .note {
+    margin-bottom: 15px;
+    color: #666;
+  }
+  
+  .additional-info ul {
+    list-style: disc;
+    padding-left: 20px;
+  }
+  
+  .additional-info li {
+    margin-bottom: 5px;
+    color: #34495e; /* Color for additional information */
+  }
+  .note {
+    font-size: 16px; /* Kích thước chữ cho ghi chú */
+    color: #666; /* Màu xám cho ghi chú */
+    margin-bottom: 20px; /* Khoảng cách dưới ghi chú */
+  }
+  
+  .form-group {
+    margin-bottom: 15px; /* Khoảng cách giữa các nhóm form */
+  }
+  
+  .form-group label {
+    display: block; /* Hiển thị label như một khối */
+    font-weight: bold; /* In đậm cho label */
+    margin-bottom: 5px; /* Khoảng cách dưới label */
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%; /* Chiều rộng 100% */
+    padding: 10px; /* Padding cho input */
+    border: 1px solid #ccc; /* Đường viền cho input */
+    border-radius: 4px; /* Bo góc cho input */
+    transition: border-color 0.3s; /* Hiệu ứng chuyển tiếp cho border */
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: #0071c2; /* Màu border khi focus */
+    outline: none; /* Không có outline */
+    box-shadow: 0 0 5px rgba(0, 113, 194, 0.5); /* Bóng đổ khi focus */
+  }
+  
+  .checkbox-group,
+  .radio-group {
+    margin-top: 10px; /* Khoảng cách trên cho checkbox và radio */
+  }
+  
+  .checkbox-group input,
+  .radio-group input {
+    margin-right: 5px; /* Khoảng cách bên phải cho checkbox và radio */
+  }
+  
+  .good-to-know {
+    margin-top: 20px; /* Khoảng cách trên cho phần Good to know */
+  }
+  
+  .good-to-know h2 {
+    font-size: 20px; /* Kích thước chữ cho tiêu đề Good to know */
+    color: #333; /* Màu chữ tối */
+    margin-bottom: 10px; /* Khoảng cách dưới tiêu đề */
+  }
+  
+  .good-to-know ul {
+    list-style-type: disc; /* Định dạng danh sách */
+    padding-left: 20px; /* Khoảng cách bên trái cho danh sách */
+  }
+  .button {
+    padding: 12px 20px; /* Padding cho nút */
+    background-color: #3498db; /* Màu nền xanh */
+    color: #fff; /* Màu chữ trắng */
+    border: none; /* Không có đường viền */
+    border-radius: 6px; /* Bo góc cho nút */
+    cursor: pointer; /* Con trỏ chuột khi hover */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển tiếp cho màu nền */
+    margin-top: 20px; /* Khoảng cách trên cho nút */
+  }
+  
+  .button:hover {
+    background-color: #2980b9; /* Màu nền tối hơn khi hover */
+  }
+  
+}
+ 
+  .right-panel h2 {
+    font-size: 24px; /* Kích thước chữ lớn cho tiêu đề */
+    color: #333; /* Màu chữ tối */
+    margin-bottom: 15px; /* Khoảng cách dưới tiêu đề */
+  }
+  
+
+  
+ .right input[readonly] {
+    background-color: #eaeaea; /* Light gray for readonly fields */
+    cursor: not-allowed;
+  }
+  
+  /* Button styles */
+ 
+  
+  /* Media Queries for Responsiveness */
+  @media (max-width: 768px) {
+    .booking-step2-container {
+      flex-direction: column;
+    }
+  
+    .left-panel, .right-panel {
+      margin: 0;
+      margin-bottom: 20px; /* Spacing between panels on mobile */
+    }
+  
+    .right-panel {
+        padding: 10px; /* Giảm padding cho màn hình nhỏ */
+    }
+  
+    .section-box {
+        margin-bottom: 15px; /* Giảm khoảng cách giữa các box */
+    }
+  }
+  

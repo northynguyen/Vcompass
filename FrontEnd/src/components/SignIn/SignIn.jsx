@@ -59,6 +59,7 @@ const SignIn = ({ setShowLogin }) => {
                     setToken(response.data.token);
                     localStorage.setItem("token", response.data.token);
                     setUser(response.data.user);
+                    localStorage.setItem("user", JSON.stringify(response.data.user));
                     toast.success(response.data.message);                
                 }
                 setShowLogin(false);  

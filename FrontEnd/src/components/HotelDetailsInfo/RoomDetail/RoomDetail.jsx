@@ -4,7 +4,7 @@ import './RoomDetail.css'; // Ensure the CSS file styles the carousel properly
 import { IoIosArrowDropleft, IoIosArrowDropright } from "react-icons/io";
 import { StoreContext } from '../../../Context/StoreContext';
 
-const RoomDetail = ({ room, onClose }) => {
+const RoomDetail = ({ room, onClose,handleRoomSelect }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const {url} = useContext(StoreContext)
   const handleImageClick = (index) => {
@@ -73,7 +73,7 @@ const RoomDetail = ({ room, onClose }) => {
             <p> <strong>{room.pricePerNight.toLocaleString()} VND</strong> per night</p>
           </div>
           
-          <button className="booking-now-btn">Booking Now</button>
+          <button className="booking-now-btn" onClick={(e) => handleRoomSelect(e ,room)}>Booking Now</button>
         </div>
       </div>
     </div>

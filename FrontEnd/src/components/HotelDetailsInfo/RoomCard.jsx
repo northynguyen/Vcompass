@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-const RoomCard = ({ room, handleRoomClick ,url}) => {
+const RoomCard = ({ room, handleRoomClick ,url, handleRoomSelect }) => {
   return (
     <div className="room-card">
       <div className="room-image">
@@ -53,7 +53,7 @@ const RoomCard = ({ room, handleRoomClick ,url}) => {
             </p>
           </div>
 
-          <button className="book-room-btn" onClick={(e) => e.preventDefault()}>
+          <button className="book-room-btn" onClick={(e) => handleRoomSelect( e,room)}>
             Choose
           </button>
         </div>

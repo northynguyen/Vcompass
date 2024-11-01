@@ -8,7 +8,7 @@ import RoomDetail from './RoomDetail/RoomDetail';
 import axios from 'axios';
 import { StoreContext } from '../../Context/StoreContext';
 import RoomCard from './RoomCard'; // Nhập RoomCard từ file mới
-
+import { useNavigate } from 'react-router-dom';
 
 const HotelDetailsInfo = ({serviceId}) => {
   const [dateRange, setDateRange] = useState([null, null]);
@@ -24,10 +24,14 @@ const HotelDetailsInfo = ({serviceId}) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [accommodation, setAccommodation] = useState(null);
 
-  
-  useEffect(() => {
-    console.log("useEffect called"); // Log khi useEffect được gọi
-  }, []); // Không có phụ thuộc
+  const navigate = useNavigate();
+  const [dataSend, setDataSend] = useState({ bookingInfo :{
+    startDate: null,
+    endDate: null,
+    adults: 2,
+    children: 0,
+    diffDays: ""}
+  })
 
   useEffect(() => {
     let isMounted = true; // Track if the component is mounted
@@ -53,7 +57,7 @@ const HotelDetailsInfo = ({serviceId}) => {
     return () => {
       isMounted = false; // Cleanup function to set isMounted to false
     };
-  }, [serviceId, url]);
+  }, [serviceId]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -67,14 +71,13 @@ const HotelDetailsInfo = ({serviceId}) => {
     };
   }, [dropdownRef]);
 
-  console.log("Accommodation",accommodation);
-
+  
 
   const calculateNights = (start, end) => {
     if (!start || !end) return '';  
     const diffTime = Math.abs(end - start);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return `${diffDays} night(s)`;
+    return diffDays ;
   };
   
 
@@ -112,6 +115,53 @@ const HotelDetailsInfo = ({serviceId}) => {
    
   };
 
+ 
+
+  const handleSearch = async () => {
+    setIsModalOpen(false);
+    const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+    if (!startDate || !endDate) {
+      alert('Please select a check-in and check-out date');
+      return;
+    }
+    // Update bookingInfo state
+    setDataSend({
+      ...dataSend,
+      bookingInfo: {
+        ...dataSend.bookingInfo,
+        startDate: startDate.toLocaleDateString('en-GB', options),
+        endDate: endDate.toLocaleDateString('en-GB', options),
+        adults,
+        children,
+        diffDays: calculateNights(startDate, endDate),
+      }
+    });
+  
+    try {
+      // Call API to get available rooms
+      const response = await axios.get(`${url}/api/bookings/getAvailableRoom`, {
+        params: {
+          accommodationId: serviceId,
+          startDate: startDate.toISOString().split('T')[0], // Chỉ lấy phần ngày
+          endDate: endDate.toISOString().split('T')[0],     // Chỉ lấy phần ngày
+          adults,
+          children
+        }
+      });
+  
+      // Log response for debugging
+      console.log("Available Rooms:", serviceId, startDate.toISOString(), endDate.toISOString());
+      setAccommodation((prev) => ({
+        ...prev,
+        roomTypes: response.data.availableRooms
+      }));
+    } catch (error) {
+      console.error("Error fetching available rooms:", error);
+      alert("Unable to find available rooms for the selected dates.");
+    }
+  };
+  
+
 
   const handleButtonClick = (action, type, event) => {
     event.preventDefault(); // Ngăn việc tải lại trang
@@ -129,6 +179,32 @@ const HotelDetailsInfo = ({serviceId}) => {
   if (!accommodation) {
     return <div>Loading...</div>;
   }
+
+  const handleRoomSelect = (e, room) => {
+    e.preventDefault();
+  
+    // Update the state using the functional form
+    setDataSend((prevDataSend) => ({
+      ...prevDataSend,
+      hotel: accommodation,
+      room: room,
+    }));
+
+    if (!startDate || !endDate) {
+      setSelectedRoom(null);
+      window.scrollTo(0, 0);
+      alert('Please select a check-in and check-out date');
+      
+      return;
+    }
+    
+    // Navigate to the new route
+    navigate(`/booking-process/step2`, { state: { dataSend: { ...dataSend, hotel: accommodation, room: room } } });
+  
+    // Scroll to the top of the page
+    window.scrollTo(0, 0);
+  };
+  
 
   return (
     <div className="hotel-details-info">
@@ -149,10 +225,13 @@ const HotelDetailsInfo = ({serviceId}) => {
             startDate={startDate}
             endDate={endDate}
             selectsRange
+            monthsShown={2}
             placeholderText="Chọn ngày"
+            dateFormat="dd/MM/yyyy"
+        
           />
           {startDate && endDate && (
-            <span>{calculateNights(startDate, endDate)}</span>
+            <span> &nbsp;&nbsp;{calculateNights(startDate, endDate)} nights</span>
           )}
         </div>
 
@@ -169,29 +248,29 @@ const HotelDetailsInfo = ({serviceId}) => {
               <div className="guest-option">
                 <span>Người lớn</span>
                 <button onClick={(e) => handleButtonClick('decrement', 'adults', e)}>-</button>
-                <span>{adults}</span>
+                <span className='num'>{adults}</span>
                 <button onClick={(e) => handleButtonClick('increment', 'adults', e)}>+</button>
               </div>
               <div className="guest-option">
                 <span>Trẻ em</span>
                 <button onClick={(e) => handleButtonClick('decrement', 'children', e)}>-</button>
-                <span>{children}</span>
+                <span className='num'>{children}</span>
                 <button onClick={(e) => handleButtonClick('increment', 'children', e)}>+</button>
               </div>
               <div className="guest-option">
                 <span>Phòng</span>
                 <button onClick={(e) => handleButtonClick('decrement', 'rooms', e)}>-</button>
-                <span>{numRooms}</span>
+                <span className='num'>{numRooms}</span>
                 <button onClick={(e) => handleButtonClick('increment', 'rooms', e)}>+</button>
               </div>
 
-              <button onClick={() => setShowGuestDropdown(false)}>Xong</button>
+              <button className="ok-btn" onClick={() => setShowGuestDropdown(false)}>Xong</button>
             </div>
           )}
         </div>
 
         {/* Nút tìm kiếm */}
-        <button type="submit" className="search-btn">Tìm kiếm</button>
+        <button type="submit" className="search-btn" onClick={handleSearch}>Tìm kiếm</button>
       </form>
 
       {/* Left Column: Hotel Details */}
@@ -271,8 +350,8 @@ const HotelDetailsInfo = ({serviceId}) => {
       {/* Rooms Section */}
       <div className="rooms-section">
         <h2>Available Rooms</h2>
-        {accommodation.roomTypes.map((room, index) => (
-          <RoomCard key={index} room={room} handleRoomClick={handleRoomClick} url={url} />
+        {accommodation.roomTypes?.map((room, index) => (
+          <RoomCard key={index} room={room} handleRoomClick={handleRoomClick} url={url} handleRoomSelect={handleRoomSelect} />
         ))}
       </div>
 
@@ -285,7 +364,7 @@ const HotelDetailsInfo = ({serviceId}) => {
         onClose={closeModal}
       />
 
-    {selectedRoom && <RoomDetail room={selectedRoom} onClose={handleRoomClose} />}
+    {selectedRoom && <RoomDetail room={selectedRoom} onClose={handleRoomClose}  handleRoomSelect={handleRoomSelect}/>}
     </div>
   );
 };
