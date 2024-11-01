@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Schedule from "../models/schedule.js";
 
 export const addSchedule = async (req, res) => {
@@ -14,5 +15,63 @@ export const addSchedule = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.json({ success: false, message: "Error adding Schedule" });
+  }
+};
+export const getScheduleById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid ID format" });
+    }
+
+    const schedule = await Schedule.findById(id);
+    console.log(schedule);
+    if (!schedule) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Schedule not found" });
+    }
+    res.json({
+      success: true,
+      message: "Get schedule success",
+      schedule,
+    });
+  } catch (error) {
+    console.error("Error retrieving schedule:", error);
+    res.json({
+      success: false,
+      message: "Error retrieving schedule",
+      error,
+    });
+  }
+};
+export const updateSchedule = async (req, res) => {
+  const { id } = req.params;
+  const scheduleData = req.body;
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid ID format" });
+    }
+
+    const updatedSchedule = await Schedule.findByIdAndUpdate(id, scheduleData, { new: true });
+    if (!updatedSchedule) {
+      return res.status(404).json({ success: false, message: "Schedule not found" });
+    }
+
+    res.json({
+      success: true,
+      message: "Schedule updated successfully",
+      schedule: updatedSchedule,
+    });
+  } catch (error) {
+    console.error("Error updating schedule:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error updating schedule",
+      error: error.message,
+    });
   }
 };

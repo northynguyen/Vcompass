@@ -6,8 +6,6 @@ import './RestaurantDetail.css'; // Import CSS mới
 import { FaArrowLeft, FaPhone, FaEnvelope, FaWifi, FaUtensils, FaCar } from 'react-icons/fa'; // Import icons từ react-icons
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
 import axios from 'axios';
 import { StoreContext } from '../../../Context/StoreContext';
 import { toast } from 'react-toastify';
@@ -17,20 +15,21 @@ import ImageGallery from './ImageGallery';
 import LocationMap from './LocationMap';
 import AmenitiesEditor from './AmenitiesEditor';
 
-const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const redIcon = new L.Icon({
-    iconUrl: 'https://cdn.iconscout.com/icon/free/png-256/free-location-icon-download-in-svg-png-gif-file-formats--marker-pointer-map-pin-navigation-finance-and-economy-pack-business-icons-2561454.png?f=webp&w=256',
-    iconSize: [41, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+
 
 const RestaurantDetail = ({ onBack, RestaurantData }) => {
     const { url, token  } = useContext(StoreContext);
     const [isEditing, setIsEditing] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
+    const [newImages, setNewImages] = useState([]); // This state holds the new images
+    const [newMenuImages, setNewMenuImages] = useState([]);
+    const [existingImages, setExistingImages] = useState(RestaurantData ? RestaurantData.images : []);
+    const [existingMenuImages, setExistingMenuImages] = useState(RestaurantData ? RestaurantData.menuImages : []);
+    const [newImagePreviews, setNewImagePreviews] = useState([]);
+    const [newMenuImagePreviews, setNewMenuImagePreviews] = useState([]);
+
+   
     const [formData, setFormData] = useState(
         RestaurantData ? RestaurantData : {
             foodServiceName: "",
@@ -148,75 +147,108 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
             alert('Giá thấp nhất không được vượt quá giá cao nhất.');
             return;
         }
-    
+        
         try {
             let response;
+            const formDataToSend = new FormData();       
+            
+            // Append the file
+            newImages.forEach((file) => {
+                formDataToSend.append("images", file);
+            })
+            newMenuImages.forEach((file) => {
+                formDataToSend.append("menuImages", file);
+            })
+
+
+            const config = {
+                headers:   { token }
+            };
+        
             if (RestaurantData) {
-                // Updating an existing restaurant
-                response = await axios.post(`${url}/api/foodServices/update`, 
-                    { foodServiceData: formData },
-                    { headers: { token } }
-                );
-            } else {
-                // Adding a new restaurant
-                response = await axios.post(`${url}/api/foodServices/add`, 
-                    { foodServiceData: { ...formData, status: "active" } },
-                    { headers: { token } }
-                );
+                const restData = {...formData, images: [...existingImages], menuImages: [...existingMenuImages]};
+                console.log(restData);
+                formDataToSend.append("foodServiceData", JSON.stringify(restData));
+                formDataToSend.append("Id", RestaurantData._id);
+                response = await axios.post(`${url}/api/foodServices/update`, formDataToSend, config);
+                if (response.data.success) {
+                    toast.success(response.data.message);
+                    setIsEditing(false);
+                    setFormData(response.data.updatedFoodService);
+                } else {
+                    toast.error(response.data.message);
+                }
             }
-    
-            // Handle the response based on success
-            if (response.data.success) {
-                toast.success(response.data.message);
-                setIsEditing(false); // Stop editing mode if saving is successful
-            } else {
-                toast.error(response.data.message);
+             else {
+                const restData = {...formData, images: [...existingImages], menuImages: [...existingMenuImages],serviceType: "restaurant", status: "active"};
+                 formDataToSend.append("foodServiceData", JSON.stringify(restData));                
+                response = await axios.post(`${url}/api/foodServices/add`, formDataToSend, config);
+                if (response.data.success) {
+                    toast.success(response.data.message);
+                    setIsEditing(false);
+                    setFormData(response.data.newFoodService);
+                } else {
+                    toast.error(response.data.message);
+                }
             }
-        } catch (error) {
+        } 
+         catch (error) {
             // Handle any errors that occur during the save process
             console.error('Error saving data:', error);
             toast.error('Đã xảy ra lỗi khi lưu dữ liệu. Vui lòng thử lại.');
         }
     };
     
+    // Handle existing image removal
+    const handleExistingImageRemove = (index) => {
+        setExistingImages((prevImages) => prevImages.filter((_, idx) => idx !== index));
+      };
     
-    // Image Upload Handler
-    const handleImageUpload = (e) => {
+      // Handle new image uploads
+      const handleNewImageChange = (e) => {
         const files = Array.from(e.target.files);
-        const newImages = files.map(file => URL.createObjectURL(file));
-        setFormData(prevData => ({
-            ...prevData,
-            images: [...prevData.images, ...newImages],
-        }));
-    };
-
-    // Image Deletion Handler
-    const deleteImage = (index) => {
-        setFormData(prevData => {
-            const updatedImages = [...prevData.images];
-            updatedImages.splice(index, 1);
-            return { ...prevData, images: updatedImages };
-        });
-    };
+        if (files.length + newImages.length + existingImages.length > 8) {
+          alert('Bạn chỉ có thể chọn tối đa 8 hình ảnh.');
+          return;
+        }
+    
+        setNewImages((prevFiles) => [...prevFiles, ...files]);
+    
+        const newPreviews = files.map((file) => URL.createObjectURL(file));
+        setNewImagePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
+      };
+    
+      const handleNewImageRemove = (index) => {
+        setNewImages((prevFiles) => prevFiles.filter((_, idx) => idx !== index));
+        setNewImagePreviews((prevPreviews) => prevPreviews.filter((_, idx) => idx !== index));
+      };
+    // Image Upload Handler
+    
 
     // Menu Image Upload Handler
-    const handleMenuImageUpload = (e) => {
-        const files = Array.from(e.target.files);
-        const menuImages = files.map(file => URL.createObjectURL(file));
-        setFormData(prevData => ({
-            ...prevData,
-            menuImages: [...prevData.menuImages, ...menuImages],
-        }));
-    };
+  // Handle existing image removal
+  const handleExistingMenuImageRemove = (index) => {
+    setExistingMenuImages((prevImages) => prevImages.filter((_, idx) => idx !== index));
+  };
 
-    // Menu Image Deletion Handler
-    const deleteMenuImage = (index) => {
-        setFormData(prevData => {
-            const updatedMenuImages = [...prevData.menuImages];
-            updatedMenuImages.splice(index, 1);
-            return { ...prevData, menuImages: updatedMenuImages };
-        });
-    };
+  // Handle new image uploads
+  const handleNewMenuImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length + newMenuImages.length + existingMenuImages.length > 8) {
+      alert('Bạn chỉ có thể chọn tối đa 8 hình ảnh.');
+      return;
+    }
+
+    setNewMenuImages((prevFiles) => [...prevFiles, ...files]);
+
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setNewMenuImagePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
+  };
+
+  const handleNewMenuImageRemove = (index) => {
+    setNewMenuImages((prevFiles) => prevFiles.filter((_, idx) => idx !== index));
+    setNewMenuImagePreviews((prevPreviews) => prevPreviews.filter((_, idx) => idx !== index));
+  };
 
     const handleOperatingHourChange = (index, field, value) => {
         setFormData(prevData => {
@@ -350,17 +382,25 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
                     />
 
                     <ImageGallery
-                        images={formData.images}
-                        onImageUpload={handleImageUpload}
-                        onDeleteImage={deleteImage}
+                        images={existingImages}
+                        onImageUpload={handleNewImageChange}
+                        onDeleteImage={handleExistingImageRemove}
+                        onDeleteNewImage={handleNewImageRemove}
+                        newImagePreviews={newImagePreviews}                      
                         title="Hình ảnh"
+                        url={url}
+                        isEditing={isEditing}
                     />
 
                     <ImageGallery
-                        images={formData.menuImages}
-                        onImageUpload={handleMenuImageUpload}
-                        onDeleteImage={deleteMenuImage}
+                        images={existingMenuImages}
+                        onImageUpload={handleNewMenuImageChange}
+                        onDeleteImage={handleExistingMenuImageRemove}
+                        onDeleteNewImage={handleNewMenuImageRemove}
+                        newImagePreviews={newMenuImagePreviews}
                         title="Hình ảnh Menu"
+                        url={url}
+                        isEditing={isEditing}
                     />
 
                     <AmenitiesEditor
@@ -431,13 +471,15 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
                     ></iframe>
 
                     <ImageGallery
-                        images={formData.images}
+                        images={ formData.images}
                         title="Hình ảnh"
+                        url={url}
                     />
 
                     <ImageGallery
                         images={formData.menuImages}
                         title="Hình ảnh Menu"
+                        url={url}
                     />
 
                     <h2>Tiện nghi</h2>

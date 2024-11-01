@@ -18,6 +18,7 @@ export const getListAccomm = async (req, res) => {
     });
   }
 };
+
 export const getAccommodationById = async (req, res) => {
   const { id } = req.params; // Lấy id từ params
   try {
@@ -189,25 +190,10 @@ export const updateAccommodation = async (req, res) => {
 // Add a new room type to an accommodation by partnerId and accommodationId
 export const addNewRoom = async (req, res) => {
   const { accommodationId } = req.params;
-  const roomTypeData = req.body;
+  const roomTypeData =  JSON.parse(req.body.roomTypeUpdate);
 
-  const requiredFields = [
-    "nameRoomType",
-    "roomSize",
-    "pricePerNight",
-    "status",
-    "numPeople",
-    "amenities",
-  ];
+  console.log(roomTypeData);
 
-  for (const field of requiredFields) {
-    if (!roomTypeData[field]) {
-      return res.json({
-        success: false,
-        message: `Missing required field: ${field}`,
-      });
-    }
-  }
 
   try {
     const accommodation = await Accommodation.findOne({ _id: accommodationId });
@@ -258,26 +244,21 @@ export const deleteRoom = async (req, res) => {
         message: "Accommodation not found or partner mismatch",
       });
     }
-
-    const roomTypeIndex = accommodation.roomTypes.findIndex(
-      (element) => element.idRoomType === roomTypeId
-    );
-    if (roomTypeIndex === -1) {
+    console.log(roomTypeId);
+    const roomType = accommodation.roomTypes.find(rt => rt._id.toString() === roomTypeId);
+    if (!roomType) {
       return res.json({ success: false, message: "Room type not found" });
     }
-
-    const roomType = accommodation.roomTypes[roomTypeIndex];
 
     // Remove images from server before deleting room type
     roomType.images.forEach((image) => {
       fs.unlink(`uploads/${image}`, (err) => {
         if (err) console.error("Error deleting old image:", err);
-        else console.log(`Successfully deleted old image: ${imagePath}`);
+        else console.log(`Successfully deleted old image: ${image}`);
       });
     });
 
-    accommodation.roomTypes.splice(roomTypeIndex, 1); // Delete the room type
-
+    accommodation.roomTypes = accommodation.roomTypes.filter(rt => rt._id.toString() !== roomTypeId); // Delete the room type
     await accommodation.save();
 
     res.json({
@@ -290,6 +271,7 @@ export const deleteRoom = async (req, res) => {
     console.error(error);
   }
 };
+
 
 export const listRooms = async (req, res) => {
   const { accommodationId } = req.params;
@@ -320,13 +302,9 @@ export const updateRoomType = async (req, res) => {
     }
 
     // Find the specific room type within the accommodation
-    const roomType = accommodation.roomTypes.find(
-      (element) => element.idRoomType === roomTypeId
-    );
+    const roomType = accommodation.roomTypes.find(rt => rt._id.toString() === roomTypeId);
     if (!roomType) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Room type not found." });
+      return res.json({ success: false, message: "Room type not found" });
     }
 
     const roomTypeUpdate = JSON.parse(req.body.roomTypeUpdate);

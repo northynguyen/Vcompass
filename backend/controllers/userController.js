@@ -136,7 +136,6 @@ const handleRegister = async (req, res, model, userRole = "user") => {
   }
 };
 
-// Login with Google (Redirect-based)
 const loginWithGoogle = async (req, res) => {
   passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
 };
