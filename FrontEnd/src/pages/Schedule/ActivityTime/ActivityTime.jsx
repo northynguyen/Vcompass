@@ -3,7 +3,9 @@ import { useContext, useEffect, useState } from "react";
 import { FaEdit, FaRegClock } from 'react-icons/fa';
 import { StoreContext } from "../../../Context/StoreContext";
 
-const ActivityTime = ({ timeStart, timeEnd }) => {
+const ActivityTime = ({ activity, setInforSchedule }) => {
+  const timeStart = activity.timeStart;
+  const timeEnd = activity.timeEnd;
   const generateTimeOptions = () => {
     const options = [];
     for (let hour = 0; hour < 24; hour++) {
@@ -11,41 +13,55 @@ const ActivityTime = ({ timeStart, timeEnd }) => {
         const formattedTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
         options.push(formattedTime);
       }
-    }
+    }   
     return options;
   };
 
   const timeOptions = generateTimeOptions();
-
-  // Initialize with the start and end times passed from props (time.dateStart, time.dateEnd)
   const [startTime, setStartTime] = useState(timeStart || timeOptions[0]);
   const [endTime, setEndTime] = useState(timeEnd || timeOptions[1]);
 
   useEffect(() => {
-    if (timeStart && timeEnd) {
+    if (timeStart) {
       setStartTime(timeStart);
+    }
+    if (timeEnd) {
       setEndTime(timeEnd);
     }
   }, [timeStart, timeEnd]);
-
+  useEffect(() => {
+    setInforSchedule((prevSchedule) => {
+      const updatedActivities = prevSchedule.activities.map((day) => {
+        return {
+          ...day,
+          activity: day.activity.map((act) =>
+            act._id === activity._id
+              ? { ...act, timeStart: startTime, timeEnd: endTime }
+              : act
+          ),
+        };
+      });
+      return { ...prevSchedule, activities: updatedActivities };
+    });
+  }, [startTime, endTime]);
   const handleStartChange = (e) => {
-    setStartTime(e.target.value);
-  };
-
-  const handleEndChange = (e) => {
-    const selectedEndTime = e.target.value;
-    if (selectedEndTime > startTime) {
-      setEndTime(selectedEndTime);
-    } else {
-      alert('Thời gian kết thúc phải lớn hơn thời gian bắt đầu.');
+    const newStartTime = e.target.value;
+    setStartTime(newStartTime);
+    if (newStartTime >= endTime) {
+      const nextValidEndTime = timeOptions.find(option => option > newStartTime) || endTime;
+      setEndTime(nextValidEndTime);
     }
   };
-  const filteredEndTimeOptions = timeOptions.filter(option => option > startTime);
+  const handleEndChange = (e) => {
+    const newEndTime = e.target.value;
+    setEndTime(newEndTime);
+  };
+  const filteredEndTimeOptions = timeOptions.filter((option) => option > startTime);
   return (
-    <div className="time-container ">
+    <div className="time-container">
       <div className="time-select-wrapper">
-        <FaRegClock className='icon' />
-        <select className='time-schedule' value={timeStart} onChange={handleStartChange}>
+        <FaRegClock className="icon" />
+        <select className="time-schedule" value={startTime} onChange={handleStartChange}>
           {timeOptions.map((option, index) => (
             <option key={index} value={option}>
               {option}
@@ -55,8 +71,8 @@ const ActivityTime = ({ timeStart, timeEnd }) => {
       </div>
       <h6>To</h6>
       <div className="time-select-wrapper">
-        <FaRegClock className='icon' />
-        <select className='time-schedule' value={timeEnd} onChange={handleEndChange}>
+        <FaRegClock className="icon" />
+        <select className="time-schedule" value={endTime} onChange={handleEndChange}>
           {filteredEndTimeOptions.map((option, index) => (
             <option key={index} value={option}>
               {option}
@@ -67,6 +83,7 @@ const ActivityTime = ({ timeStart, timeEnd }) => {
     </div>
   );
 };
+
 
 export const AccomActivity = ({ data, handleEdit }) => {
   const { url } = useContext(StoreContext);

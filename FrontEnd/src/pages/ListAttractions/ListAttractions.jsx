@@ -1,57 +1,41 @@
-import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
 import "./ListAttractions.css";
 
-// Tính tổng số sao và đánh giá
-const calculateTotalRate = (ratings) => {
+export const calculateTotalRate = (ratings) => {
   const totalReviews = ratings.length;
-  if (totalReviews === 0) return "No reviews"; // Tránh chia cho 0
+  if (totalReviews === 0) return "No reviews";
   const averageRating = ratings.reduce((sum, review) => sum + review.rate, 0) / totalReviews;
   const stars = "★".repeat(Math.floor(averageRating)) + "☆".repeat(5 - Math.floor(averageRating));
   return `${stars} (${totalReviews} reviews)`;
 };
 
-// TourItem Component
-const AttractionItem = ({ imgSrc, name, description, price,
-  totalRate, location, facilities, status, setCurrentActivity, idDestination }) => {
+const AttractionItem = ({ attraction, status, setCurDes }) => {
   const { url } = useContext(StoreContext);
-  console.log("id:", idDestination)
   const handleSelect = () => {
-    setCurrentActivity({
-      idDestination,
-      imgSrc,
-      name,
-      description,
-      price,
-      location,
-      facilities,
-      totalRate,
-      activityType: "Attraction",
-      visible: true
-    });
-    console.log(name)
+    attraction.activityType = "Attraction";
+    setCurDes(attraction);
   };
 
   return (
     <div className="list-accom__tour-item">
-      <img src={`${url}/images/${imgSrc}`} alt={name} className="list-accom__tour-item-image" />
+      <img src={`${url}/images/${attraction.images[0]}`} alt={attraction.name} className="list-accom__tour-item-image" />
       <div className="list-accom__tour-details">
-        <h3>{name}</h3>
+        <h3>{attraction.attractionName}</h3>
         <div className="list-accom__tour-location">
-          <a href="#">{location}</a>
+          <a href="#">{attraction.location.address}</a>
         </div>
         <div className="list-accom__tour-facilities">
-          {facilities.map((facility, index) => (
+          {attraction.amenities.map((facility, index) => (
             <span key={index}>{facility}</span>
           ))}
         </div>
-        <p>{description}</p>
-        <div className="list-accom__tour-rating">{totalRate}</div>
+        <p>{attraction.description}</p>
+        <div className="list-accom__tour-rating">{calculateTotalRate(attraction.ratings)}</div>
       </div>
       <div className="list-accom__tour-price">
         <div className="price-container">
-          <p className="price-text">{price}</p>
+          <p className="price-text">{attraction.price}đ</p>
         </div>
         {
           status === "Schedule" && <SelectButton onClick={handleSelect} />
@@ -68,18 +52,18 @@ const SelectButton = ({ onClick }) => {
   );
 }
 // TourList Component
-const TourList = ({ tours, sortOption, status, setCurrentActivity }) => {
+const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [toursPerPage] = useState(status === "Schedule" ? 3 : 8);
 
-  const sortedTours = [...tours].sort((a, b) => {
+  const sortedTours = Object.values(attractions).sort((a, b) => {
     switch (sortOption) {
       case "PriceLowToHigh":
         return parseFloat(a.price.replace(/₫/g, "").replace(/,/g, "")) - parseFloat(b.price.replace(/₫/g, "").replace(/,/g, ""));
       case "PriceHighToLow":
         return parseFloat(b.price.replace(/₫/g, "").replace(/,/g, "")) - parseFloat(a.price.replace(/₫/g, "").replace(/,/g, ""));
       case "Rating":
-        return 0; // Placeholder
+        return 0;
       case "Popularity":
       default:
         return 0;
@@ -91,16 +75,14 @@ const TourList = ({ tours, sortOption, status, setCurrentActivity }) => {
     (currentPage - 1) * toursPerPage,
     currentPage * toursPerPage
   );
-  console.log("currrentTour:", currentTours)
   return (
     <div className="list-accom__tour-list">
-      {currentTours.map((tour, index) => (
+      {currentTours.map((tour) => (
         <AttractionItem
-          key={index}
-          {...tour}
-          idDestination={tour.idDestination}
+          key={tour._id}
+          attraction={tour}
           status={status}
-          setCurrentActivity={setCurrentActivity}
+          setCurDes={setCurDes}
         />
       ))}
       <Pagination
@@ -176,39 +158,38 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
 };
 
 // Main ListAccom Component
-const ListAccom = ({ status, setCurrentActivity }) => {
+const ListAccom = ({ status, setCurDes }) => {
   const { url } = useContext(StoreContext);
-  const [tours, setTours] = useState([]);
+  const [attractions, setAttractions] = useState();
+  const [isLoading, setIsLoading] = useState(true);
   const [sortOption, setSortOption] = useState("Popularity");
-
+  const fetchData = async () => {
+    try {
+      let response = await fetch(`${url}/api/attractions/`)
+      const result = await response.json();
+      setIsLoading(false)
+      if (!response.ok) {
+        throw new Error(result.message || 'Error fetching data');
+      }
+      setAttractions(result.attractions);
+    } catch (err) {
+      console.log(err)
+    }
+  }
   useEffect(() => {
-    axios.get(`${url}/api/attractions/`)
-      .then(response => {
-        const dbAttractions = response.data.attractions;
-        const mappedTours = dbAttractions.map(attraction => ({
-          idDestination: attraction._id,
-          imgSrc: attraction.images[0],
-          name: attraction.attractionName,
-          description: attraction.description,
-          price: `${(attraction.price).toLocaleString()}₫`,
-          totalRate: calculateTotalRate(attraction.ratings),
-          location: attraction.location.address,
-          facilities: attraction.amenities,
-        }));
-        console.log("attraction", response)
-        setTours(mappedTours);
-      })
-      .catch(error => {
-        console.error('Error fetching data from API:', error);
-      });
+    fetchData();
   }, [url]);
-
+  if (isLoading) {
+    return (
+      <div>...</div>
+    )
+  }
   return (
     <div className="list-accom__container">
       <Filters sortOption={sortOption} setSortOption={setSortOption} />
       <div className="tour-list-container">
-        <TourList tours={tours} sortOption={sortOption} status={status}
-          setCurrentActivity={setCurrentActivity} />
+        <AttractionList attractions={attractions} sortOption={sortOption} status={status}
+          setCurDes={setCurDes} />
       </div>
     </div>
   )

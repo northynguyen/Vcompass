@@ -1,51 +1,30 @@
-import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
-import { SelectButton } from "../ListAttractions/ListAttractions";
+import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import "./ListAccommodation.css";
 
-// Helper function for calculating ratings
-const calculateTotalRate = (ratings) => {
-  const totalReviews = ratings.length;
-  if (totalReviews === 0) return "No reviews";
-  const averageRating = ratings.reduce((sum, review) => sum + review.rate, 0) / totalReviews;
-  const stars = "★".repeat(Math.floor(averageRating)) + "☆".repeat(5 - Math.floor(averageRating));
-  return `${stars} (${totalReviews} reviews)`;
-};
-
-// TourItem Component
-const AccomItem = ({ imgSrc, name, description, totalRate,
-  location, facilities, url, status, setCurrentActivity, idDestination }) => {
+const AccomItem = ({ accommodation, status, setCurDes }) => {
   const handleSelect = () => {
-    setCurrentActivity({
-      idDestination,
-      imgSrc,
-      name,
-      description,
-      totalRate,
-      location,
-      facilities,
-      url,
-      activityType: "Accommodation",
-      visible: true
-    });
+    accommodation.activityType = "Accommodation";
+    setCurDes(accommodation);
   };
+  const { url } = useContext(StoreContext);
 
   return (
     <div className="list-accom__tour-item">
-      <img src={`${url}/images/${imgSrc}`} alt={name} className="list-accom__tour-item-image" />
+      <img src={`${url}/images/${accommodation.images[0]}`} alt={accommodation.name} className="list-accom__tour-item-image" />
       <div className="list-accom__tour-details">
-        <h3>{name}</h3>
+        <h3>{accommodation.name}</h3>
         <div className="list-accom__tour-location">
-          <a href="#">{location}</a>
+          <a href="#">{accommodation.location.address}</a>
         </div>
         <div className="list-accom__tour-facilities">
-          {facilities.map((facility, index) => (
+          {accommodation.amenities.map((facility, index) => (
             <span key={index}>{facility}</span>
           ))}
         </div>
-        <p>{description}</p>
-        <div className="list-accom__tour-rating">{totalRate}</div>
+        <p>{accommodation.description}</p>
+        <div className="list-accom__tour-rating">{calculateTotalRate(accommodation.ratings)}</div>
       </div>
       <div className="list-accom__tour-price">
         {
@@ -56,11 +35,10 @@ const AccomItem = ({ imgSrc, name, description, totalRate,
   );
 }
 
-// TourList Component
-const TourList = ({ tours, sortOption, status, url, setCurrentActivity }) => {
+const AccomList = ({ accommodations, sortOption, status, setCurDes }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const toursPerPage = status === "Schedule" ? 3 : 8;
-  const sortedTours = [...tours].sort((a, b) => {
+  const accomPerPage = status === "Schedule" ? 3 : 8;
+  const sortedAccom = Object.values(accommodations).sort((a, b) => {
     switch (sortOption) {
       case "PriceLowToHigh":
         return parseFloat(a.price.replace(/₫/g, "").replace(/,/g, "")) - parseFloat(b.price.replace(/₫/g, "").replace(/,/g, ""));
@@ -71,14 +49,14 @@ const TourList = ({ tours, sortOption, status, url, setCurrentActivity }) => {
         return 0;
     }
   });
-  const totalPages = Math.ceil(sortedTours.length / toursPerPage);
-  const currentTours = sortedTours.slice((currentPage - 1) * toursPerPage, currentPage * toursPerPage);
+  const totalPages = Math.ceil(sortedAccom.length / accomPerPage);
+  const currentAccoms = sortedAccom.slice((currentPage - 1) * accomPerPage, currentPage * accomPerPage);
 
   return (
     <div className="list-accom__tour-list">
-      {currentTours.map((tour, index) => (
-        <AccomItem key={index} {...tour} url={url}
-          status={status} setCurrentActivity={setCurrentActivity} />
+      {currentAccoms.map((accommodation) => (
+        <AccomItem key={accommodation._id} accommodation={accommodation} status={status}
+          setCurDes={setCurDes} />
       ))}
       <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
     </div>
@@ -117,33 +95,39 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => (
 );
 
 // Main ListAccom Component
-const ListAccom = ({ status, setCurrentActivity }) => {
+const ListAccom = ({ status, setCurDes }) => {
   const { url } = useContext(StoreContext);
-  const [tours, setTours] = useState([]);
+  const [accommodations, setAccommodations] = useState();
+  const [isLoading, setIsLoading] = useState(true);
   const [sortOption, setSortOption] = useState("Popularity");
 
-  useEffect(() => {
-    axios.get(`${url}/api/accommodations/`)
-      .then(response => {
-        const mappedTours = response.data.accommodations.map(accommodation => ({
-          idDestination: accommodation._id,
-          imgSrc: accommodation.images[0],
-          name: accommodation.name,
-          description: accommodation.description,
-          totalRate: calculateTotalRate(accommodation.ratings),
-          location: accommodation.location.address,
-          facilities: accommodation.amenities,
-        }));
-        setTours(mappedTours);
-      })
-      .catch(error => console.error('Error fetching data from API:', error));
-  }, [url]);
+  const fetchData = async () => {
+    try {
+      let response = await fetch(`${url}/api/accommodations/`)
+      const result = await response.json();
+      setIsLoading(false)
+      if (!response.ok) {
+        throw new Error(result.message || 'Error fetching data');
+      }
+      setAccommodations(result.accommodations);
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
+  useEffect(() => {
+    fetchData()
+  }, [url]);
+  if (isLoading) {
+    return (
+      <div>...</div>
+    )
+  }
   return (
     <div className="list-accom__container">
       <Filters sortOption={sortOption} setSortOption={setSortOption} />
-      <TourList tours={tours} sortOption={sortOption}
-        status={status} url={url} setCurrentActivity={setCurrentActivity} />
+      <AccomList accommodations={accommodations} sortOption={sortOption}
+        status={status} url={url} setCurDes={setCurDes} />
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import { v4 as uuidv4 } from 'uuid';
 import ListAccommodation, { AccomItem } from "../../ListAccommodation/ListAccommodation";
 import ListAttractions, { AttractionItem } from "../../ListAttractions/ListAttractions";
 import ListFoodServices, { FoodServiceItem } from "../../ListFoodServices/ListFoodServices";
@@ -9,13 +8,11 @@ import "./AddActivity.css";
 Modal.setAppElement("#root");
 
 
-const Header = ({ option, setOption, setCurrentActivity }) => {
+const Header = ({ option, setOption, setCurDes }) => {
 
   const onChange = (value) => {
     setOption(value)
-    setCurrentActivity({
-      visible: false,
-    })
+    setCurDes(null)
   }
 
   return (
@@ -41,40 +38,37 @@ const Header = ({ option, setOption, setCurrentActivity }) => {
   );
 };
 
-const AddActivity = ({ isOpen, closeModal, currentDay, idActivity, setInforSchedule }) => {
-  //console.log("currentId", idActivity);
-  console.log("update:", idActivity);
+const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSchedule, activity }) => {
   const [option, setOption] = React.useState("Accommodations");
-  const [currentActivity, setCurrentActivity] = useState({
-    visible: false,
-  })
   const [cost, setCost] = React.useState("")
   const [description, setDescription] = React.useState("")
+  const [curDes, setCurDes] = React.useState(null)
   useEffect(() => {
     if (isOpen) {
-      setCurrentActivity({
-        visible: false
-      });
+      if (activity) {
+        setCurDes(destination)
+      } else {
+        setCurDes(null);
+      }
+      setOption("Accommodations")
     }
 
   }, [isOpen]);
 
   const handleSave = () => {
     const newActivity = {
-      idActivity: idActivity || uuidv4(),
-      activityType: currentActivity.activityType,
-      idDestination: currentActivity.idDestination || "default-id",
+      activityType: curDes.activityType,
+      idDestination: curDes._id || "default-id",
       cost: parseInt(cost) || 0,
       description: description,
-      timeStart: currentActivity.timeStart || "00:00",
-      timeEnd: currentActivity.timeEnd || "00:30",
+      timeStart: activity ? activity.timeStart : "00:00",
+      timeEnd: activity ? activity.timeEnd : "00:30",
     };
     setInforSchedule((prevSchedule) => {
       const updatedActivities = prevSchedule.activities.map((day) => {
         if (day.day === currentDay) {
-          if (idActivity) {
-            console.log("update:");
-            const existingActivityIndex = day.activity.findIndex((act) => act._id === idActivity);
+          if (activity) {
+            const existingActivityIndex = day.activity.findIndex((act) => act._id === activity._id);
             const updatedActivitiesList = existingActivityIndex !== -1
               ? [
                 ...day.activity.slice(0, existingActivityIndex),
@@ -84,7 +78,6 @@ const AddActivity = ({ isOpen, closeModal, currentDay, idActivity, setInforSched
               : day.activity;
             return { ...day, activity: updatedActivitiesList };
           } else {
-            console.log("add:");
             return { ...day, activity: [...day.activity, newActivity] };
           }
         }
@@ -110,13 +103,13 @@ const AddActivity = ({ isOpen, closeModal, currentDay, idActivity, setInforSched
           </button>
         </div>
         <div className="modal-body">
-          <Header setOption={setOption} setCurrentActivity={setCurrentActivity} />
+          <Header setOption={setOption} setCurDes={setCurDes} />
           {option === "Attractions" && <ListAttractions status="Schedule"
-            setCurrentActivity={setCurrentActivity} />}
+            setCurDes={setCurDes} />}
           {option === "Accommodations" && <ListAccommodation status="Schedule"
-            setCurrentActivity={setCurrentActivity} />}
+            setCurDes={setCurDes} />}
           {option === "FoodServices" && <ListFoodServices status="Schedule"
-            setCurrentActivity={setCurrentActivity} />}
+            setCurDes={setCurDes} />}
           {option === "Other" &&
             <div className="form-group">
               <select className="input-field">
@@ -128,49 +121,36 @@ const AddActivity = ({ isOpen, closeModal, currentDay, idActivity, setInforSched
               </select>
             </div>}
           <div className="activity-infor-container">
-            {option === "Accommodations" && currentActivity.visible && (
+            {option === "Accommodations" && curDes && (
               <AccomItem
-                imgSrc={currentActivity.imgSrc}
-                name={currentActivity.name}
-                description={currentActivity.description}
-                totalRate={currentActivity.totalRate}
-                location={currentActivity.location}
-                facilities={currentActivity.facilities}
-                url={currentActivity.url}
+                accommodation={curDes}
               />
             )}
-            {option === "FoodServices" && currentActivity.visible && (
+            {option === "FoodServices" && curDes && (
               <FoodServiceItem
-                imgSrc={currentActivity.imgSrc}
-                name={currentActivity.name}
-                description={currentActivity.description}
-                totalRate={currentActivity.totalRate}
-                price={currentActivity.price}
-                location={currentActivity.location}
-                facilities={currentActivity.facilities}
-                url={currentActivity.url}
+                foodService={curDes}
               />
             )}
-            {option === "Attractions" && currentActivity.visible && (
+            {option === "Attractions" && curDes && (
               <AttractionItem
-                imgSrc={currentActivity.imgSrc}
-                name={currentActivity.name}
-                description={currentActivity.description}
-                price={currentActivity.price}
-                totalRate={currentActivity.totalRate}
+                attraction={curDes}
               />
             )}
-            <FormAddActivity cost={cost} setCost={setCost}
-              description={description} setDescription={setDescription} />
+            {
+              (curDes || activity) && (
+                <FormAddActivity cost={cost} setCost={setCost}
+                  description={description} setDescription={setDescription} />
+              )
+            }
           </div>
         </div>
-        <div className="modal-footer">
-          {
-            idActivity &&
-            <button className="delete-btn" onClick={handleSave}>Xóa</button>
-          }
-          <button className="save-btn" onClick={handleSave}>Lưu</button>
-        </div>
+        {
+          (curDes || activity) && (
+            <div className="modal-footer">
+              <button className="save-btn" onClick={handleSave}>Lưu</button>
+            </div>
+          )
+        }
       </div>
     </Modal >
 
@@ -178,6 +158,24 @@ const AddActivity = ({ isOpen, closeModal, currentDay, idActivity, setInforSched
 };
 
 const FormAddActivity = ({ cost, setCost, description, setDescription }) => {
+  const images = [
+    "https://phongcachmoc.vn/upload/images/tin-tuc/20%20mau%20nha%20hang%20dep/update-07-2022/Sushi-World-Ton-That-Thiep-10.JPG",
+    "https://posapp.vn/wp-content/uploads/2020/09/%C4%91%E1%BB%93ng-b%E1%BB%99-n%E1%BB%99i-th%E1%BA%A5t.jpg",
+    "https://phongcachmoc.vn/upload/images/tin-tuc/20%20mau%20nha%20hang%20dep/update-07-2022/Sushi-World-Ton-That-Thiep-1.JPG",
+  ];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+    );
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === images.length - 1 ? 0 : prevIndex + 1
+    );
+  };
   return (
     <div className="form-group">
       <div className="name-price-container">
@@ -200,7 +198,13 @@ const FormAddActivity = ({ cost, setCost, description, setDescription }) => {
           ></textarea>
         </div>
         <div className="img-add-activity-container">
-          <img className="add-schedule-img" src="http://localhost:4000/images/1729143987255-669062125.png"></img>
+          <button onClick={handlePrev} className="carousel-button">{"<"}</button>
+          <img
+            className="add-schedule-img"
+            src={images[currentIndex]}
+            alt={`slide-${currentIndex}`}
+          />
+          <button onClick={handleNext} className="carousel-button">{">"}</button>
         </div>
       </div>
     </div>

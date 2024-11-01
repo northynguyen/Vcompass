@@ -9,7 +9,7 @@ import AddActivity from "./AddActivity/AddActivity";
 import Expense from "./Expense/Expense";
 import "./Schedule.css";
 
-const Activity = ({ activity, setCurrentId, openModal }) => {
+const Activity = ({ activity, setCurrentActivity, setCurrentDestination, openModal, setInforSchedule }) => {
   return (
     <div className="time-schedule-list">
       {activity.length > 0 && activity.map((myactivity, index) => (
@@ -17,7 +17,9 @@ const Activity = ({ activity, setCurrentId, openModal }) => {
           key={index}
           activity={myactivity}
           index={index}
-          setCurrentId={setCurrentId}
+          setCurrentDestination={setCurrentDestination}
+          setInforSchedule={setInforSchedule}
+          setCurrentActivity={setCurrentActivity}
           openModal={openModal}
         />
       ))}
@@ -25,13 +27,12 @@ const Activity = ({ activity, setCurrentId, openModal }) => {
   );
 };
 
-const ActivityItem = ({ index, activity, setCurrentId, openModal }) => {
+const ActivityItem = ({ index, activity, setCurrentActivity, setCurrentDestination, openModal, setInforSchedule }) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { url } = useContext(StoreContext);
   const fetchData = async (id, type) => {
     try {
-      console.log("type: " + type)
       let response;
       switch (type) {
         case 'Accommodation':
@@ -64,13 +65,30 @@ const ActivityItem = ({ index, activity, setCurrentId, openModal }) => {
     }
   }, [activity]);
   const handleEdit = () => {
-    setCurrentId(activity._id);
+    setCurrentActivity(activity);
+    switch (activity.activityType) {
+      case 'Accommodation':
+        data.accommodation.activityType = "Accommodation";
+        setCurrentDestination(data.accommodation)
+        break
+      case 'FoodService':
+        data.foodService.activityType = "FoodService";
+        setCurrentDestination(data.foodService)
+        break;
+      case 'Attraction':
+        data.attraction.activityType = "Attraction";
+        setCurrentDestination(data.attraction)
+        break;
+      default:
+        throw new Error('Unknown type');
+    }
     openModal();
   };
 
   return (
     <div className="activity-infor">
-      <ActivityTime timeStart={activity.timeStart} timeEnd={activity.timeEnd}></ActivityTime>
+      <ActivityTime activity={activity}
+        setInforSchedule={setInforSchedule} />
       <div className="num-activity">
         -
         <div className="circle-num">{index + 1}</div>
@@ -200,12 +218,13 @@ const DateSchedule = ({ schedule, setInforSchedule }) => {
   const [scheduleDate, setScheduleDate] = useState(schedule);
   const [isOpen, setIsOpen] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentId, setCurrentId] = useState("");
+  const [currentActivity, setCurrentActivity] = useState(null);
+  const [currentDestination, setCurrentDestination] = useState(null);
 
   useEffect(() => {
     if (schedule) {
       setScheduleDate(schedule);
-      setCurrentId("")
+      setCurrentActivity(null)
     }
   }, [schedule]);
 
@@ -234,8 +253,9 @@ const DateSchedule = ({ schedule, setInforSchedule }) => {
             ></i>
           </h2>
           {isOpen && scheduleDate.activity && scheduleDate.activity.length > 0 ? (
-            <Activity activity={scheduleDate.activity} setCurrentId={setCurrentId}
-              openModal={openModal} />
+            <Activity activity={scheduleDate.activity} setCurrentActivity={setCurrentActivity}
+              openModal={openModal} setInforSchedule={setInforSchedule}
+              setCurrentDestination={setCurrentDestination} />
           ) : (
             isOpen && <p>No activities scheduled</p>
           )}
@@ -256,7 +276,8 @@ const DateSchedule = ({ schedule, setInforSchedule }) => {
         isOpen={isModalOpen}
         closeModal={closeModal}
         currentDay={scheduleDate.day}
-        idActivity={currentId !== "" ? currentId : undefined}
+        activity={currentActivity}
+        destination={currentDestination}
         setInforSchedule={setInforSchedule}
       />
     </div>
