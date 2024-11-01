@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 const AttractionSchema = new Schema({
   attraction_name: { type: String, required: true },
   description: { type: String, required: true },
-  location: { 
+  location: {
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
     address: { type: String, required: true },
@@ -12,8 +12,12 @@ const AttractionSchema = new Schema({
   city: { type: String, required: true },
   price: { type: Number, required: true },
   images: [{ type: String }],
-  openTime: { type: String },
-  closeTime: { type: String },
+  operatingHours: {
+    startDay: { type: String, required: true },
+    endDay: { type: String, required: true },
+    openTime: { type: String, required: true },
+    closeTime: { type: String, required: true },
+  },
   amenities: [{ type: String }],
   rating: [RatingSchema],
   createdAt: { type: Date, default: Date.now },

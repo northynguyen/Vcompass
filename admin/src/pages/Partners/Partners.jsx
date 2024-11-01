@@ -10,7 +10,7 @@ const Partner = () => {
 
     useEffect(() => {
         // Fetch partners from the API
-        fetch(`${url}/api/partners/partners`)
+        fetch(`${url}/api/user/partners/getall`)
             .then(response => response.json())
             .then(data => setPartners(data))
             .catch(error => console.error('Error fetching partners:', error));
