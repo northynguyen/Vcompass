@@ -11,7 +11,6 @@ const UserDetails = () => {
     const [status, setStatus] = useState(user.status);
     const [previousStatus, setPreviousStatus] = useState(user.status); // Trạng thái trước đó
     const [showForm, setShowForm] = useState(false);
-    const [reason, setReason] = useState("");
 
     if (!user) {
         return <div>Error: No user data available</div>;
@@ -54,7 +53,7 @@ const UserDetails = () => {
             </div>
 
             {showForm && (
-                <Notification userData={{ _id: user._id, name: user.name, status }} />
+                <Notification userData={{ type: "user", _id: user._id, name: user.name, status }} />
             )}
         </div>
     );

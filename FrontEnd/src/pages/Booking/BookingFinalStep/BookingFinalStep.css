@@ -1,0 +1,394 @@
+/* BookingFinalStep.css */
+.final-step-container {
+    max-width: 1200px ;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #fff; /* Màu nền trắng */
+    border-radius: 12px; /* Bo góc cho container */
+    border-color: #333;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Bóng đổ cho container */
+
+
+.title {
+    font-size: 24px; /* Kích thước chữ cho tiêu đề */
+    margin-bottom: 20px; /* Khoảng cách dưới tiêu đề */
+    color: #333; /* Màu chữ tối */
+}
+
+.checkbox-group {
+    margin-bottom: 20px; /* Khoảng cách dưới nhóm checkbox */
+}
+
+.checkbox-group label {
+    margin-left: 5px; /* Khoảng cách bên trái cho label */
+}
+
+.note {
+    margin: 10px 0; /* Khoảng cách cho ghi chú */
+    color: #666; /* Màu xám cho ghi chú */
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Căn giữa các nút */
+    margin-top: 20px; /* Khoảng cách trên cho nút */
+}
+
+.button {
+    padding: 12px 20px; /* Padding cho nút */
+    background-color: #3498db; /* Màu nền xanh */
+    color: #fff; /* Màu chữ trắng */
+    border: none; /* Không có đường viền */
+    border-radius: 6px; /* Bo góc cho nút */
+    cursor: pointer; /* Con trỏ chuột khi hover */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển tiếp cho màu nền */
+}
+
+.button:hover {
+    background-color: #2980b9; /* Màu nền tối hơn khi hover */
+}
+
+.booking-step2-container {
+    display: flex;
+    gap: 30px;
+    max-width: 1000px;
+    margin: 20px auto;
+    color: #333;
+  }
+  
+  .left-panel,
+  .right-panel {
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .left-panel {
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .right-panel {
+    width: 65%;
+    background-color: #f9faff;
+  }
+  
+  /* Individual section boxes in left panel */
+  .section-box {
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #e0e3eb;
+    background-color: #fff;
+  }
+  
+  .section-box h2 {
+    font-size: 18px;
+    color: #222;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  
+  .important-info {
+    color: #ff5a5f;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .section-box p {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .section-box a {
+    color: #0071c2;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .section-box a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Step status bar */
+  .step-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    margin-bottom: 25px;
+  }
+  
+  .step {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #e0e3eb;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+  
+  .step.active {
+    background-color: #0071c2;
+  }
+  
+  /* Right panel form */
+  .right-panel h2 {
+    font-size: 22px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .note {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-left: 4px solid #0071c2;
+    background-color: #f1f8ff;
+    border-radius: 5px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    background-color: #fafbfc;
+    transition: all 0.2s;
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: #0071c2;
+    background-color: #fff;
+    outline: none;
+    box-shadow: 0px 4px 10px rgba(0, 113, 194, 0.1);
+  }
+  
+  .required {
+    color: #ff5a5f;
+    margin-left: 3px;
+  }
+  
+  .checkbox-group,
+  .radio-group {
+    margin-top: 15px;
+  }
+  
+  .radio-group label,
+  .checkbox-group label {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .radio-group input,
+  .checkbox-group input {
+    margin-right: 8px;
+  }
+  
+  .radio-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .radio-group div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+
+/* BookingFinalStep.css */
+
+/* BookingFinalStep.css */
+
+/* Overlay for the modal */
+/* Modal overlay */
+/* Modal overlay */
+.booking-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.booking-modal-overlay a:hover {
+  text-decoration: underline;
+  color: #0071c2;
+}
+/* Modal content */
+.booking-modal {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 25px;
+  width: 500px;
+  max-width: 90%;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  font-family: Arial, sans-serif;
+  color: #333;
+  position: relative;
+}
+
+.booking-modal h2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.booking-modal .location {
+  font-size: 14px;
+  color: #888;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.booking-modal .booking-info p {
+  font-size: 15px;
+  color: #555;
+  margin: 10px 0;
+}
+
+.booking-modal .dates {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 0;
+}
+
+.booking-modal .dates div {
+  text-align: left;
+}
+
+.booking-modal .dates strong {
+  display: block;
+  font-size: 14px;
+  color: #333;
+}
+
+.booking-modal .dates p {
+  font-size: 16px;
+  color: #555;
+  margin: 2px 0;
+}
+
+.booking-modal .room-details {
+  
+  border-top: 1px solid #e0e3eb;
+  padding-top: 15px;
+  margin-top: 15px;
+}
+
+.booking-modal .room-details p {
+  font-size: 16px;
+  color: #333;
+  margin: 8px 0;
+}
+
+.booking-modal .free-cancellation {
+  color: #2eb82e;
+  font-size: 14px;
+}
+
+.booking-modal .price-section {
+  font-weight: bold;
+  color: #222;
+  font-size: 18px;
+  margin-top: 15px;
+  text-align: right;
+}
+
+.booking-modal .total-price {
+  color: #333;
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+.booking-modal .info-text {
+  font-size: 12px;
+  color: #777;
+  margin-top: 10px;
+}
+
+.booking-modal .confirm-button {
+  background-color: #0071c2;
+  color: #fff;
+  padding: 12px;
+  border-radius: 6px;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 20px;
+}
+
+.booking-modal .confirm-button:hover {
+  background-color: #005fa3;
+}
+
+.booking-modal .close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  color: #aaa;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.booking-modal .close-button:hover {
+  color: #af3636;
+}
+
+
+
+/* Additional smooth animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0.95); }
+    to { transform: scale(1); }
+}

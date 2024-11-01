@@ -14,6 +14,15 @@ const StoreContextProvider = (props) => {
 
     }, [])
 
+    // const fetchpartner = async () => {
+    //   try {
+    //     const response = await axios.get(`${url}/api/partners`)
+    //     (response.data.partners)
+    //   } catch (error) {
+    //     console.error('Error fetching partner:', error)
+    //   }
+    // }
+
     const contextValue = {
       token,
       setToken,

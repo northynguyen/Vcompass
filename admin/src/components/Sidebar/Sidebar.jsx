@@ -36,7 +36,7 @@ const Sidebar = () => {
                         Attraction
                     </li>
                     <li
-                        className={isActive('/users') ? 'active' : ''}
+                        className={isActive('/users') || isActive('/users/user/') ? 'active' : ''}
                         onClick={() => handleNavigation('/users')}
                     >
                         <FaUser />

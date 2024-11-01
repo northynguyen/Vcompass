@@ -3,13 +3,14 @@ import React from 'react';
 import { useState } from 'react';
 import { CiViewList ,CiSettings , CiLogout } from "react-icons/ci";
 import { AiOutlineSchedule } from "react-icons/ai";
-
+import { useNavigate } from 'react-router-dom';
 import './Slidebar.css';
 // eslint-disable-next-line react/prop-types
 const Sidebar = ({ activeTab, onTabChange , img} ) => {
-    
+    const navigate = useNavigate();
     const onClick = (tab) => {
         onTabChange(tab);
+        navigate(`/user-service/${tab}`, { state: { tab } ,replace: true });
     };
 
     return (

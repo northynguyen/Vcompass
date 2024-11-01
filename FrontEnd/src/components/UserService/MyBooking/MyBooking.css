@@ -152,3 +152,10 @@
     background-color: #b12727;
     border: none;
 }
+
+.highlight {
+    background-color: #fdfdb1 !important; /* Light yellow color for highlighting */
+    transition: background-color 0.3s ease-in-out !important; /* Longer duration for smoother transition */
+}
+
+  
