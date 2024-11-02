@@ -191,9 +191,10 @@ const HotelDetailsInfo = ({serviceId}) => {
     }));
 
     if (!startDate || !endDate) {
+      setSelectedRoom(null);
       window.scrollTo(0, 0);
       alert('Please select a check-in and check-out date');
-    
+      
       return;
     }
     
@@ -363,7 +364,7 @@ const HotelDetailsInfo = ({serviceId}) => {
         onClose={closeModal}
       />
 
-    {selectedRoom && <RoomDetail room={selectedRoom} onClose={handleRoomClose} />}
+    {selectedRoom && <RoomDetail room={selectedRoom} onClose={handleRoomClose}  handleRoomSelect={handleRoomSelect}/>}
     </div>
   );
 };

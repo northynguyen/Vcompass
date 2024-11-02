@@ -25,7 +25,7 @@ const handlegetInfoById = async (req, res, model) => {
 }
 // Helper function to create JWT
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1h" }); // Token expires in 1 hour
+  return jwt.sign({ id }, process.env.JWT_SECRET,); // Token expires in 1 hour
 };
 
 // Helper function to handle login

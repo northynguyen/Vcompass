@@ -6,7 +6,7 @@
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-  }
+  
   
   h1, h2, h3 {
     color: #333;
@@ -216,7 +216,7 @@
   .features p {
     margin-bottom: 5px;
   }
-  
+}
   /* Responsive Styles */
   @media (max-width: 768px) {
     .search-form input,

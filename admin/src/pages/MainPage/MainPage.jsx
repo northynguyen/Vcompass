@@ -14,6 +14,7 @@ import Headers from '../../components/Header/Header';
 import UserDetails from '../../components/UserDetails/UserDetails';
 import Partners from '../Partners/Partners';
 import PartnerDetails from '../../components/PartnerDetails/PartnerDetails';
+import AttractionDetails from '../Attraction/AttractionDetails';
 const MainPage = () => {
 
   return (
@@ -32,6 +33,7 @@ const MainPage = () => {
             <Route path="/partners" element={<Partners />} />
             <Route path="/users/user" element={<UserDetails />} />
             <Route path="/partners/partner" element={<PartnerDetails />} />
+            <Route path="/attraction/details" element={<AttractionDetails />} />
             <Route path="/message" element={<Message />} />
             {/* Default route */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />

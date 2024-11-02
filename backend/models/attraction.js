@@ -14,12 +14,12 @@ const AttractionSchema = new Schema({
   images: [{ type: String }],
   operatingHours: [
     {
-        startDay: { type: String, required: true },
-        endDay: { type: String, required: true },
-        openTime: { type: String, required: true },
-        closeTime: { type: String, required: true },
+      startDay: { type: String, required: true },
+      endDay: { type: String, required: true },
+      openTime: { type: String, required: true },
+      closeTime: { type: String, required: true },
     }
-],
+  ],
   amenities: [{ type: String }],
   ratings: [RatingSchema],
   createdAt: { type: Date, default: Date.now }
