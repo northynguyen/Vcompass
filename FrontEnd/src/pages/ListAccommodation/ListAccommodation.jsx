@@ -1,22 +1,39 @@
+import CryptoJS from "crypto-js";
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
 import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import "./ListAccommodation.css";
 
-const AccomItem = ({ accommodation, status, setCurDes }) => {
-  const handleSelect = () => {
+const AccomItem = ({ accommodation, status, setCurDes, id }) => {
+
+  const handleSelect = (e) => {
+    e.stopPropagation();
     accommodation.activityType = "Accommodation";
     setCurDes(accommodation);
   };
+
+  // Open details in a new window
+  const onNavigateToDetails = () => {
+    const encryptedServiceId = CryptoJS.AES.encrypt(accommodation._id, 'mySecretKey').toString();
+    const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
+    window.open(`/place-details/accommodation/${safeEncryptedServiceId}`, "_blank");
+  };
+
   const { url } = useContext(StoreContext);
 
   return (
-    <div className="list-accom__tour-item">
+    <div className="list-accom__tour-item" onClick={onNavigateToDetails}>
       <img src={`${url}/images/${accommodation.images[0]}`} alt={accommodation.name} className="list-accom__tour-item-image" />
       <div className="list-accom__tour-details">
         <h3>{accommodation.name}</h3>
         <div className="list-accom__tour-location">
-          <a href="#">{accommodation.location.address}</a>
+        <a 
+          href={`https://www.google.com/maps/?q=${accommodation.location.latitude},${accommodation.location.longitude}`} 
+          target="_blank" 
+          rel="noopener noreferrer"
+        >
+            {accommodation.location.address}
+          </a>
         </div>
         <div className="list-accom__tour-facilities">
           {accommodation.amenities.map((facility, index) => (
@@ -27,13 +44,12 @@ const AccomItem = ({ accommodation, status, setCurDes }) => {
         <div className="list-accom__tour-rating">{calculateTotalRate(accommodation.ratings)}</div>
       </div>
       <div className="list-accom__tour-price">
-        {
-          status === "Schedule" && <SelectButton onClick={handleSelect} />
-        }
+        {status === "Schedule" && <SelectButton onClick={handleSelect} />}
       </div>
     </div>
   );
-}
+};
+
 
 const AccomList = ({ accommodations, sortOption, status, setCurDes }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,7 +72,7 @@ const AccomList = ({ accommodations, sortOption, status, setCurDes }) => {
     <div className="list-accom__tour-list">
       {currentAccoms.map((accommodation) => (
         <AccomItem key={accommodation._id} accommodation={accommodation} status={status}
-          setCurDes={setCurDes} />
+          setCurDes={setCurDes} id={accommodation._id} />
       ))}
       <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
     </div>

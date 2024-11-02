@@ -225,9 +225,15 @@ const DateSchedule = ({ schedule, setInforSchedule }) => {
     if (schedule) {
       setScheduleDate(schedule);
       setCurrentActivity(null)
+      setCurrentDestination(null)
     }
   }, [schedule]);
-
+  useEffect(() => {
+    if (!isModalOpen) {
+      setCurrentActivity(null)
+      setCurrentDestination(null)
+    }
+  }, [isModalOpen]);
   const toggleDetails = () => {
     setIsOpen(!isOpen);
   };

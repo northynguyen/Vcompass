@@ -1,58 +1,35 @@
-import React from 'react';
-import './MySchedule.css';
+import axios from "axios";
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Assuming you're using react-router-dom
+import { StoreContext } from '../../Context/StoreContext';
+import './MySchedule.css';
 
 const MySchedule = () => {
+  const { url, token } = useContext(StoreContext)
+  const [schedules, setSchedules] = useState()
+  const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate();
-
-  // Fake data for schedules
-  const featuredSchedules = [
-    {
-      id: 1,
-      name: "Hà Nội 2 ngày 1 đêm",
-      location: "Việt Nam - Hà Nội",
-      days: 2,
-      createdBy: "Dung Tung Duong (KT H7)",
-      date: "29/07/2023"
-    },
-    {
-      id: 2,
-      name: "Đà Lạt 3 ngày 2 đêm",
-      location: "Việt Nam - Đà Lạt",
-      days: 3,
-      createdBy: "Huyền Nguyễn",
-      date: "06/10/2023"
-    },
-    {
-        id: 2,
-        name: "Đà Lạt 3 ngày 2 đêm",
-        location: "Việt Nam - Đà Lạt",
-        days: 3,
-        createdBy: "Huyền Nguyễn",
-        date: "06/10/2023"
-      },
-      {
-        id: 3,
-        name: "Đà Lạt 3 ngày 2 đêm",
-        location: "Việt Nam - Đà Lạt",
-        days: 3,
-        createdBy: "Huyền Nguyễn",
-        date: "06/10/2023"
-      },
-      {
-        id: 4,
-        name: "Đà Lạt 3 ngày 2 đêm",
-        location: "Việt Nam - Đà Lạt",
-        days: 3,
-        createdBy: "Huyền Nguyễn",
-        date: "06/10/2023"
-      },
-    // Add more dummy schedules as needed
-  ];
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      try {
+        const response = await axios.get(`${url}/api/schedule/user/getSchedules`,
+          { headers: { token } }
+        );
+        if (response.data.success) {
+          setSchedules(response.data.schedules);
+          setIsLoading(false);
+        } else {
+          console.error("Failed to fetch schedules:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching schedules:", error);
+      }
+    };
+    fetchSchedules();
+  }, [token]);
 
   const handleScheduleClick = (id) => {
-    // Navigate to the details page of the schedule
-    navigate(`/schedule/${id}`);
+    navigate(`/schedule-edit/${id}`);
   };
 
   return (
@@ -62,17 +39,21 @@ const MySchedule = () => {
         <p>Chỉ mất 3-5 phút, bạn có thể tạo ngay cho mình lịch trình du lịch</p>
         <button className="create-schedule-btn" onClick={() => navigate('/create-schedule')}>Tạo lịch trình</button>
       </header>
-
       <section className="my-schedule-section">
         <h2>Lịch trình của tôi</h2>
-        <div className="my-schedule-card">
-          <img src="https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png" alt="My Schedule" />
-          <div className="schedule-info">
-            <h3>Vũng Tàu 3 ngày 2 đêm</h3>
-            <p>Ngày 12/08/2023 - 15/08/2023</p>
-          </div>
-        </div>
+        {!isLoading && (
+          schedules.map(schedule => (
+            <div key={schedule._id} className="my-schedule-card">
+              <img src="https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png" alt="My Schedule" />
+              <div className="schedule-info">
+                <h3>{schedule.scheduleName}</h3>
+                <p>{schedule.dateStart} - {schedule.dateEnd}</p>
+              </div>
+            </div>
+          )))
+        }
       </section>
+
 
       <section className="steps-section">
         <h2>Các bước tạo lịch trình</h2>
@@ -109,20 +90,22 @@ const MySchedule = () => {
           <input type="text" placeholder="Tìm kiếm lịch trình" />
         </div>
 
-        <div className="featured-schedules">
-          {featuredSchedules.map(schedule => (
-            <div key={schedule.id} className="schedule-card" onClick={() => handleScheduleClick(schedule.id)}>
-              <img src="https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png" alt={schedule.name} />
-              <div className="schedule-info">
-                <h3>{schedule.name}</h3>
-                <p>Địa điểm: {schedule.location}</p>
-                <p>Ngày: {schedule.date}</p>
-                <p>Người tạo: {schedule.createdBy}</p>
-                <p>Số ngày: {schedule.days}</p>
+        {!isLoading &&
+          <div className="featured-schedules">
+            {schedules.map(schedule => (
+              <div key={schedule._id} className="schedule-card" onClick={() => handleScheduleClick(schedule._id)}>
+                <img src="https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png" alt={schedule.scheduleName} />
+                <div className="schedule-info">
+                  <h3>{schedule.scheduleName}</h3>
+                  <p>Địa điểm: {schedule.address}</p>
+                  <p>Ngày bắt đầu: {schedule.dateStart}</p>
+                  <p>Số ngày: {schedule.numDays} ngày {schedule.numDays - 1} đêm</p>
+                  <p>Người tạo: Tôi</p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        }
       </section>
     </div>
   );

@@ -154,7 +154,6 @@ button.btn-save-schedule {
   background-color: #FFF;
   width: 100%;
   box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.1);
-  height: 200px;
   gap: 10px;
   align-items: center;
 }
@@ -315,13 +314,14 @@ i.fa-solid.fa-plus.add-icon {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 80px;
+  gap: 40px;
 }
 
 .time-schedule-item {
   padding: 10px;
   height: fit-content;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   border: 1px solid #ddd;
   background-color: #fff;
@@ -332,6 +332,7 @@ i.fa-solid.fa-plus.add-icon {
 
 .time-schedule-location a {
   margin-left: 10px;
+  font-size: 14px;
 }
 
 .time-schedule-image {
@@ -384,7 +385,7 @@ i.fa-solid.fa-plus.add-icon {
   display: flex;
   text-align: center;
   justify-content: center;
-  align-items: center;
+  align-items: end;
   text-align: left;
   flex-direction: column;
 }
@@ -392,7 +393,7 @@ i.fa-solid.fa-plus.add-icon {
 .price-text {
   font-weight: bolder;
   color: #7BBCB0;
-  font-size: 30px;
+  font-size: 25px;
 }
 
 .persion-text {
@@ -441,7 +442,24 @@ i.fa-solid.fa-plus.add-icon {
 
 .time-schedule-usernote {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-  margin-right: 50px;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #333;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 20px 0 10px 0;
+}
+
+.time-schedule-usernote .note-icon {
+  color: #ff6347; /* Tomato color */
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+.time-schedule-usernote p {
+  margin: 0;
+  font-weight: 500;
 }
