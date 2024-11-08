@@ -48,7 +48,11 @@
   /* Màu của thanh cuộn */
   border-radius: 10px;
 }
-
+.activity-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .time-schedule::-webkit-scrollbar-thumb:hover {
   background: #555;
   /* Thay đổi màu khi hover */

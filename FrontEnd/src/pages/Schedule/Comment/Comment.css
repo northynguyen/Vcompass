@@ -1,0 +1,136 @@
+.comment-container {
+    display: flex;
+    align-items: flex-start;
+    padding: 0px 0px 15px 5%;
+    width: fit-content;
+}
+.comment-large-container {
+    padding: 0px 10%;
+}
+  
+  .user-avatar {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+  }
+  
+  .avatar-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+  .avatar-image:hover{
+    cursor: pointer;
+  }
+  .avatar-image-overlap {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    left: 15px;
+    border: 2px solid white;
+  }
+  
+  .comment-content {
+    flex: 1;
+  }
+  
+  .comment-text {
+    background-color: #f0f2f5;
+    padding: 8px 12px;
+    border-radius: 20px;
+    margin-bottom: 5px;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+}
+  .user-name {
+    font-weight: bold;
+    margin-bottom: 3px;
+  }
+
+  .user-name:hover{
+    cursor: pointer;
+  }
+  
+  .comment-actions {
+    font-size: 12px;
+    color: #65676b;
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+  }
+  
+  .link {
+    cursor: pointer;
+    color: #65676b;
+    margin-left: 20px;
+    font-weight: 500;
+}
+  
+  .emoji {
+    margin-left: 5px;
+  }
+  .post-actions-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+    border-top: 1px solid #e9ebee;
+    border-bottom: 1px solid #e9ebee;
+    margin-bottom: 30px;
+  }
+  
+  .post-action {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #65676b;
+    cursor: pointer;
+  }
+  
+  .post-action-icon {
+    margin-right: 5px;
+  }
+  .like-action:hover{
+    color: red;
+  }
+  .comment-action:hover{
+    color: #05a5ba;
+  }
+  .share-action:hover{
+    color: #ffc107;
+  }
+
+  .comment-input-container {
+    display: flex;
+    align-items: center;
+    margin: 10px 5%;
+}
+  
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .input-field {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #65676b;
+    background-color: #f0f2f5;
+    font-size: 14px;
+    padding: 15px;
+    border-radius: 20px;
+}
+  
+  .send-icon {
+    color: #65676b;
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 10px;
+  }

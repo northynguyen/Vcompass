@@ -16,6 +16,7 @@ const StoreContextProvider = (props) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     setToken(token);
+    setUser(JSON.parse(localStorage.getItem("user")));
     fetchAccommodation()
   }, [])
 

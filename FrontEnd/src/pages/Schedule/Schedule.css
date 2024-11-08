@@ -6,6 +6,8 @@
 .schedule-container {
   padding: 20px 8%;
   background: #F9FAFD;
+  position: relative;
+  z-index: 1;
 }
 
 .activity-header h2 {
@@ -86,19 +88,18 @@
 button.btn-save-schedule {
   width: 200px;
   padding: 15px 20px;
-  background-color: #FFDA32;
-  border: none;
+  background-color: #a5f97b;
   border-radius: 10px;
   cursor: pointer;
+  font-weight: 500;
   font-size: 18px;
-  border: solid 1px #FFDA32;
+  border: solid 3px #13d102;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .btn-save-schedule:hover {
   background-color: rgba(30, 219, 12, 0.831);
   color: white;
-  border: solid 1px #024808;
 }
 
 .save-schedule {
@@ -110,8 +111,19 @@ button.btn-save-schedule {
 
 .title-des {
   flex: 3;
+  width: 70%;
 }
-
+img.custom-schedule-image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 550px;
+  width: 100%;
+  z-index: -1;
+  object-fit: cover;
+  object-position: center;
+}
 .book-icon {
   color: #778088;
   margin-right: 10px;
@@ -137,11 +149,6 @@ button.btn-save-schedule {
   margin-bottom: 5px;
 }
 
-.header-left {
-  font-size: 1em;
-  margin-left: 8%;
-  padding: 10px 0px;
-}
 
 .num-text {
   font-size: 16px;
@@ -189,13 +196,15 @@ p.des-schedule {
 }
 
 .header-container {
-  margin: 0px 10%;
+  margin: 150px 10% 0px 10%;
+  box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
 }
 
 .detail-container {
   background: #FFF;
   padding: 20px;
   margin-top: 20px;
+  box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
 }
 
 .time-container {
@@ -388,8 +397,33 @@ i.fa-solid.fa-plus.add-icon {
   align-items: end;
   text-align: left;
   flex-direction: column;
+  height: 100%;
 }
+.custom-schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 8%;
+}
+.custom-schedule-btn {
+  background-color: #f8f87c;
+  color: black;
+  border: none;
+  padding: 15px 20px;
+  border: solid 3px #ffc107;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: 8%;
+  width: 200px;
+  transition: background-color 0.5s, color 0.5s;
 
+
+}
+.custom-schedule-btn:hover{
+  background-color: #FFDA32;
+  color: white;
+}
 .price-text {
   font-weight: bolder;
   color: #7BBCB0;
@@ -450,7 +484,7 @@ i.fa-solid.fa-plus.add-icon {
   font-size: 16px;
   color: #333;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin: 20px 0 10px 0;
+  margin: 5px 0px;
 }
 
 .time-schedule-usernote .note-icon {
