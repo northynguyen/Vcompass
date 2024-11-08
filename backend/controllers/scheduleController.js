@@ -26,8 +26,7 @@ export const getScheduleById = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Invalid ID format" });
     }
-
-    const schedule = await Schedule.findById(id);
+    const schedule = await Schedule.findById(id).populate("idUser");
     console.log(schedule);
     if (!schedule) {
       return res
@@ -108,6 +107,28 @@ export const getSchedulesByIdUser = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error retrieving schedules",
+      error,
+    });
+  }
+};
+export const getAllSchedule = async (req, res) => {
+  try {
+    const schedule = await Schedule.find().populate("idUser");
+    if (!schedule || schedule.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Schedule not found" });
+    }
+    res.json({
+      success: true,
+      message: "Get schedule success",
+      schedule,
+    });
+  } catch (error) {
+    console.error("Error retrieving schedule:", error);
+    res.json({
+      success: false,
+      message: "Error retrieving schedule",
       error,
     });
   }

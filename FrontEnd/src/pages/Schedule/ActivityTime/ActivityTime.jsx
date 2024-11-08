@@ -8,7 +8,7 @@ import './ActivityTime.css';
 
 
 
-const ActivityTime = ({ activity, setInforSchedule }) => {
+const ActivityTime = ({ activity, setInforSchedule, mode }) => {
   const timeStart = activity.timeStart;
   const timeEnd = activity.timeEnd;
   const generateTimeOptions = () => {
@@ -66,7 +66,8 @@ const ActivityTime = ({ activity, setInforSchedule }) => {
     <div className="time-container">
       <div className="time-select-wrapper">
         <FaRegClock className="icon" />
-        <select className="time-schedule" value={startTime} onChange={handleStartChange}>
+        <select className="time-schedule" value={startTime} onChange={handleStartChange}
+          disabled={mode === "view"}>
           {timeOptions.map((option, index) => (
             <option key={index} value={option}>
               {option}
@@ -77,7 +78,8 @@ const ActivityTime = ({ activity, setInforSchedule }) => {
       <h6>To</h6>
       <div className="time-select-wrapper">
         <FaRegClock className="icon" />
-        <select className="time-schedule" value={endTime} onChange={handleEndChange}>
+        <select className="time-schedule" value={endTime} onChange={handleEndChange}
+          disabled={mode === "view"}>
           {filteredEndTimeOptions.map((option, index) => (
             <option key={index} value={option}>
               {option}
@@ -90,7 +92,7 @@ const ActivityTime = ({ activity, setInforSchedule }) => {
 };
 
 
-export const AccomActivity = ({ activity, data, handleEdit }) => {
+export const AccomActivity = ({ activity, data, handleEdit, mode }) => {
   const { url } = useContext(StoreContext);
 
   if (!data) {
@@ -100,13 +102,22 @@ export const AccomActivity = ({ activity, data, handleEdit }) => {
   }
   return (
     <div className="time-schedule-item">
-      <div className="type-activity">
-        <p>NGHỈ NGƠI</p>
+      <div className="activity-item-header">
+        <div className="type-activity">
+          <p>NGHỈ NGƠI</p>
+        </div>
+        {
+          mode === "edit" &&
+          <div className="expense-actions">
+            <button className="edit-btn"
+              onClick={handleEdit}>
+              <FaEdit />
+            </button>
+          </div>
+        }
       </div>
       <div className="activity-content-card">
-
         <div className="time-schedule-left">
-
           <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
         </div>
         <div className="time-schedule-details">
@@ -133,12 +144,6 @@ export const AccomActivity = ({ activity, data, handleEdit }) => {
           </div>
         </div>
         <div className="time-schedule-right">
-          <div className="expense-actions">
-            <button className="edit-btn"
-              onClick={handleEdit}>
-              <FaEdit />
-            </button>
-          </div>
           <div className="time-schedule-price">
             <p className="price-text">{activity.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
           </div>
@@ -153,7 +158,7 @@ export const AccomActivity = ({ activity, data, handleEdit }) => {
     </div>
   )
 }
-export const FoodServiceActivity = ({ activity, data, handleEdit }) => {
+export const FoodServiceActivity = ({ activity, data, handleEdit, mode }) => {
   const { url } = useContext(StoreContext);
   console.log(data)
   if (!data) {
@@ -163,15 +168,24 @@ export const FoodServiceActivity = ({ activity, data, handleEdit }) => {
   }
   return (
     <div className="time-schedule-item">
-      <div className="type-activity">
-        <p>ĂN UỐNG</p>
+      <div className="activity-item-header">
+        <div className="type-activity">
+          <p>ĂN UỐNG</p>
+        </div>
+        {
+          mode === "edit" &&
+          <div className="expense-actions">
+            <button className="edit-btn"
+              onClick={handleEdit}>
+              <FaEdit />
+            </button>
+          </div>
+        }
       </div>
       <div className="activity-content-card">
         <div className="time-schedule-left">
-
           <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
         </div>
-
         <div className="time-schedule-details">
           <div className="time-schedule-header">
             <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
@@ -195,11 +209,6 @@ export const FoodServiceActivity = ({ activity, data, handleEdit }) => {
         </div>
 
         <div className="time-schedule-right">
-          <div className="expense-actions">
-            <button className="edit-btn" onClick={handleEdit}>
-              <FaEdit />
-            </button>
-          </div>
           <div className="time-schedule-price">
             <p className="price-text">{activity.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
           </div>
@@ -214,7 +223,7 @@ export const FoodServiceActivity = ({ activity, data, handleEdit }) => {
 
   )
 }
-export const AttractionActivity = ({ activity, data, handleEdit }) => {
+export const AttractionActivity = ({ activity, data, handleEdit, mode }) => {
   const { url } = useContext(StoreContext);
   if (!data) {
     return (
@@ -223,8 +232,19 @@ export const AttractionActivity = ({ activity, data, handleEdit }) => {
   }
   return (
     <div className="time-schedule-item">
-      <div className="type-activity">
-        <p>THAM QUAN</p>
+      <div className="activity-item-header">
+        <div className="type-activity">
+          <p>THAM QUAN</p>
+        </div>
+        {
+          mode === "edit" &&
+          <div className="expense-actions">
+            <button className="edit-btn"
+              onClick={handleEdit}>
+              <FaEdit />
+            </button>
+          </div>
+        }
       </div>
       <div className="activity-content-card">
         <div className="time-schedule-left">
@@ -240,8 +260,6 @@ export const AttractionActivity = ({ activity, data, handleEdit }) => {
               <i className="fa-solid fa-location-dot"></i>
               <a href={`https://www.google.com/maps/?q=${data.location.latitude},${data.location.longitude}`}>{data.location.address}</a>
             </div>
-
-
             <div className="time-schedule-info">
               <i className="fa-solid fa-file"></i>
               <span>{data.description}</span>
@@ -256,11 +274,6 @@ export const AttractionActivity = ({ activity, data, handleEdit }) => {
         </div>
 
         <div className="time-schedule-right">
-          <div className="expense-actions">
-            <button className="edit-btn" onClick={handleEdit}>
-              <FaEdit />
-            </button>
-          </div>
 
           <div className="time-schedule-price">
             <p className="price-text">{activity.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>

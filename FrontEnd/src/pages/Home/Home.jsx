@@ -1,9 +1,38 @@
+import axios from "axios";
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import background from '../../assets/home_bg.jpg';
 import AccommodationBanner from '../../components/Poster/AccommodationBanner ';
 import PostCard from '../../components/Poster/PostCard';
-import "./Home.css";
 import SlideBar from '../../components/SlideBar/SlideBar';
+import { StoreContext } from '../../Context/StoreContext';
+import "./Home.css";
 const Home = () => {
+  const { url, user } = useContext(StoreContext)
+  const [schedules, setSchedules] = useState()
+  const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      try {
+        const response = await axios.get(`${url}/api/schedule/getAllSchedule`);
+        if (response.data.success) {
+          setSchedules(response.data.schedule);
+          setIsLoading(false);
+        } else {
+          console.error("Failed to fetch schedules:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching schedules:", error);
+      }
+    };
+    fetchSchedules();
+  }, [url]);
+
+  const handleScheduleClick = (id) => {
+    navigate(`/schedule-view/${id}`);
+  };
+
   return (
     <div className="home-container">
       <div className='tour-search-container'>
@@ -58,13 +87,17 @@ const Home = () => {
         </div>
       </div>
       <div className='post-card-container'>
-        <PostCard />
+        {!isLoading && schedules?.filter(schedule => schedule.idUser._id !== user._id)
+          .map(schedule => (
+            <PostCard key={schedule._id} schedule={schedule} handleScheduleClick={handleScheduleClick} />
+          ))
+        }
       </div>
 
       <div>
         <AccommodationBanner />
       </div>
-      <SlideBar  type='accommodation'/>
+      <SlideBar type='accommodation' />
       <span></span>
       <SlideBar type='food' />
       <span></span>
