@@ -58,7 +58,7 @@ const MyBooking = ({send}) => {
             return () => clearTimeout(timer);
         }
        
-    }, [token, url, location.state]);
+    }, [token, url, location.state,selectedBooking,send]);
 
     
     console.log("Send", send)
@@ -128,14 +128,18 @@ const MyBooking = ({send}) => {
                                 <p><strong>Taxes: </strong> Include VAT 8% - {booking.totalAmount * 0.08} VND</p>
                                 <p><strong>Total Price:</strong> {booking.totalAmount + booking.totalAmount * 0.08} VND</p>
                                 <p><strong>Services:</strong> {roomInfo ? roomInfo.amenities.join(", ") : "N/A"}</p>
-                                <p><strong>Status:</strong> {booking.status === "expired" ? "Expired" : booking.status === "pending" ? "Pending" : booking.status === "Cancelled" ? "Cancelled" : "Confirmed"}</p>
+                                <p><strong>Status:</strong> {booking.status === "expired" ? "Expired" : booking.status === "pending" ? "Pending" : booking.status === "cancelled" ? "Cancelled" : "Confirmed"}</p>
+                                {booking.status === "cancelled" && <p style={{ color: "red" }}><strong>Reason:</strong> {booking.cancellationReason}</p>}
                             </div>
                             <div className="booking-actions">
-                                {booking.status === "expired" ? (
+                                {booking.status === "expired" && (
                                     <button className="review-btn" onClick={() => handleReviewClick(booking)}>Review</button>
-                                ) : (
-                                    <button className="cancel-btn" onClick={() => handleCancelClick(booking)}>Cancel</button>
-                                )}
+                                ) }
+                                {
+                                    (booking.status === "confirmed" || booking.status === "pending" ) && (
+                                        <button className="cancel-btn" onClick={() => handleCancelClick(booking)}>Cancel</button>) }
+                                
+                                   
                             </div>
                         </div>
                     );
