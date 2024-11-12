@@ -7,9 +7,10 @@ import { StoreContext } from "../../Context/StoreContext";
 import ActivityTime, { AccomActivity, AttractionActivity, FoodServiceActivity } from "./ActivityTime/ActivityTime";
 import AddActivity from "./AddActivity/AddActivity";
 import Expense from "./Expense/Expense";
+import Comment from "./Comment/Comment";
 import "./Schedule.css";
 
-const Activity = ({ activity, setCurrentActivity, setCurrentDestination, openModal, setInforSchedule }) => {
+const Activity = ({ activity, setCurrentActivity, setCurrentDestination, openModal, setInforSchedule, mode }) => {
   return (
     <div className="time-schedule-list">
       {activity.length > 0 && activity.map((myactivity, index) => (
@@ -21,13 +22,14 @@ const Activity = ({ activity, setCurrentActivity, setCurrentDestination, openMod
           setInforSchedule={setInforSchedule}
           setCurrentActivity={setCurrentActivity}
           openModal={openModal}
+          mode = {mode}
         />
       ))}
     </div>
   );
 };
 
-const ActivityItem = ({ index, activity, setCurrentActivity, setCurrentDestination, openModal, setInforSchedule }) => {
+const ActivityItem = ({ index, activity, setCurrentActivity, setCurrentDestination, openModal, setInforSchedule, mode }) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { url } = useContext(StoreContext);
@@ -87,7 +89,7 @@ const ActivityItem = ({ index, activity, setCurrentActivity, setCurrentDestinati
 
   return (
     <div className="activity-infor">
-      <ActivityTime activity={activity}
+      <ActivityTime activity={activity} mode = {mode}
         setInforSchedule={setInforSchedule} />
       <div className="num-activity">
         -
@@ -214,7 +216,7 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
   );
 }
 
-const DateSchedule = ({ schedule, setInforSchedule }) => {
+const DateSchedule = ({ schedule, setInforSchedule, mode }) => {
   const [scheduleDate, setScheduleDate] = useState(schedule);
   const [isOpen, setIsOpen] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -225,9 +227,15 @@ const DateSchedule = ({ schedule, setInforSchedule }) => {
     if (schedule) {
       setScheduleDate(schedule);
       setCurrentActivity(null)
+      setCurrentDestination(null)
     }
   }, [schedule]);
-
+  useEffect(() => {
+    if (!isModalOpen) {
+      setCurrentActivity(null)
+      setCurrentDestination(null)
+    }
+  }, [isModalOpen]);
   const toggleDetails = () => {
     setIsOpen(!isOpen);
   };
@@ -255,13 +263,11 @@ const DateSchedule = ({ schedule, setInforSchedule }) => {
           {isOpen && scheduleDate.activity && scheduleDate.activity.length > 0 ? (
             <Activity activity={scheduleDate.activity} setCurrentActivity={setCurrentActivity}
               openModal={openModal} setInforSchedule={setInforSchedule}
-              setCurrentDestination={setCurrentDestination} />
+              setCurrentDestination={setCurrentDestination} mode={mode} />
           ) : (
             isOpen && <p>No activities scheduled</p>
           )}
-
-          {/* Nếu đang mở, thêm nút thêm mới */}
-          {isOpen && (
+          {isOpen && mode === "edit" && (
             <div className="add-new">
               <button onClick={openModal}>
                 <i className="fa-solid fa-plus add-icon"></i>
@@ -320,7 +326,7 @@ const Schedule = ({ mode }) => {
     }
   }, [loading]);
   useEffect(() => {
-    if (inforSchedule) {
+    if (inforSchedule && mode === "edit") {
       const updateSchedule = async () => {
         try {
           const response = await axios.put(`${url}/api/schedule/update/${inforSchedule._id}`, {
@@ -397,11 +403,25 @@ const Schedule = ({ mode }) => {
   }
   return (
     <div className="custom-schedule">
-      <div className="header-left">
-        <h1 className="num-title">Custom Schedule</h1>
-        <span className="num-text">49 Activities Found</span>
+      <div className="custom-schedule-header">
+        <div >
+          <h1 className="num-title">{mode === "view" ? "Xem  lịch trình" : "Chỉnh sửa lịch trình"}</h1>
+          <span className="num-text">Tác giả: {inforSchedule.idUser.name}</span>
+        </div>
+        <div >
+          {
+            mode === "view" &&
+            <button className="custom-schedule-btn">Chỉnh sửa ngay</button>
+          }
+
+        </div>
       </div>
       <div className="schedule-container">
+      <img
+        className="custom-schedule-image"
+        src="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
+        alt="Alaska"
+      />
         <div className="header-container">
           <div className="activity-header">
             <div className="title-des">
@@ -434,27 +454,35 @@ const Schedule = ({ mode }) => {
               <p className="des-schedule">{inforSchedule.description}</p>
             </div>
             <div className="confirm-booking">
-              <div className="title-button"
-                onClick={openInforSchedule}>
-                <i className="fa-solid fa-pen schedule-icon"></i>
-                <button
-                  className="save-and-share-btn">Chỉnh sửa thông tin</button>
-              </div>
-              <div className="title-button">
-                <i className="fa-solid fa-heart schedule-icon"></i>
-                <button className="save-and-share-btn">Lưu lịch trình</button>
-              </div>
-              <div className="title-button">
-                <i className="fa-solid fa-share schedule-icon"></i>
-                <button className="save-and-share-btn">Chia sẻ lịch trình</button>
-              </div>
+              {
+                mode === "edit" ? (
+                  <div className="title-button" onClick={openInforSchedule}>
+                    <i className="fa-solid fa-pen schedule-icon"></i>
+                    <button className="save-and-share-btn">Chỉnh sửa thông tin</button>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="title-button">
+                      <i className="fa-solid fa-heart schedule-icon"></i>
+                      <button className="save-and-share-btn">Lưu lịch trình</button>
+                    </div>
+                    <div className="title-button">
+                      <i className="fa-solid fa-comment schedule-icon"></i>
+                      <button className="save-and-share-btn">Bình luận</button>
+                    </div>
+                    <div className="title-button">
+                      <i className="fa-solid fa-share schedule-icon"></i>
+                      <button className="save-and-share-btn">Chia sẻ lịch trình</button>
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
         </div>
         {inforSchedule.activities?.length > 0 ? (
           inforSchedule.activities.map((schedule, index) => {
             return <DateSchedule key={index} schedule={schedule}
-              setInforSchedule={setInforSchedule} />;
+              setInforSchedule={setInforSchedule} mode={mode} />;
           })
         ) : (
           <p>No schedule available</p>
@@ -464,12 +492,17 @@ const Schedule = ({ mode }) => {
         <Expense
           expenses={extractExpenses(inforSchedule)}
           additionExpenses={extractAdditionExpenses(inforSchedule)}
-          setInforSchedule={setInforSchedule} />
+          setInforSchedule={setInforSchedule}
+          mode = {mode} />
       </div>
+      {
+        mode === "edit" &&
+        <div className="save-schedule">
+          <button className="btn-save-schedule">Hoàn thành</button>
+        </div>
+      }
 
-      <div className="save-schedule">
-        <button className="btn-save-schedule">Hoàn thành</button>
-      </div>
+      <Comment/>
       <InforScheduleMedal isOpen={isOpenInforSchedule}
         closeModal={closeInforSchedule}
         inforSchedule={inforSchedule}

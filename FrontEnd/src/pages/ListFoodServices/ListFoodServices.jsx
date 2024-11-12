@@ -1,23 +1,36 @@
+import CryptoJS from "crypto-js";
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
 import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import "./ListFoodServices.css";
 
 // TourItem Component
-const FoodServiceItem = ({ foodService, status, setCurDes }) => {
+const FoodServiceItem = ({ foodService, status, setCurDes, id }) => {
   const { url } = useContext(StoreContext);
-  const handleSelect = () => {
+  const handleSelect = (e) => {
+    e.stopPropagation();
     foodService.activityType = "FoodService";
     setCurDes(foodService);
   };
 
+  const onNavigateToDetails = () => {
+    const encryptedServiceId = CryptoJS.AES.encrypt(foodService._id, 'mySecretKey').toString();
+    const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
+    window.open(`/place-details/food/${safeEncryptedServiceId}`, "_blank");
+  };
   return (
-    <div className="list-accom__tour-item">
+    <div className="list-accom__tour-item" onClick={onNavigateToDetails}>
       <img src={`${url}/images/${foodService.images[0]}`} alt={foodService.name} className="list-accom__tour-item-image" />
       <div className="list-accom__tour-details">
         <h3>{foodService.foodServiceName}</h3>
         <div className="list-accom__tour-location">
-          <a href="#">{foodService.location.address}</a>
+          <a
+            href={`https://www.google.com/maps/?q=${foodService.location.latitude},${foodService.location.longitude}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {foodService.location.address}
+          </a>
         </div>
         <div className="list-accom__tour-facilities">
           {foodService.amenities.map((facility, index) => (
@@ -61,7 +74,7 @@ const TourList = ({ foodServices, sortOption, status, setCurDes }) => {
     <div className="list-accom__tour-list">
       {currentTours.map((tour, index) => (
         <FoodServiceItem key={tour._id} foodService={tour}
-          status={status} setCurDes={setCurDes} />
+          status={status} setCurDes={setCurDes} id={tour._id} />
       ))}
       <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
     </div>

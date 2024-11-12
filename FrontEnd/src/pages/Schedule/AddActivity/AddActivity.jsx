@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Modal from "react-modal";
+import { StoreContext } from "../../../Context/StoreContext";
 import ListAccommodation, { AccomItem } from "../../ListAccommodation/ListAccommodation";
 import ListAttractions, { AttractionItem } from "../../ListAttractions/ListAttractions";
 import ListFoodServices, { FoodServiceItem } from "../../ListFoodServices/ListFoodServices";
@@ -43,12 +44,17 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   const [cost, setCost] = React.useState("")
   const [description, setDescription] = React.useState("")
   const [curDes, setCurDes] = React.useState(null)
+  console.log("CurDes", activity)
   useEffect(() => {
     if (isOpen) {
       if (activity) {
         setCurDes(destination)
+        setCost(activity.cost)
+        setDescription(activity.description)
       } else {
         setCurDes(null);
+        setCost()
+        setDescription()
       }
       setOption("Accommodations")
     }
@@ -56,6 +62,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   }, [isOpen]);
 
   const handleSave = () => {
+    //if (cost == "")
     const newActivity = {
       activityType: curDes.activityType,
       idDestination: curDes._id || "default-id",
@@ -86,6 +93,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
 
       return { ...prevSchedule, activities: updatedActivities };
     });
+
     closeModal();
   };
   return (
@@ -137,8 +145,8 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
               />
             )}
             {
-              (curDes || activity) && (
-                <FormAddActivity cost={cost} setCost={setCost}
+              (curDes) && (
+                <FormAddActivity images={curDes.images} cost={cost} setCost={setCost}
                   description={description} setDescription={setDescription} />
               )
             }
@@ -157,14 +165,9 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   )
 };
 
-const FormAddActivity = ({ cost, setCost, description, setDescription }) => {
-  const images = [
-    "https://phongcachmoc.vn/upload/images/tin-tuc/20%20mau%20nha%20hang%20dep/update-07-2022/Sushi-World-Ton-That-Thiep-10.JPG",
-    "https://posapp.vn/wp-content/uploads/2020/09/%C4%91%E1%BB%93ng-b%E1%BB%99-n%E1%BB%99i-th%E1%BA%A5t.jpg",
-    "https://phongcachmoc.vn/upload/images/tin-tuc/20%20mau%20nha%20hang%20dep/update-07-2022/Sushi-World-Ton-That-Thiep-1.JPG",
-  ];
+const FormAddActivity = ({ images, cost, setCost, description, setDescription }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const { url } = useContext(StoreContext);
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? images.length - 1 : prevIndex - 1
@@ -201,7 +204,7 @@ const FormAddActivity = ({ cost, setCost, description, setDescription }) => {
           <button onClick={handlePrev} className="carousel-button">{"<"}</button>
           <img
             className="add-schedule-img"
-            src={images[currentIndex]}
+            src={`${url}/images/${images[currentIndex]}`}
             alt={`slide-${currentIndex}`}
           />
           <button onClick={handleNext} className="carousel-button">{">"}</button>

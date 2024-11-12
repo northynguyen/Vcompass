@@ -1,7 +1,36 @@
 import React from 'react';
 import './PostCard.css';
 
-const PostCard = () => {
+const PostCard = ({ schedule, handleScheduleClick }) => {
+  console.log("schedules", schedule)
+  const activityCosts = {
+    Accommodation: 0,
+    FoodService: 0,
+    Attraction: 0,
+    Additional: 0,
+  };
+
+  schedule.activities.forEach(day => {
+    day.activity.forEach(activity => {
+      switch (activity.activityType) {
+        case 'Accommodation':
+          activityCosts.Accommodation += activity.cost;
+          break;
+        case 'FoodService':
+          activityCosts.FoodService += activity.cost;
+          break;
+        case 'Attraction':
+          activityCosts.Attraction += activity.cost;
+          break;
+        default:
+          activityCosts.Additional += activity.cost;
+          break;
+      }
+    });
+  });
+  schedule.additionalExpenses.forEach(activity => {
+      activityCosts.Additional += activity.cost;
+  });
   return (
     <div className="card-container">
       <header className="card-header">
@@ -12,23 +41,19 @@ const PostCard = () => {
             alt="user avatar"
           />
           <div>
-            <h5>Arlene McCoy <span className="verified">✔</span></h5>
-            <p className="user-date">2 October 2012</p>
+            <h5>{schedule.idUser.name} <span className="verified">✔</span></h5>
+            <p className="user-date">{new Date(schedule.createdAt).toLocaleString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit'
+            })}</p>
           </div>
           <div className='post-location'>
             <i className="fa fa-map-marker" aria-hidden="true"></i>
-            <label className='location-text' htmlFor="null">Location</label>
+            <label className='location-text' htmlFor="null">{schedule.address}</label>
           </div>
-        </div>
-        <div className="rating-container">
-            <label className='rating-text' htmlFor="null">4,30</label>
-            <label className='review-text' htmlFor="null">854 Reviews</label>
-            <br />
-            <i className="fa-solid fa-star icon-rating"></i>
-            <i className="fa-solid fa-star icon-rating"></i>
-            <i className="fa-solid fa-star icon-rating"></i>
-            <i className="fa-solid fa-star icon-rating"></i>
-            <i className="fa-solid fa-star icon-not-rating"></i>
         </div>
       </header>
 
@@ -37,45 +62,49 @@ const PostCard = () => {
         src="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
         alt="Alaska"
       />
-    <div className='content-container'>
-    <div className="card-content">
-        <div className="details">
-          <h1>Alaska</h1>
-          <p>
-            Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet
-            sint. Velit officia consequat duis enim velit mollit. Exercitation veniam
-            consequat sunt nostrud amet.
-          </p>
-        </div>
+      <div className='content-container'>
+        <div className="card-content">
+          <div className="details">
+            <h2>{schedule.scheduleName}</h2>
+            <p className="schedule-description">{schedule.description}</p>
+          </div>
 
-        <div className="pricing-box">
-          <ul>
-            <li><span>$79 × 7 nights</span><span>$555</span></li>
-            <li><span>Weekly discount</span><span className="discount">−$28</span></li>
-            <li><span>Cleaning fee</span><span>$62</span></li>
-            <li><span>Service fee</span><span>$83</span></li>
-            <li><span>Occupancy taxes and fees</span><span>$29</span></li>
-          </ul>
-          <button className="see-more">See more</button>
-          <div className="total"><span>Total</span><span>$701</span></div>
+          <div className="pricing-box">
+            <h3>Chi phí</h3>
+            <ul className="schedule-description">
+              <li><span>Chi phí chỗ ở</span><span>{activityCosts.Accommodation.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
+              <li><span>Chi phí ăn uống</span><span >{activityCosts.FoodService.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
+              <li><span>Chi phí vui chơi</span><span>{activityCosts.Attraction.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
+              <li><span>Chi phí phát sinh</span><span>{activityCosts.Additional.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
+            </ul>
+            <button className="see-more" onClick={() => handleScheduleClick(schedule._id)}>Xem chi tiết</button>
+            <div className="total"><span>Tổng cộng</span>
+              <span>
+                {
+                  (activityCosts.Accommodation + activityCosts.FoodService +
+                    activityCosts.Attraction +activityCosts.Additional)
+                    .toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+                }
+              </span>
+            </div>
+          </div>
+          <br />
         </div>
-        <br />
+        <footer className="card-footer">
+          <div className="actions">
+            <i className="fa-solid fa-heart favorite-icon"></i>
+            <label className='action-text' htmlFor="null">903</label>
+            <i className="fa-solid fa-comment comment-icon"></i>
+            <label className='action-text' htmlFor="null">903</label>
+            <i className="fa-solid fa-share share-icon"></i>
+            <label className='action-text' htmlFor="null">903</label>
+          </div>
+
+          <button className="custom-now" onClick={() => handleScheduleClick(schedule._id)}>Custom now</button>
+        </footer>
       </div>
-      <footer className="card-footer">
-        <div className="actions">
-            <i className="fa-solid fa-heart" style={{ color: 'red' }}></i> 
-            <label className='action-text' htmlFor="null">903</label>
-            <i className="fa-solid fa-comment"></i>
-            <label className='action-text' htmlFor="null">903</label>
-            <i className="fa-solid fa-share"></i>
-            <label className='action-text' htmlFor="null">903</label>
-        </div>
-        
-        <button className="custom-now">Custom now</button>
-      </footer>
-    </div>
 
-    
+
     </div>
   );
 };

@@ -1,111 +1,97 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import './ReservationList.css';
-
+import { StoreContext } from '../../../Context/StoreContext';
 
 const ReservationList = ({ onReservationSelect }) => {
+  const [reservations, setReservations] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [filters, setFilters] = useState({
+    startDate: '',
+    endDate: '',
+    status: '',
+  });
 
-  const guestData = {
-    profile: {
-      name: "Pham Thanh",
-      membershipId: "G011-987654321",
-      phone: "+1 (555) 789-1234",
-      email: "angus.copper@example.com",
-      dateOfBirth: "June 15, 1985",
-      gender: "Male",
-      nationality: "American",
-      loyaltyProgram: {
-        status: "Platinum Member",
-        pointsBalance: "15,000 points",
-      },
-    },
-    bookingInfo: {
-      bookingId: "LG-B00109",
-      roomType: "Deluxe",
-      roomNumber: "101",
-      pricePerNight: "$150/night",
-      guests: "2 Adults",
-      checkIn: {
-        date: "June 19, 2024",
-        time: "1:45 PM",
-      },
-      checkOut: {
-        date: "June 22, 2024",
-        time: "11:45 AM",
-      },
-      duration: "3 nights",
-      requests: "Late Check-Out, Extra pillows and towels",
-      specialAmenities: ["Complimentary breakfast", "Free Wi-Fi", "Access to gym and pool"],
-      transportation: "Airport pickup arranged",
-    },
-    roomInfo: {
-      size: "35 m²",
-      bed: "King Bed",
-      guests: "2 guests",
-    },
-    priceSummary: {
-      roomAndOffer: "$450.00",
-      extras: "$0.00",
-      vat: "$36.00",
-      cityTax: "$49.50",
-      totalPrice: "$535.50",  
-    },
-    bookingHistory: [
-      {
-        bookingId: "LG-B00109",
-        bookingDate: "June 09, 2028",
-        roomType: "Deluxe",
-        roomNumber: "Room 101",
-        checkIn: "June 19, 2024, 1:45 PM",
-        checkOut: "June 21, 2024, 11:45 AM",
-        guests: "2 Guests",
-      },
-      {
-        bookingId: "LG-B00085",
-        bookingDate: "March 20, 2028",
-        roomType: "Suite",
-        roomNumber: "Room 305",
-        checkIn: "March 25, 2028, 1:45 PM",
-        checkOut: "March 30, 2028, 11:45 AM",
-        guests: "3 Guests",
-      },
-    ],
+  const { url, user } = useContext(StoreContext);
+
+  const fetchReservations = async () => {
+    try {
+      const { startDate, endDate, status } = filters;
+      const queryParams = new URLSearchParams({
+        page,
+        limit: 5,
+        ...(startDate && { startDate }),
+        ...(endDate && { endDate }),
+        ...(status && { status }),
+      });
+      
+      const response = await fetch(`${url}/api/bookings/getAll?${queryParams.toString()}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        const updateBookings = await Promise.all(data.bookings.map(async (history) => {
+          const roomResponse = await fetch(`${url}/api/accommodations/${history.accommodationId}/rooms`);
+          const roomData = await roomResponse.json();
+          const room = roomData.rooms.find(room => room._id === history.roomId);
+
+          // Update booking history with roomType name and accommodation name
+          return {
+            ...history,
+            nameRoomType: room ? room.nameRoomType : "Unknown",
+            accommodationName: roomData.accommodation ? roomData.accommodation.name : "Unknown",
+          };
+        }));
+
+        setReservations(updateBookings);
+        setTotalPages(data.totalPages);
+      }
+    } catch (error) {
+      console.error('Error fetching reservations:', error);
+    }
   };
-  
-  const [reservations, setReservations] = useState([
-    {
-      guest: 'Angus Copper',
-      room: 'Deluxe 101',
-      request: 'Late Check-Out',
-      duration: '3 nights',
-      checkIn: 'June 19, 2028',
-      checkOut: 'June 22, 2028',
-      status: 'Confirmed',
-    },
-    {
-      guest: 'Catherine Lopp',
-      room: 'Standard 202',
-      request: 'None',
-      duration: '2 nights',
-      checkIn: 'June 19, 2028',
-      checkOut: 'June 21, 2028',
-      status: 'Confirmed',
-    },
-    {
-      guest: 'Edgar Irving',
-      room: 'Suite 303',
-      request: 'Extra Pillows',
-      duration: '5 nights',
-      checkIn: 'June 19, 2028',
-      checkOut: 'June 24, 2028',
-      status: 'Pending',
-    },
-  ]);
 
-  const handleStatusChange = (index, newStatus) => {
-    const updatedReservations = [...reservations];
-    updatedReservations[index].status = newStatus;
-    setReservations(updatedReservations);
+  useEffect(() => {
+    fetchReservations();
+  }, [page, filters]);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
+  const handleStatusChange = async (index, newStatus) => {
+    try {
+      const bookingId = reservations[index]._id; 
+  
+      const response = await fetch(`${url}/api/bookings/updateStatus`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ bookingId, status: newStatus }),
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        const updatedReservations = [...reservations];
+        updatedReservations[index].status = newStatus;
+        setReservations(updatedReservations); 
+        fetchReservations(); 
+      } else {
+        console.error('Failed to update status:', data.message);
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
   };
 
   return (
@@ -113,14 +99,20 @@ const ReservationList = ({ onReservationSelect }) => {
       <div className="reservation-header">
         <h2>Reservation List</h2>
         <div className="filters">
-          <input type="text" placeholder="Search guest, status, etc." />
-          <select>
-            <option>All Status</option>
-            <option>Confirmed</option>
-            <option>Pending</option>
-            <option>Cancelled</option>
+          <input 
+            type="text" 
+            placeholder="Search guest, status, etc." 
+            onChange={handleFilterChange} 
+            name="search" 
+          />
+          <select name="status" onChange={handleFilterChange}>
+            <option value="">All Status</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="pending">Pending</option>
+            <option value="cancelled">Cancelled</option>
           </select>
-          <input type="date" />
+          <input type="date" name="startDate" onChange={handleFilterChange} />
+          <input type="date" name="endDate" onChange={handleFilterChange} />
           <button className="add-booking-btn">Add Booking</button>
         </div>
       </div>
@@ -128,33 +120,37 @@ const ReservationList = ({ onReservationSelect }) => {
       <table>
         <thead>
           <tr>
-            <th>Guest</th>
-            <th>Room</th>
-            <th>Request</th>
-            <th>Duration</th>
-            <th>Check-In & Check-Out</th>
+            <th>Booking Date</th>
+            <th>Room Type</th>
+            <th>Accommodation</th>
+            <th>Check-In</th>
+            <th>Check-Out</th>
+            <th>Guests</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {reservations.map((reservation, index) => (
-            <tr key={index} >
-              <td>{reservation.guest}</td>
-              <td>{reservation.room}</td>
-              <td>{reservation.request}</td>
-              <td>{reservation.duration}</td>
+            <tr key={index}>
+              <td>{new Date (reservation.createdAt).toLocaleDateString('vi-VN')}</td>
+              <td>{reservation.nameRoomType}</td>
+              <td>{reservation.accommodationName}</td>
+              <td>{new Date(reservation.checkInDate).toLocaleDateString('vi-VN')}</td>
+              <td>{new Date (reservation.checkOutDate).toLocaleDateString('vi-VN')}</td>
               <td>
-                {reservation.checkIn} - {reservation.checkOut}
+                {reservation.numberOfGuests.adult} adult{reservation.numberOfGuests.adult > 1 ? 's' : ''} 
+                + {reservation.numberOfGuests.child} child{reservation.numberOfGuests.child > 1 ? 'ren' : ''}
               </td>
               <td>
                 <span
                   className={`status-label ${
-                    reservation.status === 'Confirmed'
+                    reservation.status === 'confirmed'
                       ? 'confirmed'
-                      : reservation.status === 'Pending'
+                      : reservation.status === 'pending'
                       ? 'pending'
-                      : 'cancelled'
+                      : reservation.status === 'cancelled'?
+                       'cancelled': 'expired'
                   }`}
                 >
                   {reservation.status}
@@ -163,36 +159,50 @@ const ReservationList = ({ onReservationSelect }) => {
               <td>
                 <button
                   className="action-btn view"
-                  onClick={() => onReservationSelect(guestData)} // Pass the selected reservation to the parent
+                  onClick={() => onReservationSelect(reservation)}
                 >
                   👁
                 </button>
-                <button
-                  className="action-btn edit"
-                  onClick={() => alert('Editing reservation')}
-                >
-                  ✏️
-                </button>
-                {reservation.status === 'Pending' ? (
+              
+                {reservation.status === 'pending' && (
                   <button
                     className="action-btn confirm"
-                    onClick={() => handleStatusChange(index, 'Confirmed')}
+                    onClick={() => handleStatusChange(index, 'confirmed')}
                   >
                     Confirm
                   </button>
-                ) : (
+                ) }
+
+                { reservation.status === 'confirmed' && (
                   <button
                     className="action-btn cancel"
-                    onClick={() => handleStatusChange(index, 'Cancelled')}
+                    onClick={() => handleStatusChange(index, 'expired')}
                   >
-                    Cancel
+                    Complete
                   </button>
-                )}
+                )}  
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Pagination Controls */}
+      <div className="pagination">
+        <button
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page <= 1}
+        >
+          Previous
+        </button>
+        <span>Page {page} of {totalPages}</span>
+        <button
+          onClick={() => handlePageChange(page + 1)}
+          disabled={page >= totalPages}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };

@@ -44,10 +44,14 @@ button.carousel-button {
   padding: 10px;
   opacity: 0.5;
   border: 0px;
+  cursor: pointer;
+}
+button.carousel-button:hover {
+  opacity: 1;
 }
 .add-schedule-img {
-  width: 95%;
-  height: 100%;
+  width: 400px;
+  height: 320px;
   border: solid 1px;
   border-radius: 10px;
   object-fit: cover;

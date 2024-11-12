@@ -138,7 +138,7 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule }) =
   );
 };
 
-const Expense = ({ expenses, additionExpenses, setInforSchedule }) => {
+const Expense = ({ expenses, additionExpenses, setInforSchedule, mode }) => {
   const totalCost = [...expenses, ...additionExpenses].reduce((acc, expense) => acc + expense.cost, 0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
@@ -172,11 +172,15 @@ const Expense = ({ expenses, additionExpenses, setInforSchedule }) => {
           <div className="expense-cost">
             <p>{expense.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
           </div>
-          <div className="expense-actions">
-            <button className="edit-btn">
-              <FaEdit />
-            </button>
-          </div>
+          {
+            mode === "edit" &&
+            <div className="expense-actions">
+              <button className="edit-btn">
+                <FaEdit />
+              </button>
+            </div>
+          }
+
         </div>
       ))}
       {additionExpenses.map((additionExpen) => (
@@ -192,21 +196,27 @@ const Expense = ({ expenses, additionExpenses, setInforSchedule }) => {
           <div className="expense-cost">
             <p>{additionExpen.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
           </div>
-          <div className="expense-actions">
-            <button className="edit-btn"
-              onClick={() => openModalForEdit(additionExpen)}>
-              <FaEdit />
-            </button>
-          </div>
+          {
+            mode === "edit" &&
+            <div className="expense-actions">
+              <button className="edit-btn"
+                onClick={() => openModalForEdit(additionExpen)}>
+                <FaEdit />
+              </button>
+            </div>
+          }
         </div>
       ))}
 
-      <div className="add-new">
-        <button onClick={openModalForAdd} className="add-expense">
-          <i className="fa-solid fa-plus add-icon"></i>
-          Thêm chi phí phát sinh 
-        </button>
-      </div>
+      {
+        mode === "edit" &&
+        <div className="add-new">
+          <button onClick={openModalForAdd} className="add-expense">
+            <i className="fa-solid fa-plus add-icon"></i>
+            Thêm chi phí phát sinh
+          </button>
+        </div>
+      }
       <h1>Ngân sách</h1>
       <div className="expense-summary">
         <div className="total-cost">

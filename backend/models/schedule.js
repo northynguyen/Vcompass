@@ -31,21 +31,27 @@ const LikeSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-const ScheduleSchema = new Schema({
-  idUser: { type: String, required: true },
-  scheduleName: { type: String, required: true },
-  description: { type: String },
-  address: { type: String, required: true },
-  imgSrc: { type: String },
-  numDays: { type: Number, required: true },
-  dateStart: { type: String, required: true },
-  dateEnd: { type: String },
-  status: { type: String, required: true },
-  activities: [ActivitySchema],
-  additionalExpenses: [AdditionalExpenseSchema],
-  comments: [CommentSchema],
-  likes: [LikeSchema],
-});
+const ScheduleSchema = new Schema(
+  {
+    idUser: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    scheduleName: { type: String, required: true },
+    description: { type: String },
+    address: { type: String, required: true },
+    imgSrc: { type: String },
+    numDays: { type: Number, required: true },
+    dateStart: { type: String, required: true },
+    dateEnd: { type: String },
+    status: { type: String, required: true },
+    activities: [ActivitySchema],
+    additionalExpenses: [AdditionalExpenseSchema],
+    comments: [CommentSchema],
+    likes: [LikeSchema],
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+);
 
 const Schedule =
   mongoose.models.ScheduleSchema || mongoose.model("schedule", ScheduleSchema);

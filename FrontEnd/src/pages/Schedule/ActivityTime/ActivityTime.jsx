@@ -1,9 +1,14 @@
 /* eslint-disable react/prop-types */
 import { useContext, useEffect, useState } from "react";
 import { FaEdit, FaRegClock } from 'react-icons/fa';
+import { SlNotebook } from "react-icons/sl";
 import { StoreContext } from "../../../Context/StoreContext";
+import './ActivityTime.css';
 
-const ActivityTime = ({ activity, setInforSchedule }) => {
+
+
+
+const ActivityTime = ({ activity, setInforSchedule, mode }) => {
   const timeStart = activity.timeStart;
   const timeEnd = activity.timeEnd;
   const generateTimeOptions = () => {
@@ -13,7 +18,7 @@ const ActivityTime = ({ activity, setInforSchedule }) => {
         const formattedTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
         options.push(formattedTime);
       }
-    }   
+    }
     return options;
   };
 
@@ -61,7 +66,8 @@ const ActivityTime = ({ activity, setInforSchedule }) => {
     <div className="time-container">
       <div className="time-select-wrapper">
         <FaRegClock className="icon" />
-        <select className="time-schedule" value={startTime} onChange={handleStartChange}>
+        <select className="time-schedule" value={startTime} onChange={handleStartChange}
+          disabled={mode === "view"}>
           {timeOptions.map((option, index) => (
             <option key={index} value={option}>
               {option}
@@ -72,7 +78,8 @@ const ActivityTime = ({ activity, setInforSchedule }) => {
       <h6>To</h6>
       <div className="time-select-wrapper">
         <FaRegClock className="icon" />
-        <select className="time-schedule" value={endTime} onChange={handleEndChange}>
+        <select className="time-schedule" value={endTime} onChange={handleEndChange}
+          disabled={mode === "view"}>
           {filteredEndTimeOptions.map((option, index) => (
             <option key={index} value={option}>
               {option}
@@ -85,7 +92,7 @@ const ActivityTime = ({ activity, setInforSchedule }) => {
 };
 
 
-export const AccomActivity = ({ data, handleEdit }) => {
+export const AccomActivity = ({ activity, data, handleEdit, mode }) => {
   const { url } = useContext(StoreContext);
 
   if (!data) {
@@ -95,55 +102,63 @@ export const AccomActivity = ({ data, handleEdit }) => {
   }
   return (
     <div className="time-schedule-item">
-      <div className="time-schedule-left">
+      <div className="activity-item-header">
         <div className="type-activity">
           <p>NGHỈ NGƠI</p>
         </div>
-        <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
+        {
+          mode === "edit" &&
+          <div className="expense-actions">
+            <button className="edit-btn"
+              onClick={handleEdit}>
+              <FaEdit />
+            </button>
+          </div>
+        }
       </div>
-      <div className="time-schedule-details">
-        <div className="time-schedule-header">
-          <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
-          <h3>{data.name}</h3>
-          <div className="time-schedule-location">
-            <i className="fa-solid fa-location-dot"></i>
-            <a href="#">{data.location.address}</a>
-          </div>
-          <div className="time-schedule-info">
-            <i className="fa-solid fa-file"></i>
-            <span>
-              {data.description}
-            </span>
-          </div>
-          <div className="list-accom__tour-facilities">
-            {data.amenities.map((facility, index) => (
-              <span key={index}>{facility}</span>
-            ))}
+      <div className="activity-content-card">
+        <div className="time-schedule-left">
+          <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
+        </div>
+        <div className="time-schedule-details">
+          <div className="time-schedule-header">
+            <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
+            <h3>{data.name}</h3>
+            <div className="time-schedule-location">
+              <i className="fa-solid fa-location-dot"></i>
+              <a href={`https://www.google.com/maps/?q=${data.location.latitude},${data.location.longitude}`}>
+                {data.location.address}
+              </a>
+            </div>
+            <div className="time-schedule-info">
+              <i className="fa-solid fa-file"></i>
+              <span>
+                {data.description}
+              </span>
+            </div>
+            <div className="list-accom__tour-facilities">
+              {data.amenities.map((facility, index) => (
+                <span key={index}>{facility}</span>
+              ))}
+            </div>
           </div>
         </div>
+        <div className="time-schedule-right">
+          <div className="time-schedule-price">
+            <p className="price-text">{activity.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+          </div>
+          <div />
+        </div>
+      </div>
+      <div className="time-schedule-usernote">
+        <SlNotebook className="note-icon" />
+        <p>{activity.description}</p>
+      </div>
 
-        <div className="time-schedule-usernote">
-          <p >Ăn trưa tại đây nha mn</p>
-          <p >Text thêm nếu cần</p>
-        </div>
-      </div>
-      <div className="time-schedule-right">
-        <div className="expense-actions">
-          <button className="edit-btn"
-            onClick={handleEdit}>
-            <FaEdit />
-          </button>
-        </div>
-        <div className="time-schedule-price">
-          <p className="price-text">100000đ</p>
-          <p >Đã thanh toán</p>
-        </div>
-        <div />
-      </div>
     </div>
   )
 }
-export const FoodServiceActivity = ({ data, handleEdit }) => {
+export const FoodServiceActivity = ({ activity, data, handleEdit, mode }) => {
   const { url } = useContext(StoreContext);
   console.log(data)
   if (!data) {
@@ -153,55 +168,62 @@ export const FoodServiceActivity = ({ data, handleEdit }) => {
   }
   return (
     <div className="time-schedule-item">
-      <div className="time-schedule-left">
+      <div className="activity-item-header">
         <div className="type-activity">
           <p>ĂN UỐNG</p>
         </div>
-        <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
+        {
+          mode === "edit" &&
+          <div className="expense-actions">
+            <button className="edit-btn"
+              onClick={handleEdit}>
+              <FaEdit />
+            </button>
+          </div>
+        }
       </div>
+      <div className="activity-content-card">
+        <div className="time-schedule-left">
+          <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
+        </div>
+        <div className="time-schedule-details">
+          <div className="time-schedule-header">
+            <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
+            <h3>{data.foodServiceName}</h3>
+            <div className="time-schedule-location">
+              <i className="fa-solid fa-location-dot"></i>
+              <a href={`https://www.google.com/maps/?q=${data.location.latitude},${data.location.longitude}`}>{data.location.address}</a>
+            </div>
+            <div className="time-schedule-info">
+              <i className="fa-solid fa-file"></i>
+              <span>{data.description}</span>
+            </div>
+            <div className="list-accom__tour-facilities">
+              {data.amenities.map((facility, index) => (
+                <span key={index}>{facility}</span>
+              ))}
+            </div>
+          </div>
 
-      <div className="time-schedule-details">
-        <div className="time-schedule-header">
-          <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
-          <h3>{data.foodServiceName}</h3>
-          <div className="time-schedule-location">
-            <i className="fa-solid fa-location-dot"></i>
-            <a href="#">{data.location.address}</a>
-          </div>
-          <div className="time-schedule-info">
-            <i className="fa-solid fa-file"></i>
-            <span>{data.description}</span>
-          </div>
-          <div className="list-accom__tour-facilities">
-            {data.amenities.map((facility, index) => (
-              <span key={index}>{facility}</span>
-            ))}
-          </div>
+
         </div>
 
-        <div className="time-schedule-usernote">
-          <p>Thưởng thức bữa ăn tại đây</p>
-          <p>Thông tin thêm nếu cần</p>
+        <div className="time-schedule-right">
+          <div className="time-schedule-price">
+            <p className="price-text">{activity.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+          </div>
+          <div />
         </div>
       </div>
-
-      <div className="time-schedule-right">
-        <div className="expense-actions">
-          <button className="edit-btn" onClick={handleEdit}>
-            <FaEdit />
-          </button>
-        </div>
-        <div className="time-schedule-price">
-          <p className="price-text">200000đ</p>
-          <p>Đã thanh toán</p>
-        </div>
-        <div />
+      <div className="time-schedule-usernote">
+        <SlNotebook className="note-icon" />
+        <p>{activity.description}</p>
       </div>
     </div>
 
   )
 }
-export const AttractionActivity = ({ data, handleEdit }) => {
+export const AttractionActivity = ({ activity, data, handleEdit, mode }) => {
   const { url } = useContext(StoreContext);
   if (!data) {
     return (
@@ -210,51 +232,58 @@ export const AttractionActivity = ({ data, handleEdit }) => {
   }
   return (
     <div className="time-schedule-item">
-      <div className="time-schedule-left">
+      <div className="activity-item-header">
         <div className="type-activity">
           <p>THAM QUAN</p>
         </div>
-        <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
+        {
+          mode === "edit" &&
+          <div className="expense-actions">
+            <button className="edit-btn"
+              onClick={handleEdit}>
+              <FaEdit />
+            </button>
+          </div>
+        }
       </div>
+      <div className="activity-content-card">
+        <div className="time-schedule-left">
 
-      <div className="time-schedule-details">
-        <div className="time-schedule-header">
-          <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
-          <h3>{data.name}</h3>
-          <div className="time-schedule-location">
-            <i className="fa-solid fa-location-dot"></i>
-            <a href="#">{data.location.address}</a>
+          <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
+        </div>
+
+        <div className="time-schedule-details">
+          <div className="time-schedule-header">
+            <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
+            <h3>{data.name}</h3>
+            <div className="time-schedule-location">
+              <i className="fa-solid fa-location-dot"></i>
+              <a href={`https://www.google.com/maps/?q=${data.location.latitude},${data.location.longitude}`}>{data.location.address}</a>
+            </div>
+            <div className="time-schedule-info">
+              <i className="fa-solid fa-file"></i>
+              <span>{data.description}</span>
+            </div>
+          </div>
+          <div className="list-accom__tour-facilities">
+            {data.amenities.map((facility, index) => (
+              <span key={index}>{facility}</span>
+            ))}
           </div>
 
+        </div>
 
-          <div className="time-schedule-info">
-            <i className="fa-solid fa-file"></i>
-            <span>{data.description}</span>
+        <div className="time-schedule-right">
+
+          <div className="time-schedule-price">
+            <p className="price-text">{activity.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
           </div>
-        </div>
-        <div className="list-accom__tour-facilities">
-          {data.amenities.map((facility, index) => (
-            <span key={index}>{facility}</span>
-          ))}
-        </div>
-        <div className="time-schedule-usernote">
-          <p>Khám phá địa điểm thú vị</p>
-          <p>Thông tin thêm nếu cần</p>
+          <div />
         </div>
       </div>
-
-      <div className="time-schedule-right">
-        <div className="expense-actions">
-          <button className="edit-btn" onClick={handleEdit}>
-            <FaEdit />
-          </button>
-        </div>
-
-        <div className="time-schedule-price">
-          <p className="price-text">200000đ</p>
-          <p>Đã thanh toán</p>
-        </div>
-        <div />
+      <div className="time-schedule-usernote">
+        <SlNotebook className="note-icon" />
+        <p>{activity.description}</p>
       </div>
     </div>
 

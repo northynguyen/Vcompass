@@ -32,8 +32,8 @@ const AccommodationBanner = () => {
         </p>
         <div className="actions">
           <button className="book-now">Book Now</button>
-          <i className="fa-solid fa-heart fa-shake book-icon"></i>
-          <i className="fa-solid fa-share fa-shake book-icon"></i>
+          <i className="fa-solid fa-heart fa-shake book-schedule-icon"></i>
+          <i className="fa-solid fa-share fa-shake book-schedule-icon"></i>
         </div>
       </div>
     </div>

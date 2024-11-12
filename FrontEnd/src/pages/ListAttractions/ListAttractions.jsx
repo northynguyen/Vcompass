@@ -1,3 +1,4 @@
+import CryptoJS from "crypto-js";
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
 import "./ListAttractions.css";
@@ -10,20 +11,33 @@ export const calculateTotalRate = (ratings) => {
   return `${stars} (${totalReviews} reviews)`;
 };
 
-const AttractionItem = ({ attraction, status, setCurDes }) => {
+const AttractionItem = ({ attraction, status, setCurDes, id }) => {
   const { url } = useContext(StoreContext);
-  const handleSelect = () => {
+  const handleSelect = (e) => {
+    e.stopPropagation();
     attraction.activityType = "Attraction";
     setCurDes(attraction);
   };
 
+  const onNavigateToDetails = () => {
+    const encryptedServiceId = CryptoJS.AES.encrypt(attraction._id, 'mySecretKey').toString();
+    const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
+    window.open(`/place-details/attraction/${safeEncryptedServiceId}`, "_blank");
+  };
+
   return (
-    <div className="list-accom__tour-item">
+    <div className="list-accom__tour-item" onClick={onNavigateToDetails}>
       <img src={`${url}/images/${attraction.images[0]}`} alt={attraction.name} className="list-accom__tour-item-image" />
       <div className="list-accom__tour-details">
         <h3>{attraction.attractionName}</h3>
         <div className="list-accom__tour-location">
-          <a href="#">{attraction.location.address}</a>
+          <a
+            href={`https://www.google.com/maps/?q=${attraction.location.latitude},${attraction.location.longitude}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {attraction.location.address}
+          </a>
         </div>
         <div className="list-accom__tour-facilities">
           {attraction.amenities.map((facility, index) => (
@@ -83,6 +97,7 @@ const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
           attraction={tour}
           status={status}
           setCurDes={setCurDes}
+          id={tour._id}
         />
       ))}
       <Pagination

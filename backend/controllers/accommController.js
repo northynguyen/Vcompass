@@ -283,7 +283,7 @@ export const listRooms = async (req, res) => {
         message: "Accommodation not found or partner mismatch",
       });
     }
-    res.json({ success: true, rooms: accommodation.roomTypes });
+    res.json({ success: true, rooms: accommodation.roomTypes ,accommodation:accommodation});
   } catch (error) {
     res.json({ success: false, message: "Error getting rooms", error });
   }

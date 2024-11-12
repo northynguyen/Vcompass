@@ -19,7 +19,7 @@ const Reservation = () => {
             {!selectedReservation ? (
                 <ReservationList onReservationSelect={handleReservationSelect} />
             ) : (
-                <GuestProfile guestData={selectedReservation} onBack={handleBack} />
+                <GuestProfile selectedReservation={selectedReservation} onBack={handleBack} />
             )}
         </div>
     );

@@ -161,6 +161,7 @@
   cursor: pointer;
 }
 .search-subtitle {
+  display: flex;
   text-align: left;
   font-weight: 600;
   font-size: 15px;

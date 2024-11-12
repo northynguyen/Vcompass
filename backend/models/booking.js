@@ -43,9 +43,17 @@ const BookingSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'confirmed', 'canceled', 'expired'],
+    enum: ['pending', 'confirmed', 'cancelled', 'expired'],
     default: 'pending',
   },
+  cancellationReason : {
+    type: String,
+  },
+  
+  additionalComments: {
+    type: String,
+  },
+  
   specialRequest: {
     type: String,
   },

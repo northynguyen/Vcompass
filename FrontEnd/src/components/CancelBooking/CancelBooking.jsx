@@ -1,10 +1,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 // src/components/CancelBooking/CancelBooking.js
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { StoreContext } from '../../Context/StoreContext';
 import './CancelBooking.css';
+import { toast } from 'react-toastify';
 
 const CancelBooking = ({ booking, onClose }) => {
+    const { url } = useContext(StoreContext);
     const [reason, setReason] = useState('');
     const [additionalComments, setAdditionalComments] = useState('');
     const [otherReasons, setOtherReasons] = useState('');
@@ -16,17 +19,35 @@ const CancelBooking = ({ booking, onClose }) => {
         }
     }, []);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Logic gửi dữ liệu hủy phòng (ví dụ: gửi đến API)
-        console.log('Booking to cancel:', booking);
-        console.log('Reason for cancellation:', reason);
-        console.log('Additional Comments:', additionalComments);
-        // Reset form sau khi gửi
-        setReason('');
-        setAdditionalComments('');
-        // Đóng popup sau khi gửi
-        onClose();
+    
+        try {
+            const response = await fetch(`${url}/api/bookings/${booking._id}/cancel`, {
+                method: 'put',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    reason,
+                    additionalComments,
+                    otherReasons
+                }),
+            });
+    
+            const data = await response.json();
+            if (data.success) {
+                console.log('Booking canceled:', data.booking);
+                toast.success('Booking canceled successfully!');
+                setTimeout(() => {
+                    onClose();
+                }, 2000);
+            } else {
+                console.error('Cancellation failed:', data.message);
+            }
+        } catch (error) {
+            console.error('Error canceling booking:', error);
+        }
     };
 
     return (
