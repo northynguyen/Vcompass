@@ -5,13 +5,44 @@ import FoodService from "../models/foodService.js";
 
 const getListFoodService = async (req, res) => {
     try {
-        const foodService = await FoodService.find();
-        res.status(200).json({success: true,message: "Get list food service successfully", foodService: foodService});
+        const { name, minPrice, maxPrice, city } = req.query;
+
+        // Build query object
+        const query = {};
+
+        // Add name filter if provided
+        if (name) {
+            query.foodServiceName = { $regex: name, $options: 'i' }; // case-insensitive search
+        }
+
+        // Add price range filter if provided
+        if (minPrice && maxPrice) {
+            query["price.minPrice"] = minPrice ? { $gte: Number(minPrice) } : undefined;
+            query["price.maxPrice"] = maxPrice ? { $lte: Number(maxPrice) } : undefined;
+        }
+
+        // Add city filter if provided
+        if (city) {
+            query.city = { $regex: city, $options: 'i' };
+        }
+
+        // Execute query
+        const foodService = await FoodService.find(query);
+        
+        res.status(200).json({
+            success: true,
+            message: "Get list food service successfully",
+            foodService: foodService
+        });
     } catch (error) {
-        res.status(404).json({success: false, message: "Error getting food service" });
+        res.status(404).json({
+            success: false,
+            message: "Error getting food service"
+        });
         console.log(error);
     }
 };
+
 export const getFoodServiceById = async (req, res) => {
     const { id } = req.params; // Lấy id từ params
     try {
@@ -20,7 +51,7 @@ export const getFoodServiceById = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid ID format' });
         }
 
-        const foodService = await FoodService.findById(id); // Tìm food service theo id
+        const foodService = await FoodService.findById(id).sort({ createdAt: -1 }); // Tìm food service theo id
 
         // Nếu không tìm thấy food service, trả về thông báo lỗi
         if (!foodService) {
@@ -192,8 +223,32 @@ const deleteFoodService = async (req, res) => {
     }
 };
 
+const addReview = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const reviewData = req.body; // Data for the new review
+        console.log(reviewData);
+        // Validate the required fields for the rating
+        if (!reviewData.idUser || !reviewData.userName || !reviewData.userImage || !reviewData.rate || !reviewData.content) {
+          return res.status(400).json({ success: false, message: "Required fields are missing." });
+        }
+    
+        // Find the accommodation by ID and add the review to the ratings array
+        const foodService = await FoodService.findByIdAndUpdate(
+          id,
+          { $push: { ratings: reviewData } },
+          { new: true }
+        );
+    
+        if (!foodService) {
+          return res.status(404).json({success: false, message: "Accommodation not found." });
+        }
+    
+        res.status(200).json({success: true, message: "Review added successfully.", foodService });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({success: false, message: "An error occurred while adding the review." });
+      }
+ };
 
-
-
-
-export { getListFoodService, getListByPartner,createFoodService, updateFoodService, deleteFoodService };
+export { getListFoodService, getListByPartner,createFoodService, updateFoodService, deleteFoodService,addReview };

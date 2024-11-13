@@ -19,7 +19,6 @@ const MyBooking = ({send}) => {
     const reviewPopupRef = useRef(null);
     const cancelPopupRef = useRef(null);
     const { token, url } = useContext(StoreContext);
-
     useEffect(() => {
         const fetchBookings = async () => {
             try {
@@ -120,9 +119,9 @@ const MyBooking = ({send}) => {
                             <div className="booking-info">
                                 {accommodationData ? <h3>{accommodationData.name}</h3> : null}
                                 <p><strong>Room Name:</strong> {roomInfo ? roomInfo.nameRoomType : "N/A"}</p>
-                                <p><strong>Booking Date:</strong> {new Date(booking.createdAt).toLocaleDateString()}</p>
-                                <p><strong>Start Date:</strong> {new Date(booking.checkInDate).toLocaleDateString()}</p>
-                                <p><strong>End Date:</strong>{new Date(booking.checkOutDate).toLocaleDateString()}</p> 
+                                <p><strong>Booking Date:</strong> {new Date(booking.createdAt).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                <p><strong>Start Date:</strong> {new Date(booking.checkInDate).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                <p><strong>End Date:</strong>{new Date(booking.checkOutDate).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</p> 
                                 <p><strong>Nights:</strong> {booking.duration}</p>                             
                                 <p><strong>Price per Night:</strong> {roomInfo ? roomInfo.pricePerNight : "N/A"} VND</p>
                                 <p><strong>Taxes: </strong> Include VAT 8% - {booking.totalAmount * 0.08} VND</p>
@@ -150,7 +149,7 @@ const MyBooking = ({send}) => {
                 <div className="popup">
                     <div className="popup-content" ref={reviewPopupRef}>
                         <button className="close-popup" onClick={handleCloseReviewPopup}>×</button>
-                        <Review booking={selectedBooking} onClose={handleCloseReviewPopup} />
+                        <Review booking={selectedBooking} onClose={handleCloseReviewPopup} id={selectedBooking.accommodationId} type = "accommodation"/>
                     </div>
                 </div>
             )}

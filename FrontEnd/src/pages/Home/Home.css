@@ -4,6 +4,7 @@
 .post-card-container{
   margin-top: 100px;
   position: relative;
+  animation: fadeIn 3s ease-in-out;
 }
 
 .tour-search {

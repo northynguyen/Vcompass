@@ -3,8 +3,19 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    animation: fadeIn 3s ease-in-out;
 }
   
+
+@keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
 .slidebar-container .title {
     font-size: 24px;
     margin-bottom: 10px;

@@ -4,11 +4,40 @@ import mongoose from "mongoose"; // Import mongoose (though it's not used here)
 // Controller function to get all attractions
 const getAttractions = async (req, res) => {
     try {
-        const attractions = await Attraction.find(); // Retrieve all attractions
-        res.status(200).json({ success: true, attractions }); // Send the attractions as JSON
+        const { name, minPrice, maxPrice, city } = req.query;
+
+        // Build query object
+        const query = {};
+
+        // Add name filter if provided
+        if (name) {
+            query.attraction_name = { $regex: name, $options: 'i' }; // case-insensitive search
+        }
+
+        // Add price range filter if provided
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.$gte = Number(minPrice);
+            if (maxPrice) query.price.$lte = Number(maxPrice);
+        }
+
+        // Add city filter if provided
+        if (city) {
+            query.city = { $regex: city, $options: 'i' };
+        }
+
+        // Execute query
+        const attractions = await Attraction.find(query);
+        
+        res.status(200).json({
+            success: true,
+            attractions: attractions
+        });
     } catch (error) {
         console.error(error); // Log the error for debugging
-        res.status(500).json({ message: 'Server error' }); // Return a server error response
+        res.status(500).json({
+            message: 'Server error'
+        });
     }
 };
 
@@ -20,7 +49,7 @@ const getAttractionById = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid ID format' });
         }
 
-        const attraction = await Attraction.findById(id); // Tìm attraction theo id
+        const attraction = await Attraction.findById(id).sort({ createdAt: -1 }); // Tìm attraction theo id
 
         // Nếu không tìm thấy attraction, trả về thông báo lỗi
         if (!attraction) {
@@ -108,4 +137,32 @@ const updateAttraction = async (req, res) => {
         console.error("Error updating attraction:", error);
     }
 };
-export { getAttractions, getAttractionById, addAttraction, updateAttraction }; // Export the getAttractions;
+
+const addReview = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const reviewData = req.body; // Data for the new review
+        console.log(reviewData);
+        // Validate the required fields for the rating
+        if (!reviewData.idUser || !reviewData.userName || !reviewData.userImage || !reviewData.rate || !reviewData.content) {
+          return res.status(400).json({ success: false, message: "Required fields are missing." });
+        }
+    
+        // Find the accommodation by ID and add the review to the ratings array
+        const attraction = await Attraction.findByIdAndUpdate(
+          id,
+          { $push: { ratings: reviewData } },
+          { new: true }
+        );
+    
+        if (!attraction) {
+          return res.status(404).json({success: false, message: "Accommodation not found." });
+        }
+    
+        res.status(200).json({success: true, message: "Review added successfully.", attraction });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({success: false, message: "An error occurred while adding the review." });
+      }
+    };
+export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview }; // Export the getAttractions;

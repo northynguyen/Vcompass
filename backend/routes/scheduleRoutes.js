@@ -4,7 +4,7 @@ import {
   getScheduleById,
   getSchedulesByIdUser,
   updateSchedule,
-  getAllSchedule
+  getAllSchedule,updateLikeComment
 } from "../controllers/scheduleController.js";
 import authMiddleware from "../middleware/auth.js";
 
@@ -15,4 +15,5 @@ scheduleRouter.get("/getAllSchedule", getAllSchedule);
 scheduleRouter.get("/:id", getScheduleById);
 scheduleRouter.put("/update/:id", updateSchedule);
 scheduleRouter.get("/user/getSchedules", authMiddleware, getSchedulesByIdUser);
+scheduleRouter.post("/user/updateLikeComment", authMiddleware, updateLikeComment);
 export default scheduleRouter;

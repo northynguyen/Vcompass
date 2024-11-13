@@ -1,6 +1,6 @@
 // attractionRoutes.js
 import express from "express";
-import { getAttractionById, getAttractions, addAttraction, updateAttraction } from "../controllers/attractionController.js";
+import { getAttractionById, getAttractions, addAttraction, updateAttraction,addReview } from "../controllers/attractionController.js";
 
 const Attractionrouter = express.Router();
 
@@ -9,5 +9,6 @@ Attractionrouter.get('/', getAttractions);
 Attractionrouter.get('/:id', getAttractionById);
 Attractionrouter.post('/add', addAttraction);
 Attractionrouter.post('/update', updateAttraction);
+Attractionrouter.post('/addReview/:id', addReview);
 export { Attractionrouter }; // Export the Attractionrouter;
 
