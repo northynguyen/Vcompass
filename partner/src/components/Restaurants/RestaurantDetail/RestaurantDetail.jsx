@@ -18,7 +18,7 @@ import AmenitiesEditor from './AmenitiesEditor';
 
 
 const RestaurantDetail = ({ onBack, RestaurantData }) => {
-    const { url, token  } = useContext(StoreContext);
+    const { url, token } = useContext(StoreContext);
     const [isEditing, setIsEditing] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
@@ -29,7 +29,17 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
     const [newImagePreviews, setNewImagePreviews] = useState([]);
     const [newMenuImagePreviews, setNewMenuImagePreviews] = useState([]);
 
-   
+    const vietnamProvinces = [
+        "An Giang", "Bà Rịa - Vũng Tàu", "Bắc Giang", "Bắc Kạn", "Bến Tre", "Bình Định",
+        "Bình Dương", "Bình Phước", "Bình Thuận", "Cà Mau", "Cao Bằng", "Đắk Lắk",
+        "Đắk Nông", "Điện Biên", "Đồng Nai", "Đồng Tháp", "Gia Lai", "Hà Giang", "Hà Nam",
+        "Hà Nội", "Hải Dương", "Hải Phòng", "Hậu Giang", "Hòa Bình", "Hồ Chí Minh", "Hưng Yên",
+        "Khánh Hòa", "Kiên Giang", "Kon Tum", "Lai Châu", "Lâm Đồng", "Lạng Sơn", "Lào Cai",
+        "Long An", "Nam Định", "Nghệ An", "Ninh Bình", "Ninh Thuận", "Phú Thọ", "Phú Yên",
+        "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh", "Quảng Trị", "Sóc Trăng",
+        "Sơn La", "Tây Ninh", "Thái Bình", "Thái Nguyên", "Thanh Hóa", "Thừa Thiên Huế",
+        "Tiền Giang", "TP Hồ Chí Minh", "Tuyên Quang", "Vĩnh Long", "Vĩnh Phúc", "Yên Bái"
+    ];
     const [formData, setFormData] = useState(
         RestaurantData ? RestaurantData : {
             foodServiceName: "",
@@ -91,7 +101,7 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
                 ],
                 images: RestaurantData.images || [],
                 menuImages: RestaurantData.menuImages || [],
-            });     
+            });
         } else {
             setIsEditing(true);
             setFormData({
@@ -147,11 +157,11 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
             alert('Giá thấp nhất không được vượt quá giá cao nhất.');
             return;
         }
-        
+
         try {
             let response;
-            const formDataToSend = new FormData();       
-            
+            const formDataToSend = new FormData();
+
             // Append the file
             newImages.forEach((file) => {
                 formDataToSend.append("images", file);
@@ -162,11 +172,11 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
 
 
             const config = {
-                headers:   { token }
+                headers: { token }
             };
-        
+
             if (RestaurantData) {
-                const restData = {...formData, images: [...existingImages], menuImages: [...existingMenuImages]};
+                const restData = { ...formData, images: [...existingImages], menuImages: [...existingMenuImages] };
                 console.log(restData);
                 formDataToSend.append("foodServiceData", JSON.stringify(restData));
                 formDataToSend.append("Id", RestaurantData._id);
@@ -179,9 +189,9 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
                     toast.error(response.data.message);
                 }
             }
-             else {
-                const restData = {...formData, images: [...existingImages], menuImages: [...existingMenuImages],serviceType: "restaurant", status: "active"};
-                 formDataToSend.append("foodServiceData", JSON.stringify(restData));                
+            else {
+                const restData = { ...formData, images: [...existingImages], menuImages: [...existingMenuImages], serviceType: "restaurant", status: "active" };
+                formDataToSend.append("foodServiceData", JSON.stringify(restData));
                 response = await axios.post(`${url}/api/foodServices/add`, formDataToSend, config);
                 if (response.data.success) {
                     toast.success(response.data.message);
@@ -191,64 +201,64 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
                     toast.error(response.data.message);
                 }
             }
-        } 
-         catch (error) {
+        }
+        catch (error) {
             // Handle any errors that occur during the save process
             console.error('Error saving data:', error);
             toast.error('Đã xảy ra lỗi khi lưu dữ liệu. Vui lòng thử lại.');
         }
     };
-    
+
     // Handle existing image removal
     const handleExistingImageRemove = (index) => {
         setExistingImages((prevImages) => prevImages.filter((_, idx) => idx !== index));
-      };
-    
-      // Handle new image uploads
-      const handleNewImageChange = (e) => {
+    };
+
+    // Handle new image uploads
+    const handleNewImageChange = (e) => {
         const files = Array.from(e.target.files);
         if (files.length + newImages.length + existingImages.length > 8) {
-          alert('Bạn chỉ có thể chọn tối đa 8 hình ảnh.');
-          return;
+            alert('Bạn chỉ có thể chọn tối đa 8 hình ảnh.');
+            return;
         }
-    
+
         setNewImages((prevFiles) => [...prevFiles, ...files]);
-    
+
         const newPreviews = files.map((file) => URL.createObjectURL(file));
         setNewImagePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
-      };
-    
-      const handleNewImageRemove = (index) => {
+    };
+
+    const handleNewImageRemove = (index) => {
         setNewImages((prevFiles) => prevFiles.filter((_, idx) => idx !== index));
         setNewImagePreviews((prevPreviews) => prevPreviews.filter((_, idx) => idx !== index));
-      };
+    };
     // Image Upload Handler
-    
+
 
     // Menu Image Upload Handler
-  // Handle existing image removal
-  const handleExistingMenuImageRemove = (index) => {
-    setExistingMenuImages((prevImages) => prevImages.filter((_, idx) => idx !== index));
-  };
+    // Handle existing image removal
+    const handleExistingMenuImageRemove = (index) => {
+        setExistingMenuImages((prevImages) => prevImages.filter((_, idx) => idx !== index));
+    };
 
-  // Handle new image uploads
-  const handleNewMenuImageChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (files.length + newMenuImages.length + existingMenuImages.length > 8) {
-      alert('Bạn chỉ có thể chọn tối đa 8 hình ảnh.');
-      return;
-    }
+    // Handle new image uploads
+    const handleNewMenuImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length + newMenuImages.length + existingMenuImages.length > 8) {
+            alert('Bạn chỉ có thể chọn tối đa 8 hình ảnh.');
+            return;
+        }
 
-    setNewMenuImages((prevFiles) => [...prevFiles, ...files]);
+        setNewMenuImages((prevFiles) => [...prevFiles, ...files]);
 
-    const newPreviews = files.map((file) => URL.createObjectURL(file));
-    setNewMenuImagePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
-  };
+        const newPreviews = files.map((file) => URL.createObjectURL(file));
+        setNewMenuImagePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
+    };
 
-  const handleNewMenuImageRemove = (index) => {
-    setNewMenuImages((prevFiles) => prevFiles.filter((_, idx) => idx !== index));
-    setNewMenuImagePreviews((prevPreviews) => prevPreviews.filter((_, idx) => idx !== index));
-  };
+    const handleNewMenuImageRemove = (index) => {
+        setNewMenuImages((prevFiles) => prevFiles.filter((_, idx) => idx !== index));
+        setNewMenuImagePreviews((prevPreviews) => prevPreviews.filter((_, idx) => idx !== index));
+    };
 
     const handleOperatingHourChange = (index, field, value) => {
         setFormData(prevData => {
@@ -329,14 +339,20 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
                     <h2>Thành phố</h2>
                     <p>
                         <label htmlFor="city">Thành phố:</label>
-                        <input
+                        <select
                             id="city"
-                            type="text"
                             name="city"
                             value={formData.city}
                             onChange={handleChange}
                             className="edit-input"
-                        />
+                        >
+                            <option value="">Chọn tỉnh/thành phố</option>
+                            {vietnamProvinces.map((province, index) => (
+                                <option key={index} value={province}>
+                                    {province}
+                                </option>
+                            ))}
+                        </select>
                     </p>
 
                     <h2>Giá</h2>
@@ -386,7 +402,7 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
                         onImageUpload={handleNewImageChange}
                         onDeleteImage={handleExistingImageRemove}
                         onDeleteNewImage={handleNewImageRemove}
-                        newImagePreviews={newImagePreviews}                      
+                        newImagePreviews={newImagePreviews}
                         title="Hình ảnh"
                         url={url}
                         isEditing={isEditing}
@@ -410,7 +426,7 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
                     />
 
                     <h2>Thông tin Liên hệ</h2>
-                    <p><FaPhone /> Điện thoại: 
+                    <p><FaPhone /> Điện thoại:
                         <input
                             type="text"
                             name="contactNumber"
@@ -419,7 +435,7 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
                             className="edit-input"
                         />
                     </p>
-                    <p><FaEnvelope /> Email: 
+                    <p><FaEnvelope /> Email:
                         <input
                             type="email"
                             name="email"
@@ -471,7 +487,7 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
                     ></iframe>
 
                     <ImageGallery
-                        images={ formData.images}
+                        images={formData.images}
                         title="Hình ảnh"
                         url={url}
                     />

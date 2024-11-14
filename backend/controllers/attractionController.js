@@ -1,6 +1,6 @@
 import Attraction from '../models/attraction.js'; // Import the Attraction model
 import mongoose from "mongoose"; // Import mongoose (though it's not used here)
-
+import fs from "fs";
 // Controller function to get all attractions
 const getAttractions = async (req, res) => {
     try {
@@ -40,7 +40,8 @@ const addAttraction = async (req, res) => {
 
         if (req.files) {
             if (req.files.images) {
-                newAttraction.images = req.files.images.map((file) => file.filename);
+                const images = req.files.images.map((file) => file.filename);
+                newAttraction.images = images;
             }
         }
 
@@ -62,7 +63,7 @@ const addAttraction = async (req, res) => {
 
 
 const updateAttraction = async (req, res) => {
-    const attractionId = req.body.attractionData._id;
+    const attractionId = req.params.id;
     const updateData = req.body.attractionData;
 
     try {
@@ -108,4 +109,17 @@ const updateAttraction = async (req, res) => {
         console.error("Error updating attraction:", error);
     }
 };
-export { getAttractions, getAttractionById, addAttraction, updateAttraction }; // Export the getAttractions;
+const deleteAttraction = async (req, res) => {
+    try {
+        const { id: attractionId } = req.params;
+        const attraction = await Attraction.findByIdAndDelete(attractionId);
+        if (!attraction) {
+            return res.status(404).json({ success: false, message: "Attraction not found" });
+        }
+        res.status(200).json({ success: true, message: "Deleted attraction successfully" });
+    } catch (error) {
+        console.error("Error deleting attraction:", error);
+        res.status(500).json({ success: false, message: "Error deleting attraction" });
+    }
+};
+export { getAttractions, getAttractionById, addAttraction, updateAttraction, deleteAttraction }; // Export the getAttractions;

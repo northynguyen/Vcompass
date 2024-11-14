@@ -72,11 +72,12 @@ const SlideBar = ({ type }) => {
     };
 
     const renderCardContent = (service) => {
+        console.log(service);
         switch (type) {
             case 'accommodation':
                 return (
                     <>
-                    
+
                         <h3 className="card-title">{service.name}</h3>
                         <p className="card-facilities">
                             {service.amenities?.join(' • ')}
@@ -92,7 +93,7 @@ const SlideBar = ({ type }) => {
                             <p className="card-duration" key={index}>
                                 {hour.openTime} - {hour.closeTime} &nbsp; | &nbsp; {hour.startDay} - {hour.endDay}
                             </p>
-                            
+
                         ))}
                         <p className="card-facilities">
                             {service.amenities?.join(' • ')}
@@ -103,13 +104,13 @@ const SlideBar = ({ type }) => {
             case 'attraction':
                 return (
                     <>
-                        <h3 className="card-title">{service.attraction_name}</h3>
+                        <h3 className="card-title">{service.attractionName}</h3>
                         {service.operatingHours.map((hour, index) => (
                             <p className="card-duration" key={index}>
                                 {hour.openTime} - {hour.closeTime} &nbsp; | &nbsp; {hour.startDay} - {hour.endDay}
                             </p>
-                            
-                        ))}                    
+
+                        ))}
                         <p className="card-facilities">
                             {service.amenities?.join(' • ')}
                         </p>
@@ -128,7 +129,7 @@ const SlideBar = ({ type }) => {
             : 'No reviews';
         return { totalReviews, averageRating };
     };
-    
+
 
     return (
         <div className="slidebar-container">
@@ -146,7 +147,7 @@ const SlideBar = ({ type }) => {
                     return (
                         <SwiperSlide key={service._id} className="custom-slide">
                             <div className="card" onClick={() => onClick(service._id)}>
-                                <img src={`${url}/images/${service.images[0]}`}  alt={service.foodServiceName || service.name || service.attraction_name} className="card-image" />
+                                <img src={`${url}/images/${service.images[0]}`} alt={service.foodServiceName || service.name || service.attraction_name} className="card-image" />
                                 <div className="card-content">
                                     {renderCardContent(service)}
                                     <p className="card-reviews">

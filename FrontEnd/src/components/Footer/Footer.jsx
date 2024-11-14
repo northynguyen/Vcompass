@@ -10,8 +10,8 @@ import google_icon from '../../assets/google-plus.svg';
 function Footer() {
     const [isFlagOpen, setIsFlagOpen] = useState(false); // Trạng thái điều khiển dropdown mở/đóng
     const [selectedFlagOption, setSelectedFlagOption] = useState({
-        img: usa_flag,
-        label: 'English',
+        img: vietnam_flag,
+        label: 'Việt Nam',
     });
     const optionsFlag = [
         { img: vietnam_flag, label: 'Việt Nam' },
@@ -22,7 +22,7 @@ function Footer() {
 
     const [isCurrencyOpen, setIsCurrencyOpen] = useState(false); // Trạng thái điều khiển dropdown mở/đóng
     const [selectedCurrencyOption, setSelectedCurrencyOption] = useState({
-        label: 'U.S. Dollar ($)',
+        label: 'V.N. Đồng (VNĐ)',
     });
     const optionsCurrency = [
         { label: 'V.N. Đồng (VNĐ)' },

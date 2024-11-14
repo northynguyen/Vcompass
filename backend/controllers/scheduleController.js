@@ -133,3 +133,50 @@ export const getAllSchedule = async (req, res) => {
     });
   }
 };
+
+export const getTopAddressSchedule = async (req, res) => {
+  try {
+    const result = await Schedule.aggregate([
+      {
+        $group: {
+          _id: "$address",
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { count: -1 } },
+      { $limit: 8 },
+    ]);
+
+    if (result.length > 0) {
+      const addresses = result.map(item => ({
+        name: item._id,
+        count: item.count,
+      }));
+
+      return res.status(200).json({
+        success: true,
+        message: "Top addresses found",
+        addresses,
+      });
+    } else {
+      return res.status(404).json({
+        success: false,
+        message: "No address data found.",
+      });
+    }
+  } catch (error) {
+    console.error("Error retrieving top address:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while retrieving top address",
+      error,
+    });
+  }
+};
+
+
+
+
+
+
+
