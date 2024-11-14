@@ -21,11 +21,23 @@ const AdditionalExpenseSchema = new Schema({
   description: { type: String },
 });
 
-const CommentSchema = new Schema({
+const ReplySchema = new Schema({
   idUser: { type: String, required: true },
+  userName: { type: String, required: true },
+  avatar: { type: String, required: true },
   content: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
+
+const CommentSchema = new Schema({
+  idUser: { type: String, required: true },
+  userName: { type: String, required: true },
+  avatar: { type: String, required: true },
+  content: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+  replies: [ReplySchema],  // Add this line to store replies to the comment
+});
+
 const LikeSchema = new Schema({
   idUser: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },

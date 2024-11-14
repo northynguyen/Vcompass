@@ -110,41 +110,49 @@ const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
 };
 
 // Component cho Filters
-const Filters = ({ sortOption, setSortOption }) => {
+const Filters = ({ 
+  sortOption, setSortOption, setNameFilter, setMinPrice, setMaxPrice, 
+  nameFilter, minPrice, maxPrice, fetchAccommodations, isLoading
+}) => {
+  const handleFilterChange = () => {
+    fetchAccommodations(); // Trigger fetch when filters are changed
+  };
+
   return (
     <div className="list-accom__filters">
-      <div className="filter-section">
-        <h4>Availability</h4>
-        <div>
-          <label>From</label>
-          <input type="date" />
-        </div>
-        <div>
-          <label>To</label>
-          <input type="date" />
-        </div>
-        <button>Check Availability</button>
-        <hr />
-        <h4>Sort by Price</h4>
-        <label>
-          <input
-            type="radio"
-            value="PriceLowToHigh"
-            checked={sortOption === "PriceLowToHigh"}
-            onChange={() => setSortOption("PriceLowToHigh")}
-          />
-          Price Low to High
-        </label>
-        <label>
-          <input
-            type="radio"
-            value="PriceHighToLow"
-            checked={sortOption === "PriceHighToLow"}
-            onChange={() => setSortOption("PriceHighToLow")}
-          />
-          Price High to Low
-        </label>
+      {/* Name Filter */}
+      <h4>Lọc theo tên</h4>
+      <input type="text" placeholder="Tên điểm đến " value={nameFilter} 
+        onChange={(e) => setNameFilter(e.target.value)} />
+      
+      <hr />
+
+      {/* Price Range Filter */}
+      <h4>Lọc theo giá</h4>
+      <label>Giá</label>
+      <div className="price-range-slider">
+        <input 
+          type="range" 
+          min="0" 
+          max="1000000" 
+          value={minPrice} 
+          onChange={(e) => setMinPrice(e.target.value)} 
+        />
+        <input 
+          type="range" 
+          min="0" 
+          max="20000000" 
+          value={maxPrice} 
+          onChange={(e) => setMaxPrice(e.target.value)} 
+        />
+        <div>Min: {minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - Max: {maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</div>
       </div>
+
+      <button onClick={handleFilterChange} disabled={isLoading}>
+        {isLoading ? <div className="loading-spinner"></div> : 'Lọc'}
+      </button>
+
+      <hr />
     </div>
   );
 };
@@ -173,41 +181,66 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
 };
 
 // Main ListAccom Component
-const ListAccom = ({ status, setCurDes }) => {
+const ListAccom = ({ status, setCurDes, city }) => {
   const { url } = useContext(StoreContext);
-  const [attractions, setAttractions] = useState();
-  const [isLoading, setIsLoading] = useState(true);
+  const [attractions, setAttractions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // Track loading state
   const [sortOption, setSortOption] = useState("Popularity");
-  const fetchData = async () => {
+  const [nameFilter, setNameFilter] = useState("");
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(1000000);
+
+  const fetchAccommodations = async () => {
+    console.log("city", city);
+    setIsLoading(true);
     try {
-      let response = await fetch(`${url}/api/attractions/`)
+      const queryParams = new URLSearchParams({
+        ...(nameFilter && { name: nameFilter }),
+        ...(minPrice && { minPrice }),
+        ...(maxPrice && { maxPrice }),
+        ...(city && { city }),
+        sortOption,
+      });
+
+      const response = await fetch(`${url}/api/attractions?${queryParams}`);
       const result = await response.json();
-      setIsLoading(false)
+      setIsLoading(false);
+
       if (!response.ok) {
         throw new Error(result.message || 'Error fetching data');
       }
       setAttractions(result.attractions);
     } catch (err) {
-      console.log(err)
+      console.log(err);
+      setIsLoading(false);
     }
-  }
+  };
+
   useEffect(() => {
-    fetchData();
+    fetchAccommodations();
   }, [url]);
+
   if (isLoading) {
-    return (
-      <div>...</div>
-    )
+    return <div>Loading accommodations...</div>;
   }
+
   return (
     <div className="list-accom__container">
-      <Filters sortOption={sortOption} setSortOption={setSortOption} />
-      <div className="tour-list-container">
-        <AttractionList attractions={attractions} sortOption={sortOption} status={status}
-          setCurDes={setCurDes} />
-      </div>
+      <Filters
+        sortOption={sortOption}
+        setSortOption={setSortOption}
+        setNameFilter={setNameFilter}
+        setMinPrice={setMinPrice}
+        setMaxPrice={setMaxPrice}
+        nameFilter={nameFilter}
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+        fetchAccommodations={fetchAccommodations}
+        isLoading={isLoading}
+      />
+      <AttractionList attractions={attractions} sortOption={sortOption} status={status} setCurDes={setCurDes} />
     </div>
-  )
+  );
 };
 
 export default ListAccom;

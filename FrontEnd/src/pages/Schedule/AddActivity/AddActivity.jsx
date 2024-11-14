@@ -39,11 +39,12 @@ const Header = ({ option, setOption, setCurDes }) => {
   );
 };
 
-const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSchedule, activity }) => {
+const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSchedule, activity, city }) => {
   const [option, setOption] = React.useState("Accommodations");
   const [cost, setCost] = React.useState("")
   const [description, setDescription] = React.useState("")
   const [curDes, setCurDes] = React.useState(null)
+
   console.log("CurDes", activity)
   useEffect(() => {
     if (isOpen) {
@@ -112,11 +113,11 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         </div>
         <div className="modal-body">
           <Header setOption={setOption} setCurDes={setCurDes} />
-          {option === "Attractions" && <ListAttractions status="Schedule"
+          {option === "Attractions" && <ListAttractions status="Schedule" city={city}
             setCurDes={setCurDes} />}
-          {option === "Accommodations" && <ListAccommodation status="Schedule"
+          {option === "Accommodations" && <ListAccommodation status="Schedule" city={city}
             setCurDes={setCurDes} />}
-          {option === "FoodServices" && <ListFoodServices status="Schedule"
+          {option === "FoodServices" && <ListFoodServices status="Schedule" city={city}
             setCurDes={setCurDes} />}
           {option === "Other" &&
             <div className="form-group">
