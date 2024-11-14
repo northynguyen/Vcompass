@@ -15,14 +15,10 @@ const foodServiceRoutes = express.Router();
 foodServiceRoutes.get("/", getListFoodService);
 foodServiceRoutes.get("/partner", authMiddleware, getListByPartner);
 
-foodServiceRoutes.post(
-  "/add",
-  authMiddleware,
-  upload.fields([
-    { name: "images", maxCount: 5 },
-    { name: "menuImages", maxCount: 5 },
-  ]),
-  createFoodService
+foodServiceRoutes.post("/add", authMiddleware, upload.fields([
+  { name: "images", maxCount: 5 },
+  { name: "menuImages", maxCount: 5 },
+]), createFoodService
 );
 
 foodServiceRoutes.post(

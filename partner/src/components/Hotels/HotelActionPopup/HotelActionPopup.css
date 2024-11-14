@@ -35,6 +35,7 @@
         transform: translateY(-20px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;
@@ -70,14 +71,15 @@
 .hap-form-group {
     margin-bottom: 15px;
     text-align: left;
+    flex-direction: column;
+    margin-bottom: 1rem;
 }
 
 .hap-form-group label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 5px;
+    font-size: 16px;
     color: #555;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
 }
 
 .hap-form-group input,
@@ -99,6 +101,28 @@
 .hap-form-group textarea {
     resize: vertical;
     min-height: 100px;
+}
+
+.hap-form-group select {
+    padding: 0.5rem;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.hap-form-group select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.hap-form-group select option {
+    color: #333;
+    background-color: #fff;
+    padding: 0.5rem;
 }
 
 /* Submit Button */

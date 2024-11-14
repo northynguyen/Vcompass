@@ -134,6 +134,7 @@ export const getAllSchedule = async (req, res) => {
   }
 };
 
+
 export const updateLikeComment = async (req, res) => {
   const { scheduleId, userId, action, content, commentId } = req.body;
   const user = await User.findById(userId);
@@ -188,3 +189,4 @@ export const updateLikeComment = async (req, res) => {
     res.status(500).json({success: false, message: 'Failed to update schedule' });
   }
 };
+

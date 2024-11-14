@@ -1,5 +1,15 @@
 import React from 'react';
 import './PostCard.css';
+import { BsFillInfoCircleFill } from "react-icons/bs";
+const PostCard = ({ schedule, handleScheduleClick }) => {
+  console.log("schedules", schedule)
+  const activityCosts = {
+    Accommodation: 0,
+    FoodService: 0,
+    Attraction: 0,
+    Additional: 0,
+  };
+
 
 const PostCard = ({ schedule, handleScheduleClick }) => {
   console.log("schedules", schedule)
@@ -9,6 +19,7 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
     Attraction: 0,
     Additional: 0,
   };
+
 
   schedule.activities.forEach(day => {
     day.activity.forEach(activity => {
@@ -29,7 +40,9 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
     });
   });
   schedule.additionalExpenses.forEach(activity => {
-      activityCosts.Additional += activity.cost;
+
+    activityCosts.Additional += activity.cost;
+
   });
   return (
     <div className="card-container">
@@ -49,17 +62,19 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
               hour: '2-digit',
               minute: '2-digit'
             })}</p>
+
           </div>
           <div className='post-location'>
             <i className="fa fa-map-marker" aria-hidden="true"></i>
             <label className='location-text' htmlFor="null">{schedule.address}</label>
           </div>
         </div>
+
       </header>
 
       <img
         className="content-image"
-        src="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
+        src={schedule.imgSrc}
         alt="Alaska"
       />
       <div className='content-container'>
@@ -69,40 +84,41 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
             <p className="schedule-description">{schedule.description}</p>
           </div>
 
-          <div className="pricing-box">
-            <h3>Chi phí</h3>
-            <ul className="schedule-description">
-              <li><span>Chi phí chỗ ở</span><span>{activityCosts.Accommodation.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
-              <li><span>Chi phí ăn uống</span><span >{activityCosts.FoodService.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
-              <li><span>Chi phí vui chơi</span><span>{activityCosts.Attraction.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
-              <li><span>Chi phí phát sinh</span><span>{activityCosts.Additional.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
-            </ul>
-            <button className="see-more" onClick={() => handleScheduleClick(schedule._id)}>Xem chi tiết</button>
-            <div className="total"><span>Tổng cộng</span>
-              <span>
-                {
-                  (activityCosts.Accommodation + activityCosts.FoodService +
-                    activityCosts.Attraction +activityCosts.Additional)
-                    .toLocaleString("vi-VN", { style: "currency", currency: "VND" })
-                }
-              </span>
-            </div>
-          </div>
           <br />
+          <BsFillInfoCircleFill className="info-icon" onClick={() => handleScheduleClick(schedule._id)} />
         </div>
-        <footer className="card-footer">
-          <div className="actions">
-            <i className="fa-solid fa-heart favorite-icon"></i>
-            <label className='action-text' htmlFor="null">903</label>
-            <i className="fa-solid fa-comment comment-icon"></i>
-            <label className='action-text' htmlFor="null">903</label>
-            <i className="fa-solid fa-share share-icon"></i>
-            <label className='action-text' htmlFor="null">903</label>
-          </div>
 
-          <button className="custom-now" onClick={() => handleScheduleClick(schedule._id)}>Custom now</button>
-        </footer>
       </div>
+      <div className="pricing-box">
+        <h3>Chi phí</h3>
+        <ul className="schedule-description">
+          <li><span>Chi phí chỗ ở</span><span>{activityCosts.Accommodation.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
+          <li><span>Chi phí ăn uống</span><span >{activityCosts.FoodService.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
+          <li><span>Chi phí vui chơi</span><span>{activityCosts.Attraction.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
+          <li><span>Chi phí phát sinh</span><span>{activityCosts.Additional.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
+        </ul>
+        <div className="total"><span>Tổng cộng</span>
+          <span>
+            {
+              (activityCosts.Accommodation + activityCosts.FoodService +
+                activityCosts.Attraction + activityCosts.Additional)
+                .toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+            }
+          </span>
+        </div>
+      </div>
+      <footer className="card-footer">
+        <div className="actions">
+          <i className="fa-solid fa-heart favorite-icon"></i>
+          <label className='action-text' htmlFor="null">903</label>
+          <i className="fa-solid fa-comment comment-icon"></i>
+          <label className='action-text' htmlFor="null">903</label>
+          <i className="fa-solid fa-share share-icon"></i>
+          <label className='action-text' htmlFor="null">903</label>
+        </div>
+
+        <button className="custom-now" onClick={() => handleScheduleClick(schedule._id)}>Custom now</button>
+      </footer>
 
 
     </div>
