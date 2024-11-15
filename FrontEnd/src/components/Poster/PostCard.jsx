@@ -1,13 +1,46 @@
-import React from 'react';
-import './PostCard.css';
+import axios from 'axios';
+import React, { useContext, useState } from 'react';
 import { BsFillInfoCircleFill } from "react-icons/bs";
+import { StoreContext } from '../../Context/StoreContext';
+import './PostCard.css';
 const PostCard = ({ schedule, handleScheduleClick }) => {
-  console.log("schedules", schedule)
+  const { url, user, token } = useContext(StoreContext);
+  const [likes, setLikes] = useState(schedule?.likes || []);
   const activityCosts = {
     Accommodation: 0,
     FoodService: 0,
     Attraction: 0,
     Additional: 0,
+  };
+  const isLike = () => {
+    return likes.some(like => like.idUser === user._id);
+  };
+  const handleComment = () => {
+    handleScheduleClick(schedule._id)
+  };
+  const handleLike = async () => {
+    try {
+      const response = await axios.post(`${url}/api/schedule/user/updateLikeComment`, {
+        scheduleId: schedule._id,
+        userId: user._id,
+        action: isLike() ? 'unlike' : 'like',
+      }, { headers: { token } });
+      if (response.data.success) {
+        console.log("data", response.data)
+        setLikes(response.data.schedule.likes);
+      } else {
+        console.error("Error liking schedule:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error liking schedule:", error);
+    }
+  };
+  const handleReplyCount = (comments) => {
+    let count = 0;
+    comments.forEach((comment) => {
+      count += comment.replies.length;
+    });
+    return count;
   };
 
   schedule.activities.forEach(day => {
@@ -93,15 +126,14 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
       </div>
       <footer className="card-footer">
         <div className="actions">
-          <i className="fa-solid fa-heart favorite-icon"></i>
-          <label className='action-text' htmlFor="null">903</label>
-          <i className="fa-solid fa-comment comment-icon"></i>
-          <label className='action-text' htmlFor="null">903</label>
+          <i className={`fa-solid fa-heart favorite-icon ${isLike() ? "enabled" : ""}`} onClick={handleLike}></i>
+          <label className='action-text' htmlFor="null">{likes.length}</label>
+          <i className="fa-solid fa-comment comment-icon" onClick={handleComment}></i>
+          <label className='action-text' htmlFor="null">{schedule.comments.length + handleReplyCount(schedule.comments)}</label>
           <i className="fa-solid fa-share share-icon"></i>
-          <label className='action-text' htmlFor="null">903</label>
         </div>
 
-        <button className="custom-now" onClick={() => handleScheduleClick(schedule._id)}>Custom now</button>
+        <button className="custom-now" onClick={() => handleScheduleClick(schedule._id)}>Xem chi tiết</button>
       </footer>
 
     </div>

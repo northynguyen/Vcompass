@@ -239,9 +239,10 @@ label.review-text {
 }
 
 label.action-text {
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 300;
-  margin: 5px 25px 0px 0px;
+  margin: 0px 25px 0px 0px;
+  height: 100%;
 }
 
 .accommodation-banner {
@@ -402,6 +403,9 @@ label.action-text {
 .favorite-icon:hover {
   cursor: pointer;
   color: red;
+}
+.enabled {
+  color: red !important;
 }
 
 .comment-icon:hover {

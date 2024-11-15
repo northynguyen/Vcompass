@@ -4,11 +4,40 @@ import fs from "fs";
 // Controller function to get all attractions
 const getAttractions = async (req, res) => {
     try {
-        const attractions = await Attraction.find(); // Retrieve all attractions
-        res.status(200).json({ success: true, attractions }); // Send the attractions as JSON
+        const { name, minPrice, maxPrice, city } = req.query;
+
+        // Build query object
+        const query = {};
+
+        // Add name filter if provided
+        if (name) {
+            query.attraction_name = { $regex: name, $options: 'i' }; // case-insensitive search
+        }
+
+        // Add price range filter if provided
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.$gte = Number(minPrice);
+            if (maxPrice) query.price.$lte = Number(maxPrice);
+        }
+
+        // Add city filter if provided
+        if (city) {
+            query.city = { $regex: city, $options: 'i' };
+        }
+
+        // Execute query
+        const attractions = await Attraction.find(query);
+        
+        res.status(200).json({
+            success: true,
+            attractions: attractions
+        });
     } catch (error) {
         console.error(error); // Log the error for debugging
-        res.status(500).json({ message: 'Server error' }); // Return a server error response
+        res.status(500).json({
+            message: 'Server error'
+        });
     }
 };
 

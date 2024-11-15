@@ -10,13 +10,19 @@ import "./Home.css";
 const Home = () => {
   const { url, user } = useContext(StoreContext)
   const [schedules, setSchedules] = useState()
+  const [filteredSchedules, setFilteredSchedules] = useState()
   const [isLoading, setIsLoading] = useState(true)
   const [topCity, setTopCity] = useState([]);
+  const [address, setAddress] = useState("");
+  const [scheduleName, setScheduleName] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
     fetchTopAddress();
     fetchSchedules();
   }, [url]);
+  useEffect(() => {
+    setFilteredSchedules(schedules)
+  }, [schedules]);
   const fetchSchedules = async () => {
     try {
       const response = await axios.get(`${url}/api/schedule/getAllSchedule`);
@@ -46,6 +52,23 @@ const Home = () => {
   const handleScheduleClick = (id) => {
     navigate(`/schedule-view/${id}`);
   };
+  const handleSearch = () => {
+    const filtered = schedules.filter((schedule) => {
+      const isAddressMatch = schedule.address.toLowerCase().includes(address.toLowerCase());
+      const isScheduleNameMatch = schedule.scheduleName.toLowerCase().includes(scheduleName.toLowerCase());
+      return isAddressMatch && isScheduleNameMatch;
+    });
+
+    setFilteredSchedules(filtered);
+  };
+  const handleAddressChange = (e) => {
+    setAddress(e.target.value);
+  };
+
+  // Xử lý sự thay đổi cho tên lịch trình
+  const handleScheduleChange = (e) => {
+    setScheduleName(e.target.value);
+  };
 
   return (
     <div className="home-container">
@@ -68,19 +91,24 @@ const Home = () => {
               <div className='search-title'>
                 <div className='search-subtitle'>
                   <i className="fa fa-map-marker" aria-hidden="true"></i>
-                  <label className='search-icon' htmlFor="destination">Location</label>
+                  <label className='search-icon' htmlFor="destination">Địa điểm</label>
                 </div>
-                <input type="text" placeholder="Search For A Destination" className="search-input" id='destination' />
+                <input type="text" placeholder="Tìm kiếm theo địa điểm" className="search-input" id='destination'
+                  value={address} onChange={(e) => handleAddressChange(e)} />
               </div>
 
               <div className='search-title'>
                 <div className='search-subtitle'>
                   <i className="fa-solid fa-calendar-days"></i>
-                  <label className='search-icon' htmlFor="schedule">Location</label>
+                  <label className='search-icon' htmlFor="schedule">Tên lịch trình</label>
                 </div>
-                <input type="text" placeholder="Search name Schedule" className="search-input" id='schedule' />
+                <input type="text"
+                  placeholder="Tìm kiếm theo tên lịch trình"
+                  className="search-input" id='schedule'
+                  value={scheduleName}
+                  onChange={(e) => handleScheduleChange(e)} />
               </div>
-              <button className="search-button">Search</button>
+              <button className="search-button" onClick={handleSearch}>Tìm kiếm</button>
             </div>
           </div>
 
@@ -100,9 +128,15 @@ const Home = () => {
         </div>
       </div>
       <div className='post-card-container'>
-        {!isLoading && schedules?.filter(schedule => schedule.idUser._id !== user._id)
+        {!isLoading && filteredSchedules
+          ?.filter(schedule => schedule.idUser._id !== user._id)
+          .slice(0, 10)
           .map(schedule => (
-            <PostCard key={schedule._id} schedule={schedule} handleScheduleClick={handleScheduleClick} />
+            <PostCard
+              key={schedule._id}
+              schedule={schedule}
+              handleScheduleClick={handleScheduleClick}
+            />
           ))
         }
       </div>

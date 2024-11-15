@@ -4,14 +4,54 @@ import Accommodation from "../models/accommodation.js";
 
 export const getListAccomm = async (req, res) => {
   try {
-    const accommodations = await Accommodation.find();
+    const { name, minPrice, maxPrice, city } = req.query;
+
+    const query = {};
+
+    // Filter by name if provided (case-insensitive search)
+    if (name) {
+      query.name = { $regex: name, $options: 'i' };
+    }
+
+    // Filter by city if provided
+    if (city) {
+      query.city = { $regex: city, $options: 'i' };
+    }
+
+    // Fetch accommodations based on the constructed query
+    let accommodations = await Accommodation.find(query);
+
+    // If minPrice and maxPrice are provided, filter the accommodations by price
+    if (minPrice && maxPrice) {
+      accommodations = accommodations
+        .map(accommodation => {
+          const prices = accommodation.roomTypes.map(room => room.pricePerNight);
+          const minRoomPrice = Math.min(...prices);
+          const maxRoomPrice = Math.max(...prices);
+
+          return {
+            ...accommodation.toObject(),
+            price: { minPrice: minRoomPrice, maxPrice: maxRoomPrice }
+          };
+        })
+        .filter(accommodation => {
+          // Apply minPrice and maxPrice filters if they exist
+          const { minPrice: accommodationMinPrice, maxPrice: accommodationMaxPrice } = accommodation.price;
+
+          const meetsMinPrice = minPrice ? accommodationMaxPrice >= Number(minPrice) : true;
+          const meetsMaxPrice = maxPrice ? accommodationMinPrice <= Number(maxPrice) : true;
+
+          return meetsMinPrice && meetsMaxPrice;
+        });
+    }
+
     res.json({
       success: true,
       message: "Get data accommodation success",
       accommodations,
     });
   } catch (error) {
-    res.json({
+    res.status(500).json({
       success: false,
       message: "Error retrieving accommodations",
       error,

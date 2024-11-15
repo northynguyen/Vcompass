@@ -2,12 +2,13 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from "react";
 import Modal from "react-modal";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { StoreContext } from "../../Context/StoreContext";
 import ActivityTime, { AccomActivity, AttractionActivity, FoodServiceActivity } from "./ActivityTime/ActivityTime";
 import AddActivity from "./AddActivity/AddActivity";
-import Expense from "./Expense/Expense";
 import Comment from "./Comment/Comment";
+import Expense from "./Expense/Expense";
 import "./Schedule.css";
 
 const Activity = ({ activity, setCurrentActivity, setCurrentDestination, openModal, setInforSchedule, mode }) => {
@@ -22,7 +23,7 @@ const Activity = ({ activity, setCurrentActivity, setCurrentDestination, openMod
           setInforSchedule={setInforSchedule}
           setCurrentActivity={setCurrentActivity}
           openModal={openModal}
-          mode = {mode}
+          mode={mode}
         />
       ))}
     </div>
@@ -89,7 +90,7 @@ const ActivityItem = ({ index, activity, setCurrentActivity, setCurrentDestinati
 
   return (
     <div className="activity-infor">
-      <ActivityTime activity={activity} mode = {mode}
+      <ActivityTime activity={activity} mode={mode}
         setInforSchedule={setInforSchedule} />
       <div className="num-activity">
         -
@@ -99,13 +100,13 @@ const ActivityItem = ({ index, activity, setCurrentActivity, setCurrentDestinati
       {!isLoading && (
         <>
           {activity.activityType === "Accommodation" && (
-            <AccomActivity data={data.accommodation} activity={activity} handleEdit={handleEdit} />
+            <AccomActivity data={data.accommodation} activity={activity} handleEdit={handleEdit} mode={mode} />
           )}
           {activity.activityType === "FoodService" && (
-            < FoodServiceActivity data={data.foodService} activity={activity} handleEdit={handleEdit} />
+            < FoodServiceActivity data={data.foodService} activity={activity} handleEdit={handleEdit} mode={mode} />
           )}
           {activity.activityType === "Attraction" && (
-            <AttractionActivity data={data.attraction} activity={activity} handleEdit={handleEdit} />
+            <AttractionActivity data={data.attraction} activity={activity} handleEdit={handleEdit} mode={mode} />
           )}
         </>
       )}
@@ -217,7 +218,7 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
 }
 
 
-const DateSchedule = ({ schedule, setInforSchedule, mode , city }) => {
+const DateSchedule = ({ schedule, setInforSchedule, mode, city }) => {
 
   const [scheduleDate, setScheduleDate] = useState(schedule);
   const [isOpen, setIsOpen] = useState(true);
@@ -287,6 +288,7 @@ const DateSchedule = ({ schedule, setInforSchedule, mode , city }) => {
         activity={currentActivity}
         destination={currentDestination}
         setInforSchedule={setInforSchedule}
+        city={city}
       />
     </div>
   );
@@ -298,8 +300,9 @@ const parseDate = (dateString) => {
 };
 
 const Schedule = ({ mode }) => {
-  const { url } = useContext(StoreContext)
+  const { url, token } = useContext(StoreContext)
   const { id } = useParams();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [inforSchedule, setInforSchedule] = useState(null)
   const [isOpenInforSchedule, setIsOpenInforSchedule] = useState(false);
@@ -353,7 +356,34 @@ const Schedule = ({ mode }) => {
   const closeInforSchedule = () => {
     setIsOpenInforSchedule(false);
   };
-
+  const onCompleted = () => {
+    setInforSchedule((prevInfor) => {
+      return { ...prevInfor, status: "Complete" };
+    });
+    navigate('/my-schedule');
+    toast.success("Chỉnh sửa hoàn tất");
+  }
+  const onEdit = async () => {
+    const newSchedule = {
+      ...inforSchedule,
+      status: "Draft",
+      likes: [],
+      comments: [],
+      createdAt: new Date(),
+    };
+    delete newSchedule._id;
+    console.log("New Schedule", newSchedule);
+    const response = await axios.post(url + "/api/schedule/addNew", { schedule: newSchedule }, {
+      headers: { token },
+    });
+    if (response.data.success) {
+      const scheduleId = response.data.schedule._id;
+      navigate(`/schedule-edit/${scheduleId}`);
+      toast.success("Lấy thành công");
+    } else {
+      console.error("Error adding schedule:", response.data.message);
+    }
+  }
   const extractExpenses = (tour) => {
     const expenses = [];
     tour.activities.forEach((day) => {
@@ -413,17 +443,17 @@ const Schedule = ({ mode }) => {
         <div >
           {
             mode === "view" &&
-            <button className="custom-schedule-btn">Chỉnh sửa ngay</button>
+            <button className="custom-schedule-btn" onClick={onEdit}>Chỉnh sửa ngay</button>
           }
 
         </div>
       </div>
       <div className="schedule-container">
-      <img
-        className="custom-schedule-image"
-        src="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
-        alt="Alaska"
-      />
+        <img
+          className="custom-schedule-image"
+          src="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
+          alt="Alaska"
+        />
         <div className="header-container">
           <div className="activity-header">
             <div className="title-des">
@@ -497,12 +527,12 @@ const Schedule = ({ mode }) => {
           expenses={extractExpenses(inforSchedule)}
           additionExpenses={extractAdditionExpenses(inforSchedule)}
           setInforSchedule={setInforSchedule}
-          mode = {mode} />
+          mode={mode} />
       </div>
       {
         mode === "edit" &&
         <div className="save-schedule">
-          <button className="btn-save-schedule">Hoàn thành</button>
+          <button className="btn-save-schedule" onClick={onCompleted}>Hoàn thành</button>
         </div>
       }
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Assuming you're using react-router-dom
+import { useNavigate } from 'react-router-dom';
 import { StoreContext } from '../../Context/StoreContext';
 import './MySchedule.css';
 
@@ -43,7 +43,7 @@ const MySchedule = () => {
         <h2>Lịch trình của tôi</h2>
         {!isLoading && (
           schedules.map(schedule => (
-            <div key={schedule._id} className="my-schedule-card">
+            <div key={schedule._id} className="my-schedule-card" onClick={() => handleScheduleClick(schedule._id)} >
               <img src="https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png" alt="My Schedule" />
               <div className="schedule-info">
                 <h3>{schedule.scheduleName}</h3>
@@ -82,14 +82,13 @@ const MySchedule = () => {
       </section>
 
       <section className="featured-schedules-section">
-        <h2>Lịch trình nổi bật</h2>
+        <h2>Lịch trình yêu thích</h2>
         <div className="schedule-filters">
-          <button>Hàn Quốc</button>
+          <button>Hà Nội</button>
           <button>Đà Lạt</button>
-          <button>Trung Quốc</button>
+          <button>Vũng Tàu</button>
           <input type="text" placeholder="Tìm kiếm lịch trình" />
         </div>
-
         {!isLoading &&
           <div className="featured-schedules">
             {schedules.map(schedule => (

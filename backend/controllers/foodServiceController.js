@@ -5,10 +5,40 @@ import FoodService from "../models/foodService.js";
 
 const getListFoodService = async (req, res) => {
     try {
-        const foodService = await FoodService.find();
-        res.status(200).json({success: true,message: "Get list food service successfully", foodService: foodService});
+        const { name, minPrice, maxPrice, city } = req.query;
+
+        // Build query object
+        const query = {};
+
+        // Add name filter if provided
+        if (name) {
+            query.foodServiceName = { $regex: name, $options: 'i' }; // case-insensitive search
+        }
+
+        // Add price range filter if provided
+        if (minPrice && maxPrice) {
+            query["price.minPrice"] = minPrice ? { $gte: Number(minPrice) } : undefined;
+            query["price.maxPrice"] = maxPrice ? { $lte: Number(maxPrice) } : undefined;
+        }
+
+        // Add city filter if provided
+        if (city) {
+            query.city = { $regex: city, $options: 'i' };
+        }
+
+        // Execute query
+        const foodService = await FoodService.find(query);
+        
+        res.status(200).json({
+            success: true,
+            message: "Get list food service successfully",
+            foodService: foodService
+        });
     } catch (error) {
-        res.status(404).json({success: false, message: "Error getting food service" });
+        res.status(404).json({
+            success: false,
+            message: "Error getting food service"
+        });
         console.log(error);
     }
 };

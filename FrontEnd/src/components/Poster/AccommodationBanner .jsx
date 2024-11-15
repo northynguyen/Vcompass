@@ -13,7 +13,7 @@ const AccommodationBanner = () => {
       <div className="overlay"></div>
 
       <div className="banner-content">
-        <span className="trending">TRENDING NOW</span>
+        <span className="trending">THỊNH HÀNH</span>
         <h1 className="title">Vũng tàu</h1>
         <div className="location">
           <i className="fa fa-map-marker" aria-hidden="true">
@@ -31,7 +31,7 @@ const AccommodationBanner = () => {
           Vũng Tàu là một thành phố thuộc tỉnh Bà Rịa – Vũng Tàu, vùng Đông Nam Bộ, Việt Nam. Đây là trung tâm kinh tế, tài chính, văn hóa, du lịch, và là một trong những trung tâm kinh tế của tỉnh và vùng kinh tế trọng điểm phía Nam
         </p>
         <div className="actions">
-          <button className="book-now">Book Now</button>
+          <button className="book-now">Đặt ngay</button>
           <i className="fa-solid fa-heart fa-shake book-schedule-icon"></i>
           <i className="fa-solid fa-share fa-shake book-schedule-icon"></i>
         </div>

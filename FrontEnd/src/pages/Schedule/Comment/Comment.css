@@ -1,139 +1,363 @@
-
+/* Comment Section */
 .comment-container {
-    display: flex;
-    align-items: flex-start;
-    padding: 0px 0px 15px 5%;
-    width: fit-content;
+  display: flex;
+  align-items: flex-start;
+  padding: 10px 0 15px 5%;
+  width: 100%;
+  
 }
+
 .comment-large-container {
-    padding: 0px 10%;
+  padding: 0 10%;
 }
-  
-  .user-avatar {
-    position: relative;
-    width: 32px;
-    height: 32px;
-    margin-right: 8px;
-  }
-  
-  .avatar-image {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-  }
-  .avatar-image:hover{
-    cursor: pointer;
-  }
-  .avatar-image-overlap {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    left: 15px;
-    border: 2px solid white;
-  }
-  
-  .comment-content {
-    flex: 1;
-  }
-  
-  .comment-text {
-    background-color: #f0f2f5;
-    padding: 8px 12px;
-    border-radius: 20px;
-    margin-bottom: 5px;
-    font-size: 16px;
+.commentitem-container {
+  padding: 10px 0 15px 5%;
+  border-bottom: 1px solid #e9ebee;
+}
+/* User Avatar */
+.user-avatar {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+.avatar-image:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+
+.avatar-image-overlap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  left: 15px;
+  border: 2px solid white;
+}
+
+/* Comment Content */
+.comment-content {
+  flex: 1;
+}
+
+.comment-text {
+  background-color: #f7f8fa;
+  padding: 12px 16px;
+  border-radius: 22px;
+  margin-bottom: 8px;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  min-width: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.view-replies-container
+{
     display: flex;
     flex-direction: column;
+    gap: 10px;
 }
-  .user-name {
-    font-weight: bold;
-    margin-bottom: 3px;
-  }
-
-  .user-name:hover{
-    cursor: pointer;
-  }
-  
-  .comment-actions {
-    font-size: 12px;
+.view-replies{
+    padding-top: 10px;
     color: #65676b;
-    display: flex;
-    align-items: center;
-    margin-left: 5px;
-  }
-  
-  .link {
-    cursor: pointer;
-    color: #65676b;
-    margin-left: 20px;
+    font-size: 14px;
     font-weight: 500;
-}
-  
-  .emoji {
-    margin-left: 5px;
-  }
-  .post-actions-container {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 10px 0;
-    border-top: 1px solid #e9ebee;
-    border-bottom: 1px solid #e9ebee;
-    margin-bottom: 30px;
-  }
-  
-  .post-action {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    color: #65676b;
+    transition: color 0.3s ease;
     cursor: pointer;
-  }
-  
-  .post-action-icon {
-    margin-right: 5px;
-  }
-  .like-action:hover{
-    color: red;
-  }
-  .comment-action:hover{
-    color: #05a5ba;
-  }
-  .share-action:hover{
-    color: #ffc107;
+}
+.comment-text p{
+    color : #65676b;
+
   }
 
-  .comment-input-container {
-    display: flex;
-    align-items: center;
-    margin: 10px 5%;
-}
-  
-  .user-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  
-  .input-field {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #65676b;
-    background-color: #f0f2f5;
-    font-size: 14px;
-    padding: 15px;
-    border-radius: 20px;
+.user-name {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #3b3f45;
+  transition: color 0.3s ease;
 }
 
-  
-  .send-icon {
-    color: #65676b;
-    cursor: pointer;
-    font-size: 18px;
-    margin-left: 10px;
-  }
+.user-name:hover {
+  cursor: pointer;
+  color: #0056b3;
+}
 
+.comment-actions {
+  display: flex;
+  font-size: 13px;
+  color: #65676b;
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.comment-actions span {
+  margin-right: 15px;
+}
+
+.link {
+  cursor: pointer;
+  color: #65676b;
+  margin-left: 20px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.link:hover {
+  color: #0056b3;
+}
+
+.emoji {
+  margin-left: 5px;
+}
+
+/* Post Actions (Like, Comment, Share) */
+.post-actions-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 15px 0;
+  border-top: 1px solid #e9ebee;
+  border-bottom: 1px solid #e9ebee;
+  margin-bottom: 30px;
+  background-color: #fff;
+}
+
+.post-action {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #65676b;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.post-action-icon {
+  margin-right: 8px;
+}
+
+.like-action:hover {
+  color: red;
+}
+
+ .liked {
+  color: red;
+}
+
+.comment-action:hover {
+  color: #05a5ba;
+}
+
+.share-action:hover {
+  color: #ffc107;
+}
+
+/* Input Container (New Comment) */
+.comment-input-container {
+  display: flex;
+  align-items: center;
+  margin: 10px 5%;
+  border-radius: 20px;
+  background-color: #f0f2f5;
+  padding: 8px 12px;
+}
+
+.input-comment-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #65676b;
+  font-size: 15px;
+  padding: 12px 18px;
+  border-radius: 22px;
+  transition: background-color 0.3s ease;
+}
+
+.input-field:focus {
+  background-color: #fff;
+  border: 2px solid #05a5ba;
+}
+
+.send-icon {
+  color: #65676b;
+  cursor: pointer;
+  font-size: 20px;
+  margin-left: 12px;
+  transition: color 0.3s ease;
+}
+
+.send-icon:hover {
+  color: #05a5ba;
+}
+
+/* Reply Input */
+.reply-input-container {
+  display: flex;
+  align-items: center;
+  background-color: #f7f8fa;
+  border-radius: 22px;
+  margin-top: 10px;
+}
+
+.reply-input-container input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #65676b;
+  background-color: #f7f8fa;
+  font-size: 15px;
+  border-radius: 22px;
+  transition: background-color 0.3s ease;
+}
+
+.comment-reply-input-container input:focus {
+  background-color: #fff;
+  border: 2px solid #05a5ba;
+}
+
+
+.replies-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 40px;
+}
+/* Reply Section */
+.reply-container {
+  display: flex;
+  align-items: flex-start;
+  padding: 10px 5%;
+  width: fit-content;
+  margin-top: 10px;
+}
+
+/* Reply Avatar */
+.reply-avatar {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  margin-right: 10px;
+}
+
+.reply-avatar .avatar-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+.reply-avatar .avatar-image:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+.reply-avatar .avatar-image-overlap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  left: 15px;
+  border: 2px solid white;
+}
+
+/* Reply Content */
+.reply-content {
+  flex: 1;
+  padding: 10px 15px;
+  background-color: #f7f8fa;
+  border-radius: 20px;
+  font-size: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.reply-content .reply-user-name {
+  font-weight: bold;
+  font-size: 14px;
+  color: #3b3f45;
+  margin-bottom: 5px;
+  transition: color 0.3s ease;
+}
+
+.reply-content .reply-user-name:hover {
+  color: #0056b3;
+}
+
+.reply-content .reply-text {
+  font-size: 14px;
+  color: #65676b;
+  line-height: 1.4;
+}
+
+/* Reply Action (Reply Link) */
+.reply-actions {
+  font-size: 12px;
+  color: #65676b;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.reply-actions .reply-link {
+  cursor: pointer;
+  margin-left: 20px;
+  color: #65676b;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.reply-actions .reply-link:hover {
+  color: #05a5ba;
+}
+
+/* Optional: Add padding to improve spacing for nested replies */
+.reply-content .nested-reply {
+  margin-left: 40px;
+  padding-left: 10px;
+  border-left: 2px solid #e9ebee;
+  margin-top: 8px;
+}
+
+.share-action {
+  position: relative;
+}
+
+.share-dropdown {
+  display: none;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.share-action:hover .share-dropdown {
+  display: block;
+}
+
+.share-dropdown button {
+  margin: 5px 0;
+  padding: 5px 10px;
+  cursor: pointer;
+  border: none;
+  background-color: #f0f0f0;
+  transition: background-color 0.3s;
+}
+
+.share-dropdown button:hover {
+  background-color: #ddd;
+}
