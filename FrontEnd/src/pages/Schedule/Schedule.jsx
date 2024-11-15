@@ -267,7 +267,7 @@ const DateSchedule = ({ schedule, setInforSchedule, mode , city }) => {
               openModal={openModal} setInforSchedule={setInforSchedule}
               setCurrentDestination={setCurrentDestination} mode={mode} />
           ) : (
-            isOpen && <p>No activities scheduled</p>
+            isOpen && <p>Chưa có hoạt động nào</p>
           )}
           {isOpen && mode === "edit" && (
             <div className="add-new">

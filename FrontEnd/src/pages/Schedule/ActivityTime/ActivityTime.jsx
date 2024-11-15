@@ -133,7 +133,7 @@ export const AccomActivity = ({ activity, data, handleEdit, mode }) => {
             <div className="time-schedule-info">
               <i className="fa-solid fa-file"></i>
               <span>
-                {data.description}
+                <span>{data.description.length > 150 ? data.description.substring(0, 150) + "..." : data.description}</span>
               </span>
             </div>
             <div className="list-accom__tour-facilities">
@@ -196,7 +196,7 @@ export const FoodServiceActivity = ({ activity, data, handleEdit, mode }) => {
             </div>
             <div className="time-schedule-info">
               <i className="fa-solid fa-file"></i>
-              <span>{data.description}</span>
+              <span>{data.description.length > 150 ? data.description.substring(0, 150) + "..." : data.description}</span>
             </div>
             <div className="list-accom__tour-facilities">
               {data.amenities.map((facility, index) => (
@@ -262,7 +262,7 @@ export const AttractionActivity = ({ activity, data, handleEdit, mode }) => {
             </div>
             <div className="time-schedule-info">
               <i className="fa-solid fa-file"></i>
-              <span>{data.description}</span>
+              <span>{data.description.length > 150 ? data.description.substring(0, 150) + "..." : data.description}</span>
             </div>
           </div>
           <div className="list-accom__tour-facilities">

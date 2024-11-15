@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
+import CryptoJS from "crypto-js";
 import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import "./ListAccommodation.css";
 
@@ -42,7 +43,7 @@ const AccomItem = ({ accommodation, status, setCurDes, id }) => {
             <span key={index}>{facility}</span>
           ))}
         </div>
-        <p>{accommodation.description}</p>
+        <span>{accommodation.description.length > 150 ? accommodation.description.substring(0, 150) + "..." : accommodation.description}</span>
         <div className="list-accom__tour-rating">{calculateTotalRate(accommodation.ratings)}</div>
       </div>
       <div className="list-accom__tour-price">

@@ -44,7 +44,7 @@ const AttractionItem = ({ attraction, status, setCurDes, id }) => {
             <span key={index}>{facility}</span>
           ))}
         </div>
-        <p>{attraction.description}</p>
+        <span>{attraction.description.length > 150 ? attraction.description.substring(0, 150) + "..." : attraction.description}</span>
         <div className="list-accom__tour-rating">{calculateTotalRate(attraction.ratings)}</div>
       </div>
       <div className="list-accom__tour-price">

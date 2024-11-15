@@ -37,7 +37,7 @@ const FoodServiceItem = ({ foodService, status, setCurDes, id }) => {
             <span key={index}>{facility}</span>
           ))}
         </div>
-        <p>{foodService.description}</p>
+        <span>{foodService.description.length > 150 ? foodService.description.substring(0, 150) + "..." : foodService.description}</span>
         <div className="list-accom__tour-rating">{calculateTotalRate(foodService.ratings)}</div>
       </div>
       <div className="list-accom__tour-price">
