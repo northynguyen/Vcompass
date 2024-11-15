@@ -10,17 +10,6 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
     Additional: 0,
   };
 
-
-const PostCard = ({ schedule, handleScheduleClick }) => {
-  console.log("schedules", schedule)
-  const activityCosts = {
-    Accommodation: 0,
-    FoodService: 0,
-    Attraction: 0,
-    Additional: 0,
-  };
-
-
   schedule.activities.forEach(day => {
     day.activity.forEach(activity => {
       switch (activity.activityType) {
@@ -40,9 +29,7 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
     });
   });
   schedule.additionalExpenses.forEach(activity => {
-
     activityCosts.Additional += activity.cost;
-
   });
   return (
     <div className="card-container">
@@ -62,14 +49,12 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
               hour: '2-digit',
               minute: '2-digit'
             })}</p>
-
-          </div>
-          <div className='post-location'>
-            <i className="fa fa-map-marker" aria-hidden="true"></i>
-            <label className='location-text' htmlFor="null">{schedule.address}</label>
           </div>
         </div>
-
+        <div className='post-location'>
+          <i className="fa fa-map-marker" aria-hidden="true"></i>
+          <label className='location-text' htmlFor="null">{schedule.address}</label>
+        </div>
       </header>
 
       <img
@@ -83,7 +68,6 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
             <h2>{schedule.scheduleName}</h2>
             <p className="schedule-description">{schedule.description}</p>
           </div>
-
           <br />
           <BsFillInfoCircleFill className="info-icon" onClick={() => handleScheduleClick(schedule._id)} />
         </div>
@@ -119,7 +103,6 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
 
         <button className="custom-now" onClick={() => handleScheduleClick(schedule._id)}>Custom now</button>
       </footer>
-
 
     </div>
   );

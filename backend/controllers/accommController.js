@@ -4,88 +4,18 @@ import Accommodation from "../models/accommodation.js";
 
 export const getListAccomm = async (req, res) => {
   try {
-    const { name, minPrice, maxPrice, city } = req.query;
-
-    const query = {};
-
-    // Filter by name if provided (case-insensitive search)
-    if (name) {
-      query.name = { $regex: name, $options: 'i' };
-    }
-
-    // Filter by city if provided
-    if (city) {
-      query.city = { $regex: city, $options: 'i' };
-    }
-
-    // Fetch accommodations based on the constructed query
-    let accommodations = await Accommodation.find(query);
-
-    // If minPrice and maxPrice are provided, filter the accommodations by price
-    if (minPrice && maxPrice) {
-      accommodations = accommodations
-        .map(accommodation => {
-          const prices = accommodation.roomTypes.map(room => room.pricePerNight);
-          const minRoomPrice = Math.min(...prices);
-          const maxRoomPrice = Math.max(...prices);
-
-          return {
-            ...accommodation.toObject(),
-            price: { minPrice: minRoomPrice, maxPrice: maxRoomPrice }
-          };
-        })
-        .filter(accommodation => {
-          // Apply minPrice and maxPrice filters if they exist
-          const { minPrice: accommodationMinPrice, maxPrice: accommodationMaxPrice } = accommodation.price;
-
-          const meetsMinPrice = minPrice ? accommodationMaxPrice >= Number(minPrice) : true;
-          const meetsMaxPrice = maxPrice ? accommodationMinPrice <= Number(maxPrice) : true;
-
-          return meetsMinPrice && meetsMaxPrice;
-        });
-    }
-
+    const accommodations = await Accommodation.find();
     res.json({
       success: true,
       message: "Get data accommodation success",
       accommodations,
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
       message: "Error retrieving accommodations",
       error,
     });
-  }
-};
-
-
-
-export const addReview = async (req, res) => {
-  try {
-    const { id } = req.params; // ID of the accommodation
-    const reviewData = req.body; // Data for the new review
-    console.log(reviewData);
-    // Validate the required fields for the rating
-    if (!reviewData.idUser || !reviewData.userName || !reviewData.userImage || !reviewData.rate || !reviewData.content) {
-      return res.status(400).json({ success: false, message: "Required fields are missing." });
-    }
-
-    // Find the accommodation by ID and add the review to the ratings array
-    const accommodation = await Accommodation.findByIdAndUpdate(
-      id,
-      { $push: { ratings: reviewData } },
-      { new: true }
-    );
-
-    if (!accommodation) {
-      return res.status(404).json({success: false, message: "Accommodation not found." });
-    }
-
-    res.status(200).json({success: true, message: "Review added successfully.", accommodation });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({success: false, message: "An error occurred while adding the review." });
   }
 };
 
@@ -99,7 +29,7 @@ export const getAccommodationById = async (req, res) => {
         .json({ success: false, message: "Invalid ID format" });
     }
 
-    const accommodation = await Accommodation.findById(id).sort({ createdAt: -1 }); // Tìm accommodation theo id
+    const accommodation = await Accommodation.findById(id); // Tìm accommodation theo id
 
     // Nếu không tìm thấy accommodation, trả về thông báo lỗi
     if (!accommodation) {

@@ -31,11 +31,11 @@ const AttractionDetails = () => {
     const location = useLocation();
     const { attractionData } = location.state || {};
 
-    console.log(attractionData);
     const { url, token } = useContext(StoreContext);
     const [isEditing, setIsEditing] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
+    const [imagesData, setImageData] = useState([]);
     const [formData, setFormData] = useState(
         attractionData ? attractionData : {
             attractionName: "",
@@ -79,7 +79,7 @@ const AttractionDetails = () => {
                 attractionName: attractionData.attractionName || "",
                 description: attractionData.description || "",
                 city: attractionData.city || "", // Set city
-                price: attractionData.price || "",
+                price: attractionData.price || 0,
                 location: {
                     address: attractionData.location.address || "",
                     latitude: attractionData.location.latitude || 0,
@@ -139,23 +139,27 @@ const AttractionDetails = () => {
         const { name, value } = e.target;
         setFormData(prevData => ({ ...prevData, [name]: value }));
     };
-
-
-    // Image Upload Handler
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
-        const newImages = files.map(file => URL.createObjectURL(file));
+        const newImagePreviews = files.map(file => URL.createObjectURL(file)); // Tạo blob URL cho UI
+        setImageData(prevImages => [...prevImages, ...files]); // Lưu file thực tế vào imagesData
         setFormData(prevData => ({
             ...prevData,
-            images: [...prevData.images, ...newImages],
+            images: [...prevData.images, ...newImagePreviews], // Blob URL chỉ để hiển thị
         }));
     };
 
     const deleteImage = (index) => {
         setFormData(prevData => {
             const updatedImages = [...prevData.images];
-            updatedImages.splice(index, 1);
+            updatedImages.splice(index, 1); // Xóa blob URL khỏi formData
             return { ...prevData, images: updatedImages };
+        });
+
+        setImageData(prevData => {
+            const updatedImageData = [...prevData];
+            updatedImageData.splice(index, 1); // Xóa file thực tế khỏi imageData
+            return updatedImageData;
         });
     };
 
@@ -209,41 +213,55 @@ const AttractionDetails = () => {
     };
 
     const handleSave = async () => {
-        // Optional: Add validation here (e.g., minPrice <= maxPrice)
-        if (formData.price.minPrice > formData.price.maxPrice) {
-            alert('Giá thấp nhất không được vượt quá giá cao nhất.');
-            return;
-        }
         try {
+            // Lọc bỏ các ảnh đã bị xóa trong cả formData.images và imageData
+            const cleanedFormData = { ...formData };
+            cleanedFormData.images = cleanedFormData.images.filter(image =>
+                typeof image !== 'string' || !image.startsWith('blob:')
+            );
+
+            // Xóa ảnh đã bị xóa trong imageData (chỉ giữ ảnh chưa bị xóa)
+            const imagesToSend = imagesData.filter((image, index) => {
+                return !cleanedFormData.images.includes(URL.createObjectURL(image)); // Xóa ảnh bị xóa
+            });
+
+            // Tạo formData để gửi lên server
+            const formDataToSend = new FormData();
+            formDataToSend.append("attractionData", JSON.stringify(cleanedFormData));
+
+            // Thêm các file ảnh thực tế vào formData
+            imagesToSend.forEach(image => {
+                formDataToSend.append("images", image);
+            });
+
             let response;
             if (attractionData) {
-                // Updating an existing restaurant
                 response = await axios.put(`${url}/api/attractions/${attractionData._id}`,
-                    { attractionData: formData },
-                    { headers: { token } }
+                    formDataToSend,
+                    { headers: { token, 'Content-Type': 'multipart/form-data' } }
                 );
             } else {
-                // Adding a new restaurant
                 response = await axios.post(`${url}/api/attractions/`,
-                    { attractionData: { ...formData, status: "active" } },
-                    { headers: { token } }
+                    formDataToSend,
+                    { headers: { token, 'Content-Type': 'multipart/form-data' } }
                 );
             }
 
-            // Handle the response based on success
             if (response.data.success) {
                 toast.success(response.data.message);
                 setIsEditing(false);
-                navigate('/attraction'); // Stop editing mode if saving is successful
+                navigate('/attraction');
             } else {
                 toast.error(response.data.message);
             }
         } catch (error) {
-            // Handle any errors that occur during the save process
             console.error('Error saving data:', error);
             toast.error('Đã xảy ra lỗi khi lưu dữ liệu. Vui lòng thử lại.');
         }
     };
+
+
+
 
     return (
         <div className="attraction-details">
@@ -317,10 +335,12 @@ const AttractionDetails = () => {
                     />
 
                     <ImageGallery
-                        images={formData.images}
+                        images={formData.images} // Hiển thị blob URL hoặc ảnh từ server
                         onImageUpload={handleImageUpload}
                         onDeleteImage={deleteImage}
                         title="Hình ảnh"
+                        url={url}
+                        isEditing={isEditing}
                     />
 
 
@@ -375,6 +395,9 @@ const AttractionDetails = () => {
                     <ImageGallery
                         images={formData.images}
                         title="Hình ảnh"
+                        url={url}
+
+
                     />
 
                     <h2>Tiện nghi</h2>

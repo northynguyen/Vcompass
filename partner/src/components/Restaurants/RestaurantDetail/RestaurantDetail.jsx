@@ -308,19 +308,6 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
         return `${formattedHour}:${minute} ${ampm}`;
     };
 
-    const vietnamProvinces = [
-        "An Giang", "Bà Rịa - Vũng Tàu", "Bắc Giang", "Bắc Kạn", "Bến Tre", "Bình Định", 
-        "Bình Dương", "Bình Phước", "Bình Thuận", "Cà Mau", "Cao Bằng", "Đắk Lắk", 
-        "Đắk Nông", "Điện Biên", "Đồng Nai", "Đồng Tháp", "Gia Lai", "Hà Giang", "Hà Nam", 
-        "Hà Nội", "Hải Dương", "Hải Phòng", "Hậu Giang", "Hòa Bình", "Hồ Chí Minh", "Hưng Yên", 
-        "Khánh Hòa", "Kiên Giang", "Kon Tum", "Lai Châu", "Lâm Đồng", "Lạng Sơn", "Lào Cai", 
-        "Long An", "Nam Định", "Nghệ An", "Ninh Bình", "Ninh Thuận", "Phú Thọ", "Phú Yên", 
-        "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh", "Quảng Trị", "Sóc Trăng", 
-        "Sơn La", "Tây Ninh", "Thái Bình", "Thái Nguyên", "Thanh Hóa", "Thừa Thiên Huế", 
-        "Tiền Giang", "TP Hồ Chí Minh", "Tuyên Quang", "Vĩnh Long", "Vĩnh Phúc", "Yên Bái"
-      ];
-      
-
     return (
         <div className="restaurant">
             <button type="button" className="back-button" onClick={onBack}>
@@ -359,17 +346,14 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
                             onChange={handleChange}
                             className="edit-input"
                         >
-
                             <option value="">Chọn tỉnh/thành phố</option>
                             {vietnamProvinces.map((province, index) => (
                                 <option key={index} value={province}>
                                     {province}
-
                                 </option>
                             ))}
                         </select>
                     </p>
-
 
                     <h2>Giá</h2>
                     <p>

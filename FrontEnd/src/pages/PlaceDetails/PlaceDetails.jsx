@@ -20,8 +20,8 @@ const PlaceDetails = () => {
      {type === 'accommodation' && <HotelDetailsInfo serviceId={originalServiceId} />}
       {type === 'attraction' && <AttractionDetailsInfo serviceId={originalServiceId} />}
       {type === 'food' && <FoodDetailsInfo serviceId={originalServiceId} />}
-      <SlideBar type={type}/>
-      <PlaceReview id={originalServiceId} type={type}/>
+      <SlideBar />
+      <PlaceReview />
     </div>
   )
 }
