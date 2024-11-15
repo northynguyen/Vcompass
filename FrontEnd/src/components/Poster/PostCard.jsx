@@ -1,5 +1,6 @@
 import React from 'react';
 import './PostCard.css';
+import { BsFillInfoCircleFill } from "react-icons/bs";
 
 const PostCard = ({ schedule, handleScheduleClick }) => {
   console.log("schedules", schedule)
@@ -29,7 +30,9 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
     });
   });
   schedule.additionalExpenses.forEach(activity => {
+
       activityCosts.Additional += activity.cost;
+
   });
   return (
     <div className="card-container">
@@ -50,11 +53,19 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
               minute: '2-digit'
             })}</p>
           </div>
-          <div className='post-location'>
-            <i className="fa fa-map-marker" aria-hidden="true"></i>
-            <label className='location-text' htmlFor="null">{schedule.address}</label>
-          </div>
         </div>
+        <div className='post-location'>
+          <i className="fa fa-map-marker" aria-hidden="true"></i>
+          <label className='location-text' htmlFor="null">{schedule.address}</label>
+        </div>
+// =======
+//           </div>
+//           <div className='post-location'>
+//             <i className="fa fa-map-marker" aria-hidden="true"></i>
+//             <label className='location-text' htmlFor="null">{schedule.address}</label>
+//           </div>
+//         </div>
+// >>>>>>> main
       </header>
 
       <img
@@ -68,6 +79,7 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
             <h2>{schedule.scheduleName}</h2>
             <p className="schedule-description">{schedule.description}</p>
           </div>
+
 
           <div className="pricing-box">
             <h3>Chi phí</h3>
@@ -103,7 +115,6 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
           <button className="custom-now" onClick={() => handleScheduleClick(schedule._id)}>Custom now</button>
         </footer>
       </div>
-
 
     </div>
   );

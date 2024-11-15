@@ -4,40 +4,11 @@ import mongoose from "mongoose"; // Import mongoose (though it's not used here)
 // Controller function to get all attractions
 const getAttractions = async (req, res) => {
     try {
-        const { name, minPrice, maxPrice, city } = req.query;
-
-        // Build query object
-        const query = {};
-
-        // Add name filter if provided
-        if (name) {
-            query.attraction_name = { $regex: name, $options: 'i' }; // case-insensitive search
-        }
-
-        // Add price range filter if provided
-        if (minPrice || maxPrice) {
-            query.price = {};
-            if (minPrice) query.price.$gte = Number(minPrice);
-            if (maxPrice) query.price.$lte = Number(maxPrice);
-        }
-
-        // Add city filter if provided
-        if (city) {
-            query.city = { $regex: city, $options: 'i' };
-        }
-
-        // Execute query
-        const attractions = await Attraction.find(query);
-        
-        res.status(200).json({
-            success: true,
-            attractions: attractions
-        });
+        const attractions = await Attraction.find(); // Retrieve all attractions
+        res.status(200).json({ success: true, attractions }); // Send the attractions as JSON
     } catch (error) {
         console.error(error); // Log the error for debugging
-        res.status(500).json({
-            message: 'Server error'
-        });
+        res.status(500).json({ message: 'Server error' }); // Return a server error response
     }
 };
 
@@ -49,7 +20,7 @@ const getAttractionById = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid ID format' });
         }
 
-        const attraction = await Attraction.findById(id).sort({ createdAt: -1 }); // Tìm attraction theo id
+        const attraction = await Attraction.findById(id); // Tìm attraction theo id
 
         // Nếu không tìm thấy attraction, trả về thông báo lỗi
         if (!attraction) {
@@ -65,7 +36,7 @@ const getAttractionById = async (req, res) => {
 };
 const addAttraction = async (req, res) => {
     try {
-        const newAttraction = new Attraction(req.body.attractionData);
+        const newAttraction = new Attraction(JSON.parse(req.body.attractionData));
 
         if (req.files) {
             if (req.files.images) {
@@ -89,11 +60,9 @@ const addAttraction = async (req, res) => {
     }
 };
 
-
 const updateAttraction = async (req, res) => {
-    const attractionId = req.body.attractionData._id;
-    const updateData = req.body.attractionData;
-
+    const attractionId = req.params.id;
+    const updateData = JSON.parse(req.body.attractionData);
     try {
         const attraction = await Attraction.findById(attractionId);
         if (!attraction) {
@@ -101,17 +70,21 @@ const updateAttraction = async (req, res) => {
         }
 
         // Handle images if provided
-        let updatedImages = attraction.images || [];
+        let updatedImages = updateData.images || [];
 
-        if (req.files && req.files.images) {
+        // Check if images are provided and process the file uploads
+        if (req.files.images) {
             const newImagePaths = req.files.images.map((file) => file.filename);
             updatedImages.push(...newImagePaths);
         }
 
+
+        // Filter out images to remove (images not present in the new update)
         const imagesToRemove = attraction.images.filter((img) => !updatedImages.includes(img));
         updateData.images = updatedImages;
 
-        // Assign updated fields
+
+        // Assign updated fields from updateData to the attraction object
         Object.assign(attraction, updateData);
 
         // Delete old images asynchronously
@@ -125,6 +98,7 @@ const updateAttraction = async (req, res) => {
 
         await Promise.all(imagesToRemove.map((image) => deleteImage(image)));
 
+        // Save updated attraction data
         await attraction.save();
 
         res.status(200).json({
@@ -137,6 +111,22 @@ const updateAttraction = async (req, res) => {
         console.error("Error updating attraction:", error);
     }
 };
+
+
+const deleteAttraction = async (req, res) => {
+    try {
+        const { id: attractionId } = req.params;
+        const attraction = await Attraction.findByIdAndDelete(attractionId);
+        if (!attraction) {
+            return res.status(404).json({ success: false, message: "Attraction not found" });
+        }
+        res.status(200).json({ success: true, message: "Deleted attraction successfully" });
+    } catch (error) {
+        console.error("Error deleting attraction:", error);
+        res.status(500).json({ success: false, message: "Error deleting attraction" });
+    }
+};
+export { getAttractions, getAttractionById, addAttraction, updateAttraction, deleteAttraction }; // Export the getAttractions;
 
 const addReview = async (req, res) => {
     const id = req.params.id;
@@ -166,3 +156,4 @@ const addReview = async (req, res) => {
       }
     };
 export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview }; // Export the getAttractions;
+

@@ -6,6 +6,9 @@ import { StoreContext } from '../../Context/StoreContext';
 
 const Attraction = ({ data }) => {
     const navigate = useNavigate();
+
+    const { url } = useContext(StoreContext);
+
     const handleEdit = () => {
         navigate(`/attraction/details`, { state: { attractionData: data, } });
     }
@@ -14,7 +17,7 @@ const Attraction = ({ data }) => {
         <div className="attraction-card">
 
             <div className="image-container" onClick={handleEdit}>
-                <img src={data.images[0]} alt={data.attractionName} />
+                <img src={`${url}/images/${data.images[0]}`} className="image" alt={data.attractionName} />
             </div>
             <div className="content">
                 <h3 onClick={handleEdit}>{data.attractionName}</h3>
