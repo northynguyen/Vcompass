@@ -1,18 +1,18 @@
-import CryptoJS from "crypto-js";
 import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
 import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import "./ListAccommodation.css";
 
-const AccomItem = ({ accommodation, status, setCurDes, id }) => {
 
+// Accommodation Item Component
+const AccomItem = ({ accommodation, status, setCurDes, id }) => {
   const handleSelect = (e) => {
     e.stopPropagation();
     accommodation.activityType = "Accommodation";
     setCurDes(accommodation);
   };
 
-  // Open details in a new window
+
   const onNavigateToDetails = () => {
     const encryptedServiceId = CryptoJS.AES.encrypt(accommodation._id, 'mySecretKey').toString();
     const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
@@ -27,11 +27,13 @@ const AccomItem = ({ accommodation, status, setCurDes, id }) => {
       <div className="list-accom__tour-details">
         <h3>{accommodation.name}</h3>
         <div className="list-accom__tour-location">
-        <a 
-          href={`https://www.google.com/maps/?q=${accommodation.location.latitude},${accommodation.location.longitude}`} 
-          target="_blank" 
-          rel="noopener noreferrer"
-        >
+
+          <a 
+            href={`https://www.google.com/maps/?q=${accommodation.location.latitude},${accommodation.location.longitude}`} 
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+
             {accommodation.location.address}
           </a>
         </div>

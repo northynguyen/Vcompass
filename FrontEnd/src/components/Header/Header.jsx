@@ -73,16 +73,16 @@ const Header = ({ setShowLogin }) => {
 
       <div className="header-right">
         <ul className="header-menu">
-          <Link to="/" className="header-menu-page">Trang chủ</Link>
-          <Link to="/about" className="header-menu-page">About Us</Link>
-          <Link to="/booking" className="header-menu-page">Hotels</Link>
-          <Link to="/my-schedule" className="header-menu-page">Lịch trình của tôi</Link>
-          <Link to="/partnership" className="header-menu-page">Quan hệ đối tác</Link>
-          <Link to="/help" className="header-menu-page">Trợ giúp</Link>
+          <Link to="/" className="">Home</Link>
+          <Link to="/about" className="">About Us</Link>
+          <Link to="/booking" className="">Booking</Link>
+          <Link to="/my-schedule" className="">My Schedule</Link>
+          <Link to="/partnership" className="">Partnership</Link>
+          <Link to="/help" className="">Help</Link>
         </ul>
 
         {/* Chờ chèn token vào  */}
-        {token === null ? <button onClick={() => setShowLogin(true)}>Đăng nhập</button> :
+        {token === null ? <button onClick={() => setShowLogin(true)}>Sign in</button> :
           <div className="header-profile" ref={menuRef}>
             <div className="profile-section" onClick={toggleMenu}>
               <img src={profile_icon} alt="Profile" className="profile-pic" />

@@ -1,3 +1,4 @@
+
 .comment-container {
     display: flex;
     align-items: flex-start;
@@ -127,6 +128,7 @@
     padding: 15px;
     border-radius: 20px;
 }
+
   
   .send-icon {
     color: #65676b;
@@ -134,3 +136,4 @@
     font-size: 18px;
     margin-left: 10px;
   }
+

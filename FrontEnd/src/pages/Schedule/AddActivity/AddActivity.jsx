@@ -44,6 +44,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   const [cost, setCost] = React.useState("")
   const [description, setDescription] = React.useState("")
   const [curDes, setCurDes] = React.useState(null)
+
   console.log("CurDes", activity)
   useEffect(() => {
     if (isOpen) {

@@ -1,6 +1,7 @@
-import React from 'react';
-import "./Comment.css";
 
+import React, { useState, useContext, useEffect } from 'react';
+import './Comment.css';
+import { StoreContext } from '../../../Context/StoreContext';
 import { FaCommentAlt, FaHeart, FaRegPaperPlane, FaShare } from 'react-icons/fa';
 
 export const PostActions = () => {
@@ -77,3 +78,4 @@ export const CommentInput = () => {
     );
 };
 export default Comment
+
