@@ -4,11 +4,9 @@ import {
   getScheduleById,
   getSchedulesByIdUser,
   updateSchedule,
-
   getAllSchedule,
-  getTopAddressSchedule
-
-updateLikeComment
+  getTopAddressSchedule,
+  updateLikeComment
 
 } from "../controllers/scheduleController.js";
 import authMiddleware from "../middleware/auth.js";

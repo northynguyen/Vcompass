@@ -62,7 +62,17 @@ const AttractionDetails = () => {
 
     const mapRef = useRef();
     const availableAmenities = ["Free Wi-Fi", "Outdoor seating", "Live music", "Parking", "Wheelchair access", "Pets allowed"];
-
+    const vietnamProvinces = [
+        "An Giang", "Bà Rịa - Vũng Tàu", "Bắc Giang", "Bắc Kạn", "Bến Tre", "Bình Định",
+        "Bình Dương", "Bình Phước", "Bình Thuận", "Cà Mau", "Cao Bằng", "Đắk Lắk",
+        "Đắk Nông", "Điện Biên", "Đồng Nai", "Đồng Tháp", "Gia Lai", "Hà Giang", "Hà Nam",
+        "Hà Nội", "Hải Dương", "Hải Phòng", "Hậu Giang", "Hòa Bình", "Hồ Chí Minh", "Hưng Yên",
+        "Khánh Hòa", "Kiên Giang", "Kon Tum", "Lai Châu", "Lâm Đồng", "Lạng Sơn", "Lào Cai",
+        "Long An", "Nam Định", "Nghệ An", "Ninh Bình", "Ninh Thuận", "Phú Thọ", "Phú Yên",
+        "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh", "Quảng Trị", "Sóc Trăng",
+        "Sơn La", "Tây Ninh", "Thái Bình", "Thái Nguyên", "Thanh Hóa", "Thừa Thiên Huế",
+        "Tiền Giang", "TP Hồ Chí Minh", "Tuyên Quang", "Vĩnh Long", "Vĩnh Phúc", "Yên Bái"
+    ];
     useEffect(() => {
         if (attractionData) {
             setFormData({
@@ -203,14 +213,6 @@ const AttractionDetails = () => {
     };
 
     const handleSave = async () => {
-
-        // Optional: Add validation here (e.g., minPrice <= maxPrice)
-        if (formData.price.minPrice > formData.price.maxPrice) {
-            alert('Giá thấp nhất không được vượt quá giá cao nhất.');
-            return;
-        }
-
-
         try {
             // Lọc bỏ các ảnh đã bị xóa trong cả formData.images và imageData
             const cleanedFormData = { ...formData };
@@ -242,16 +244,13 @@ const AttractionDetails = () => {
                 response = await axios.post(`${url}/api/attractions/`,
                     formDataToSend,
                     { headers: { token, 'Content-Type': 'multipart/form-data' } }
-
                 );
             }
 
             if (response.data.success) {
                 toast.success(response.data.message);
-
                 setIsEditing(false);
                 navigate('/attraction');
-
             } else {
                 toast.error(response.data.message);
             }
@@ -294,14 +293,20 @@ const AttractionDetails = () => {
                     <h2>Thành phố</h2>
                     <p>
                         <label htmlFor="city">Thành phố:</label>
-                        <input
+                        <select
                             id="city"
-                            type="text"
                             name="city"
                             value={formData.city}
                             onChange={handleChange}
                             className="edit-input"
-                        />
+                        >
+                            <option value="">Chọn tỉnh</option>
+                            {vietnamProvinces.map((province, index) => (
+                                <option key={index} value={province}>
+                                    {province}
+                                </option>
+                            ))}
+                        </select>
                     </p>
                     <h2>Giá</h2>
                     <p>

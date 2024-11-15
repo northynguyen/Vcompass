@@ -1,6 +1,6 @@
 import Attraction from '../models/attraction.js'; // Import the Attraction model
 import mongoose from "mongoose"; // Import mongoose (though it's not used here)
-
+import fs from "fs";
 // Controller function to get all attractions
 const getAttractions = async (req, res) => {
     try {
@@ -40,7 +40,8 @@ const addAttraction = async (req, res) => {
 
         if (req.files) {
             if (req.files.images) {
-                newAttraction.images = req.files.images.map((file) => file.filename);
+                const images = req.files.images.map((file) => file.filename);
+                newAttraction.images = images;
             }
         }
 
@@ -63,6 +64,7 @@ const addAttraction = async (req, res) => {
 const updateAttraction = async (req, res) => {
     const attractionId = req.params.id;
     const updateData = JSON.parse(req.body.attractionData);
+    console.log(JSON.parse(req.body.attractionData))// Parse FormData fields from req.body
     try {
         const attraction = await Attraction.findById(attractionId);
         if (!attraction) {
@@ -112,7 +114,6 @@ const updateAttraction = async (req, res) => {
     }
 };
 
-
 const deleteAttraction = async (req, res) => {
     try {
         const { id: attractionId } = req.params;
@@ -126,7 +127,6 @@ const deleteAttraction = async (req, res) => {
         res.status(500).json({ success: false, message: "Error deleting attraction" });
     }
 };
-export { getAttractions, getAttractionById, addAttraction, updateAttraction, deleteAttraction }; // Export the getAttractions;
 
 const addReview = async (req, res) => {
     const id = req.params.id;
@@ -135,25 +135,25 @@ const addReview = async (req, res) => {
         console.log(reviewData);
         // Validate the required fields for the rating
         if (!reviewData.idUser || !reviewData.userName || !reviewData.userImage || !reviewData.rate || !reviewData.content) {
-          return res.status(400).json({ success: false, message: "Required fields are missing." });
+            return res.status(400).json({ success: false, message: "Required fields are missing." });
         }
-    
+
         // Find the accommodation by ID and add the review to the ratings array
         const attraction = await Attraction.findByIdAndUpdate(
-          id,
-          { $push: { ratings: reviewData } },
-          { new: true }
+            id,
+            { $push: { ratings: reviewData } },
+            { new: true }
         );
-    
+
         if (!attraction) {
-          return res.status(404).json({success: false, message: "Accommodation not found." });
+            return res.status(404).json({ success: false, message: "Accommodation not found." });
         }
-    
-        res.status(200).json({success: true, message: "Review added successfully.", attraction });
-      } catch (error) {
+
+        res.status(200).json({ success: true, message: "Review added successfully.", attraction });
+    } catch (error) {
         console.error(error);
-        res.status(500).json({success: false, message: "An error occurred while adding the review." });
-      }
-    };
-export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview }; // Export the getAttractions;
+        res.status(500).json({ success: false, message: "An error occurred while adding the review." });
+    }
+};
+export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview, deleteAttraction }; // Export the getAttractions;
 

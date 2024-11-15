@@ -1,7 +1,6 @@
-.tour-search-container{
+.tour-search-container {
   margin-bottom: 100px;
 }
-
 
 .home-container {
   display: flex;
@@ -85,168 +84,107 @@
 
 .search-container {
   width: 70%;
-
-.post-card-container{
-  margin-top: 100px;
-
   position: relative;
-  animation: fadeIn 3s ease-in-out;
+  margin-top: 200px;
+  left: 15%;
+  display: flex;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.tour-search {
-    color: #333;
-    position: relative;
-  }
-  .home-background{
-    height: 600px;
-    width: 100%;
-    z-index: -100;
-    color: #333;
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    object-fit: cover; /* Giữ tỷ lệ và lấp đầy khung */
-    object-position: center; /* Canh giữa ảnh */
-  }
-  
-  .hero-section {
-    position: relative;
-    text-align: center;
-    padding: 80px 20px;
-    background-image: url('path-to-your-image.jpg'); /* Thay đường dẫn hình ảnh */
-    background-size: cover;
-    background-position: center;
-  }
-  
-  .hero-title {
-    margin-top: 150px;
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
+.search-input {
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  flex-grow: 1;
+  color: #333;
+  font-style: italic;
+  font-size: 16px;
+  margin-left: 20px;
+}
 
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-  
-  .video-button {
-    margin-top: 20px;
-  }
-  
-  .play-video {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: white;
-    border-radius: 50%;
-    width: 64px;
-    height: 64px;
-    border: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .play-icon {
-    width: 32px;
-    height: 32px;
-    color: #009688;
-  }
-  
-  .search-container {
-    width: 70%;
-    position: relative;
-    margin-top: 200px;
-    left: 15%;
-    display: flex;
-    background: white;
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .search-input {
-    border: none;
-    outline: none;
-    border-radius: 4px;
-    flex-grow: 1;
-    color: #333;
-    font-style: italic;
-    font-size: 16px;
-    margin-left: 20px;
-  }
-  
-  .search-button {
-    width: 16%;
-    background: #ffc107;
-    color: rgb(0, 0, 0);
-    padding: 10px 15px;
-    border: none;
-    font-weight: 550;
-    border-radius: 99px;
-    cursor: pointer;
-    margin-left: 4%;
-  }
-  
-  .popular-cities {
-    text-align: center;
-  }
-  
-  .cities-title {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .cities-description {
-    font-weight: 200;
+.search-button {
+  width: 16%;
+  background: #ffc107;
+  color: rgb(0, 0, 0);
+  padding: 10px 15px;
+  border: none;
+  font-weight: 550;
+  border-radius: 99px;
+  cursor: pointer;
+  margin-left: 4%;
 }
-  
-  .city-buttons {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
-  }
-  
-  .city-button {
-    padding: 10px 20px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    background: transparent;
-    color: #333;
-    cursor: pointer;
-    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; /* Shorthand for multiple properties */
-  }
-  
-  .city-button:hover {
-    background: #009688;
-    color: white;
-    border-color: #009688; /* Change border color on hover */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional shadow effect on hover */
-  }
-  .home-header{  
-    background-color: transparent !important;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    z-index: 999; 
-    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+
+.popular-cities {
+  text-align: center;
 }
-.home-header .header-menu a{
+
+.cities-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.cities-description {
+  font-weight: 400;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.city-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.city-button {
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background: transparent;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  /* Shorthand for multiple properties */
+}
+
+.city-button:hover {
+  background: #009688;
+  color: white;
+  border-color: #009688;
+  /* Change border color on hover */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  /* Optional shadow effect on hover */
+}
+
+.home-header {
+  background-color: transparent !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+}
+
+.home-header .header-menu a {
   color: rgb(255, 255, 255);
   text-decoration: none;
   font-size: medium;
 }
+
 .home-header .header .logo {
   color: rgb(255, 255, 255);
   width: 150px;
   cursor: pointer;
 }
+
 .search-subtitle {
   display: flex;
   text-align: left;
@@ -254,9 +192,11 @@
   font-size: 15px;
   color: #7BBCB0;
 }
-.search-icon{
+
+.search-icon {
   margin-left: 10px;
 }
+
 .search-title {
   width: 40%;
   text-align: left;
