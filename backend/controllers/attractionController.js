@@ -1,6 +1,6 @@
 import Attraction from '../models/attraction.js'; // Import the Attraction model
 import mongoose from "mongoose"; // Import mongoose (though it's not used here)
-import fs from "fs";
+
 // Controller function to get all attractions
 const getAttractions = async (req, res) => {
     try {
@@ -69,8 +69,7 @@ const addAttraction = async (req, res) => {
 
         if (req.files) {
             if (req.files.images) {
-                const images = req.files.images.map((file) => file.filename);
-                newAttraction.images = images;
+                newAttraction.images = req.files.images.map((file) => file.filename);
             }
         }
 
@@ -92,7 +91,7 @@ const addAttraction = async (req, res) => {
 
 
 const updateAttraction = async (req, res) => {
-    const attractionId = req.params.id;
+    const attractionId = req.body.attractionData._id;
     const updateData = req.body.attractionData;
 
     try {
@@ -139,21 +138,6 @@ const updateAttraction = async (req, res) => {
     }
 };
 
-const deleteAttraction = async (req, res) => {
-    try {
-        const { id: attractionId } = req.params;
-        const attraction = await Attraction.findByIdAndDelete(attractionId);
-        if (!attraction) {
-            return res.status(404).json({ success: false, message: "Attraction not found" });
-        }
-        res.status(200).json({ success: true, message: "Deleted attraction successfully" });
-    } catch (error) {
-        console.error("Error deleting attraction:", error);
-        res.status(500).json({ success: false, message: "Error deleting attraction" });
-    }
-};
-
-
 const addReview = async (req, res) => {
     const id = req.params.id;
     try {
@@ -181,5 +165,4 @@ const addReview = async (req, res) => {
         res.status(500).json({success: false, message: "An error occurred while adding the review." });
       }
     };
-export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview, deleteAttraction}; // Export the getAttractions;
-
+export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview }; // Export the getAttractions;

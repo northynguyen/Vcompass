@@ -216,9 +216,7 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
   );
 }
 
-
 const DateSchedule = ({ schedule, setInforSchedule, mode , city }) => {
-
   const [scheduleDate, setScheduleDate] = useState(schedule);
   const [isOpen, setIsOpen] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -485,9 +483,7 @@ const Schedule = ({ mode }) => {
         </div>
         {inforSchedule.activities?.length > 0 ? (
           inforSchedule.activities.map((schedule, index) => {
-
             return <DateSchedule key={index} schedule={schedule} city={inforSchedule.address}
-
               setInforSchedule={setInforSchedule} mode={mode} />;
           })
         ) : (
@@ -508,9 +504,7 @@ const Schedule = ({ mode }) => {
         </div>
       }
 
-
       <Comment schedule={inforSchedule} />
-
       <InforScheduleMedal isOpen={isOpenInforSchedule}
         closeModal={closeInforSchedule}
         inforSchedule={inforSchedule}

@@ -1,14 +1,14 @@
 // attractionRoutes.js
 import express from "express";
-import { getAttractionById, getAttractions, addAttraction, updateAttraction, deleteAttraction } from "../controllers/attractionController.js";
-import { upload } from "../middleware/upload.js";
+import { getAttractionById, getAttractions, addAttraction, updateAttraction,addReview } from "../controllers/attractionController.js";
+
 const Attractionrouter = express.Router();
 
 // Route to get all attractions
 Attractionrouter.get('/', getAttractions);
 Attractionrouter.get('/:id', getAttractionById);
-Attractionrouter.post('/', upload.fields([{ name: "images", maxCount: 5 }]), addAttraction);
-Attractionrouter.put('/:id', upload.fields([{ name: "images", maxCount: 5 }]), updateAttraction);
-Attractionrouter.delete('/:id', deleteAttraction)
+Attractionrouter.post('/add', addAttraction);
+Attractionrouter.post('/update', updateAttraction);
+Attractionrouter.post('/addReview/:id', addReview);
 export { Attractionrouter }; // Export the Attractionrouter;
 

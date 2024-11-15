@@ -25,7 +25,7 @@
 .header-menu {
     display: flex;
     list-style: none;
-    gap: 10px;
+    gap: 40px;
     font-size: 18px;
 }
 
@@ -50,12 +50,12 @@
 
 .header-right button {
     width: 120px;
-    padding: 10px 20px;
+    padding: 10px 30px;
     background-color: #FFDA32;
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 18px;
     transition: background-color 0.5s, color 0.5s;
     /* Smooth transitions */
 }
@@ -133,14 +133,4 @@
 .profile-menu li:hover {
     background-color: rgba(0, 0, 0, 0.1);
     /* Highlight on hover */
-}
-
-.header-menu-page:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-.header-menu-page {
-    padding: 10px 10px;
-    cursor: pointer;
-    border-radius: 5px;
 }

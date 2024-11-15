@@ -1,4 +1,3 @@
-
 import React, { useState, useContext, useEffect } from 'react';
 import './Comment.css';
 import { StoreContext } from '../../../Context/StoreContext';
@@ -263,4 +262,3 @@ const CommentContent = ({ comment, scheduleId, token, updateComments , url, user
 };
 
 export default Comment;
-

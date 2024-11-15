@@ -2,7 +2,7 @@ import { Schema } from "mongoose";
 import { RatingSchema } from "./rating.js";
 import mongoose from "mongoose";
 const AttractionSchema = new Schema({
-  attractionName: { type: String, required: true },
+  attraction_name: { type: String, required: true },
   description: { type: String, required: true },
   location: {
     latitude: { type: Number, required: true },
