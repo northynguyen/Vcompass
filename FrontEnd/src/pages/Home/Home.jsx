@@ -61,6 +61,13 @@ const Home = () => {
 
     setFilteredSchedules(filtered);
   };
+  const handleFilterByCity = (nameCity) => {
+    const filtered = schedules.filter((schedule) => {
+      const isAddressMatch = schedule.address.toLowerCase().includes(nameCity.toLowerCase());
+      return isAddressMatch
+    });
+    setFilteredSchedules(filtered);
+  }
   const handleAddressChange = (e) => {
     setAddress(e.target.value);
   };
@@ -121,7 +128,7 @@ const Home = () => {
             {/* City Buttons */}
             <div className="city-buttons">
               {topCity.map((city, index) => (
-                <button key={index} className="city-button">{city.name}</button>
+                <button key={index} className="city-button" onClick={() => handleFilterByCity(city.name)}>{city.name}</button>
               ))}
             </div>
           </section>

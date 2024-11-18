@@ -224,6 +224,32 @@ const deleteFoodService = async (req, res) => {
 
 
 
+const addReview = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const reviewData = req.body; // Data for the new review
+        console.log(reviewData);
+        // Validate the required fields for the rating
+        if (!reviewData.idUser || !reviewData.userName || !reviewData.userImage || !reviewData.rate || !reviewData.content) {
+          return res.status(400).json({ success: false, message: "Required fields are missing." });
+        }
+    
+        // Find the accommodation by ID and add the review to the ratings array
+        const foodService = await FoodService.findByIdAndUpdate(
+          id,
+          { $push: { ratings: reviewData } },
+          { new: true }
+        );
+    
+        if (!foodService) {
+          return res.status(404).json({success: false, message: "Accommodation not found." });
+        }
+    
+        res.status(200).json({success: true, message: "Review added successfully.", foodService });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({success: false, message: "An error occurred while adding the review." });
+      }
+ };
 
-
-export { getListFoodService, getListByPartner,createFoodService, updateFoodService, deleteFoodService };
+export { getListFoodService, getListByPartner,createFoodService, updateFoodService, deleteFoodService,addReview };

@@ -1,92 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useState, useEffect , useContext} from 'react';
 import './PlaceReview.css';
-
-const reviews = [
-  {
-    id: 1,
-    name: "Arlene McCoy",
-    date: "2 October 2012",
-    rating: 5,
-    comment: "Good Tour, Really Well Organised!",
-    avatar: "https://randomuser.me/api/portraits/women/1.jpg",
-    numberOfNights: 3,
-    roomType: "Deluxe",
-    numberOfPeople: 2
-  },
-  {
-    id: 2,
-    name: "Jenny Wilson",
-    date: "2 October 2012",
-    rating: 4,
-    comment: "Informative But Disappointed Not Seeing Changing Of The Guards",
-    avatar: "https://randomuser.me/api/portraits/women/2.jpg",
-    numberOfNights: 2,
-    roomType: "Standard",
-    numberOfPeople: 1
-  },
-  {
-    id: 3,
-    name: "Ralph Edwards",
-    date: "2 October 2012",
-    rating: 4,
-    comment: "I Love Their Way Of Style. The tour was very well organised. One minus is that you get completely bombarded with information...",
-    avatar: "https://randomuser.me/api/portraits/men/3.jpg",
-    numberOfNights: 4,
-    roomType: "Suite",
-    numberOfPeople: 3
-  },
-  {
-    id: 4,
-    name: "Courtney Henry",
-    date: "2 October 2012",
-    rating: 4,
-    comment: "Enjoyed Very Much. The tour was very well organised. One minus is that you get completely bombarded with information...",
-    avatar: "https://randomuser.me/api/portraits/women/4.jpg",
-    numberOfNights: 1,
-    roomType: "Standard",
-    numberOfPeople: 2
-  },
-  {
-    id: 5,
-    name: "Devon Lane",
-    date: "2 October 2012",
-    rating: 4,
-    comment: "Nice!!!!!!! The tour was very well organised. One minus is that you get completely bombarded with information...",
-    avatar: "https://randomuser.me/api/portraits/men/5.jpg",
-    numberOfNights: 2,
-    roomType: "Deluxe",
-    numberOfPeople: 4
-  },
-  {
-    id: 6,
-    name: "Mark Simpson",
-    date: "2 October 2012",
-    rating: 5,
-    comment: "Amazing experience, great guide and wonderful service...",
-    avatar: "https://randomuser.me/api/portraits/men/6.jpg",
-    numberOfNights: 5,
-    roomType: "Suite",
-    numberOfPeople: 2
-  },
-  {
-    id: 7,
-    name: "Alice Brown",
-    date: "2 October 2012",
-    rating: 3,
-    comment: "It was good, but could have been better...",
-    avatar: "https://randomuser.me/api/portraits/women/7.jpg",
-    numberOfNights: 3,
-    roomType: "Standard",
-    numberOfPeople: 1
-  },
-  // Thêm các đánh giá khác ở đây nếu cần
-];
-
-// Tính tổng số sao trung bình
-const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
-
+import axios from 'axios';
+import {StoreContext} from '../../Context/StoreContext'
+import Review from '../Review/Review';
 const StarRating = ({ rating }) => {
   return (
     <div className="star-rating">
@@ -99,82 +17,185 @@ const StarRating = ({ rating }) => {
   );
 };
 
-const ReviewCard = ({ review }) => (
+const ReviewCard = ({ review , type  }) => (
   <div className="review-card">
     <div className="review-avatar">
-      <img src={review.avatar} alt={`${review.name} avatar`} />
-      {/* Thông tin mới */}
-      <div className="additional-info">
-        <p><strong>Số đêm ở:</strong> {review.numberOfNights}</p>
+      <img src={review.userImage} alt={`${review.userName} avatar`} />
+      {type === "accommodation" && (
+        <div className="additional-info">
+        <p><strong>Số đêm ở:</strong> {review.duration}</p>
         <p><strong>Loại phòng:</strong> {review.roomType}</p>
-        <p><strong>Số lượng người:</strong> {review.numberOfPeople}</p>
+        <p><strong>Số lượng người:</strong> {review.numPeople}</p>
       </div>
+      )}
+
+      {type === "food" && (
+        <div className="additional-info">
+        <p><strong>Số người:</strong> {review.numPeople}</p>
+      </div>
+      )}
+
+      {type === "attraction" && (
+        <div className="additional-info">
+        <p><strong>Số người:</strong> {review.numPeople}</p>
+      </div>
+      )}
+      
     </div>
     <div className="review-content">
       <div className="review-header">
-        <h4>{review.name}</h4>
-        <p>{review.date}</p>
+        <h4>{review.userName}</h4>
+        <p>{new Date(review.createdAt).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
       </div>
-      <StarRating rating={review.rating} />
-      <p>{review.comment}</p>
+      <div className="overall-rating" > 
+              <StarRating rating={review.rate} />
+          </div>
+      {type === "accommodation" && (
+        <div>
+          <div> 
+              <p><strong>Room quality:</strong> </p>
+              <StarRating rating={review.roomRate } />
+          </div>
 
+          <div> 
+              <p><strong>Service:</strong> </p>
+              <StarRating rating={review.serviceRate} />
+          </div>
+        </div>
+      )}
 
+      {type === "food" && (
+        <div>
+          <div> 
+              <p><strong>Food quality:</strong> </p>
+              <StarRating rating={review.foodRate} />
+          </div>
+          <div>
+              <p><strong>Service:</strong> </p>
+              <StarRating rating={review.serviceRate} />
+          </div>
+        </div>
+      )}
+
+      {type === "attraction" && (
+        <div>
+        <div> 
+            <p><strong>Place quality:</strong> </p>
+            <StarRating rating={review.attractionRate} />
+        </div>
+        <div>
+            <p><strong>Service:</strong> </p>
+            <StarRating rating={review.serviceRate} />
+        </div>
+      </div>
+      )}
+      
+      <p>{review.content}</p>
     </div>
   </div>
 );
 
-const PlaceReview = () => {
-  const [visibleReviews, setVisibleReviews] = useState(5); // Hiển thị 5 review đầu tiên
-  const [filterRating, setFilterRating] = useState(0); // Lọc theo số sao, 0 là không lọc
-  const [showAllReviews, setShowAllReviews] = useState(true); // Trạng thái của "Show More/Less"
+const PlaceReview = ({ type, id }) => {
+  const [reviews, setReviews] = useState([]);
+  const [visibleReviews, setVisibleReviews] = useState(5);
+  const [filterRating, setFilterRating] = useState(0);
+  const [showAllReviews, setShowAllReviews] = useState(true);
+  const { url } = useContext(StoreContext);
+  const [showAddReview, setShowAddReview] = useState(false);
+  // Fetch reviews based on the type and id props
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const href = type === "accommodation" 
+                      ? `${url}/api/accommodations/getAccomm/${id}` 
+                      : type === "food" 
+                      ? `${url}/api/foodservices/${id}` 
+                      : `${url}/api/attractions/${id}`;
+        const response = await fetch(href);
+        const data = await response.json();
+        const reviewsData = type === "accommodation" 
+                            ? data.accommodation.ratings 
+                            : type === "food" 
+                            ? data.foodService.ratings 
+                            : data.attraction.ratings;
+  
+        // Sort reviews by creation date (most recent first)
+        const sortedReviews = reviewsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
+        setReviews(sortedReviews);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+  
+    fetchReviews();
+  }, [type, id, url, showAddReview]);
+  
 
-  // Hàm hiển thị toàn bộ review
+  // Calculate the average rating
+  const totalRating = reviews.length
+    ? reviews.reduce((acc, review) => acc + review.rate, 0) / reviews.length
+    : 0;
+
   const showMoreReviews = () => {
-    setVisibleReviews(filteredReviews.length); // Hiển thị toàn bộ review
-    setShowAllReviews(false); // Đổi trạng thái để hiển thị nút "Show Less"
+    setVisibleReviews(filteredReviews.length);
+    setShowAllReviews(false);
   };
 
-  // Hàm thu gọn lại review
   const showLessReviews = () => {
-    setVisibleReviews(5); // Thu gọn lại chỉ hiển thị 5 review
-    setShowAllReviews(true); // Đổi trạng thái về "Show More"
+    setVisibleReviews(5);
+    setShowAllReviews(true);
   };
 
   const handleRatingFilter = (rating) => {
     setFilterRating(rating);
-    setVisibleReviews(5); // Reset lại số review hiển thị khi lọc
-    setShowAllReviews(true); // Khi lọc mới, đặt lại trạng thái nút về "Show More"
+    setVisibleReviews(5);
+    setShowAllReviews(true);
   };
 
-  // Lọc các review theo số sao đã chọn (nếu có)
+  const onClickAddReview = (e) => {
+    e.preventDefault();
+    setShowAddReview(true);
+  }
   const filteredReviews = filterRating > 0
-    ? reviews.filter(review => review.rating === filterRating)
+    ? reviews.filter(review => review.rate === filterRating)
     : reviews;
 
   return (
     <div className="reviews-container">
-      <h3>Customer Review</h3>
+      <h3>Đánh giá của khách hàng</h3>
       <div className="average-rating">
-        <div>
-          <h1>{totalRating.toFixed(2)} / 5.0</h1>
-          <StarRating rating={Math.round(totalRating)} />
+        <div className="overall-rating">
+          <div>
+            <h1>{totalRating.toFixed(2)} / 5.0</h1>
+            <StarRating rating={Math.round(totalRating)} />
+          </div>
+          <p>{reviews.length} Lượt đánh giá</p>
         </div>
-        <p>{reviews.length} Reviews</p>
+        
+        {type !== "accommodation" && (
+           <button className="write-review-btn" onClick={onClickAddReview}>Viết đánh giá</button>
+        )}
+       
       </div>
 
-      {/* Bộ lọc theo số sao */}
+      {/* Rating Filter */}
       <div className="filter-container">
         <button onClick={() => handleRatingFilter(0)} className={filterRating === 0 ? 'active' : ''}>All</button>
-        <button onClick={() => handleRatingFilter(5)} className={filterRating === 5 ? 'active' : ''}>5 Stars</button>
-        <button onClick={() => handleRatingFilter(4)} className={filterRating === 4 ? 'active' : ''}>4 Stars</button>
-        <button onClick={() => handleRatingFilter(3)} className={filterRating === 3 ? 'active' : ''}>3 Stars</button>
-        <button onClick={() => handleRatingFilter(2)} className={filterRating === 2 ? 'active' : ''}>2 Stars</button>
-        <button onClick={() => handleRatingFilter(1)} className={filterRating === 1 ? 'active' : ''}>1 Star</button>
+        {[5, 4, 3, 2, 1].map(star => (
+          <button
+            key={star}
+            onClick={() => handleRatingFilter(star)}
+            className={filterRating === star ? 'active' : ''}
+          >
+            {star} Sao
+          </button>
+        ))}
       </div>
 
       <div className="reviews-list">
         {filteredReviews.slice(0, visibleReviews).map((review) => (
-          <ReviewCard key={review.id} review={review} />
+          <ReviewCard key={review.id} review={review} type={type} />
         ))}
       </div>
       <div className="show-more-container">
@@ -183,7 +204,6 @@ const PlaceReview = () => {
             Show More
           </button>
         )}
-
         {visibleReviews === filteredReviews.length && visibleReviews > 5 && (
           <button onClick={showLessReviews} className="show-more-btn">
             Show Less
@@ -191,8 +211,19 @@ const PlaceReview = () => {
         )}
       </div>
 
+      {showAddReview && (
+        <div className="add-review-container">
+         <div className="popup">
+                    <div className="popup-content" >
+                        <button className="close-popup" onClick={() => setShowAddReview(false)}>×</button>
+                        <Review  id={id} type = {type}/>
+                    </div>
+                </div>
+        </div>
+      )}
     </div>
   );
 };
+
 
 export default PlaceReview;

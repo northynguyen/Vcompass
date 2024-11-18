@@ -19,20 +19,20 @@ const Header = ({ option, setOption, setCurDes }) => {
   return (
     <div className="header-accom">
       <div className="header-left">
-        <h1 className="num-title">What do you want to do?</h1>
-        <span className="num-text">Choose your activity</span>
+        <h1 className="num-title">Bạn muốn làm gì?</h1>
+        <span className="num-text">Chọn hoạt động</span>
       </div>
       <div className="header-right">
-        <label htmlFor="sort-by">Select your activity</label>
+        <label htmlFor="sort-by">Loại hoạt động</label>
         <select
           id="sort-by"
           value={option}
           onChange={(e) => onChange(e.target.value)}
         >
-          <option value="Accommodations">Accommodations</option>
-          <option value="FoodServices">FoodServices</option>
-          <option value="Attractions">Attractions</option>
-          <option value="Other">Other</option>
+          <option value="Accommodations">Nghỉ ngơi</option>
+          <option value="FoodServices">Ăn uống</option>
+          <option value="Attractions">Tham quan</option>
+          <option value="Other">Hoạt động Khác</option>
         </select>
       </div>
     </div>

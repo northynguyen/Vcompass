@@ -184,5 +184,7 @@ const addReview = async (req, res) => {
         res.status(500).json({ success: false, message: "An error occurred while adding the review." });
     }
 };
+
+
 export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview, deleteAttraction }; // Export the getAttractions;
 

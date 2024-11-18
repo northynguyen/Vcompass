@@ -17,6 +17,17 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
   };
   const handleComment = () => {
     handleScheduleClick(schedule._id)
+    const targetPosition = document.documentElement.scrollHeight - window.innerHeight - 200;
+
+    // Nếu vị trí nhỏ hơn chiều cao trang, thực hiện cuộn
+    if (targetPosition > 0) {
+      window.scrollTo({
+        top: targetPosition,
+        behavior: "smooth",
+      });
+    } else {
+      console.warn("Target position is invalid or too small:", targetPosition);
+    }
   };
   const handleLike = async () => {
     try {

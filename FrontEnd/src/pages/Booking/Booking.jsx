@@ -52,19 +52,19 @@ const BookingProcess = () => {
         <div className="status-bar">
           <div className= "status-item  active">
             <span>1</span>
-            <p>Your Selection</p>
+            <p>Lựa chọn của bạn</p>
           </div>
           <div className="status-item">
             <span>2</span>
-            <p>Your Details</p>
+            <p>Thông tin của bạn</p>
           </div>
           <div className="status-item">
             <span>3</span>
-            <p>Final Step</p>
+            <p>Bước cuối cùng</p>
           </div>
         </div>
         <div className="step-content">
-          <h2>Please select a room to book</h2>
+          <h2>Vui lòng chọn phòng để đặt</h2>
         </div>
       </div>
     );
@@ -76,15 +76,15 @@ const BookingProcess = () => {
       <div className="status-bar">
         <div className={`status-item ${currentStep >= 1 ? 'active' : ''}`}>
           <span>1</span>
-          <p>Your Selection</p>
+          <p>Lựa chọn của bạn</p>
         </div>
         <div className={`status-item ${currentStep >= 2 ? 'active' : ''}`}>
           <span>2</span>
-          <p>Your Details</p>
+          <p>Thông tin của bạn</p>
         </div>
         <div className={`status-item ${currentStep >= 3 ? 'active' : ''}`}>
           <span>3</span>
-          <p>Final Step</p>
+          <p>Bước cuối cùng</p>
         </div>
       </div>
 
@@ -93,45 +93,45 @@ const BookingProcess = () => {
         <div className="left-panel">
           {/* Hotel Information Section */}
           <div className="section-box hotel-info">
-            <h2>Hotel</h2>
+            <h2>Chỗ ở</h2>
             <p><strong>{hotelInfo?.name || 'Joi Hospitality - Hoang Anh'}</strong></p>
             <p>{hotelInfo?.location.address || 'I43, Phan Huy Ich Street, Ward 2, Vung Tau, Vietnam'}</p>
-            <p className="rating">Great location — {averageRating || '8.4'}</p>
-            <p className="review"> Review {hotelInfo?.ratings?.length || '0'}</p>
+            <p className="rating">Rating — {averageRating || '8.4'}</p>
+            <p className="review"> Đánh giá {hotelInfo?.ratings?.length || '0'}</p>
             <p className="amenities">{hotelInfo?.amenities.join(' · ') || 'Free WiFi • Parking'}</p>
           </div>
 
           {/* Booking Details Section */}
 
           <div className="section-box bookingdetail">
-            <h2>Your booking details</h2>
+            <h2>Chi tiết đặt phòng</h2>
             
             <div className="check-in-out">
               <div>
                 <p><strong>Check-in</strong></p>
                 <p><strong>{bookingInfo?.startDate || 'Thu 31 Oct 2024'}</strong></p>
-                <p className="time-info">From 14:00</p>
+                <p className="time-info">Từ 14:00</p>
               </div>
               <div className="divider"></div>
               <div>
                 <p><strong>Check-out</strong></p>
                 <p><strong>{bookingInfo?.endDate || 'Fri 1 Nov 2024'}</strong></p>
-                <p className="time-info">Until 12:00</p>
+                <p className="time-info">Đến 12:00</p>
               </div>
             </div>
             
-            <p className="important-info"><span className="icon">⚠️</span> Just {bookingInfo?.diffDays + 1 || '2'} days away!</p>
+            <p className="important-info"><span className="icon">⚠️</span> Chỉ {bookingInfo?.diffDays + 1 || '2'} ngày!</p>
             
-            <p>Total length of stay: <strong>{bookingInfo?.diffDays ? `${bookingInfo.diffDays} nights` : '1 night'}</strong></p>
+            <p>Tổng số ngày ở: <strong>{bookingInfo?.diffDays ? `${bookingInfo.diffDays} nights` : '1 night'}</strong></p>
             
             <hr />
             
-            <p>You selected</p>
-            <p><strong>{`1 room for ${bookingInfo?.adults || '2'} adults`}</strong>
-              {bookingInfo?.children > 0 && <span> and <strong>{bookingInfo.children} children</strong></span>}
+            <p>Bạn đã chọn</p>
+            <p><strong>{`1 phòng for ${bookingInfo?.adults || '2'} người lớn`}</strong>
+              {bookingInfo?.children > 0 && <span> và <strong>{bookingInfo.children} trẻ em</strong></span>}
             </p>
             
-            <a href="#">Change your selection</a>
+            <a href="#">Thay đổi lựa chọn</a>
           </div>
 
 

@@ -1,16 +1,16 @@
 /* eslint-disable react/prop-types */
-import './HotelDetailsInfo.css';
-import React,{ useState , useRef, useEffect} from 'react';
+import axios from 'axios';
+import React, { useEffect, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import ImagesModal from '../ImagesModal/ImagesModal';
-import RoomDetail from './RoomDetail/RoomDetail';
-import axios from 'axios';
-import { StoreContext } from '../../Context/StoreContext';
-import RoomCard from './RoomCard'; // Nhập RoomCard từ file mới
 import { useNavigate } from 'react-router-dom';
+import { StoreContext } from '../../Context/StoreContext';
+import ImagesModal from '../ImagesModal/ImagesModal';
+import './HotelDetailsInfo.css';
+import RoomCard from './RoomCard'; // Nhập RoomCard từ file mới
+import RoomDetail from './RoomDetail/RoomDetail';
 
-const HotelDetailsInfo = ({serviceId}) => {
+const HotelDetailsInfo = ({ serviceId }) => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [startDate, endDate] = dateRange;
   const [showGuestDropdown, setShowGuestDropdown] = useState(false);
@@ -25,12 +25,14 @@ const HotelDetailsInfo = ({serviceId}) => {
   const [accommodation, setAccommodation] = useState(null);
 
   const navigate = useNavigate();
-  const [dataSend, setDataSend] = useState({ bookingInfo :{
-    startDate: null,
-    endDate: null,
-    adults: 2,
-    children: 0,
-    diffDays: ""}
+  const [dataSend, setDataSend] = useState({
+    bookingInfo: {
+      startDate: null,
+      endDate: null,
+      adults: 2,
+      children: 0,
+      diffDays: ""
+    }
   })
 
   useEffect(() => {
@@ -71,17 +73,17 @@ const HotelDetailsInfo = ({serviceId}) => {
     };
   }, [dropdownRef]);
 
-  
+
 
   const calculateNights = (start, end) => {
-    if (!start || !end) return '';  
+    if (!start || !end) return '';
     const diffTime = Math.abs(end - start);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays ;
+    return diffDays;
   };
-  
 
-  const handleRoomClick = (room,e) => {
+
+  const handleRoomClick = (room, e) => {
     e.preventDefault();
     setSelectedRoom(room);
   };
@@ -112,10 +114,10 @@ const HotelDetailsInfo = ({serviceId}) => {
   // Close the Modal
   const closeModal = () => {
     setIsModalOpen(false);
-   
+
   };
 
- 
+
 
   const handleSearch = async () => {
     setIsModalOpen(false);
@@ -136,7 +138,7 @@ const HotelDetailsInfo = ({serviceId}) => {
         diffDays: calculateNights(startDate, endDate),
       }
     });
-  
+
     try {
       // Call API to get available rooms
       const response = await axios.get(`${url}/api/bookings/getAvailableRoom`, {
@@ -148,7 +150,7 @@ const HotelDetailsInfo = ({serviceId}) => {
           children
         }
       });
-  
+
       // Log response for debugging
       console.log("Available Rooms:", serviceId, startDate.toISOString(), endDate.toISOString());
       setAccommodation((prev) => ({
@@ -160,13 +162,13 @@ const HotelDetailsInfo = ({serviceId}) => {
       alert("Unable to find available rooms for the selected dates.");
     }
   };
-  
+
 
 
   const handleButtonClick = (action, type, event) => {
     event.preventDefault(); // Ngăn việc tải lại trang
     event.stopPropagation(); // Ngăn đóng dropdown
-  
+
     if (type === 'adults') {
       setAdults((prev) => (action === 'increment' ? prev + 1 : Math.max(1, prev - 1)));
     } else if (type === 'children') {
@@ -175,14 +177,14 @@ const HotelDetailsInfo = ({serviceId}) => {
       setNumRooms((prev) => (action === 'increment' ? prev + 1 : Math.max(1, prev - 1)));
     }
   };
-  
+
   if (!accommodation) {
     return <div>Loading...</div>;
   }
 
   const handleRoomSelect = (e, room) => {
     e.preventDefault();
-  
+
     // Update the state using the functional form
     setDataSend((prevDataSend) => ({
       ...prevDataSend,
@@ -194,17 +196,17 @@ const HotelDetailsInfo = ({serviceId}) => {
       setSelectedRoom(null);
       window.scrollTo(0, 0);
       alert('Please select a check-in and check-out date');
-      
+
       return;
     }
-    
+
     // Navigate to the new route
     navigate(`/booking-process/step2`, { state: { dataSend: { ...dataSend, hotel: accommodation, room: room } } });
-  
+
     // Scroll to the top of the page
     window.scrollTo(0, 0);
   };
-  
+
 
   return (
     <div className="hotel-details-info">
@@ -228,7 +230,7 @@ const HotelDetailsInfo = ({serviceId}) => {
             monthsShown={2}
             placeholderText="Chọn ngày"
             dateFormat="dd/MM/yyyy"
-        
+
           />
           {startDate && endDate && (
             <span> &nbsp;&nbsp;{calculateNights(startDate, endDate)} nights</span>
@@ -328,13 +330,13 @@ const HotelDetailsInfo = ({serviceId}) => {
 
         {/* Description */}
         <div className="description">
-          <h3>Description</h3>
+          <h3>Mô tả</h3>
           <p>{accommodation.description}</p>
         </div>
 
         {/* Embed Google Map */}
         <div className="map">
-          <h3 style={{ marginBottom: '20px' }}>Location</h3>
+          <h3 style={{ marginBottom: '20px' }}>Vị trí</h3>
           <iframe
             title="map"
             src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=${accommodation.location.latitude},${accommodation.location.longitude}`}
@@ -349,7 +351,7 @@ const HotelDetailsInfo = ({serviceId}) => {
 
       {/* Rooms Section */}
       <div className="rooms-section">
-        <h2>Available Rooms</h2>
+        <h2>Những phòng hiện có</h2>
         {accommodation.roomTypes?.map((room, index) => (
           <RoomCard key={index} room={room} handleRoomClick={handleRoomClick} url={url} handleRoomSelect={handleRoomSelect} />
         ))}
@@ -364,7 +366,7 @@ const HotelDetailsInfo = ({serviceId}) => {
         onClose={closeModal}
       />
 
-    {selectedRoom && <RoomDetail room={selectedRoom} onClose={handleRoomClose}  handleRoomSelect={handleRoomSelect}/>}
+      {selectedRoom && <RoomDetail room={selectedRoom} onClose={handleRoomClose} handleRoomSelect={handleRoomSelect} />}
     </div>
   );
 };
@@ -373,6 +375,3 @@ const HotelDetailsInfo = ({serviceId}) => {
 
 
 export default HotelDetailsInfo;
-
-
-

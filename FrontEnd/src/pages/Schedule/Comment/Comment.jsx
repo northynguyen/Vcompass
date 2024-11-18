@@ -1,10 +1,10 @@
 import axios from 'axios';
 import moment from 'moment';
+import "moment/locale/vi";
 import React, { useContext, useEffect, useState } from 'react';
 import { FaCommentAlt, FaHeart, FaRegPaperPlane, FaShare } from 'react-icons/fa';
 import { StoreContext } from '../../../Context/StoreContext';
 import './Comment.css';
-
 // Post actions for liking, commenting, and sharing
 export const PostActions = ({ handleLike, likeCount, commentCount, replyCount, isLike, postUrl }) => {
     //     const handleShare = (platform) => {
@@ -60,9 +60,10 @@ export const PostActions = ({ handleLike, likeCount, commentCount, replyCount, i
         </div>
     );
 };
-
+moment.locale("vi");
 const formatDate = (timestamp) => {
     const now = moment();
+
     const time = moment(timestamp);
     if (now.diff(time, 'hours') < 24) {
         return time.fromNow();
@@ -216,13 +217,13 @@ const CommentContent = ({ comment, scheduleId, token, updateComments, url, user 
                 </div>
                 <div className="comment-actions">
                     <span>{formatDate(comment.createdAt)}</span>
-                    <span className="link" onClick={() => setReplyInputVisible(!replyInputVisible)}>Reply</span>
+                    <span className="link" onClick={() => setReplyInputVisible(!replyInputVisible)}>Trả lời</span>
                 </div>
 
                 {comment.replies.length > 0 && (
                     <div className="view-replies-container">
                         <span className="view-replies" onClick={() => setShowReplies(!showReplies)}>
-                            {showReplies ? 'Hide replies' : `View ${comment.replies.length} replies`}
+                            {showReplies ? 'Ẩn phản hồi' : `Xem ${comment.replies.length} phản hồi`}
                         </span>
                     </div>
                 )}
@@ -239,7 +240,7 @@ const CommentContent = ({ comment, scheduleId, token, updateComments, url, user 
                             </div>
                             <div className="comment-actions">
                                 <span>{formatDate(reply.createdAt)}</span>
-                                <span className="link" onClick={() => setReplyInputVisible(!replyInputVisible)}>Reply</span>
+                                <span className="link" onClick={() => setReplyInputVisible(!replyInputVisible)}>Trả lời</span>
                             </div>
                         </div>
                     </div>

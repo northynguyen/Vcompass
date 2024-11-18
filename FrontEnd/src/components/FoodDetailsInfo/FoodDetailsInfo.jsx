@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect , useContext} from 'react';
 import axios from 'axios'; // for API calls
-import './FoodDetailsInfo.css';
+import { useContext, useEffect, useState } from 'react';
 import { StoreContext } from '../../Context/StoreContext';
 import ImagesModal from '../ImagesModal/ImagesModal';
+import './FoodDetailsInfo.css';
 const FoodDetailsInfo = ({ serviceId }) => {
-    const {url} = useContext(StoreContext);
+    const { url } = useContext(StoreContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [foodService, setFoodService] = useState(null); // To store food service details
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -14,28 +14,28 @@ const FoodDetailsInfo = ({ serviceId }) => {
     useEffect(() => {
         const fetchFoodService = async () => {
             try {
-                const response = await   axios.get(`${url}/api/foodservices/`)
+                const response = await axios.get(`${url}/api/foodservices/`)
                 setFoodService(response.data.foodService.find(service => service._id === serviceId));
             } catch (error) {
                 console.error('Error fetching food service details:', error);
             }
         };
-      
+
         fetchFoodService();
-        
+
     }, [serviceId, url]);
 
     // Open Modal and set the clicked image
     const openModal = (index) => {
         setSelectedImageIndex(index);
         setIsModalOpen(true);
-      };
-    
-      // Close the Modal
-      const closeModal = () => {
+    };
+
+    // Close the Modal
+    const closeModal = () => {
         setIsModalOpen(false);
-       
-      };
+
+    };
 
     if (!foodService) return <div>Loading...</div>;
 
@@ -48,14 +48,14 @@ const FoodDetailsInfo = ({ serviceId }) => {
 
                 {/* Image Gallery */}
                 <div className="gallery">
-                    <img src={`${url}/images/${foodService.images[0]}`}  alt="Main" className="main-img" />
+                    <img src={`${url}/images/${foodService.images[0]}`} alt="Main" className="main-img" />
                     <div className="thumbnails">
                         {foodService.images.map((image, index) => (
-                            <img 
-                                key={index} 
+                            <img
+                                key={index}
                                 src={`${url}/images/${image}`}
-                                alt={`Thumb ${index + 1}`} 
-                                onClick={() => openModal(index+1)} 
+                                alt={`Thumb ${index + 1}`}
+                                onClick={() => openModal(index + 1)}
                             />
                         ))}
                     </div>
@@ -122,11 +122,11 @@ const FoodDetailsInfo = ({ serviceId }) => {
 
             {/* Modal for displaying clicked images */}
             <ImagesModal
-            isOpen={isModalOpen}
-            images={foodService.images}
-            selectedIndex={selectedImageIndex}
-            onClose={closeModal}
-      />
+                isOpen={isModalOpen}
+                images={foodService.images}
+                selectedIndex={selectedImageIndex}
+                onClose={closeModal}
+            />
         </div>
     );
 };

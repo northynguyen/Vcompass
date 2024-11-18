@@ -7,11 +7,11 @@ const RoomCard = ({ room, handleRoomClick ,url, handleRoomSelect }) => {
         {room.images.length > 0 ? (
           <img src={`${url}/images/${room.images[0]}`} alt={room.nameRoomType} className="room-image" />
         ) : (
-          <p>No image available</p>
+          <p>Chưa có ảnh</p>
         )}
 
         <button className="details-btn" onClick={(e) => handleRoomClick(room, e)}>
-          See Room Details
+          Xem chi tiết phòng
         </button>
 
       </div>
@@ -39,7 +39,7 @@ const RoomCard = ({ room, handleRoomClick ,url, handleRoomSelect }) => {
             ))}
           </div>
           <div className="room-guests">
-            <span>👥</span> {room.numPeople.adult} adults, {room.numPeople.child} children
+            <span>👥</span> {room.numPeople.adult} người lớn, {room.numPeople.child} trẻ em
           </div>
         </div>
       </div>
@@ -49,12 +49,12 @@ const RoomCard = ({ room, handleRoomClick ,url, handleRoomSelect }) => {
               <span>💲</span> <s>{(room.pricePerNight * 1.2).toLocaleString()}</s> VND
             </p>
             <p>
-              <strong>{room.pricePerNight.toLocaleString()} VND</strong> per night
+              <strong>{room.pricePerNight.toLocaleString()} VND</strong> / đêm
             </p>
           </div>
 
           <button className="book-room-btn" onClick={(e) => handleRoomSelect( e,room)}>
-            Choose
+            Chọn
           </button>
         </div>
     </div>

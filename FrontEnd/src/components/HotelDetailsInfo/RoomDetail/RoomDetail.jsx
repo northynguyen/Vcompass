@@ -50,7 +50,7 @@ const RoomDetail = ({ room, onClose,handleRoomSelect }) => {
           <h3>{room.nameRoomType}</h3>
           <div className="room-info">
             <p>🏠 {room.roomSize} m²</p>
-            <p>👥 {room.numPeople.adult} adults, {room.numPeople.child} children</p>
+            <p>👥 {room.numPeople.adult} Người lớn, {room.numPeople.child} Trẻ em</p>
             <div className="room-beds-guests">
             <span>🛏️</span>
             {room.numBed.map((bed, index) => (
@@ -63,17 +63,17 @@ const RoomDetail = ({ room, onClose,handleRoomSelect }) => {
           </div>
             
           <div className="room-features">
-            <h4>Room Features You May Like</h4>
+            <h4>Những tiện ích của phòng</h4>
             {room.amenities.map((amenity, index) => (
               <p key={index}>✔️ {amenity}</p>
             ))}
           </div>
           
           <div className="room-price">
-            <p> <strong>{room.pricePerNight.toLocaleString()} VND</strong> per night</p>
+            <p> <strong>{room.pricePerNight.toLocaleString()} VND</strong> / đêm</p>
           </div>
           
-          <button className="booking-now-btn" onClick={(e) => handleRoomSelect(e ,room)}>Booking Now</button>
+          <button className="booking-now-btn" onClick={(e) => handleRoomSelect(e ,room)}>Đặt phòng ngay</button>
         </div>
       </div>
     </div>

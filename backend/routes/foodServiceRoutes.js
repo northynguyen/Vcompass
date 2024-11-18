@@ -5,7 +5,7 @@ import {
   getFoodServiceById,
   getListByPartner,
   getListFoodService,
-  updateFoodService,
+  updateFoodService,addReview
 } from "../controllers/foodServiceController.js";
 import authMiddleware from "../middleware/auth.js";
 import { upload } from "../middleware/upload.js";
@@ -37,4 +37,6 @@ foodServiceRoutes.post(
 
 foodServiceRoutes.post("/delete", authMiddleware, deleteFoodService);
 foodServiceRoutes.get("/:id", getFoodServiceById);
+foodServiceRoutes.post("/addReview/:id" ,addReview);
+
 export default foodServiceRoutes;

@@ -157,7 +157,8 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
   const handleSubmit = () => {
     setInforSchedule((prev) => ({
       ...prev,
-      ...formData,
+      scheduleName: formData.name,
+      description: formData.description
     }));
 
     closeModal();
@@ -495,12 +496,8 @@ const Schedule = ({ mode }) => {
                 ) : (
                   <div>
                     <div className="title-button">
-                      <i className="fa-solid fa-heart schedule-icon"></i>
+                      <i className="fa-solid fa-bookmark schedule-icon"></i>
                       <button className="save-and-share-btn">Lưu lịch trình</button>
-                    </div>
-                    <div className="title-button">
-                      <i className="fa-solid fa-comment schedule-icon"></i>
-                      <button className="save-and-share-btn">Bình luận</button>
                     </div>
                     <div className="title-button">
                       <i className="fa-solid fa-share schedule-icon"></i>

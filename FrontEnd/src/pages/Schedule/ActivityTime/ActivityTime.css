@@ -3,7 +3,9 @@
   display: inline-block;
   margin: 10px;
 }
-
+.time-schedule-item:hover {
+  cursor: pointer;
+}
 .time-select-wrapper .icon {
   position: absolute;
   left: 0px;

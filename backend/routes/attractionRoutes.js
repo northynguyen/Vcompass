@@ -1,6 +1,6 @@
 // attractionRoutes.js
 import express from "express";
-import { getAttractionById, getAttractions, addAttraction, updateAttraction, addReview, deleteAttraction } from "../controllers/attractionController.js";
+import { addAttraction, addReview, deleteAttraction, getAttractionById, getAttractions, updateAttraction } from "../controllers/attractionController.js";
 import { upload } from "../middleware/upload.js";
 const Attractionrouter = express.Router();
 

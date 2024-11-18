@@ -50,6 +50,24 @@ const UserSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
+    },
+    favorites:{
+        schedule: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "schedule"
+        }],
+        accommodation: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "accommodation"
+        }],
+        attraction: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "attraction"
+        }],
+        foodService:[{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "foodservice"
+        }],
     }
 }, { timestamps: true });
 const userModel = mongoose.models.User || model("user", UserSchema);

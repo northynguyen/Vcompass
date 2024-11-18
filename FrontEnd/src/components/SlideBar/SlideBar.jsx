@@ -82,7 +82,7 @@ const SlideBar = ({ type }) => {
                         <p className="card-facilities">
                             {service.amenities?.join(' • ')}
                         </p>
-                        <p className="card-price">${service.price} per night</p>
+                        <p className="card-price">{service.roomTypes[0].pricePerNight}đ / đêm</p>
                     </>
                 );
             case 'food':
@@ -98,7 +98,7 @@ const SlideBar = ({ type }) => {
                         <p className="card-facilities">
                             {service.amenities?.join(' • ')}
                         </p>
-                        <p className="card-price">${service.price.minPrice} - ${service.price.maxPrice} per person</p>
+                        <p className="card-price">{service.price.minPrice}đ - {service.price.maxPrice}đ / người</p>
                     </>
                 );
             case 'attraction':
@@ -114,7 +114,7 @@ const SlideBar = ({ type }) => {
                         <p className="card-facilities">
                             {service.amenities?.join(' • ')}
                         </p>
-                        <p className="card-price">{service.price.toLocaleString()} entrance fee</p>
+                        <p className="card-price">{service.price.toLocaleString()}đ / người</p>
                     </>
                 );
             default:
@@ -126,14 +126,23 @@ const SlideBar = ({ type }) => {
         const totalReviews = ratings.length;
         const averageRating = totalReviews > 0
             ? (ratings.reduce((sum, r) => sum + (Number(r.rate) || 0), 0) / totalReviews).toFixed(1)
-            : 'No reviews';
+            : 'Chưa có đánh giá';
         return { totalReviews, averageRating };
     };
-
+    const getTypeInVietnamese = (type) => {
+        const typeMapping = {
+            accommodation: "chỗ ở",
+            food: "dịch vụ ăn uống",
+            attraction: "điểm tham quan",
+            transport: "phương tiện di chuyển",
+            activity: "hoạt động giải trí"
+        };
+        return typeMapping[type] || "loại khác";
+    };
 
     return (
         <div className="slidebar-container">
-            <h2 className="title">Popular {type} Services</h2>
+            <h2 className="title">Những {getTypeInVietnamese(type)} phổ biến</h2>
             {popularServices.length === 0 && <p>No {type} services found.</p>}
             <Swiper
                 modules={[Navigation]}
@@ -151,7 +160,7 @@ const SlideBar = ({ type }) => {
                                 <div className="card-content">
                                     {renderCardContent(service)}
                                     <p className="card-reviews">
-                                        ⭐ {averageRating} ({totalReviews} reviews)
+                                        ⭐ {averageRating} ({totalReviews} đánh giá)
                                     </p>
                                 </div>
                             </div>

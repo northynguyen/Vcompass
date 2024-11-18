@@ -397,3 +397,31 @@ export const updateRoomType = async (req, res) => {
     });
   }
 };
+
+export const addReview = async (req, res) => {
+  try {
+    const { id } = req.params; // ID of the accommodation
+    const reviewData = req.body; // Data for the new review
+    console.log(reviewData);
+    // Validate the required fields for the rating
+    if (!reviewData.idUser || !reviewData.userName || !reviewData.userImage || !reviewData.rate || !reviewData.content) {
+      return res.status(400).json({ success: false, message: "Required fields are missing." });
+    }
+
+    // Find the accommodation by ID and add the review to the ratings array
+    const accommodation = await Accommodation.findByIdAndUpdate(
+      id,
+      { $push: { ratings: reviewData } },
+      { new: true }
+    );
+
+    if (!accommodation) {
+      return res.status(404).json({success: false, message: "Accommodation not found." });
+    }
+
+    res.status(200).json({success: true, message: "Review added successfully.", accommodation });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({success: false, message: "An error occurred while adding the review." });
+  }
+};

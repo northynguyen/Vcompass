@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
+import CryptoJS from "crypto-js";
 import { useContext, useEffect, useState } from "react";
 import { FaEdit, FaRegClock } from 'react-icons/fa';
 import { SlNotebook } from "react-icons/sl";
 import { StoreContext } from "../../../Context/StoreContext";
 import './ActivityTime.css';
-
 
 
 
@@ -95,6 +95,11 @@ const ActivityTime = ({ activity, setInforSchedule, mode }) => {
 export const AccomActivity = ({ activity, data, handleEdit, mode }) => {
   const { url } = useContext(StoreContext);
 
+  const onNavigateToDetails = () => {
+    const encryptedServiceId = CryptoJS.AES.encrypt(data._id, 'mySecretKey').toString();
+    const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
+    window.open(`/place-details/accommodation/${safeEncryptedServiceId}`, "_blank");
+  };
   if (!data) {
     return (
       <div className="div">...</div>
@@ -116,7 +121,7 @@ export const AccomActivity = ({ activity, data, handleEdit, mode }) => {
           </div>
         }
       </div>
-      <div className="activity-content-card">
+      <div className="activity-content-card"  onClick={onNavigateToDetails}>
         <div className="time-schedule-left">
           <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
         </div>
@@ -160,6 +165,11 @@ export const AccomActivity = ({ activity, data, handleEdit, mode }) => {
 }
 export const FoodServiceActivity = ({ activity, data, handleEdit, mode }) => {
   const { url } = useContext(StoreContext);
+  const onNavigateToDetails = () => {
+    const encryptedServiceId = CryptoJS.AES.encrypt(data._id, 'mySecretKey').toString();
+    const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
+    window.open(`/place-details/food/${safeEncryptedServiceId}`, "_blank");
+  };
   console.log(data)
   if (!data) {
     return (
@@ -182,7 +192,7 @@ export const FoodServiceActivity = ({ activity, data, handleEdit, mode }) => {
           </div>
         }
       </div>
-      <div className="activity-content-card">
+      <div className="activity-content-card" onClick={onNavigateToDetails}>
         <div className="time-schedule-left">
           <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
         </div>
@@ -225,6 +235,11 @@ export const FoodServiceActivity = ({ activity, data, handleEdit, mode }) => {
 }
 export const AttractionActivity = ({ activity, data, handleEdit, mode }) => {
   const { url } = useContext(StoreContext);
+  const onNavigateToDetails = () => {
+    const encryptedServiceId = CryptoJS.AES.encrypt(data._id, 'mySecretKey').toString();
+    const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
+    window.open(`/place-details/attraction/${safeEncryptedServiceId}`, "_blank");
+  };
   if (!data) {
     return (
       <div className="div">...</div>
@@ -246,7 +261,7 @@ export const AttractionActivity = ({ activity, data, handleEdit, mode }) => {
           </div>
         }
       </div>
-      <div className="activity-content-card">
+      <div className="activity-content-card"  onClick={onNavigateToDetails}>
         <div className="time-schedule-left">
 
           <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
