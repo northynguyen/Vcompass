@@ -77,6 +77,7 @@ const Home = () => {
     setScheduleName(e.target.value);
   };
 
+ 
   return (
     <div className="home-container">
       <div className='tour-search-container'>
@@ -134,19 +135,25 @@ const Home = () => {
           </section>
         </div>
       </div>
-      <div className='post-card-container'>
-        {!isLoading && filteredSchedules
-          ?.filter(schedule => schedule.idUser._id !== user._id)
-          .slice(0, 10)
-          .map(schedule => (
-            <PostCard
-              key={schedule._id}
-              schedule={schedule}
-              handleScheduleClick={handleScheduleClick}
-            />
-          ))
-        }
+
+      <div className="post-card-page" >
+         {/* Bộ lọc */}
+         
+        <div className="post-card-container">
+          {!isLoading &&
+            filteredSchedules?.slice(0, 10).map((schedule) => (
+              <PostCard
+                key={schedule._id}
+                schedule={schedule}
+                handleScheduleClick={handleScheduleClick}
+              />
+            ))}
+          {filteredSchedules?.length === 0 && !isLoading && <p>Không có lịch trình phù hợp.</p>}
+        </div>
+
+       
       </div>
+      
 
       <div>
         <AccommodationBanner />

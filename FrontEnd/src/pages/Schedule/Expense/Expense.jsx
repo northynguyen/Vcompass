@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaAngleDown, FaAngleUp } from "react-icons/fa"; // Import icon xổ xuống và thu gọn
 import Modal from "react-modal";
 import ConfirmDialog from "../../../components/Dialog/ConfirmDialog";
 import "./Expense.css";
@@ -138,10 +138,14 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule }) =
   );
 };
 
+
+
 const Expense = ({ expenses, additionExpenses, setInforSchedule, mode }) => {
   const totalCost = [...expenses, ...additionExpenses].reduce((acc, expense) => acc + expense.cost, 0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false); // Thêm state để điều khiển hiển thị chi phí
+
   const openModalForAdd = () => {
     setSelectedExpense(null);
     setIsModalOpen(true);
@@ -157,66 +161,78 @@ const Expense = ({ expenses, additionExpenses, setInforSchedule, mode }) => {
     setSelectedExpense(null); // Reset lại trạng thái
   };
 
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded); // Đảo ngược trạng thái mở/đóng chi phí
+  };
+
   return (
     <div className="expense-container">
-      <h1>Chi phí</h1>
-      {expenses.map((expense) => (
-        <div className="expense-item" key={expense.id}>
-          <div className="expense-icon">
-            <img src={expense.icon} alt={expense.name} />
-          </div>
-          <div className="expense-details">
-            <h3>{expense.name}</h3>
-            <p>{expense.location}</p>
-          </div>
-          <div className="expense-cost">
-            <p>{expense.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
-          </div>
-          {
-            mode === "edit" &&
-            <div className="expense-actions">
-              <button className="edit-btn">
-                <FaEdit />
-              </button>
-            </div>
-          }
+      <h1>
+        Chi phí
+        <button className="expand-toggle" onClick={toggleExpand} aria-label="Toggle expenses">
+          {isExpanded ? <FaAngleUp /> : <FaAngleDown />} {/* Chỉ hiển thị icon xổ xuống/thu gọn */}
+        </button>
+      </h1>
 
-        </div>
-      ))}
-      {additionExpenses.map((additionExpen) => (
-        <div className="expense-item" key={additionExpen.id}>
-          <div className="expense-icon">
-            <img src="https://png.pngtree.com/png-clipart/20230504/original/pngtree-money-flat-icon-png-image_9138340.png"
-              alt={additionExpen.name} />
-          </div>
-          <div className="expense-details">
-            <h3>{additionExpen.name}</h3>
-            <p>{additionExpen.description}</p>
-          </div>
-          <div className="expense-cost">
-            <p>{additionExpen.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
-          </div>
-          {
-            mode === "edit" &&
-            <div className="expense-actions">
-              <button className="edit-btn"
-                onClick={() => openModalForEdit(additionExpen)}>
-                <FaEdit />
-              </button>
+      {/* Hiển thị chi phí khi mở rộng */}
+      {isExpanded && (
+        <>
+          {expenses.map((expense) => (
+            <div className="expense-item" key={expense.id}>
+              <div className="expense-icon">
+                <img src={expense.icon} alt={expense.name} />
+              </div>
+              <div className="expense-details">
+                <h3>{expense.name}</h3>
+                <p>{expense.location}</p>
+              </div>
+              <div className="expense-cost">
+                <p>{expense.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+              </div>
+              {mode === "edit" && (
+                <div className="expense-actions">
+                  <button className="edit-btn">
+                    <FaEdit />
+                  </button>
+                </div>
+              )}
             </div>
-          }
-        </div>
-      ))}
+          ))}
 
-      {
-        mode === "edit" &&
+          {additionExpenses.map((additionExpen) => (
+            <div className="expense-item" key={additionExpen.id}>
+              <div className="expense-icon">
+                <img src="https://png.pngtree.com/png-clipart/20230504/original/pngtree-money-flat-icon-png-image_9138340.png" alt={additionExpen.name} />
+              </div>
+              <div className="expense-details">
+                <h3>{additionExpen.name}</h3>
+                <p>{additionExpen.description}</p>
+              </div>
+              <div className="expense-cost">
+                <p>{additionExpen.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+              </div>
+              {mode === "edit" && (
+                <div className="expense-actions">
+                  <button className="edit-btn" onClick={() => openModalForEdit(additionExpen)}>
+                    <FaEdit />
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </>
+      )}
+
+      {/* Nút thêm chi phí phát sinh */}
+      {mode === "edit" && (
         <div className="add-new">
           <button onClick={openModalForAdd} className="add-expense">
             <i className="fa-solid fa-plus add-icon"></i>
             Thêm chi phí phát sinh
           </button>
         </div>
-      }
+      )}
+
       <h1>Ngân sách</h1>
       <div className="expense-summary">
         <div className="total-cost">
@@ -224,11 +240,8 @@ const Expense = ({ expenses, additionExpenses, setInforSchedule, mode }) => {
           <h1>{totalCost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</h1>
         </div>
       </div>
-      <AddExpense
-        isOpen={isModalOpen}
-        closeModal={closeModal}
-        selectedExpense={selectedExpense}
-        setInforSchedule={setInforSchedule} />
+
+      <AddExpense isOpen={isModalOpen} closeModal={closeModal} selectedExpense={selectedExpense} setInforSchedule={setInforSchedule} />
     </div>
   );
 };

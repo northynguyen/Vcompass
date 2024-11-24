@@ -5,8 +5,119 @@ import ListAccommodation, { AccomItem } from "../../ListAccommodation/ListAccomm
 import ListAttractions, { AttractionItem } from "../../ListAttractions/ListAttractions";
 import ListFoodServices, { FoodServiceItem } from "../../ListFoodServices/ListFoodServices";
 import "./AddActivity.css";
+import axios from "axios";
 // Thiết lập root element cho modal
 Modal.setAppElement("#root");
+
+const OtherItem = ({ setCurDes, curDes }) => {
+  const [activityName, setActivityName] = useState(curDes?.name || "");
+  const [images, setImages] = useState(
+    curDes?.imgSrc?.map((img) => (typeof img === "string" ? img : URL.createObjectURL(img))) || []
+  );
+  const [address, setAddress] = useState(curDes?.address || "");
+  const { url } = useContext(StoreContext);
+
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files).slice(0, 3);
+    const newImages = files.map((file) => URL.createObjectURL(file));
+
+    setImages((prevImages) => [...prevImages, ...newImages]);
+    setCurDes((prev) => ({
+      ...prev,
+      imgSrc: [
+        ...(prev?.imgSrc || []), 
+        ...files
+      ],
+    }));
+  };
+
+  const handleRemoveImage = async (index) => {
+    const imgToRemove = images[index];
+    const newImages = images.filter((_, i) => i !== index);
+
+    setImages(newImages);
+    setCurDes((prev) => ({
+      ...prev,
+      imgSrc: prev?.imgSrc?.filter((_, i) => i !== index),
+    }));
+
+    // Nếu ảnh bị xóa tồn tại trên backend, xóa nó bằng API
+    if (!imgToRemove.startsWith("blob:")) {
+      try {
+        await axios.delete(`${url}/api/deleteImage`, {
+          data: { imagePath: imgToRemove },
+        });
+        console.log(`Đã xóa ảnh: ${imgToRemove}`);
+      } catch (error) {
+        console.error("Lỗi khi xóa ảnh:", error);
+      }
+    }
+  };
+
+  return (
+    <div className="other-item-container">
+      <div className="form-group">
+        <label htmlFor="activity-name">Tên hoạt động:</label>
+        <input
+          type="text"
+          id="activity-name"
+          className="input-field"
+          placeholder="Nhập tên hoạt động"
+          value={activityName}
+          onChange={(e) => {
+            setActivityName(e.target.value);
+            setCurDes((prev) => ({ ...prev, name: e.target.value }));
+          }}
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="activity-address">Địa chỉ:</label>
+        <input
+          type="text"
+          id="activity-address"
+          className="input-field"
+          placeholder="Nhập địa chỉ"
+          value={address}
+          onChange={(e) => {
+            setAddress(e.target.value);
+            setCurDes((prev) => ({ ...prev, address: e.target.value }));
+          }}
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="activity-images">Thêm ảnh (tối đa 3 ảnh):</label>
+        <input
+          type="file"
+          id="activity-images"
+          className="input-field"
+          multiple
+          accept="image/*"
+          onChange={handleImageChange}
+        />
+      </div>
+
+      <div className="image-preview-container">
+        {images &&
+          images.map((img, index) => (
+            <div key={index} className="image-preview">
+              <img
+                src={img.startsWith("blob:") ? img : `${url}/images/${img}`}
+                alt={`Upload ${index + 1}`}
+              />
+              <button className="remove-btn" onClick={() => handleRemoveImage(index)}>
+                &times;
+              </button>
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+};
+
+
+
 
 
 const Header = ({ option, setOption, setCurDes }) => {
@@ -29,9 +140,9 @@ const Header = ({ option, setOption, setCurDes }) => {
           value={option}
           onChange={(e) => onChange(e.target.value)}
         >
-          <option value="Accommodations">Nghỉ ngơi</option>
-          <option value="FoodServices">Ăn uống</option>
-          <option value="Attractions">Tham quan</option>
+          <option value="Accommodation">Nghỉ ngơi</option>
+          <option value="FoodService">Ăn uống</option>
+          <option value="Attraction">Tham quan</option>
           <option value="Other">Hoạt động Khác</option>
         </select>
       </div>
@@ -40,10 +151,12 @@ const Header = ({ option, setOption, setCurDes }) => {
 };
 
 const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSchedule, activity, city }) => {
-  const [option, setOption] = React.useState("Accommodations");
+  const [option, setOption] = React.useState("Accommodation");
+  const [choice, setChoice] = React.useState("List");
   const [cost, setCost] = React.useState("")
   const [description, setDescription] = React.useState("")
   const [curDes, setCurDes] = React.useState(null)
+  const { url } = useContext(StoreContext);
 
   useEffect(() => {
     if (isOpen) {
@@ -56,46 +169,89 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         setCost()
         setDescription()
       }
-      setOption("Accommodations")
+      setOption(activity ? activity.activityType : "Accommodation");
     }
 
   }, [isOpen]);
 
-  const handleSave = () => {
-    //if (cost == "")
-    const newActivity = {
-      activityType: curDes.activityType,
-      idDestination: curDes._id || "default-id",
-      cost: parseInt(cost) || 0,
-      description: description,
-      timeStart: activity ? activity.timeStart : "00:00",
-      timeEnd: activity ? activity.timeEnd : "00:30",
-    };
-    setInforSchedule((prevSchedule) => {
-      const updatedActivities = prevSchedule.activities.map((day) => {
-        if (day.day === currentDay) {
-          if (activity) {
-            const existingActivityIndex = day.activity.findIndex((act) => act._id === activity._id);
-            const updatedActivitiesList = existingActivityIndex !== -1
-              ? [
-                ...day.activity.slice(0, existingActivityIndex),
-                { ...day.activity[existingActivityIndex], ...newActivity },
-                ...day.activity.slice(existingActivityIndex + 1),
-              ]
-              : day.activity;
-            return { ...day, activity: updatedActivitiesList };
-          } else {
-            return { ...day, activity: [...day.activity, newActivity] };
+  const handleSave = async () => {
+    try {
+      const formData = new FormData();
+
+      // Kiểm tra nếu có ảnh mới
+      if (curDes?.imgSrc && curDes.imgSrc.length > 0) {
+        curDes.imgSrc.forEach((file) => {
+          if (file instanceof File) {
+            formData.append("images", file); // 'images' là key backend mong đợi
           }
+        });
+      }
+
+      // Gửi ảnh lên server nếu có
+      if (formData.has("images")) {
+        const uploadResponse = await axios.post(`${url}/api/schedule/upload`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        if (uploadResponse.data.success) {
+          console.log("Thanh công khi upload ảnh:", uploadResponse.data);
+          curDes.imgSrc = (uploadResponse.data.files || []).map((file) => file.filename);
+        } else {
+          console.error("Lỗi khi upload ảnh:", uploadResponse.data.message);
         }
-        return day;
+      }
+
+      // Chuẩn bị dữ liệu activity mới
+      const newActivity = {
+        activityType: curDes?.activityType || "Other",
+        idDestination: curDes?._id || "default-id",
+        address: curDes.address || "default-address",
+        imgSrc: curDes.imgSrc || ["default-image"],
+        name: curDes.name || "default-name",
+        cost: parseInt(cost) || 0,
+        description: description,
+        timeStart: activity ? activity.timeStart : "00:00",
+        timeEnd: activity ? activity.timeEnd : "00:30",
+      };
+
+      // Cập nhật activity trong schedule
+      setInforSchedule((prevSchedule) => {
+        const updatedActivities = prevSchedule.activities.map((day) => {
+          if (day.day === currentDay) {
+            if (activity) {
+              const existingActivityIndex = day.activity.findIndex(
+                (act) => act._id === activity._id
+              );
+              const updatedActivitiesList =
+                existingActivityIndex !== -1
+                  ? [
+                      ...day.activity.slice(0, existingActivityIndex),
+                      { ...day.activity[existingActivityIndex], ...newActivity },
+                      ...day.activity.slice(existingActivityIndex + 1),
+                    ]
+                  : day.activity;
+              return { ...day, activity: updatedActivitiesList };
+            } else {
+              return { ...day, activity: [...day.activity, newActivity] };
+            }
+          }
+          return day;
+        });
+
+        return { ...prevSchedule, activities: updatedActivities };
       });
 
-      return { ...prevSchedule, activities: updatedActivities };
-    });
-
-    closeModal();
+      closeModal();
+    } catch (error) {
+      console.error("Lỗi khi lưu activity:", error);
+    }
   };
+  
+  
+
+  
   return (
     <Modal
       isOpen={isOpen}
@@ -112,48 +268,68 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         </div>
         <div className="modal-body">
           <Header setOption={setOption} setCurDes={setCurDes} />
-          {option === "Attractions" && <ListAttractions status="Schedule"
-            setCurDes={setCurDes} city={city} />}
-          {option === "Accommodations" && <ListAccommodation status="Schedule"
-            setCurDes={setCurDes} city={city} />}
-          {option === "FoodServices" && <ListFoodServices status="Schedule"
-            setCurDes={setCurDes} city={city} />}
-          {option === "Other" &&
-            <div className="form-group">
-              <select className="input-field">
-                <option>Vui lòng chọn hoạt động</option>
-                <option>Chỗ nghỉ</option>
-                <option>Vui chơi</option>
-                <option>An uong </option>
-                <option>Tự chọn </option>
-              </select>
-            </div>}
+
+          {option!=="Other" && (
+             <select
+             id="sort-by"
+             value={choice}
+             onChange={(e) => setChoice(e.target.value)}
+           >
+             <option value="List">Chọn từ danh sách</option>
+             <option value="WishList">Chọn từ WishList</option>
+             
+           </select>
+          )}
+         
+        {choice === "List" &&  (
+          <>
+            {option === "Attraction" && <ListAttractions status="Schedule" setCurDes={setCurDes} city={city} />}
+            {option === "Accommodation" && <ListAccommodation status="Schedule" setCurDes={setCurDes} city={city} />}
+            {option === "FoodService" && <ListFoodServices status="Schedule" setCurDes={setCurDes} city={city} />}
+          </>
+        )}
+
+        {choice === "WishList" && (
+          <>
+            {option === "Attraction" && <ListAttractions status="WishList" setCurDes={setCurDes} city={city} />}
+            {option === "Accommodation" && <ListAccommodation status="WishList" setCurDes={setCurDes} city={city} />}
+            {option === "FoodService" && <ListFoodServices status="WishList" setCurDes={setCurDes} city={city} />}
+          </>
+        )}
+          {option === "Other" && (
+              <OtherItem
+                setCurDes={setCurDes}
+                curDes={curDes}
+              />
+            )}
+
           <div className="activity-infor-container">
-            {option === "Accommodations" && curDes && (
+            {option === "Accommodation" && curDes && (
               <AccomItem
                 accommodation={curDes}
               />
             )}
-            {option === "FoodServices" && curDes && (
+            {option === "FoodService" && curDes && (
               <FoodServiceItem
                 foodService={curDes}
               />
             )}
-            {option === "Attractions" && curDes && (
+            {option === "Attraction" && curDes && (
               <AttractionItem
                 attraction={curDes}
               />
             )}
+           
             {
-              (curDes) && (
-                <FormAddActivity images={curDes.images} cost={cost} setCost={setCost}
-                  description={description} setDescription={setDescription} />
+              (curDes || option==="Other") && (
+                <FormAddActivity images={curDes?.images || null} cost={cost} setCost={setCost}
+                  description={description} setDescription={setDescription} option={option} />
               )
             }
           </div>
         </div>
         {
-          (curDes || activity) && (
+          (curDes || activity || option === "Other") && (
             <div className="modal-footer">
               <button className="save-btn" onClick={handleSave}>Lưu</button>
             </div>
@@ -165,7 +341,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   )
 };
 
-const FormAddActivity = ({ images, cost, setCost, description, setDescription }) => {
+const FormAddActivity = ({ images, cost, setCost, description, setDescription, option }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { url } = useContext(StoreContext);
   const handlePrev = () => {
@@ -200,7 +376,7 @@ const FormAddActivity = ({ images, cost, setCost, description, setDescription })
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
         </div>
-        <div className="img-add-activity-container">
+        {option!=="Other" && <div className="img-add-activity-container">
           <button onClick={handlePrev} className="carousel-button">{"<"}</button>
           <img
             className="add-schedule-img"
@@ -208,7 +384,7 @@ const FormAddActivity = ({ images, cost, setCost, description, setDescription })
             alt={`slide-${currentIndex}`}
           />
           <button onClick={handleNext} className="carousel-button">{">"}</button>
-        </div>
+        </div>}
       </div>
     </div>
   )

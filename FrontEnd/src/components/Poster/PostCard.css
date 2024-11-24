@@ -6,7 +6,6 @@
 }
 
 .card-container {
-  width: 100%;
   background-color: white;
   border-radius: 4px;
   box-shadow: 0px 1px 7px 3px rgba(0, 0, 0, 0.1);
@@ -14,8 +13,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   margin-bottom: 50px;
+  margin-left: 40px;
+  height: fit-content;
 }
 
 .card-header {
@@ -23,7 +24,6 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding-top: 10px;
 }
 
 .user-info {
@@ -54,7 +54,7 @@
 
 .pricing-box h3 {
   color: #007AFF;
-  font-size: 23px;
+  font-size: 20px;
 }
 
 .pricing-box .total {
@@ -72,7 +72,7 @@
 
 .content-image {
   width: 100%;
-  height: 400px;
+  max-height: 250px;
   object-fit: cover;
   object-position: center;
 }
@@ -92,7 +92,7 @@
 }
 
 .details {
-  width: 60%;
+  width: 98%;
 }
 
 .details h1 {
@@ -103,7 +103,8 @@
 .details p {
   color: gray;
   line-height: 1.2;
-  font-size: 18px;
+  font-size: 14px;
+  text-align: justify;
 }
 
 .pricing-box {
@@ -112,7 +113,6 @@
   border-radius: 10px;
   padding: 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-top: 10px;
 }
 
 .pricing-box ul {
@@ -124,7 +124,7 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  font-size: 18px;
+  font-size: 14px;
 }
 
 .discount {
@@ -420,4 +420,127 @@ label.action-text {
 
 .see-more:hover {
   background-color: #05a5ba;
+}
+
+/* Container for the title and button */
+.pricing-box {
+  width: 95%;
+  background-color: #fafafa;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+
+/* Adjust the title and button container layout */
+.pricing-title {
+  color: #007AFF;
+  font-size: 20px;
+  display: inline-block;
+}
+
+.cost-actions {
+  display: inline-block;
+  margin-left: 20px;
+}
+
+/* The button to toggle costs */
+.toggle-costs-btn {
+  background-color: #00bcd4;
+  color: white;
+  padding: 2px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* On hover, change button color */
+.toggle-costs-btn:hover {
+  background-color: #008c99;
+  transition: background-color 0.3s ease;
+}
+
+/* Pricing cost list, shown when 'showCosts' is true */
+.schedule-description {
+  list-style: none;
+  margin-bottom: 20px;
+}
+
+.schedule-description li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.schedule-description span {
+  font-size: 14px;
+}
+
+/* Hidden costs text, shown when 'showCosts' is false */
+.hidden-costs {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.hidden-costs span {
+  font-weight: bold;
+}
+}
+
+.attractions-box {
+  padding: 0 10px 0 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  width: 95%;
+}
+
+.attractions-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.attractions-list {
+  display: flex;
+  flex-direction: row;
+  gap: 10px; 
+  overflow-x: auto; /* Khoảng cách giữa các thẻ */
+}
+
+.attraction-item {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  padding-right: 10px;
+  gap: 5px; /* Khoảng cách giữa ảnh và tên */
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.attraction-item:hover {
+  background-color: #f0f0f0;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.attraction-item img {
+  width: 30px; /* Đường kính ảnh */
+  height: 30px;
+  object-fit: cover;
+  border-radius: 50%; /* Làm tròn ảnh */
+  border: 2px solid #ddd;
+}
+
+.attraction-item p {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #555;
+  margin: 0;
+  word-break: break-word;
 }

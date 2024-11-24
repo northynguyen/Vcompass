@@ -7,12 +7,13 @@ import MainPage from './pages/MainPage/MainPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 function App() {
-  const { token } = React.useContext(StoreContext);
+  const { token } = useContext(StoreContext);
+  console.log("token",token);
   return (
     <div>
       <ToastContainer />
       <Routes>
-        {token ? (
+        {token !== '' && token ? (
           <>
             <Route path="/*" element={<MainPage />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />

@@ -7,7 +7,58 @@ import { passport } from "../config/passport.js"; // Import passport
 import partnerModel from "../models/partner.js";
 import adminModel from "../models/admin.js";
 import userModel from "../models/user.js";
-import { model } from 'mongoose';
+import mongoose, { model } from 'mongoose';
+
+import Attraction from '../models/attraction.js'; // Import Attraction
+import Accommodation from '../models/accommodation.js'; // Import Accommodation
+import FoodService from '../models/foodService.js'; // Import FoodService
+
+export const getUserFavoritesWithDetails = async (req, res) => {
+  const { userId, type } = req.query;
+
+  try {
+    // Kiểm tra loại hợp lệ
+    const validTypes = ['attraction', 'accommodation', 'foodService'];
+    if (!validTypes.includes(type)) {
+      return res.status(400).json({success: false, message: 'Invalid type parameter' });
+    }
+
+    // Tìm user và populate trường liên quan
+    const user = await userModel
+      .findById(userId)
+      .populate({
+        path: `favorites.${type}`, // Populate theo type
+        model: getModelByType(type), // Xác định model dựa trên type
+      });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Lấy danh sách yêu thích tuỳ thuộc vào `type`
+    const favorites = user.favorites[type];
+    return res.status(200).json({success: true, favorites });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// Hàm trả về model dựa trên type
+const getModelByType = (type) => {
+  switch (type) {
+    case 'attraction':
+      return Attraction;
+    case 'accommodation':
+      return Accommodation;
+    case 'foodService':
+      return FoodService;
+    default:
+      throw new Error('Invalid type for model mapping');
+  }
+};
+
+
 // Import passport
 const handlegetInfoById = async (req, res, model) => {
   const id = req.body.userId;
@@ -339,6 +390,70 @@ const updateUserOrPartner = async (req, res) => {
   }
 };
 
+const addtoWishlist = async (req, res) => {
+  const { userId } = req.params; // Lấy userId từ params
+  const { type, itemId, action } = req.query; // Lấy type, itemId, and action từ query
+
+  try {
+    const validTypes = ["schedule", "accommodation", "attraction", "foodService"];
+    if (!validTypes.includes(type)) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid type. Must be one of: ${validTypes.join(", ")}`
+      });
+    }
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    // Check if item already exists in the wishlist
+    const itemIndex = user.favorites[type].findIndex(
+      (favoriteId) => favoriteId.toString() === itemId
+    );
+
+    if (action === "add") {
+      if (itemIndex !== -1) {
+        return res.status(400).json({
+          success: false,
+          message: "Item already exists in the wishlist"
+        });
+      }
+      user.favorites[type].push(new mongoose.Types.ObjectId(itemId));
+
+    } else if (action === "remove") {
+      if (itemIndex === -1) {
+        return res.status(400).json({
+          success: false,
+          message: "Item not found in the wishlist"
+        });
+      }
+      user.favorites[type].splice(itemIndex, 1); // Remove the item
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid action. Must be 'add' or 'remove'"
+      });
+    }
+
+    await user.save();
+    return res.status(200).json({
+      success: true,
+      message: `Item ${action === "add" ? "added to" : "removed from"} wishlist successfully`,
+      favorites: user.favorites
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 
 export {
   loginUser,
@@ -352,6 +467,8 @@ export {
   registerAdmin,
   getAllUsers,
   getAllPartners,
-  updateUserOrPartner,
+  updateUserOrPartner,addtoWishlist,
   getUserById, getPartnerById, getAdminById // Export the new function
 };
+
+

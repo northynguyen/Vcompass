@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import Schedule from "../models/schedule.js";
 import User from "../models/user.js";
+import {upload} from '../middleware/upload.js'
+import multer from 'multer';
 
 export const addSchedule = async (req, res) => {
   try {
@@ -20,6 +22,7 @@ export const addSchedule = async (req, res) => {
 };
 export const getScheduleById = async (req, res) => {
   const { id } = req.params;
+  const { activityId } = req.query;
 
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -27,13 +30,36 @@ export const getScheduleById = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Invalid ID format" });
     }
+
+    // Lấy thông tin schedule
     const schedule = await Schedule.findById(id).populate("idUser");
-    console.log(schedule);
+
     if (!schedule) {
       return res
         .status(404)
         .json({ success: false, message: "Schedule not found" });
     }
+
+    // Nếu có activityId, tìm activity cụ thể trong schedule.activities
+    if (activityId) {
+      const activity = schedule.activities
+        .flatMap((day) => day.activity)
+        .find((act) => act._id.toString() === activityId);
+
+      if (!activity) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Activity not found" });
+      }
+
+      return res.json({
+        success: true,
+        message: "Activity retrieved successfully",
+        other: activity,
+      });
+    }
+
+    // Trả về toàn bộ schedule nếu không có activityId
     res.json({
       success: true,
       message: "Get schedule success",
@@ -41,13 +67,14 @@ export const getScheduleById = async (req, res) => {
     });
   } catch (error) {
     console.error("Error retrieving schedule:", error);
-    res.json({
+    res.status(500).json({
       success: false,
       message: "Error retrieving schedule",
       error,
     });
   }
 };
+
 export const updateSchedule = async (req, res) => {
   const { id } = req.params;
   const scheduleData = req.body;
@@ -58,6 +85,7 @@ export const updateSchedule = async (req, res) => {
         .json({ success: false, message: "Invalid ID format" });
     }
 
+    console.log("scheduleData", scheduleData);
     const updatedSchedule = await Schedule.findByIdAndUpdate(id, scheduleData, {
       new: true,
     });
@@ -81,28 +109,50 @@ export const updateSchedule = async (req, res) => {
     });
   }
 };
-export const getSchedulesByIdUser = async (req, res) => {
-  const { userId } = req.body;
-  try {
-    if (!userId) {
-      return res.status(400).json({
-        success: false,
-        message: "idUser parameter is required",
-      });
-    }
-    const schedules = await Schedule.find({ idUser: userId });
-    if (!schedules || schedules.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No schedules found for this user",
-      });
-    }
 
-    res.json({
-      success: true,
-      message: "Get schedules success",
-      schedules,
-    });
+export const getSchedulesByIdUser = async (req, res) => {
+  const { userId } = req.body; // Replace with user ID extraction from token, if needed.
+  const { type } = req.query;
+
+  try {
+    if (type === "wishlist") {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+
+      const schedules = await Schedule.find({ _id: { $in: user.favorites.schedule } });
+      if (!schedules.length) {
+        return res.status(404).json({ success: false, message: "No schedules found in wishlist" });
+      }
+
+      return res.json({
+        success: true,
+        message: "Wishlist schedules retrieved successfully",
+        schedules,
+      });
+    } else {
+      if (!userId) {
+        return res.status(400).json({
+          success: false,
+          message: "User ID is required",
+        });
+      }
+
+      const schedules = await Schedule.find({ idUser: userId });
+      if (!schedules.length) {
+        return res.status(404).json({
+          success: false,
+          message: "No schedules found for this user",
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: "Schedules retrieved successfully",
+        schedules,
+      });
+    }
   } catch (error) {
     console.error("Error retrieving schedules:", error);
     res.status(500).json({
@@ -112,6 +162,7 @@ export const getSchedulesByIdUser = async (req, res) => {
     });
   }
 };
+
 export const getAllSchedule = async (req, res) => {
   try {
     const schedule = await Schedule.find().populate("idUser");
@@ -236,4 +287,65 @@ export const updateLikeComment = async (req, res) => {
       .status(500)
       .json({ success: false, message: "Failed to update schedule" });
   }
+};
+
+
+export const deleteActivity = async (req, res) => {
+  const { id, activityId } = req.params; // Lấy scheduleId và activityId từ params
+
+  try {
+    // Tìm lịch trình dựa trên ID
+    const schedule = await Schedule.findById(id);
+
+    if (!schedule) {
+      return res.status(404).json({ success: false, message: "Schedule not found" });
+    }
+
+    // Lọc các hoạt động để loại bỏ activity có id là activityId
+    schedule.activities = schedule.activities.map((day) => {
+      return {
+        ...day,
+        activity: day.activity.filter((activity) => activity._id.toString() !== activityId),
+      };
+    });
+
+    // Lưu lại lịch trình đã chỉnh sửa
+    await schedule.save();
+
+    res.status(200).json({ success: true, message: "Activity deleted successfully" , schedule});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Failed to delete activity", error: error.message });
+  }
+};
+
+export const uploadFiles = (req, res) => {
+  // Sử dụng middleware multer để xử lý
+  upload.array('images', 5)(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      // Xử lý lỗi từ multer (ví dụ: vượt kích thước file)
+      return res.status(400).json({ success: false, message: err.message });
+    } else if (err) {
+      // Xử lý lỗi khác (ví dụ: loại file không hợp lệ)
+      return res.status(400).json({ success: false, message: err.message });
+    }
+
+    // Kiểm tra nếu không có file nào được tải lên
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ success: false, message: 'No files uploaded!' });
+    }
+
+    // Trả về thông tin file đã tải lên
+    const uploadedFiles = req.files.map((file) => ({
+      filename: file.filename,
+      path: `/uploads/${file.filename}`,
+      size: file.size,
+    }));
+
+    res.status(200).json({
+      success: true,
+      message: 'Files uploaded successfully!',
+      files: uploadedFiles,
+    });
+  });
 };

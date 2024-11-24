@@ -17,6 +17,7 @@ const AttractionItem = ({ attraction, status, setCurDes, id }) => {
     e.stopPropagation();
     attraction.activityType = "Attraction";
     setCurDes(attraction);
+    window.scrollTo(40, 0);
   };
 
   const onNavigateToDetails = () => {
@@ -52,7 +53,7 @@ const AttractionItem = ({ attraction, status, setCurDes, id }) => {
           <p className="price-text">{attraction.price}đ</p>
         </div>
         {
-          status === "Schedule" && <SelectButton onClick={handleSelect} />
+          (status === "Schedule" || status === "WishList") && <SelectButton onClick={handleSelect} />
         }
       </div>
     </div>
@@ -182,7 +183,7 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
 
 // Main ListAccom Component
 const ListAccom = ({ status, setCurDes, city }) => {
-  const { url } = useContext(StoreContext);
+  const { url, user } = useContext(StoreContext);
   const [attractions, setAttractions] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // Track loading state
   const [sortOption, setSortOption] = useState("Popularity");
@@ -194,27 +195,46 @@ const ListAccom = ({ status, setCurDes, city }) => {
     console.log("city", city);
     setIsLoading(true);
     try {
-      const queryParams = new URLSearchParams({
-        ...(nameFilter && { name: nameFilter }),
-        ...(minPrice && { minPrice }),
-        ...(maxPrice && { maxPrice }),
-        ...(city && { city }),
-        sortOption,
-      });
-
-      const response = await fetch(`${url}/api/attractions?${queryParams}`);
-      const result = await response.json();
-      setIsLoading(false);
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error fetching data');
+      let response;
+      let result;
+  
+      if (status === "WishList") {
+        // Fetch wishList từ user
+        response = await fetch(`${url}/api/user/user/favorites-with-details?userId=${user._id}&type=attraction`);
+        result = await response.json();
+      } else {
+        // Fetch bình thường cho các trường hợp khác
+        const queryParams = new URLSearchParams({
+          ...(nameFilter && { name: nameFilter }),
+          ...(minPrice && { minPrice }),
+          ...(maxPrice && { maxPrice }),
+          ...(city && { city }),
+          sortOption,
+        });
+  
+        response = await fetch(`${url}/api/attractions?${queryParams}`);
+        result = await response.json();
       }
-      setAttractions(result.attractions);
+  
+      setIsLoading(false);
+  
+      if (!response.ok) {
+        throw new Error(result.message || "Error fetching data");
+      }
+  
+      if (status === "WishList") {
+        // Gán dữ liệu wishList
+       setAttractions( result.favorites.filter((favorite) => favorite.city === city))
+      } else {
+        // Gán dữ liệu attractions
+        setAttractions(result.attractions || []);
+      }
     } catch (err) {
       console.log(err);
       setIsLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchAccommodations();
@@ -226,6 +246,7 @@ const ListAccom = ({ status, setCurDes, city }) => {
 
   return (
     <div className="list-accom__container">
+      {status === "Schedule" &&
       <Filters
         sortOption={sortOption}
         setSortOption={setSortOption}
@@ -238,6 +259,7 @@ const ListAccom = ({ status, setCurDes, city }) => {
         fetchAccommodations={fetchAccommodations}
         isLoading={isLoading}
       />
+}
       <AttractionList attractions={attractions} sortOption={sortOption} status={status} setCurDes={setCurDes} />
     </div>
   );

@@ -2,9 +2,6 @@ import cors from "cors";
 import express from "express";
 import { connectDB } from "./config/connectDB.js";
 import { notificationRoutes } from "./routes/notificationRoutes.js";
-
-
-
 import "dotenv/config";
 import accommRoutes from "./routes/accommRoutes.js";
 import { Attractionrouter } from "./routes/attractionRoutes.js";
@@ -12,6 +9,7 @@ import foodServiceRoutes from "./routes/foodServiceRoutes.js";
 import scheduleRouter from "./routes/scheduleRoutes.js";
 import userRoutes from "./routes/userRoute.js";
 import bookingRouter from "./routes/bookingRoutes.js";
+import deleteRouter from "./middleware/removeImage.js";
 // App config
 const app = express();
 const port = process.env.PORT || 4000; // Lấy cổng từ biến môi trường hoặc mặc định là 4000
@@ -35,7 +33,7 @@ app.use("/api/notifications", notificationRoutes); // Thêm route cho notificati
 app.use("/api/accommodations", accommRoutes);
 app.use("/api/foodservices", foodServiceRoutes);
 app.use("/api/schedule", scheduleRouter);
-
+app.use("/api/deleteImage", deleteRouter);
 app.use("/api/attractions", Attractionrouter);
 app.use("/api/bookings", bookingRouter);
 

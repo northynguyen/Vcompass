@@ -52,7 +52,7 @@ const AttractionDetailsInfo = ({serviceId}) => {
     return (
         <div className="place-details-info">
             <div className="tour-details">
-                <h1>Điểm đến A</h1>
+                <h1>{attraction.attractionName}</h1>
                 <p>Gothenburg ★★★★☆ (348 reviews)</p>
 
                 <div className="gallery">

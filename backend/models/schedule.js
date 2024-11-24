@@ -6,6 +6,9 @@ const ActivitySchema = new Schema({
     {
       activityType: { type: String, required: true },
       idDestination: { type: String, required: true },
+      name: { type: String},
+      address: { type: String },
+      imgSrc: [{ type: String }],
       cost: { type: Number, required: true },
       description: { type: String },
       timeStart: { type: String, required: true },
@@ -48,7 +51,7 @@ const ScheduleSchema = new Schema(
     scheduleName: { type: String, required: true },
     description: { type: String },
     address: { type: String, required: true },
-    imgSrc: { type: String },
+    imgSrc: [{ type: String }],
     numDays: { type: Number, required: true },
     dateStart: { type: String, required: true },
     dateEnd: { type: String },

@@ -11,7 +11,7 @@
     text-align: center;
     background-color: #fff;
     padding: 60px;
-    min-height: 400px;
+    min-height: 250px;
     border-radius: 12px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     margin-bottom: 40px;
@@ -56,21 +56,25 @@
   }
   
   .my-schedule-section h2 {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     font-weight: 600;
     color: #333;
     margin-bottom: 20px;
+    text-align: center;
   }
   
   .my-schedule-card {
     display: flex;
     align-items: center;
     background-color: #fff;
-    padding: 20px;
+    padding: 10px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-bottom: 10px;
+    
+    max-width: 80%;
+    margin: 0 auto;
+    margin-bottom: 20px;
   }
   
   .my-schedule-card:hover {
@@ -80,8 +84,8 @@
   }
   
   .my-schedule-card img {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     object-fit: cover;
     border-radius: 12px;
     margin-right: 20px;
@@ -104,7 +108,7 @@
   }
   
   .steps-section h2 {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     font-weight: 600;
     color: #333;
     margin-bottom: 30px;
@@ -139,20 +143,20 @@
   }
   
   .steps-container h4 {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 500;
     color: #222;
     margin-bottom: 8px;
   }
   
   .steps-container p {
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: #666;
   }
   
   /* Featured Schedules Section */
   .featured-schedules-section h2 {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     font-weight: 600;
     color: #333;
     text-align: center;
@@ -237,7 +241,7 @@
   }
   
   .schedule-info h3 {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     font-weight: 500;
     margin-bottom: 8px;
     color: #333;

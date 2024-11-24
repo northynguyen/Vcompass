@@ -7,29 +7,51 @@ import './MySchedule.css';
 const MySchedule = () => {
   const { url, token } = useContext(StoreContext)
   const [schedules, setSchedules] = useState()
+  const [wishlists, setWishlists] = useState()
   const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate();
   useEffect(() => {
-    const fetchSchedules = async () => {
+    const fetchSchedulesData = async () => {
       try {
-        const response = await axios.get(`${url}/api/schedule/user/getSchedules`,
+        // Fetch schedules
+        const schedulesResponse = await axios.get(`${url}/api/schedule/user/getSchedules`, {
+          headers: { token },
+        });
+  
+        if (schedulesResponse.data.success) {
+          setSchedules(schedulesResponse.data.schedules);
+        } else {
+          console.error("Failed to fetch schedules:", schedulesResponse.data.message);
+        }
+  
+        // Fetch wishlists
+        const wishlistsResponse = await axios.get(
+          `${url}/api/schedule/user/getSchedules?type=wishlist`,
           { headers: { token } }
         );
-        if (response.data.success) {
-          setSchedules(response.data.schedules);
-          setIsLoading(false);
+  
+        if (wishlistsResponse.data.success) {
+          setWishlists(wishlistsResponse.data.schedules);
         } else {
-          console.error("Failed to fetch schedules:", response.data.message);
+          console.error("Failed to fetch wishlists:", wishlistsResponse.data.message);
         }
       } catch (error) {
-        console.error("Error fetching schedules:", error);
+        console.error("Error fetching schedules or wishlists:", error);
+      } finally {
+        setIsLoading(false); // Ensure loading state is updated
       }
     };
-    fetchSchedules();
+  
+    if (token) fetchSchedulesData();
   }, [token]);
+  
 
   const handleScheduleClick = (id) => {
     navigate(`/schedule-edit/${id}`);
+  };
+
+  const handleWishlistClick = (id) => {
+    navigate(`/schedule-view/${id}`);
   };
 
   return (
@@ -82,24 +104,30 @@ const MySchedule = () => {
       </section>
 
       <section className="featured-schedules-section">
-        <h2>Lịch trình yêu thích</h2>
+        <h2>Lịch trình đã lưu</h2>
         <div className="schedule-filters">
-          <button>Hà Nội</button>
+          {/* <button>Hà Nội</button>
           <button>Đà Lạt</button>
-          <button>Vũng Tàu</button>
+          <button>Vũng Tàu</button> */}
           <input type="text" placeholder="Tìm kiếm lịch trình" />
         </div>
         {!isLoading &&
           <div className="featured-schedules">
-            {schedules.map(schedule => (
-              <div key={schedule._id} className="schedule-card" onClick={() => handleScheduleClick(schedule._id)}>
-                <img src="https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png" alt={schedule.scheduleName} />
+            {wishlists?.map(schedule => (
+              <div key={schedule._id} className="schedule-card" onClick={() => handleWishlistClick(schedule._id)}>
+                <img src={schedule.imgSrc[0] ? `${url}/images/${schedule.imgSrc[0]}` : "https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"} alt={schedule.scheduleName} />
                 <div className="schedule-info">
                   <h3>{schedule.scheduleName}</h3>
                   <p>Địa điểm: {schedule.address}</p>
                   <p>Ngày bắt đầu: {schedule.dateStart}</p>
                   <p>Số ngày: {schedule.numDays} ngày {schedule.numDays - 1} đêm</p>
-                  <p>Người tạo: Tôi</p>
+                  <p>
+                    Tổng chi phí: {schedule.activities.reduce((totalCost, day) => {
+                      const dayTotal = day.activity.reduce((sum, activity) => sum + activity.cost, 0);
+                      return totalCost + dayTotal;
+                    }, 0).toLocaleString("vi-VN")} VND
+                  </p>
+
                 </div>
               </div>
             ))}

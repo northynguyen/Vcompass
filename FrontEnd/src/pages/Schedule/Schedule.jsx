@@ -1,168 +1,359 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import axios from 'axios';
+import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import Modal from "react-modal";
-import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { StoreContext } from "../../Context/StoreContext";
-import ActivityTime, { AccomActivity, AttractionActivity, FoodServiceActivity } from "./ActivityTime/ActivityTime";
+import ActivityTime, {
+  AccomActivity,
+  AttractionActivity,
+  FoodServiceActivity,
+  OtherActivity,
+} from "./ActivityTime/ActivityTime";
 import AddActivity from "./AddActivity/AddActivity";
 import Comment from "./Comment/Comment";
 import Expense from "./Expense/Expense";
 import "./Schedule.css";
-
-const Activity = ({ activity, setCurrentActivity, setCurrentDestination, openModal, setInforSchedule, mode }) => {
+import ConfirmDialog from "../../components/Dialog/ConfirmDialog";
+const Activity = ({
+  activity,
+  setCurrentActivity,
+  setCurrentDestination,
+  openModal,
+  setInforSchedule,
+  mode,
+  inforSchedule,
+}) => {
+  console.log("activities", activity);
   return (
     <div className="time-schedule-list">
-      {activity.length > 0 && activity.map((myactivity, index) => (
-        <ActivityItem
-          key={index}
-          activity={myactivity}
-          index={index}
-          setCurrentDestination={setCurrentDestination}
-          setInforSchedule={setInforSchedule}
-          setCurrentActivity={setCurrentActivity}
-          openModal={openModal}
-          mode={mode}
-        />
-      ))}
+      {activity.length > 0 &&
+        activity.map((myactivity, index) => (
+          <ActivityItem
+            key={index}
+            activity={myactivity}
+            index={index}
+            setCurrentDestination={setCurrentDestination}
+            inforSchedule={inforSchedule}
+            setInforSchedule={setInforSchedule}
+            setCurrentActivity={setCurrentActivity}
+            openModal={openModal}
+            mode={mode}
+          />
+        ))}
     </div>
   );
 };
 
-const ActivityItem = ({ index, activity, setCurrentActivity, setCurrentDestination, openModal, setInforSchedule, mode }) => {
+const ActivityItem = ({
+  index,
+  activity,
+  setCurrentActivity,
+  setCurrentDestination,
+  openModal,
+  setInforSchedule,
+  mode,
+  inforSchedule,
+}) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { url } = useContext(StoreContext);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  console.log("activity", activity.activityType);
   const fetchData = async (id, type) => {
     try {
       let response;
       switch (type) {
-        case 'Accommodation':
+        case "Accommodation":
           response = await fetch(`${url}/api/accommodations/getAccomm/${id}`);
           break;
-        case 'FoodService':
+        case "FoodService":
           response = await fetch(`${url}/api/foodservices/${id}`);
           break;
-        case 'Attraction':
+        case "Attraction":
           response = await fetch(`${url}/api/attractions/${id}`);
           break;
+        case "Other":
+          console.log(`${url}/api/schedule/${inforSchedule._id}?activityId=${activity._id}`);
+          response = await fetch(`${url}/api/schedule/${inforSchedule._id}?activityId=${activity._id}`);
+          break;
         default:
-          throw new Error('Unknown type');
+          throw new Error("Unknown type");
       }
       const result = await response.json();
-      setIsLoading(false)
+      setIsLoading(false);
       if (!response.ok) {
-        throw new Error(result.message || 'Error fetching data');
+        throw new Error(result.message || "Error fetching data");
       }
       setData(result);
     } catch (err) {
-      console.log(err)
-    } finally { }
+      console.log(err);
+    } finally { /* empty */ }
   };
-
 
   useEffect(() => {
     if (activity?.idDestination && activity?.activityType) {
       fetchData(activity.idDestination, activity.activityType);
     }
+    if (activity?.activityType === "Other") {
+      fetchData(activity._id, "Other"); 
+    }
   }, [activity]);
   const handleEdit = () => {
     setCurrentActivity(activity);
     switch (activity.activityType) {
-      case 'Accommodation':
+      case "Accommodation":
         data.accommodation.activityType = "Accommodation";
-        setCurrentDestination(data.accommodation)
-        break
-      case 'FoodService':
-        data.foodService.activityType = "FoodService";
-        setCurrentDestination(data.foodService)
+        setCurrentDestination(data.accommodation);
         break;
-      case 'Attraction':
+      case "FoodService":
+        data.foodService.activityType = "FoodService";
+        setCurrentDestination(data.foodService);
+        break;
+      case "Attraction":
         data.attraction.activityType = "Attraction";
-        setCurrentDestination(data.attraction)
+        setCurrentDestination(data.attraction);
+        break;
+      case "Other":
+        console.log("other data", data.other);
+        setCurrentDestination(data.other);
         break;
       default:
-        throw new Error('Unknown type');
+        throw new Error("Unknown type");
     }
     openModal();
   };
 
+  const handleConfirmDelete = async () => {
+    try {
+      console.log(
+        `${url}/api/schedule/${inforSchedule._id}/activities/${activity._id}`
+      );
+      const response = await axios.delete(
+        `${url}/api/schedule/${inforSchedule._id}/activities/${activity._id}`
+      );
+      if (response.status === 200) {
+        setIsModalOpen(false);
+        toast.success(response.data.message);
+        setInforSchedule((prevSchedule) => {
+          const updatedActivities = prevSchedule.activities.map((day) => ({
+            ...day,
+            activity: day.activity.filter((act) => act._id !== activity._id),
+          }));
+
+          return { ...prevSchedule, activities: updatedActivities };
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="activity-infor">
-      <ActivityTime activity={activity} mode={mode}
-        setInforSchedule={setInforSchedule} />
+      <ActivityTime
+        activity={activity}
+        mode={mode}
+        setInforSchedule={setInforSchedule}
+      />
       <div className="num-activity">
-        -
-        <div className="circle-num">{index + 1}</div>
-        -
+        -<div className="circle-num">{index + 1}</div>-
       </div>
       {!isLoading && (
         <>
-          {activity.activityType === "Accommodation" && (
-            <AccomActivity data={data.accommodation} activity={activity} handleEdit={handleEdit} mode={mode} />
-          )}
+          {activity.activityType === "Accommodation" &&
+            (console.log("accommodation"),
+            (
+              <AccomActivity
+                data={data.accommodation}
+                activity={activity}
+                handleEdit={handleEdit}
+                setIsOpenModal={setIsModalOpen}
+                mode={mode}
+              />
+            ))}
           {activity.activityType === "FoodService" && (
-            < FoodServiceActivity data={data.foodService} activity={activity} handleEdit={handleEdit} mode={mode} />
+            <FoodServiceActivity
+              data={data.foodService}
+              activity={activity}
+              handleEdit={handleEdit}
+              setIsOpenModal={setIsModalOpen}
+              mode={mode}
+            />
           )}
           {activity.activityType === "Attraction" && (
-            <AttractionActivity data={data.attraction} activity={activity} handleEdit={handleEdit} mode={mode} />
+            <AttractionActivity
+              data={data.attraction}
+              activity={activity}
+              handleEdit={handleEdit}
+              setIsOpenModal={setIsModalOpen}
+              mode={mode}
+            />
           )}
+          {activity.activityType === "Other" &&
+            (console.log("other"),
+            (
+              <OtherActivity
+                data={data.other}
+                activity={activity}
+                handleEdit={handleEdit}
+                setIsOpenModal={setIsModalOpen}
+                mode={mode}
+              />
+            ))}
         </>
+      )}
+
+      {isModalOpen && (
+        <ConfirmDialog
+          isOpen={isModalOpen}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setIsModalOpen(false)}
+          message="Bạn có chắc chắn muốn xóa mục này không?"
+        />
       )}
     </div>
   );
-}
+};
+
 const convertDateFormat = (date) => {
   const [day, month, year] = date.split("-");
   return `${day}-${month}-${year}`;
 };
-const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedule }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    startDay: parseDate("16/12/1999"),
-    endDate: parseDate("16/12/1999"),
-    numDays: 0,
-    description: ""
-  });
 
+// Hàm chuyển đổi ngày từ định dạng "dd-MM-yyyy" sang "yyyy-MM-dd" (ISO)
+const parseDatetoDate = (dateStr) => {
+  const [day, month, year] = dateStr.split("-");
+  return new Date(`${year}-${month}-${day}`);
+};
+
+const InforScheduleMedal = ({
+  isOpen,
+  closeModal,
+  inforSchedule,
+  setInforSchedule,
+}) => {
+  const [scheduleName, setScheduleName] = useState("");
+  const [startDay, setStartDay] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [numDays, setNumDays] = useState(0);
+  const [description, setDescription] = useState("");
+  const [imgSrc, setImgSrc] = useState([]);
+  const { url } = useContext(StoreContext);
   useEffect(() => {
     if (inforSchedule) {
-      setFormData({
-        name: inforSchedule.scheduleName || "",
-        startDay: inforSchedule.dateStart || parseDate("16/12/1999"),
-        endDate: inforSchedule.dateEnd || parseDate("16/12/1999"),
-        numDays: inforSchedule.numDays || 0,
-        description: inforSchedule.description || ""
-      });
-    } else {
-      setFormData({
-        name: "",
-        startDay: parseDate("16/12/1999"),
-        endDate: parseDate("16/12/1999"),
-        numDays: 0,
-        description: ""
-      });
+      const startDate = convertDateToJSDateVietnam(inforSchedule.dateStart);
+      const endDate = convertDateToJSDateVietnam(inforSchedule.dateEnd);
+      
+      setScheduleName(inforSchedule.scheduleName || "");
+      setStartDay(startDate);
+      setEndDate(endDate);
+      setNumDays(inforSchedule.numDays || 0);
+      setDescription(inforSchedule.description || "");
     }
-  }, [inforSchedule]);
+  }, [inforSchedule, isOpen]);
+
+  const convertDateToJSDateVietnam = (dateString) => {
+    const [day, month, year] = dateString.split("-");
+    const date = new Date(year, month - 1, day); // Tạo đối tượng Date cơ bản
+    date.setHours(date.getHours() + 7 - date.getTimezoneOffset() / 60); // Cộng thêm múi giờ Việt Nam
+    return date;
+  };
+  
+  // Test
+  console.log(convertDateToJSDateVietnam("22-11-2024"));
+  
+  const convertJSDateToDateString = (jsDate) => {
+    const day = String(jsDate.getDate()).padStart(2, "0");
+    const month = String(jsDate.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
+    const year = jsDate.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: name === 'numDays' ? Number(value) : value,
-    }));
-  };
 
-  const handleSubmit = () => {
+    if (name === "startDay") {
+      const newStartDay = new Date(value);
+      setStartDay(newStartDay);
+      const newEndDate = new Date(newStartDay.getTime() + numDays * 24 * 60 * 60 * 1000);
+      setEndDate(newEndDate);
+    } else if (name === "numDays") {
+      const newNumDays = Number(value);
+      setNumDays(newNumDays);
+      const newEndDate = new Date(startDay.getTime() + newNumDays * 24 * 60 * 60 * 1000);
+      setEndDate(newEndDate);
+    } else {
+      switch (name) {
+        case "scheduleName":
+          setScheduleName(value);
+          break;
+        case "description":
+          setDescription(value);
+          break;
+        default:
+          break;
+      }
+    }
+  };
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImgSrc(files); // Lưu trữ mảng các tệp hình ảnh
+  };
+  
+  const handleSubmit = async () => {
+    if (isNaN(startDay)) {
+      console.error("Invalid start date");
+      return; // Handle invalid date case
+    }
+  
+    const startDayString = convertJSDateToDateString(startDay);
+    const endDateString = convertJSDateToDateString(endDate);
+  
+    let uploadedImgSrc = [];
+  
+    // Kiểm tra nếu có ảnh được chọn và gửi lên server
+    if (imgSrc.length > 0) {
+      const formData = new FormData();
+      imgSrc.forEach((file) => {
+        formData.append("images", file);
+      });
+  
+      try {
+        const uploadResponse = await axios.post(`${url}/api/schedule/upload`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+  
+        if (uploadResponse.data.success) {
+          console.log("Thành công khi upload ảnh:", uploadResponse.data);
+          uploadedImgSrc = uploadResponse.data.files.map((file) => file.filename);
+        } else {
+          console.error("Lỗi khi upload ảnh:", uploadResponse.data.message);
+        }
+      } catch (error) {
+        console.error("Lỗi khi upload ảnh:", error);
+      }
+    }
+  
+    // Cập nhật thông tin lịch trình với tên ảnh đã tải lên
     setInforSchedule((prev) => ({
       ...prev,
-      scheduleName: formData.name,
-      description: formData.description
+      scheduleName,
+      description,
+      dateStart: startDayString,
+      dateEnd: endDateString,
+      imgSrc: uploadedImgSrc, // Lưu trữ tên ảnh vào inforSchedule
     }));
-
+  
     closeModal();
   };
+  
+
   return (
     <Modal
       isOpen={isOpen}
@@ -180,66 +371,107 @@ const InforScheduleMedal = ({ isOpen, closeModal, inforSchedule, setInforSchedul
 
         <div className="modal-body">
           <div className="form-group">
-            <label className="expense-sub-title" htmlFor="name-expense">Tên lịch trình</label>
-            <input className="input-field"
-              id="name-expense" required
-              name="name"
-              placeholder="Nhập tên chi phí"
-              value={formData.name}
+            <label className="expense-sub-title" htmlFor="schedule-name">
+              Tên lịch trình
+            </label>
+            <input
+              className="input-field"
+              id="schedule-name"
+              name="scheduleName"
+              placeholder="Nhập tên lịch trình"
+              value={scheduleName}
               onChange={handleChange}
-            ></input>
-            <label className="expense-sub-title" htmlFor="expense-date">Chọn ngày bắt đầu</label>
+              required
+            />
+
+            <label className="expense-sub-title" htmlFor="start-day">
+              Chọn ngày bắt đầu
+            </label>
             <input
               className="input-field"
               type="date"
-              id="expense-date"
-              name="dateTime"
+              id="start-day"
+              name="startDay"
+              value={startDay && new Date(startDay).toISOString().split("T")[0]}
+              onChange={handleChange}
               required
               min={new Date().toISOString().split("T")[0]}
-              value={formData.dateTime}
-              onChange={handleChange}
-              placeholder="Chọn ngày và giờ"
             />
-            <label className="expense-sub-title" htmlFor="des">Mô tả</label>
+
+
+            <label className="expense-sub-title" htmlFor="description">
+              Mô tả
+            </label>
             <textarea
-              placeholder="Nhập ghi chú chi tiết"
-              className="input-field" id="des"
+              className="input-field"
+              id="description"
               name="description"
-              value={formData.description}
-              onChange={handleChange}></textarea>
+              value={description}
+              onChange={handleChange}
+              placeholder="Nhập ghi chú chi tiết"
+            ></textarea>
+
+
+              <label className="expense-sub-title" htmlFor="image-upload">
+                Ảnh bìa
+              </label>
+              <input
+                className="input-field"
+                id="image-upload"
+                name="image-upload"
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleImageChange(e)}
+                multiple
+              />
+
           </div>
         </div>
+
         <div className="modal-footer">
-          <button className="save-btn"
-            onClick={handleSubmit}>Lưu</button>
+          <button className="save-btn" onClick={handleSubmit}>
+            Lưu
+          </button>
         </div>
       </div>
     </Modal>
   );
-}
+};
 
 
-const DateSchedule = ({ schedule, setInforSchedule, mode, city }) => {
 
+
+
+const DateSchedule = ({
+  schedule,
+  setInforSchedule,
+  mode,
+  city,
+  inforSchedule,
+}) => {
+  console.log("schedule", schedule);
   const [scheduleDate, setScheduleDate] = useState(schedule);
   const [isOpen, setIsOpen] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentActivity, setCurrentActivity] = useState(null);
   const [currentDestination, setCurrentDestination] = useState(null);
+  const [viewMode, setViewMode] = useState("overview"); // Chế độ hiển thị: 'overview' hoặc 'details'
 
   useEffect(() => {
     if (schedule) {
       setScheduleDate(schedule);
-      setCurrentActivity(null)
-      setCurrentDestination(null)
+      setCurrentActivity(null);
+      setCurrentDestination(null);
     }
   }, [schedule]);
+
   useEffect(() => {
     if (!isModalOpen) {
-      setCurrentActivity(null)
-      setCurrentDestination(null)
+      setCurrentActivity(null);
+      setCurrentDestination(null);
     }
   }, [isModalOpen]);
+
   const toggleDetails = () => {
     setIsOpen(!isOpen);
   };
@@ -252,25 +484,96 @@ const DateSchedule = ({ schedule, setInforSchedule, mode, city }) => {
     setIsModalOpen(false);
   };
 
-
   return (
     <div className="detail-container">
       <div className="activity-details">
         <div className="date-section">
-          <h2>
-            Ngày {scheduleDate.day}{" "}
-            <i className={`fa-solid ${isOpen ? "fa-chevron-down" : "fa-chevron-left"}`}
-              style={{ cursor: "pointer" }}
-              onClick={toggleDetails}
-            ></i>
-          </h2>
-          {isOpen && scheduleDate.activity && scheduleDate.activity.length > 0 ? (
-            <Activity activity={scheduleDate.activity} setCurrentActivity={setCurrentActivity}
-              openModal={openModal} setInforSchedule={setInforSchedule}
-              setCurrentDestination={setCurrentDestination} mode={mode} />
-          ) : (
-            isOpen && <p>Chưa có hoạt động nào</p>
-          )}
+          <div className="date-header">
+            <h2>
+              Ngày {scheduleDate.day}{" "}
+              <i
+                className={`fa-solid ${
+                  isOpen ? "fa-chevron-down" : "fa-chevron-left"
+                }`}
+                style={{ cursor: "pointer" }}
+                onClick={toggleDetails}
+              ></i>
+            </h2>
+            <div className="date-actions">
+              <button
+                className={`btn-overview ${
+                  viewMode === "overview" ? "active" : ""
+                }`}
+                onClick={() => setViewMode("overview")}
+              >
+                Tổng quan
+              </button>
+              <button
+                className={`btn-details ${
+                  viewMode === "details" ? "active" : ""
+                }`}
+                onClick={() => setViewMode("details")}
+              >
+                Xem chi tiết
+              </button>
+            </div>
+          </div>
+
+          {isOpen &&
+            (viewMode === "details" ? (
+              // Chế độ chi tiết
+              scheduleDate.activity && scheduleDate.activity.length > 0 ? (
+                <Activity
+                  activity={scheduleDate.activity}
+                  setCurrentActivity={setCurrentActivity}
+                  openModal={openModal}
+                  inforSchedule={inforSchedule}
+                  setInforSchedule={setInforSchedule}
+                  setCurrentDestination={setCurrentDestination}
+                  mode={mode}
+                />
+              ) : (
+                <p>Chưa có hoạt động nào</p>
+              )
+            ) : (
+              // Chế độ tổng quan
+              <div className="activity-overview-container">
+                {scheduleDate.activity && scheduleDate.activity.length > 0 ? (
+                  <ul className="activity-overview-list">
+                    {scheduleDate.activity.map((act, index) => {
+                      const activityTypeMap = {
+                        Accommodation: "Chỗ ở",
+                        Attraction: "Tham quan",
+                        FoodService: "Ăn uống",
+                      };
+
+                      return (
+                        <li
+                          key={index}
+                          className={`activity-type-${act.activityType}`}
+                        >
+                          <span className="activity-time">
+                            {act.timeStart} - {act.timeEnd}
+                          </span>
+                          <span className="activity-type">
+                            {activityTypeMap[act.activityType] || "Khác"}
+                          </span>
+                          <span className="activity-description">
+                            {act.description || "Không có mô tả"}
+                          </span>
+                          <span className="activity-cost">
+                            {act.cost.toLocaleString()} VND
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <p className="no-activity-message">Chưa có hoạt động nào trong ngày này.</p>
+                )}
+              </div>
+            ))}
+
           {isOpen && mode === "edit" && (
             <div className="add-new">
               <button onClick={openModal}>
@@ -296,24 +599,52 @@ const DateSchedule = ({ schedule, setInforSchedule, mode, city }) => {
 };
 
 const parseDate = (dateString) => {
-  const parts = dateString.split('/');
+  const parts = dateString.split("/");
   return new Date(parts[2], parts[1] - 1, parts[0]); // Tháng trong Date bắt đầu từ 0
 };
 
 const Schedule = ({ mode }) => {
-  const { url, token } = useContext(StoreContext)
+  const { url, token, user } = useContext(StoreContext);
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [inforSchedule, setInforSchedule] = useState(null)
+  const [inforSchedule, setInforSchedule] = useState(null);
   const [isOpenInforSchedule, setIsOpenInforSchedule] = useState(false);
   const [dateStart, setDateStart] = useState("");
   const [dateEnd, setDateEnd] = useState("");
+  const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
+
+  const toggleWishlist = async () => {
+    try {
+      const newStatus = !isSaved; // Determine the new state
+      setIsSaved(newStatus);
+
+      const action = newStatus ? "add" : "remove"; // Define the action
+      const response = await fetch(
+        `${url}/api/user/user/${user._id}/addtoWishlist?type=schedule&itemId=${id}&action=${action}`,
+        {
+          method: "POST",
+          headers: { token: token },
+        }
+      );
+
+      const result = await response.json();
+      if (!result.success) {
+        toast.error(result.message);
+      }
+      toast.success(result.message);
+      console.log(result.message); // Optionally display a success message
+    } catch (error) {
+      console.error("Failed to update wishlist:", error.message);
+      // Optionally revert the `isSaved` state if the request fails
+      setIsSaved((prevState) => !prevState);
+    }
+  };
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
         const response = await axios.get(`${url}/api/schedule/${id}`);
-        setInforSchedule(response.data.schedule)
+        setInforSchedule(response.data.schedule);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching schedule:", error);
@@ -327,21 +658,28 @@ const Schedule = ({ mode }) => {
     if (inforSchedule) {
       console.log("inforSchedule", inforSchedule);
       console.log("mode:", mode);
-      setDateStart(convertDateFormat(inforSchedule.dateStart))
-      setDateEnd(convertDateFormat(inforSchedule.dateEnd))
+      setDateStart(convertDateFormat(inforSchedule.dateStart));
+      setDateEnd(convertDateFormat(inforSchedule.dateEnd));
     }
-  }, [loading]);
+  }, [loading ]);
+
   useEffect(() => {
     if (inforSchedule && mode === "edit") {
       const updateSchedule = async () => {
         try {
-          const response = await axios.put(`${url}/api/schedule/update/${inforSchedule._id}`, {
-            ...inforSchedule,
-          });
+          const response = await axios.put(
+            `${url}/api/schedule/update/${inforSchedule._id}`,
+            {
+              ...inforSchedule,
+            }
+          );
           if (response.data.success) {
             console.log("Cập nhật lịch trình thành công:", response.data);
           } else {
-            console.error("Lỗi khi cập nhật lịch trình:", response.data.message);
+            console.error(
+              "Lỗi khi cập nhật lịch trình:",
+              response.data.message
+            );
           }
         } catch (error) {
           console.error("Lỗi:", error);
@@ -354,16 +692,18 @@ const Schedule = ({ mode }) => {
   const openInforSchedule = () => {
     setIsOpenInforSchedule(true);
   };
+
   const closeInforSchedule = () => {
     setIsOpenInforSchedule(false);
   };
+
   const onCompleted = () => {
     setInforSchedule((prevInfor) => {
       return { ...prevInfor, status: "Complete" };
     });
-    navigate('/my-schedule');
+    navigate("/my-schedule");
     toast.success("Chỉnh sửa hoàn tất");
-  }
+  };
   const onEdit = async () => {
     const newSchedule = {
       ...inforSchedule,
@@ -374,9 +714,13 @@ const Schedule = ({ mode }) => {
     };
     delete newSchedule._id;
     console.log("New Schedule", newSchedule);
-    const response = await axios.post(url + "/api/schedule/addNew", { schedule: newSchedule }, {
-      headers: { token },
-    });
+    const response = await axios.post(
+      url + "/api/schedule/addNew",
+      { schedule: newSchedule },
+      {
+        headers: { token },
+      }
+    );
     if (response.data.success) {
       const scheduleId = response.data.schedule._id;
       navigate(`/schedule-edit/${scheduleId}`);
@@ -384,7 +728,7 @@ const Schedule = ({ mode }) => {
     } else {
       console.error("Error adding schedule:", response.data.message);
     }
-  }
+  };
   const extractExpenses = (tour) => {
     const expenses = [];
     tour.activities.forEach((day) => {
@@ -401,6 +745,7 @@ const Schedule = ({ mode }) => {
     });
     return expenses;
   };
+
   const extractAdditionExpenses = (tour) => {
     const additonExpenses = [];
     tour.additionalExpenses.forEach((addExpense) => {
@@ -425,34 +770,31 @@ const Schedule = ({ mode }) => {
     const nights = daysDifference - 1;
     return `${daysDifference} ngày ${nights} đêm`;
   };
-  const handleDateStartChange = (e) => {
-    setDateStart(e.target.value);
-  };
-  const handleDateEndChange = (e) => {
-    setDateEnd(e.target.value);
-  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
   return (
     <div className="custom-schedule">
       <div className="custom-schedule-header">
-        <div >
-          <h1 className="num-title">{mode === "view" ? "Xem  lịch trình" : "Chỉnh sửa lịch trình"}</h1>
+        <div>
+          <h1 className="num-title">
+            {mode === "view" ? "Xem  lịch trình" : "Chỉnh sửa lịch trình"}
+          </h1>
           <span className="num-text">Tác giả: {inforSchedule.idUser.name}</span>
         </div>
-        <div >
-          {
-            mode === "view" &&
-            <button className="custom-schedule-btn" onClick={onEdit}>Chỉnh sửa ngay</button>
-          }
-
+        <div>
+          {mode === "view" && (
+            <button className="custom-schedule-btn" onClick={onEdit}>
+              Chỉnh sửa ngay
+            </button>
+          )}
         </div>
       </div>
       <div className="schedule-container">
         <img
           className="custom-schedule-image"
-          src="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
+          src={inforSchedule.imgSrc[0] ? `${url}/images/${inforSchedule.imgSrc[0]}` : "https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"}
           alt="Alaska"
         />
         <div className="header-container">
@@ -464,18 +806,10 @@ const Schedule = ({ mode }) => {
                   <i className="fa-regular fa-calendar-days"></i>
                   <p>Từ</p>
                 </div>
-                <input
-                  value={dateStart}
-                  onChange={handleDateStartChange}
-                  disabled={true}
-                />
+                <input value={inforSchedule.dateStart} disabled={true} />
                 <p>Đến</p>
                 {/* Bind the date input to dateEnd state */}
-                <input
-                  value={dateEnd}
-                  onChange={handleDateEndChange}
-                  disabled={true}
-                />
+                <input value={inforSchedule.dateEnd} disabled={true} />
               </div>
               <div className="date-schedule">
                 <div className="numday-title">
@@ -487,33 +821,47 @@ const Schedule = ({ mode }) => {
               <p className="des-schedule">{inforSchedule.description}</p>
             </div>
             <div className="confirm-booking">
-              {
-                mode === "edit" ? (
-                  <div className="title-button" onClick={openInforSchedule}>
-                    <i className="fa-solid fa-pen schedule-icon"></i>
-                    <button className="save-and-share-btn">Chỉnh sửa thông tin</button>
+              {mode === "edit" ? (
+                <div className="title-button" onClick={openInforSchedule}>
+                  <i className="fa-solid fa-pen schedule-icon"></i>
+                  <button className="save-and-share-btn">
+                    Chỉnh sửa thông tin
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div className={`title-button ${isSaved ? "saved" : ""} `}>
+                    <i className="fa-solid fa-bookmark schedule-icon"></i>
+                    <button
+                      className="save-and-share-btn"
+                      onClick={toggleWishlist}
+                    >
+                      Lưu lịch trình
+                    </button>
                   </div>
-                ) : (
-                  <div>
-                    <div className="title-button">
-                      <i className="fa-solid fa-bookmark schedule-icon"></i>
-                      <button className="save-and-share-btn">Lưu lịch trình</button>
-                    </div>
-                    <div className="title-button">
-                      <i className="fa-solid fa-share schedule-icon"></i>
-                      <button className="save-and-share-btn">Chia sẻ lịch trình</button>
-                    </div>
+                  <div className="title-button">
+                    <i className="fa-solid fa-share schedule-icon"></i>
+                    <button className="save-and-share-btn">
+                      Chia sẻ lịch trình
+                    </button>
                   </div>
-                )}
+                </div>
+              )}
             </div>
           </div>
         </div>
         {inforSchedule.activities?.length > 0 ? (
           inforSchedule.activities.map((schedule, index) => {
-
-            return <DateSchedule key={index} schedule={schedule} city={inforSchedule.address}
-
-              setInforSchedule={setInforSchedule} mode={mode} />;
+            return (
+              <DateSchedule
+                key={index}
+                schedule={schedule}
+                city={inforSchedule.address}
+                setInforSchedule={setInforSchedule}
+                mode={mode}
+                inforSchedule={inforSchedule}
+              />
+            );
           })
         ) : (
           <p>No schedule available</p>
@@ -524,21 +872,24 @@ const Schedule = ({ mode }) => {
           expenses={extractExpenses(inforSchedule)}
           additionExpenses={extractAdditionExpenses(inforSchedule)}
           setInforSchedule={setInforSchedule}
-          mode={mode} />
+          mode={mode}
+        />
       </div>
-      {
-        mode === "edit" &&
+      {mode === "edit" && (
         <div className="save-schedule">
-          <button className="btn-save-schedule" onClick={onCompleted}>Hoàn thành</button>
+          <button className="btn-save-schedule" onClick={onCompleted}>
+            Hoàn thành
+          </button>
         </div>
-      }
-
+      )}
 
       <Comment schedule={inforSchedule} />
-      <InforScheduleMedal isOpen={isOpenInforSchedule}
+      <InforScheduleMedal
+        isOpen={isOpenInforSchedule}
         closeModal={closeInforSchedule}
         inforSchedule={inforSchedule}
-        setInforSchedule={setInforSchedule} />
+        setInforSchedule={setInforSchedule}
+      />
     </div>
   );
 };

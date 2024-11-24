@@ -79,6 +79,11 @@
   background-color: #7BBCB0;
 }
 
+.title-button.saved {
+  background-color: #a5f97b;
+  border-color: #13d102;
+}
+
 .save-and-share-btn {
   color: #000;
   background-color: transparent;
@@ -203,8 +208,11 @@ p.des-schedule {
 .detail-container {
   background: #FFF;
   padding: 20px;
-  margin-top: 20px;
+  border-radius: 10px;
   box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-top: 20px;
 }
 
 .time-container {
@@ -213,27 +221,28 @@ p.des-schedule {
   background-color: #FFF;
   width: 100%;
   box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
-  height: 200px;
+  /* height: 200px; */
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  gap: 10px;
+  /* gap: 10px; */
   font-size: 30px;
   color: #888888;
   flex: 1;
-  padding: 0px 20px;
+  
 }
 
 .circle-num {
   color: #FFF;
   background: #7BBCB0;
   border-radius: 99px;
-  height: 40px;
-  width: 40px;
+  height: 30px;
+  width: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: 500;
+  font-size: 16px;
 }
 
 .num-activity {
@@ -275,6 +284,7 @@ p.des-schedule {
 
 .time-container h6 {
   text-align: center;
+  font-size: 14px;
 }
 
 /* Tùy chỉnh scrollbar */
@@ -302,7 +312,51 @@ p.des-schedule {
 .date-section {
   display: flex;
   flex-direction: column;
-  gap: 60px;
+  gap: 30px;
+}
+
+.date-section {
+  /* Căn chỉnh ngày và các nút trong một hàng */
+.date-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.date-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Phong cách nút */
+.date-actions button {
+  padding: 5px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.date-actions .btn-overview {
+  background-color: #007bff;
+  color: white;
+}
+
+.date-actions .btn-overview:hover {
+  background-color: #0056b3;
+}
+
+.date-actions .btn-details {
+  background-color: #28a745;
+  color: white;
+}
+
+.date-actions .btn-details:hover {
+  background-color: #1e7e34;
+}
+
 }
 
 .add-new button {
@@ -334,9 +388,10 @@ i.fa-solid.fa-plus.add-icon {
   justify-content: space-between;
   border: 1px solid #ddd;
   background-color: #fff;
-  border-radius: 4px;
+  border-radius: 10px;
   flex: 5;
   box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+  gap: 10px;
 }
 
 .time-schedule-location a {
@@ -376,6 +431,14 @@ i.fa-solid.fa-plus.add-icon {
 
 .time-schedule-rating {
   color: #ffae00;
+  font-size: 14px;
+  margin-right: 10px;
+}
+
+.time-schedule-rating i,
+.time-schedule-header span, .time-schedule-header p {
+  margin: 0;
+  font-size: 13px;
 }
 
 .time-schedule-info {
@@ -398,6 +461,11 @@ i.fa-solid.fa-plus.add-icon {
   text-align: left;
   flex-direction: column;
   height: 100%;
+}
+
+.time-schedule-price p {
+  margin: 0;
+  font-size: 18px;
 }
 .custom-schedule-header {
   display: flex;
@@ -476,24 +544,131 @@ i.fa-solid.fa-plus.add-icon {
 
 .time-schedule-usernote {
   display: flex;
-  align-items: center;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
+  flex-direction: column;
+  align-items: left;
   border-radius: 8px;
   padding: 10px 15px;
   font-size: 16px;
   color: #333;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 5px 0px;
+  gap: 10px;  
 }
 
 .time-schedule-usernote .note-icon {
   color: #ff6347; /* Tomato color */
-  margin-right: 8px;
-  font-size: 20px;
+  margin-right: 12px;
 }
 
 .time-schedule-usernote p {
   margin: 0;
   font-weight: 500;
+  font-size: 14px;
+  color: #333;
+  text-align: justify;
+}
+.note-icon-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+/* Container cho tổng quan hoạt động */
+.activity-overview-container {
+  margin: 10px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 8px;
+
+
+/* Danh sách hoạt động tổng quan */
+.activity-overview-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Mỗi mục hoạt động */
+.activity-overview-list li {
+  background-color: #f9f9f9;
+  margin: 12px 0;
+  padding: 12px;
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: 1fr 2fr 3fr 1fr; /* Chia các cột: thời gian, loại, mô tả, chi phí */
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.activity-overview-list li:hover {
+  background-color: #e9f5ff; /* Màu nền khi hover */
+}
+
+/* Cột Thời gian */
+.activity-time {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* Cột Loại hoạt động */
+.activity-type {
+  font-weight: 600;
+  color: #007bff;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+/* Cột Mô tả */
+.activity-description {
+  font-size: 1rem;
+  color: #666;
+  padding: 0 10px;
+  word-wrap: break-word; /* Đảm bảo mô tả không bị tràn */
+}
+
+/* Cột Chi phí */
+.activity-cost {
+  font-weight: bold;
+  color: #e63946;
+  font-size: 1.1rem;
+  text-align: right;
+  padding-right: 10px;
+}
+
+/* Tiêu đề cột */
+.activity-overview-header {
+  display: grid;
+  grid-template-columns: 1fr 2fr 3fr 1fr;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.activity-overview-header div {
+  padding: 8px 0;
+  text-align: center;
+}
+
+/* Tùy chỉnh cho loại hoạt động (Accommodation, Attraction, FoodService) */
+.activity-type-Accommodation {
+  background-color: #d1f7e3;
+}
+
+.activity-type-Attraction {
+  background-color: #fef4d1;
+}
+
+.activity-type-FoodService {
+  background-color: #f7d1d1;
+}
+
+/* Các hoạt động chưa có thông tin */
+.no-activities-message {
+  font-size: 1.2rem;
+  color: #888;
+  text-align: center;
+  margin-top: 20px;
+}
 }

@@ -1,7 +1,8 @@
 import axios from 'axios';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { StoreContext } from '../../Context/StoreContext';
+import CryptoJS from 'crypto-js';
 import './PostCard.css';
 const PostCard = ({ schedule, handleScheduleClick }) => {
   const { url, user, token } = useContext(StoreContext);
@@ -12,8 +13,10 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
     Attraction: 0,
     Additional: 0,
   };
+  const [showCosts, setShowCosts] = useState(false); // Trạng thái hiển thị chi phí
+  const [attractions, setAttractions] = useState(null);
   const isLike = () => {
-    return likes.some(like => like.idUser === user._id);
+    return likes.some(like => like.idUser === user?._id);
   };
   const handleComment = () => {
     handleScheduleClick(schedule._id)
@@ -54,6 +57,31 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
     return count;
   };
 
+  useEffect(() => {
+    const fetchAttractions = async () => {
+      const idAttractions = [];
+
+      schedule.activities.forEach(day => {
+        day.activity.forEach(activity => {
+          if (activity.activityType === 'Attraction') {
+             idAttractions.push(activity.idDestination);
+          }
+        });
+      })
+
+      try {
+        const response = await axios.get(`${url}/api/attractions`);
+        if (response.data.success) {
+          const attractions = response.data.attractions.filter(attraction => idAttractions.includes(attraction._id));
+          setAttractions(attractions);
+        }
+      } catch (error) {
+        console.error("Error fetching attractions:", error);
+      }
+    };
+    fetchAttractions();
+
+  }, []);
   schedule.activities.forEach(day => {
     day.activity.forEach(activity => {
       switch (activity.activityType) {
@@ -75,13 +103,26 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
   schedule.additionalExpenses.forEach(activity => {
     activityCosts.Additional += activity.cost;
   });
+
+  const onClick = (serviceId) => {
+    console.log(serviceId);
+    const encryptedServiceId = CryptoJS.AES.encrypt(serviceId, 'mySecretKey').toString();
+    const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
+    window.open(`/place-details/attraction/${safeEncryptedServiceId}`);
+    window.scrollTo(0, 0);
+};
+  const totalCost = 
+    activityCosts.Accommodation + 
+    activityCosts.FoodService + 
+    activityCosts.Attraction + 
+    activityCosts.Additional;
   return (
     <div className="card-container">
       <header className="card-header">
         <div className="user-info">
           <img
             className="user-avatar"
-            src="https://randomuser.me/api/portraits/women/44.jpg"
+            src= "https://randomuser.me/api/portraits/women/44.jpg"
             alt="user avatar"
           />
           <div>
@@ -103,7 +144,7 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
 
       <img
         className="content-image"
-        src={schedule.imgSrc}
+        src={schedule.imgSrc[0]? `${url}/images/${schedule.imgSrc[0]}` : "https://bazantravel.com/cdn/medias/uploads/83/83317-khu-nghi-duong-lan-rung-700x420.jpg"}
         alt="Alaska"
       />
       <div className='content-container'>
@@ -117,24 +158,51 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
         </div>
 
       </div>
-      <div className="pricing-box">
-        <h3>Chi phí</h3>
-        <ul className="schedule-description">
-          <li><span>Chi phí chỗ ở</span><span>{activityCosts.Accommodation.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
-          <li><span>Chi phí ăn uống</span><span >{activityCosts.FoodService.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
-          <li><span>Chi phí vui chơi</span><span>{activityCosts.Attraction.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
-          <li><span>Chi phí phát sinh</span><span>{activityCosts.Additional.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
-        </ul>
-        <div className="total"><span>Tổng cộng</span>
-          <span>
-            {
-              (activityCosts.Accommodation + activityCosts.FoodService +
-                activityCosts.Attraction + activityCosts.Additional)
-                .toLocaleString("vi-VN", { style: "currency", currency: "VND" })
-            }
-          </span>
+      {attractions && attractions.length > 0 && (
+        <div className="attractions-box">
+        <h3 className="attractions-title">Điểm tham quan</h3>
+        <div className="attractions-list">
+          {attractions?.map((attraction) => (
+            <div key={attraction._id} className="attraction-item" onClick={() => onClick(attraction._id)}>
+              <img src={attraction.images[0]? `${url}/images/${attraction.images[0]}` : "https://bazantravel.com/cdn/medias/uploads/83/83317-khu-nghi-duong-lan-rung-700x420.jpg"} alt={attraction.name} />
+              <p>{attraction.attractionName}</p>
+            </div>
+          ))}
         </div>
+
       </div>
+      )}
+      
+
+      <div className="pricing-box">
+        <h3 className="pricing-title">Chi phí</h3>
+        <div className="cost-actions">
+          <button 
+            className="toggle-costs-btn" 
+            onClick={() => setShowCosts(!showCosts)}
+          >
+            {showCosts ? "Thu gọn" : "Xem thêm"}
+          </button>
+        </div>
+        {!showCosts && (
+          <p className="hidden-costs">
+            Tổng chi phí: &nbsp;
+            <span>
+              {totalCost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+            </span>
+          </p>
+        )}
+        {showCosts && (
+          <ul className="schedule-description">
+            <li><span>Chi phí chỗ ở</span><span>{activityCosts.Accommodation.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
+            <li><span>Chi phí ăn uống</span><span>{activityCosts.FoodService.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
+            <li><span>Chi phí vui chơi</span><span>{activityCosts.Attraction.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
+            <li><span>Chi phí phát sinh</span><span>{activityCosts.Additional.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</span></li>
+          </ul>
+        )}
+      </div>
+
+
       <footer className="card-footer">
         <div className="actions">
           <i className={`fa-solid fa-heart favorite-icon ${isLike() ? "enabled" : ""}`} onClick={handleLike}></i>

@@ -43,7 +43,7 @@ const AccomItem = ({ accommodation, status, setCurDes, id }) => {
         <div className="list-accom__tour-rating">{calculateTotalRate(accommodation.ratings)}</div>
       </div>
       <div className="list-accom__tour-price">
-        {status === "Schedule" && <SelectButton onClick={handleSelect} />}
+        {(status === "Schedule" || status ==="WishList")  && <SelectButton onClick={handleSelect} />}
       </div>
     </div>
   );
@@ -52,7 +52,7 @@ const AccomItem = ({ accommodation, status, setCurDes, id }) => {
 // Accommodation List Component
 const AccomList = ({ accommodations, sortOption, status, setCurDes }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const accomPerPage = status === "Schedule" ? 3 : 8;
+  const accomPerPage = status === "Schedule" ? 3 : 3;
   const sortedAccom = Object.values(accommodations).sort((a, b) => {
     switch (sortOption) {
       case "PriceLowToHigh":
@@ -137,37 +137,59 @@ const Filters = ({
 
 // Main ListAccom Component
 const ListAccom = ({ status, setCurDes ,city}) => {
-  const { url } = useContext(StoreContext);
+  const { url , user} = useContext(StoreContext);
   const [accommodations, setAccommodations] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // Track loading state
   const [sortOption, setSortOption] = useState("Popularity");
   const [nameFilter, setNameFilter] = useState("");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(1000000);
+ 
+
   const fetchAccommodations = async () => {
+    console.log("city", city);
     setIsLoading(true);
     try {
-      const queryParams = new URLSearchParams({
-        ...(nameFilter && { name: nameFilter }),
-        ...(minPrice && { minPrice }),
-        ...(maxPrice && { maxPrice }),
-        ...(city && { city }),
-      });
-
-      const response = await fetch(`${url}/api/accommodations?${queryParams}`);
-      const result = await response.json();
-      setIsLoading(false);
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error fetching data');
+      let response;
+      let result;
+  
+      if (status === "WishList") {
+        console.log(`${url}/api/user/user/favorites-with-details?userId=${user._id}&type=attraction`);
+        response = await fetch(`${url}/api/user/user/favorites-with-details?userId=${user._id}&type=accommodation`);
+        result = await response.json();
+      } else {
+        // Fetch bình thường cho các trường hợp khác
+        const queryParams = new URLSearchParams({
+          ...(nameFilter && { name: nameFilter }),
+          ...(minPrice && { minPrice }),
+          ...(maxPrice && { maxPrice }),
+          ...(city && { city }),
+          sortOption,
+        });
+  
+       response = await fetch(`${url}/api/accommodations?${queryParams}`);
+        result = await response.json();
       }
-      setAccommodations(result.accommodations);
+  
+      setIsLoading(false);
+  
+      if (!response.ok) {
+        throw new Error(result.message || "Error fetching data");
+      }
+  
+      if (status === "WishList") {
+        // Gán dữ liệu wishList
+        setAccommodations(result.favorites.filter((favorite) => favorite.city === city));
+      } else {
+        // Gán dữ liệu attractions
+        setAccommodations(result.accommodations || []);
+      }
     } catch (err) {
       console.log(err);
       setIsLoading(false);
     }
   };
-
+  
   useEffect(() => {
     fetchAccommodations();
   }, [url]);
@@ -178,6 +200,9 @@ const ListAccom = ({ status, setCurDes ,city}) => {
 
   return (
     <div className="list-accom__container">
+      {status === "Schedule" && (
+        
+      
       <Filters
         sortOption={sortOption}
         setSortOption={setSortOption}
@@ -190,6 +215,7 @@ const ListAccom = ({ status, setCurDes ,city}) => {
         fetchAccommodations={fetchAccommodations}
         isLoading={isLoading}
       />
+    )}
       <AccomList accommodations={accommodations} sortOption={sortOption} status={status} setCurDes={setCurDes} />
     </div>
   );

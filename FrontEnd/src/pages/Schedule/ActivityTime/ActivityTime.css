@@ -19,7 +19,7 @@
 
 .time-select-wrapper .time-schedule {
   padding-left: 30px;
-  width: 200px;
+  width: 120px;
   font-size: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -28,6 +28,7 @@
   padding: 10px;
   text-align: center;
   border-radius: 15px;
+  font-size: 14px;
 }
 
 .time-container h6 {
@@ -63,4 +64,77 @@
 .activity-content-card{
   display: flex;
   
+}
+
+.wishlist-icon {
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.wishlist-icon.saved {
+  color: red; /* Saved state */
+}
+
+.wishlist-icon.not-saved {
+  color: grey; /* Default state */
+}
+
+.other-activity-body {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+.other-activity-body .other-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.other-activity-body .other-right {
+  
+}
+.other-activity-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.other-activity-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.other-activity-address {
+  font-size: 0.9rem;
+  color: #007bff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.other-activity-address a {
+  text-decoration: none;
+}
+
+.other-activity-address a:hover {
+  text-decoration: underline;
+}
+
+/* Images Section */
+.other-activity-images {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.other-activity-image {
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
 }

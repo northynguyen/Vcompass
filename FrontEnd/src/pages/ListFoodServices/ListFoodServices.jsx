@@ -11,6 +11,7 @@ const FoodServiceItem = ({ foodService, status, setCurDes, id }) => {
     e.stopPropagation();
     foodService.activityType = "FoodService";
     setCurDes(foodService);
+    window.scrollTo(40, 0);
   };
 
   const onNavigateToDetails = () => {
@@ -45,7 +46,7 @@ const FoodServiceItem = ({ foodService, status, setCurDes, id }) => {
           <p className="price-text">{foodService.price.minPrice} - {foodService.price.maxPrice}₫</p>
         </div>
         {
-          status === "Schedule" && <SelectButton onClick={handleSelect} />
+          (status === "Schedule" || status === "WishList") && <SelectButton onClick={handleSelect} />
         }
       </div>
     </div>
@@ -142,7 +143,7 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => (
 
 // Main ListAccom Component
 const ListFoodServices = ({ status, setCurDes, city }) => {
-  const { url } = useContext(StoreContext);
+  const { url, user } = useContext(StoreContext);
   const [foodServices, setFoodServices] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // Track loading state
   const [sortOption, setSortOption] = useState("Popularity");
@@ -150,32 +151,51 @@ const ListFoodServices = ({ status, setCurDes, city }) => {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(1000000);
 
+
   const fetchFoodServices = async () => {
     console.log("city", city);
     setIsLoading(true);
     try {
-      const queryParams = new URLSearchParams({
-        ...(nameFilter && { name: nameFilter }),
-        ...(minPrice && { minPrice }),
-        ...(maxPrice && { maxPrice }),
-        ...(city && { city: city }),
-
-      });
-      console.log(`${url}/api/foodservices?${queryParams}`);
-      const response = await fetch(`${url}/api/foodservices?${queryParams}`);
-      const result = await response.json();
-      setIsLoading(false);
-
-      if (!response.ok) {
-        throw new Error(result.message || 'Error fetching data');
+      let response;
+      let result;
+  
+      if (status === "WishList") {
+        // Fetch wishList từ user
+        response = await fetch(`${url}/api/user/user/favorites-with-details?userId=${user._id}&type=foodService`);
+        result = await response.json();
+      } else {
+        // Fetch bình thường cho các trường hợp khác
+        const queryParams = new URLSearchParams({
+          ...(nameFilter && { name: nameFilter }),
+          ...(minPrice && { minPrice }),
+          ...(maxPrice && { maxPrice }),
+          ...(city && { city }),
+          sortOption,
+        });
+  
+       response = await fetch(`${url}/api/foodservices?${queryParams}`);
+        result = await response.json();
       }
-      setFoodServices(result.foodService);
+  
+      setIsLoading(false);
+  
+      if (!response.ok) {
+        throw new Error(result.message || "Error fetching data");
+      }
+  
+      if (status === "WishList") {
+        // Gán dữ liệu wishList
+        setFoodServices(result.favorites );
+      } else {
+        // Gán dữ liệu attractions
+        setFoodServices(result.foodService || []);
+      }
     } catch (err) {
       console.log(err);
       setIsLoading(false);
     }
   };
-
+  
   useEffect(() => {
     fetchFoodServices();
   }, [url]);

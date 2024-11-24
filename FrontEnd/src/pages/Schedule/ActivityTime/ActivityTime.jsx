@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 import CryptoJS from "crypto-js";
 import { useContext, useEffect, useState } from "react";
-import { FaEdit, FaRegClock } from 'react-icons/fa';
+import { FaEdit, FaRegClock, FaHeart, FaRegHeart } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { toast } from "react-toastify";
 import { SlNotebook } from "react-icons/sl";
 import { StoreContext } from "../../../Context/StoreContext";
-import './ActivityTime.css';
-
-
-
+import "./ActivityTime.css";
+import ImagesModal from "../../../components/ImagesModal/ImagesModal";
 const ActivityTime = ({ activity, setInforSchedule, mode }) => {
   const timeStart = activity.timeStart;
   const timeEnd = activity.timeEnd;
@@ -15,7 +15,9 @@ const ActivityTime = ({ activity, setInforSchedule, mode }) => {
     const options = [];
     for (let hour = 0; hour < 24; hour++) {
       for (let minute = 0; minute < 60; minute += 30) {
-        const formattedTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        const formattedTime = `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")}`;
         options.push(formattedTime);
       }
     }
@@ -53,7 +55,8 @@ const ActivityTime = ({ activity, setInforSchedule, mode }) => {
     const newStartTime = e.target.value;
     setStartTime(newStartTime);
     if (newStartTime >= endTime) {
-      const nextValidEndTime = timeOptions.find(option => option > newStartTime) || endTime;
+      const nextValidEndTime =
+        timeOptions.find((option) => option > newStartTime) || endTime;
       setEndTime(nextValidEndTime);
     }
   };
@@ -61,13 +64,19 @@ const ActivityTime = ({ activity, setInforSchedule, mode }) => {
     const newEndTime = e.target.value;
     setEndTime(newEndTime);
   };
-  const filteredEndTimeOptions = timeOptions.filter((option) => option > startTime);
+  const filteredEndTimeOptions = timeOptions.filter(
+    (option) => option > startTime
+  );
   return (
     <div className="time-container">
       <div className="time-select-wrapper">
         <FaRegClock className="icon" />
-        <select className="time-schedule" value={startTime} onChange={handleStartChange}
-          disabled={mode === "view"}>
+        <select
+          className="time-schedule"
+          value={startTime}
+          onChange={handleStartChange}
+          disabled={mode === "view"}
+        >
           {timeOptions.map((option, index) => (
             <option key={index} value={option}>
               {option}
@@ -78,8 +87,12 @@ const ActivityTime = ({ activity, setInforSchedule, mode }) => {
       <h6>To</h6>
       <div className="time-select-wrapper">
         <FaRegClock className="icon" />
-        <select className="time-schedule" value={endTime} onChange={handleEndChange}
-          disabled={mode === "view"}>
+        <select
+          className="time-schedule"
+          value={endTime}
+          onChange={handleEndChange}
+          disabled={mode === "view"}
+        >
           {filteredEndTimeOptions.map((option, index) => (
             <option key={index} value={option}>
               {option}
@@ -91,19 +104,56 @@ const ActivityTime = ({ activity, setInforSchedule, mode }) => {
   );
 };
 
+export const AccomActivity = ({
+  activity,
+  data,
+  handleEdit,
+  setIsOpenModal,
+  mode,
+}) => {
+  const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
+  const { url, user, token } = useContext(StoreContext);
+  const toggleWishlist = async () => {
+    try {
+      const newStatus = !isSaved; // Determine the new state
 
-export const AccomActivity = ({ activity, data, handleEdit, mode }) => {
-  const { url } = useContext(StoreContext);
+      const action = newStatus ? "add" : "remove"; // Define the action
+      const response = await fetch(
+        `${url}/api/user/user/${user._id}/addtoWishlist?type=accommodation&itemId=${data._id}&action=${action}`,
+        {
+          method: "POST",
+          headers: { token: token },
+        }
+      );
+
+      const result = await response.json();
+      if (!result.success) {
+        toast.error(result.message);
+      } else {
+        toast.success(result.message);
+        console.log(result.message);
+        setIsSaved(newStatus);
+      } // Optionally display a success message
+    } catch (error) {
+      console.error("Failed to update wishlist:", error.message);
+      // Optionally revert the `isSaved` state if the request fails
+      setIsSaved((prevState) => !prevState);
+    }
+  };
 
   const onNavigateToDetails = () => {
-    const encryptedServiceId = CryptoJS.AES.encrypt(data._id, 'mySecretKey').toString();
+    const encryptedServiceId = CryptoJS.AES.encrypt(
+      data._id,
+      "mySecretKey"
+    ).toString();
     const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
-    window.open(`/place-details/accommodation/${safeEncryptedServiceId}`, "_blank");
+    window.open(
+      `/place-details/accommodation/${safeEncryptedServiceId}`,
+      "_blank"
+    );
   };
   if (!data) {
-    return (
-      <div className="div">...</div>
-    )
+    return <div className="div">...</div>;
   }
   return (
     <div className="time-schedule-item">
@@ -111,34 +161,59 @@ export const AccomActivity = ({ activity, data, handleEdit, mode }) => {
         <div className="type-activity">
           <p>NGHỈ NGƠI</p>
         </div>
-        {
-          mode === "edit" &&
+        {mode === "view" && (
           <div className="expense-actions">
-            <button className="edit-btn"
-              onClick={handleEdit}>
-              <FaEdit />
+            <button className="wishlist-btn" onClick={toggleWishlist}>
+              {isSaved ? (
+                <FaHeart className="wishlist-icon saved" />
+              ) : (
+                <FaRegHeart className="wishlist-icon not-saved" />
+              )}
             </button>
           </div>
-        }
+        )}
+        {mode === "edit" && (
+          <div className="expense-actions">
+            <button className="edit-btn" onClick={handleEdit}>
+              <FaEdit />
+            </button>
+
+            <button className="edit-btn" onClick={() => setIsOpenModal(true)}>
+              <MdDelete />
+            </button>
+          </div>
+        )}
       </div>
-      <div className="activity-content-card"  onClick={onNavigateToDetails}>
+      <div className="activity-content-card" onClick={onNavigateToDetails}>
         <div className="time-schedule-left">
-          <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
+          <img
+            src={`${url}/images/${data.images[0]}`}
+            alt={data.title || "Image"}
+            className="time-schedule-image"
+          />
         </div>
         <div className="time-schedule-details">
           <div className="time-schedule-header">
-            <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
+            <span className="time-schedule-rating">
+              ★★★★☆ ({data?.ratings?.length || 0} reviews)
+            </span>
             <h3>{data.name}</h3>
             <div className="time-schedule-location">
               <i className="fa-solid fa-location-dot"></i>
-              <a href={`https://www.google.com/maps/?q=${data.location.latitude},${data.location.longitude}`}>
+              <a
+                href={`https://www.google.com/maps/?q=${data.location.latitude},${data.location.longitude}`}
+              >
                 {data.location.address}
               </a>
             </div>
             <div className="time-schedule-info">
               <i className="fa-solid fa-file"></i>
               <span>
-                <span>{data.description.length > 150 ? data.description.substring(0, 150) + "..." : data.description}</span>
+                <span>
+                  {data.description.length > 150
+                    ? data.description.substring(0, 150) + "..."
+                    : data.description}
+                </span>
               </span>
             </div>
             <div className="list-accom__tour-facilities">
@@ -150,31 +225,74 @@ export const AccomActivity = ({ activity, data, handleEdit, mode }) => {
         </div>
         <div className="time-schedule-right">
           <div className="time-schedule-price">
-            <p className="price-text">{activity.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+            <p className="price-text">
+              {activity.cost.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </p>
           </div>
           <div />
         </div>
       </div>
       <div className="time-schedule-usernote">
-        <SlNotebook className="note-icon" />
+        <div className="note-icon-wrapper">
+          <SlNotebook className="note-icon" />
+          <p>Ghi chú :</p>
+        </div>
+
         <p>{activity.description}</p>
       </div>
-
     </div>
-  )
-}
-export const FoodServiceActivity = ({ activity, data, handleEdit, mode }) => {
-  const { url } = useContext(StoreContext);
+  );
+};
+export const FoodServiceActivity = ({
+  activity,
+  data,
+  handleEdit,
+  setIsOpenModal,
+  mode,
+}) => {
+  const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
+  const { url, user, token } = useContext(StoreContext);
+  const toggleWishlist = async () => {
+    try {
+      const newStatus = !isSaved; // Determine the new state
+
+      const action = newStatus ? "add" : "remove"; // Define the action
+      const response = await fetch(
+        `${url}/api/user/user/${user._id}/addtoWishlist?type=foodService&itemId=${data._id}&action=${action}`,
+        {
+          method: "POST",
+          headers: { token: token },
+        }
+      );
+
+      const result = await response.json();
+      if (!result.success) {
+        toast.error(result.message);
+      } else {
+        toast.success(result.message);
+        setIsSaved(newStatus);
+        console.log(result.message);
+      } // Optionally display a success message
+    } catch (error) {
+      console.error("Failed to update wishlist:", error.message);
+      // Optionally revert the `isSaved` state if the request fails
+      setIsSaved((prevState) => !prevState);
+    }
+  };
   const onNavigateToDetails = () => {
-    const encryptedServiceId = CryptoJS.AES.encrypt(data._id, 'mySecretKey').toString();
+    const encryptedServiceId = CryptoJS.AES.encrypt(
+      data._id,
+      "mySecretKey"
+    ).toString();
     const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
     window.open(`/place-details/food/${safeEncryptedServiceId}`, "_blank");
   };
-  console.log(data)
+  console.log(data);
   if (!data) {
-    return (
-      <div className="div">...</div>
-    )
+    return <div className="div">...</div>;
   }
   return (
     <div className="time-schedule-item">
@@ -182,31 +300,59 @@ export const FoodServiceActivity = ({ activity, data, handleEdit, mode }) => {
         <div className="type-activity">
           <p>ĂN UỐNG</p>
         </div>
-        {
-          mode === "edit" &&
+
+        {mode === "view" && (
           <div className="expense-actions">
-            <button className="edit-btn"
-              onClick={handleEdit}>
-              <FaEdit />
+            <button className="wishlist-btn" onClick={toggleWishlist}>
+              {isSaved ? (
+                <FaHeart className="wishlist-icon saved" />
+              ) : (
+                <FaRegHeart className="wishlist-icon not-saved" />
+              )}
             </button>
           </div>
-        }
+        )}
+        {mode === "edit" && (
+          <div className="expense-actions">
+            <button className="edit-btn" onClick={handleEdit}>
+              <FaEdit />
+            </button>
+
+            <button className="edit-btn" onClick={() => setIsOpenModal(true)}>
+              <MdDelete />
+            </button>
+          </div>
+        )}
       </div>
       <div className="activity-content-card" onClick={onNavigateToDetails}>
         <div className="time-schedule-left">
-          <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
+          <img
+            src={`${url}/images/${data.images[0]}`}
+            alt={data.title || "Image"}
+            className="time-schedule-image"
+          />
         </div>
         <div className="time-schedule-details">
           <div className="time-schedule-header">
-            <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
+            <span className="time-schedule-rating">
+              ★★★★☆ ({data?.ratings?.length || 0} reviews)
+            </span>
             <h3>{data.foodServiceName}</h3>
             <div className="time-schedule-location">
               <i className="fa-solid fa-location-dot"></i>
-              <a href={`https://www.google.com/maps/?q=${data.location.latitude},${data.location.longitude}`}>{data.location.address}</a>
+              <a
+                href={`https://www.google.com/maps/?q=${data.location.latitude},${data.location.longitude}`}
+              >
+                {data.location.address}
+              </a>
             </div>
             <div className="time-schedule-info">
               <i className="fa-solid fa-file"></i>
-              <span>{data.description.length > 150 ? data.description.substring(0, 150) + "..." : data.description}</span>
+              <span>
+                {data.description.length > 150
+                  ? data.description.substring(0, 150) + "..."
+                  : data.description}
+              </span>
             </div>
             <div className="list-accom__tour-facilities">
               {data.amenities.map((facility, index) => (
@@ -214,36 +360,80 @@ export const FoodServiceActivity = ({ activity, data, handleEdit, mode }) => {
               ))}
             </div>
           </div>
-
-
         </div>
 
         <div className="time-schedule-right">
           <div className="time-schedule-price">
-            <p className="price-text">{activity.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+            <p className="price-text">
+              {activity.cost.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </p>
           </div>
           <div />
         </div>
       </div>
       <div className="time-schedule-usernote">
-        <SlNotebook className="note-icon" />
+        <div className="note-icon-wrapper">
+          <SlNotebook className="note-icon" />
+          <p>Ghi chú :</p>
+        </div>
         <p>{activity.description}</p>
       </div>
     </div>
+  );
+};
+export const AttractionActivity = ({
+  activity,
+  data,
+  handleEdit,
+  setIsOpenModal,
+  mode,
+}) => {
+  const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
+  const { url, user, token } = useContext(StoreContext);
+  const toggleWishlist = async () => {
+    try {
+      const newStatus = !isSaved; // Determine the new state
 
-  )
-}
-export const AttractionActivity = ({ activity, data, handleEdit, mode }) => {
-  const { url } = useContext(StoreContext);
+      const action = newStatus ? "add" : "remove"; // Define the action
+      const response = await fetch(
+        `${url}/api/user/user/${user._id}/addtoWishlist?type=attraction&itemId=${data._id}&action=${action}`,
+        {
+          method: "POST",
+          headers: { token: token },
+        }
+      );
+
+      const result = await response.json();
+      if (!result.success) {
+        toast.error(result.message);
+      } else {
+        toast.success(result.message);
+        console.log(result.message);
+        setIsSaved(newStatus);
+      }
+      // Optionally display a success message
+    } catch (error) {
+      console.error("Failed to update wishlist:", error.message);
+      // Optionally revert the `isSaved` state if the request fails
+      setIsSaved((prevState) => !prevState);
+    }
+  };
   const onNavigateToDetails = () => {
-    const encryptedServiceId = CryptoJS.AES.encrypt(data._id, 'mySecretKey').toString();
+    const encryptedServiceId = CryptoJS.AES.encrypt(
+      data._id,
+      "mySecretKey"
+    ).toString();
     const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
-    window.open(`/place-details/attraction/${safeEncryptedServiceId}`, "_blank");
+    window.open(
+      `/place-details/attraction/${safeEncryptedServiceId}`,
+      "_blank"
+    );
   };
   if (!data) {
-    return (
-      <div className="div">...</div>
-    )
+    return <div className="div">...</div>;
   }
   return (
     <div className="time-schedule-item">
@@ -251,33 +441,60 @@ export const AttractionActivity = ({ activity, data, handleEdit, mode }) => {
         <div className="type-activity">
           <p>THAM QUAN</p>
         </div>
-        {
-          mode === "edit" &&
+        {mode === "view" && (
           <div className="expense-actions">
-            <button className="edit-btn"
-              onClick={handleEdit}>
-              <FaEdit />
+            <button className="wishlist-btn" onClick={toggleWishlist}>
+              {isSaved ? (
+                <FaHeart className="wishlist-icon saved" />
+              ) : (
+                <FaRegHeart className="wishlist-icon not-saved" />
+              )}
             </button>
           </div>
-        }
-      </div>
-      <div className="activity-content-card"  onClick={onNavigateToDetails}>
-        <div className="time-schedule-left">
+        )}
 
-          <img src={`${url}/images/${data.images[0]}`} alt={data.title || 'Image'} className="time-schedule-image" />
+        {mode === "edit" && (
+          <div className="expense-actions">
+            <button className="edit-btn" onClick={handleEdit}>
+              <FaEdit />
+            </button>
+
+            <button className="edit-btn" onClick={() => setIsOpenModal(true)}>
+              <MdDelete />
+            </button>
+          </div>
+        )}
+      </div>
+      <div className="activity-content-card" onClick={onNavigateToDetails}>
+        <div className="time-schedule-left">
+          <img
+            src={`${url}/images/${data.images[0]}`}
+            alt={data.title || "Image"}
+            className="time-schedule-image"
+          />
         </div>
 
         <div className="time-schedule-details">
           <div className="time-schedule-header">
-            <span className="time-schedule-rating">★★★★☆ (584 reviews)</span>
+            <span className="time-schedule-rating">
+              ★★★★☆ ({data?.ratings?.length || 0} reviews)
+            </span>
             <h3>{data.name}</h3>
             <div className="time-schedule-location">
               <i className="fa-solid fa-location-dot"></i>
-              <a href={`https://www.google.com/maps/?q=${data.location.latitude},${data.location.longitude}`}>{data.location.address}</a>
+              <a
+                href={`https://www.google.com/maps/?q=${data.location.latitude},${data.location.longitude}`}
+              >
+                {data.location.address}
+              </a>
             </div>
             <div className="time-schedule-info">
               <i className="fa-solid fa-file"></i>
-              <span>{data.description.length > 150 ? data.description.substring(0, 150) + "..." : data.description}</span>
+              <span>
+                {data.description.length > 150
+                  ? data.description.substring(0, 150) + "..."
+                  : data.description}
+              </span>
             </div>
           </div>
           <div className="list-accom__tour-facilities">
@@ -285,24 +502,134 @@ export const AttractionActivity = ({ activity, data, handleEdit, mode }) => {
               <span key={index}>{facility}</span>
             ))}
           </div>
-
         </div>
 
         <div className="time-schedule-right">
-
           <div className="time-schedule-price">
-            <p className="price-text">{activity.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+            <p className="price-text">
+              {activity.cost.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </p>
           </div>
           <div />
         </div>
       </div>
       <div className="time-schedule-usernote">
-        <SlNotebook className="note-icon" />
+        <div className="note-icon-wrapper">
+          <SlNotebook className="note-icon" />
+          <p>Ghi chú : </p>
+        </div>
         <p>{activity.description}</p>
       </div>
     </div>
+  );
+};
 
-  )
-}
+export const OtherActivity = ({
+  activity,
+  handleEdit,
+  setIsOpenModal,
+  mode,
+}) => {
+  const { url } = useContext(StoreContext);
+  
+  // State điều khiển modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  // Hàm mở modal và chọn ảnh
+  const openModal = (index) => {
+    setSelectedImageIndex(index); // Lưu chỉ mục ảnh được chọn
+    setIsModalOpen(true); // Mở modal
+  };
+
+  // Hàm đóng modal
+  const closeModal = () => {
+    setIsModalOpen(false); // Đóng modal
+  };
+
+  return (
+    <div className="time-schedule-item">
+      <div className="activity-item-header">
+        <div className="type-activity">
+          <p>HOẠT ĐỘNG KHÁC</p>
+        </div>
+        {mode === "edit" && (
+          <div className="expense-actions">
+            <button className="edit-btn" onClick={handleEdit}>
+              <FaEdit />
+            </button>
+
+            <button className="edit-btn" onClick={() => setIsOpenModal(true)}>
+              <MdDelete />
+            </button>
+          </div>
+        )}
+      </div>
+      <div className="other-activity-body">
+        <div className ="other-left">
+          <div className="other-activity-info">
+            <h3 className="other-activity-name">{activity.name}</h3>
+            <div className="other-activity-address">
+              <i className="fa-solid fa-location-dot"></i>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                  activity.address
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {activity.address}
+              </a>
+            </div>
+          </div>
+
+          {activity.imgSrc && activity.imgSrc.length > 0 && (
+            <div className="other-activity-images">
+              {activity.imgSrc.map((image, index) => (
+                <img
+                  key={index}
+                  src={`${url}/images/${image}`}
+                  alt={activity.name}
+                  className="other-activity-image"
+                  onClick={() => openModal(index)} // Mở modal khi nhấp vào ảnh
+                />
+              ))}
+            </div>
+          )}
+        </div>
+          <div className="time-schedule-right">
+          <div className="time-schedule-price">
+            <p className="price-text">
+              {activity.cost.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              })}
+            </p>
+          </div>
+          <div />
+        </div>
+      </div>
+      
+      <div className="time-schedule-usernote">
+        <div className="note-icon-wrapper">
+          <SlNotebook className="note-icon" />
+          <p>Ghi chú : </p>
+        </div>
+        <p>{activity.description}</p>
+      </div>
+
+      {/* Hiển thị modal khi isModalOpen là true */}
+      <ImagesModal 
+        isOpen={isModalOpen}
+        images={activity.imgSrc} 
+        selectedIndex={selectedImageIndex} 
+        onClose={closeModal} 
+      />
+    </div>
+  );
+};
 
 export default ActivityTime;
