@@ -4,7 +4,7 @@ import Accommodation from "../models/accommodation.js";
 
 export const getListAccomm = async (req, res) => {
   try {
-    const { name, minPrice, maxPrice, city } = req.query;
+    const { name, minPrice, maxPrice, city, status } = req.query;
 
     const query = {};
 
@@ -17,7 +17,9 @@ export const getListAccomm = async (req, res) => {
     if (city) {
       query.city = { $regex: city, $options: 'i' };
     }
-
+    if (status) {
+      query.status = status.toLowerCase();
+    }
     // Fetch accommodations based on the constructed query
     let accommodations = await Accommodation.find(query);
 

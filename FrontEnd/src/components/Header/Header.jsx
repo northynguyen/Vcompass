@@ -75,6 +75,8 @@ const Header = ({ setShowLogin }) => {
         <ul className="header-menu">
           <Link to="/" className="header-menu-page">Trang chủ</Link>
           <Link to="/booking" className="header-menu-page">Đặt phòng</Link>
+          <Link to="/attractions" className="header-menu-page">Tham quan</Link>
+          <Link to="/foodservices" className="header-menu-page">Nhà hàng</Link>
           <Link to="/my-schedule" className="header-menu-page">Lịch trình của tôi</Link>
           <Link to="/partnership" className="header-menu-page">Quan hệ đối tác</Link>
           <Link to="/help" className="header-menu-page">Trợ giúp</Link>

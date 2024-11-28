@@ -5,8 +5,7 @@ import FoodService from "../models/foodService.js";
 
 const getListFoodService = async (req, res) => {
     try {
-        const { name, minPrice, maxPrice, city } = req.query;
-
+        const { name, minPrice, maxPrice, city, status } = req.query;
         // Build query object
         const query = {};
 
@@ -25,7 +24,9 @@ const getListFoodService = async (req, res) => {
         if (city) {
             query.city = { $regex: city, $options: 'i' };
         }
-
+        if (status) {
+            query.status = status.toLowerCase();
+        }
         // Execute query
         const foodService = await FoodService.find(query);
 
