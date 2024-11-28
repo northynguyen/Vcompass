@@ -28,7 +28,7 @@ const getAttractions = async (req, res) => {
 
         // Execute query
         const attractions = await Attraction.find(query);
-        
+
         res.status(200).json({
             success: true,
             attractions: attractions

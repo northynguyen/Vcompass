@@ -1,0 +1,145 @@
+/* General Styles */
+.left-sidebar {
+    width: 250px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+}
+
+.left-sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.left-sidebar .filter-section {
+    margin-bottom: 20px;
+}
+
+.left-sidebar .filter-section h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+/* Input Styles */
+.left-sidebar input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.left-sidebar input[type="radio"],
+.left-sidebar input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Label Styles */
+.left-sidebar label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Filter Section Spacing */
+.left-sidebar .filter-section:last-child {
+    margin-bottom: 0;
+}
+
+/* Hover Effects */
+.left-sidebar label:hover {
+    color: #007bff;
+}
+
+/* Focus Styles */
+.left-sidebar input[type="number"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Button States for Checkboxes and Radio */
+.left-sidebar input[type="checkbox"]:checked+label,
+.left-sidebar input[type="radio"]:checked+label {
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* General Styles */
+.left-sidebar {
+    width: 250px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+}
+
+.left-sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.left-sidebar .filter-section {
+    margin-bottom: 20px;
+}
+
+.left-sidebar .filter-section h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+/* Input Styles */
+.left-sidebar input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.left-sidebar input[type="radio"],
+.left-sidebar input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* Label Styles */
+.left-sidebar label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+}
+
+/* Filter Section Spacing */
+.left-sidebar .filter-section:last-child {
+    margin-bottom: 0;
+}
+
+/* Hover Effects */
+.left-sidebar label:hover {
+    color: #007bff;
+}
+
+/* Focus Styles */
+.left-sidebar input[type="number"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Button States for Checkboxes and Radio */
+.left-sidebar input[type="checkbox"]:checked+label,
+.left-sidebar input[type="radio"]:checked+label {
+    font-weight: bold;
+    color: #007bff;
+}

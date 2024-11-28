@@ -18,7 +18,11 @@ const SlideBar = ({ type }) => {
     useEffect(() => {
         const fetchFoodServices = async () => {
             try {
-                const response = await axios.get(`${url}/api/foodservices/`);
+                const response = await axios.get(`${url}/api/foodservices/`, {
+                    params: {
+                        status: "active" // Thêm status vào query string
+                    }
+                });
                 const sortedServices = response.data.foodService.slice(0, 10);
                 setPopularServices(sortedServices);
             } catch (error) {
@@ -28,7 +32,11 @@ const SlideBar = ({ type }) => {
 
         const fetchAccommodations = async () => {
             try {
-                const response = await axios.get(`${url}/api/accommodations`);
+                const response = await axios.get(`${url}/api/accommodations`, {
+                    params: {
+                        status: "active"
+                    }
+                });
                 const sortedServices = response.data.accommodations.slice(0, 10);
                 setPopularServices(sortedServices);
             } catch (error) {
@@ -38,7 +46,11 @@ const SlideBar = ({ type }) => {
 
         const fetchAttractions = async () => {
             try {
-                const response = await axios.get(`${url}/api/attractions/`);
+                const response = await axios.get(`${url}/api/attractions/`, {
+                    params: {
+                        status: "active" // Thêm status vào query string
+                    }
+                });
                 if (response.data.success) {
                     const sortedServices = response.data.attractions.slice(0, 10);
                     setPopularServices(sortedServices);
