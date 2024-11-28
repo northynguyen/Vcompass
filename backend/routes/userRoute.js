@@ -16,7 +16,7 @@ import {
     getAllUsers,
     getAllPartners,
     updateUserOrPartner,
-    getAdminById,addtoWishlist,getUserFavoritesWithDetails
+    getAdminById, addtoWishlist, getUserFavoritesWithDetails
 } from "../controllers/userController.js";
 
 const userRoutes = express.Router();
@@ -34,12 +34,12 @@ userRoutes.get("/google", loginWithGoogle); // Redirect đến Google
 userRoutes.get("/google/callback", googleCallback); // Google callback
 
 //Get all users
-userRoutes.get('/users/getall', getAllUsers);
-userRoutes.get('/partners/getall', getAllPartners);
+userRoutes.get('/users/', getAllUsers);
+userRoutes.get('/partners/', getAllPartners);
 
 //update user
-userRoutes.put('/partners/update', updateUserOrPartner);
-userRoutes.put('/users/update', updateUserOrPartner);
+userRoutes.put('/partners/:id', updateUserOrPartner);
+userRoutes.put('/users/:id', updateUserOrPartner);
 
 userRoutes.post('/admin/getbyid', authMiddleware, getAdminById);
 userRoutes.post('/user/:userId/addtoWishlist', authMiddleware, addtoWishlist);

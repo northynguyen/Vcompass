@@ -1,0 +1,184 @@
+* Popup Overlay */ .hap-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+}
+
+/* Popup Content */
+.hap-popup-content {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    text-align: center;
+    animation: hap-slideDown 0.3s ease;
+}
+
+/* Slide Down Animation */
+@keyframes hap-slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Close Button */
+.hap-close-popup {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.hap-close-popup:hover {
+    color: #ff5c5c;
+}
+
+/* Title */
+.hap-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Form Group */
+.hap-form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.hap-form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.hap-form-group input,
+.hap-form-group textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.hap-form-group input:focus,
+.hap-form-group textarea:focus {
+    border-color: #00aaff;
+    outline: none;
+}
+
+.hap-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Image Preview */
+.hap-image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.hap-image-preview-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.hap-image-preview-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hap-delete-image-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 2px 6px;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.hap-delete-image-btn:hover {
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+}
+
+/* Read-Only Inputs */
+.hap-form-group input[readonly],
+.hap-form-group textarea[readonly] {
+    background-color: #f9f9f9;
+    border-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Score Bar */
+.hap-score-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.hap-score-bar label {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.hap-score-bar progress {
+    width: 100px;
+    height: 20px;
+    appearance: none;
+    border-radius: 5px;
+}
+
+.hap-score-bar progress::-webkit-progress-bar {
+    background-color: #ddd;
+}
+
+.hap-score-bar progress::-webkit-progress-value {
+    background-color: #00aaff;
+}
+
+.hap-score-bar span {
+    font-size: 14px;
+    font-weight: 600;
+}

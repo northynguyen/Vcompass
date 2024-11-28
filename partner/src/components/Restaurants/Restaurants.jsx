@@ -14,11 +14,11 @@ const Restaurants = () => {
     const [action, setAction] = useState(''); // 'add', 'edit', 'lock', 'view', 'menu'
     const [selectedRestaurant, setSelectedRestaurant] = useState(null);
     const [selectedTab, setSelectedTab] = useState(null); // 'rooms'
-    const { url, token  } = useContext(StoreContext);
+    const { url, token } = useContext(StoreContext);
 
     const fetchRestaurants = async () => {
         try {
-            const response = await axios.get(`${url}/api/foodServices/partner`, 
+            const response = await axios.get(`${url}/api/foodServices/partner`,
                 { headers: { token } }
             );
             setRestaurants(response.data.foodService); // Assuming the response data contains the restaurant array
@@ -30,8 +30,8 @@ const Restaurants = () => {
 
     useEffect(() => {
         fetchRestaurants();
-    }, [token ]); 
-    
+    }, [token]);
+
 
     const openPopup = (actionType, restaurant = null) => {
         setAction(actionType);
@@ -50,12 +50,12 @@ const Restaurants = () => {
             const updateData = Object.assign({}, selectedRestaurant, {
                 status: action === 'lock' ? 'locked' : 'active',
             });
-    
-            const response = await axios.post(`${url}/api/foodServices/update`, 
+
+            const response = await axios.post(`${url}/api/foodServices/update`,
                 { foodServiceData: updateData },
                 { headers: { token } }
             );
-            
+
             if (response.data.success) {
                 toast.success(response.data.message);
                 fetchRestaurants();
@@ -68,22 +68,14 @@ const Restaurants = () => {
             console.error(errorMsg, error);
         }
     };
-    
-           
+
+
 
     const openRoomsTab = (restaurant) => {
         setSelectedRestaurant(restaurant);
         setSelectedTab('rooms');
     };
 
-    if(restaurants.length === 0) {
-        return (
-            <div className="Restaurants-container">
-                <h2>Danh Sách Nhà Hàng/Quán Nước</h2>
-                <p></p>
-            </div>
-        );
-    }
 
     return (
         <div className="Restaurants-container">
@@ -99,36 +91,36 @@ const Restaurants = () => {
                         </div>
 
                         {restaurants.length > 0 ? (
-                                restaurants.map((restaurant, index) => (
-                                    <RestaurantCard 
-                                        key={index} 
-                                        restaurant={restaurant} 
-                                        onMenuClick={() => openPopup('menu', restaurant)} 
-                                        onCardClick={() => openRoomsTab(restaurant)}
-                                        url={url}
-                                    />
-                                ))
-                            ) : (
-                                <p></p>  
-                            )}
-                        </div>
+                            restaurants.map((restaurant, index) => (
+                                <RestaurantCard
+                                    key={index}
+                                    restaurant={restaurant}
+                                    onMenuClick={() => openPopup('menu', restaurant)}
+                                    onCardClick={() => openRoomsTab(restaurant)}
+                                    url={url}
+                                />
+                            ))
+                        ) : (
+                            <p></p>
+                        )}
+                    </div>
                     {showPopup && action === 'lock' && selectedRestaurant && (
-                        <RestaurantActionPopup 
-                            action="lock" 
-                            restaurant={selectedRestaurant} 
+                        <RestaurantActionPopup
+                            action="lock"
+                            restaurant={selectedRestaurant}
                             isOpen={showPopup}
-                            onClose={closePopup} 
-                            onSubmit={handleSubmit} 
+                            onClose={closePopup}
+                            onSubmit={handleSubmit}
                         />
                     )}
 
                     {showPopup && action === 'unlock' && selectedRestaurant && (
-                        <RestaurantActionPopup 
-                            action="unlock" 
-                            restaurant={selectedRestaurant} 
+                        <RestaurantActionPopup
+                            action="unlock"
+                            restaurant={selectedRestaurant}
                             isOpen={showPopup}
-                            onClose={closePopup} 
-                            onSubmit={() => {handleSubmit();}} // No submit needed for view
+                            onClose={closePopup}
+                            onSubmit={() => { handleSubmit(); }} // No submit needed for view
                         />
                     )}
 
@@ -142,7 +134,7 @@ const Restaurants = () => {
                                             Khóa Nhà Hàng/Quán Nước
                                         </button>
                                     )}
-                                     {selectedRestaurant.status !== 'active' && (
+                                    {selectedRestaurant.status !== 'active' && (
                                         <button onClick={() => { closePopup(); openPopup('unlock', selectedRestaurant); }}>
                                             Mở Nhà Hàng/Quán Nước
                                         </button>
@@ -159,7 +151,7 @@ const Restaurants = () => {
                     )}
                 </div>
             ) : (
-                <RestaurantDetail RestaurantData={selectedRestaurant} onBack={() => { setSelectedTab(null); fetchRestaurants(); }}  />
+                <RestaurantDetail RestaurantData={selectedRestaurant} onBack={() => { setSelectedTab(null); fetchRestaurants(); }} />
             )}
         </div>
     );

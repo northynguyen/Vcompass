@@ -6,23 +6,21 @@ import Register from './pages/Register/Register';
 import MainPage from './pages/MainPage/MainPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   const { token } = useContext(StoreContext);
-  console.log("token",token);
+
   return (
     <div>
       <ToastContainer />
       <Routes>
-        {token !== '' && token ? (
-          <>
-            <Route path="/*" element={<MainPage />} />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          </>
+        {token ? (
+          <Route path="/*" element={<MainPage />} />
         ) : (
           <>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
           </>
         )}
       </Routes>

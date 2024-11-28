@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 /* HotelActionPopup.jsx */
-import { useState, useEffect, useRef , useContext} from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import './HotelActionPopup.css';
 import { FaTimes } from 'react-icons/fa';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import {StoreContext} from '../../../Context/StoreContext';
+import { StoreContext } from '../../../Context/StoreContext';
 // Define a custom icon for the marker
 const redIcon = new L.Icon({
     iconUrl: 'https://cdn.iconscout.com/icon/free/png-256/free-location-icon-download-in-svg-png-gif-file-formats--marker-pointer-map-pin-navigation-finance-and-economy-pack-business-icons-2561454.png?f=webp&w=256',
@@ -16,15 +16,25 @@ const redIcon = new L.Icon({
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
 });
-
+const vietnamProvinces = [
+    "An Giang", "Bà Rịa - Vũng Tàu", "Bắc Giang", "Bắc Kạn", "Bến Tre", "Bình Định",
+    "Bình Dương", "Bình Phước", "Bình Thuận", "Cà Mau", "Cao Bằng", "Đắk Lắk",
+    "Đắk Nông", "Điện Biên", "Đồng Nai", "Đồng Tháp", "Gia Lai", "Hà Giang", "Hà Nam",
+    "Hà Nội", "Hải Dương", "Hải Phòng", "Hậu Giang", "Hòa Bình", "Hồ Chí Minh", "Hưng Yên",
+    "Khánh Hòa", "Kiên Giang", "Kon Tum", "Lai Châu", "Lâm Đồng", "Lạng Sơn", "Lào Cai",
+    "Long An", "Nam Định", "Nghệ An", "Ninh Bình", "Ninh Thuận", "Phú Thọ", "Phú Yên",
+    "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh", "Quảng Trị", "Sóc Trăng",
+    "Sơn La", "Tây Ninh", "Thái Bình", "Thái Nguyên", "Thanh Hóa", "Thừa Thiên Huế",
+    "Tiền Giang", "TP Hồ Chí Minh", "Tuyên Quang", "Vĩnh Long", "Vĩnh Phúc", "Yên Bái"
+];
 const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
-    const {url} = useContext(StoreContext);
+    const { url } = useContext(StoreContext);
     const [formData, setFormData] = useState({
         name: hotel ? hotel.name : '',
         description: hotel ? hotel.description : '',
         priceRange: hotel ? hotel.priceRange : { priceMin: '', priceMax: '' }, // Ensure it's an object
         amenities: hotel ? hotel.amenities.join(", ") : '',
-        contact :{
+        contact: {
             phone: hotel ? hotel.contact.phone : '',
             email: hotel ? hotel.contact.email : '',
         },
@@ -34,7 +44,7 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
             longitude: hotel ? hotel.location.longitude : '',
         },
         city: hotel ? hotel.city : '',
-        status: hotel ? hotel.status : 'active',
+        status: hotel ? hotel.status : 'pending',
     });
 
     const [existingImages, setExistingImages] = useState(hotel?.images || []);
@@ -75,16 +85,16 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
             }));
         }
     };
-    
+
 
     // Handle form submission
     const handleSubmit = (e) => {
 
-        e.preventDefault();        
-            // Check for missing required fields
+        e.preventDefault();
+        // Check for missing required fields
 
         const formDataToSubmit = new FormData();
-        
+
         // Append simple fields
         formDataToSubmit.append('name', formData.name);
         formDataToSubmit.append('description', formData.description);
@@ -93,53 +103,53 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
         formDataToSubmit.append('status', formData.status);
         formDataToSubmit.append('location', JSON.stringify(formData.location));
 
-        
+
         // Append amenities as individual items in FormData
         formData.amenities.split(",").map(item => item.trim()).forEach(amenity => {
             formDataToSubmit.append('amenities[]', amenity);
         });
-        
+
         // Append existing images
         existingImages.forEach((image, index) => {
             formDataToSubmit.append(`images[${index}]`, image);
         });
-        
+
         // Append new image files
         newImages.forEach(file => {
             formDataToSubmit.append('newImages', file);
         });
-        
+
         console.log([...formDataToSubmit.entries()]); // Log the FormData to see its contents
-        
+
         // Pass FormData to the submit function
         onSubmit(formDataToSubmit);
 
     };
-    
+
     // Handle multiple image uploads
     const handleExistingImageRemove = (index) => {
         setExistingImages((prevImages) => prevImages.filter((_, idx) => idx !== index));
-      };
-    
-      // Handle new image uploads
-      const handleNewImageChange = (e) => {
+    };
+
+    // Handle new image uploads
+    const handleNewImageChange = (e) => {
         const files = Array.from(e.target.files);
         if (files.length + newImages.length + existingImages.length > 8) {
-          alert('Bạn chỉ có thể chọn tối đa 8 hình ảnh.');
-          return;
+            alert('Bạn chỉ có thể chọn tối đa 8 hình ảnh.');
+            return;
         }
-    
+
         setNewImages((prevFiles) => [...prevFiles, ...files]);
-    
+
         const newPreviews = files.map((file) => URL.createObjectURL(file));
         setNewImagePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
-      };
-    
-      const handleNewImageRemove = (index) => {
+    };
+
+    const handleNewImageRemove = (index) => {
         setNewImages((prevFiles) => prevFiles.filter((_, idx) => idx !== index));
         setNewImagePreviews((prevPreviews) => prevPreviews.filter((_, idx) => idx !== index));
-      };
-    
+    };
+
 
     // Handle location selection via map
     const LocationMarker = () => {
@@ -240,7 +250,6 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                             />
                         </div>
                         <div className="hap-form-group">
-
                             <label>Thành phố:</label>
                             <select
                                 name="city"
@@ -255,7 +264,6 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                                     </option>
                                 ))}
                             </select>
-
                         </div>
                         <div className="hap-form-group">
                             <label>Mô Tả:</label>
@@ -266,7 +274,7 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                                 required
                             />
                         </div>
-                        
+
                         <div className="hap-form-group">
                             <label>Tiện Nghi:</label>
                             <input
@@ -310,46 +318,46 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                         </div>
                         <div className="hap-form-group">
                             {/* Existing Images */}
-        {existingImages.length > 0 && (
-          <div className="existing-images">
-            <h4>Existing Images:</h4>
-            <div className="image-previews">
-              {existingImages.map((img, idx) => (
-                <div key={idx} className="image-preview">
-                  <img src={`${url}/images/${img}`} alt={`Existing Room ${idx + 1}`} />
-                  <button type="button" onClick={() => handleExistingImageRemove(idx)}>x</button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-  
-        {/* New Image Upload */}
-        <label>
-          Upload New Images:
-          <input
-            type="file"
-            name="newImages"
-            accept="image/*"
-            multiple
-            onChange={handleNewImageChange}
-          />
-        </label>
-  
-        {/* New Image Previews */}
-        {newImagePreviews.length > 0 && (
-          <div className="new-image-previews">
-            <h4>New Images:</h4>
-            <div className="image-previews">
-              {newImagePreviews.map((img, idx) => (
-                <div key={idx} className="image-preview">
-                  <img src={img} alt={`New Room ${idx + 1}`} />
-                  <button type="button" onClick={() => handleNewImageRemove(idx)}>x</button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+                            {existingImages.length > 0 && (
+                                <div className="existing-images">
+                                    <h4>Existing Images:</h4>
+                                    <div className="image-previews">
+                                        {existingImages.map((img, idx) => (
+                                            <div key={idx} className="image-preview">
+                                                <img src={`${url}/images/${img}`} alt={`Existing Room ${idx + 1}`} />
+                                                <button type="button" onClick={() => handleExistingImageRemove(idx)}>x</button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* New Image Upload */}
+                            <label>
+                                Upload New Images:
+                                <input
+                                    type="file"
+                                    name="newImages"
+                                    accept="image/*"
+                                    multiple
+                                    onChange={handleNewImageChange}
+                                />
+                            </label>
+
+                            {/* New Image Previews */}
+                            {newImagePreviews.length > 0 && (
+                                <div className="new-image-previews">
+                                    <h4>New Images:</h4>
+                                    <div className="image-previews">
+                                        {newImagePreviews.map((img, idx) => (
+                                            <div key={idx} className="image-preview">
+                                                <img src={img} alt={`New Room ${idx + 1}`} />
+                                                <button type="button" onClick={() => handleNewImageRemove(idx)}>x</button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </>
                 );
@@ -393,7 +401,7 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                             <label>Mô Tả:</label>
                             <textarea name="description" value={formData.description} readOnly />
                         </div>
-                                         
+
                         <div className="hap-form-group">
                             <label>Tiện Nghi:</label>
                             <input type="text" name="amenities" value={formData.amenities} readOnly />
@@ -405,7 +413,7 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                         <div className="hap-form-group">
                             <label>Email Liên Hệ:</label>
                             <input type="email" name="contactEmail" value={formData.contactEmail} readOnly />
-                        </div>                    
+                        </div>
                         <div className="hap-form-group">
                             <label>Hình Ảnh:</label>
                             <div className="hap-image-preview-container">
@@ -420,7 +428,7 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                 return null;
         }
     };
-    
+
 
     return (
         <div className="hap-popup">
@@ -429,24 +437,24 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                     <FaTimes />
                 </button>
                 <h3 className="hap-title">
-                    {action === 'add' ? 'Thêm Khách Sạn Mới' 
-                    : action === 'edit' ? 'Chỉnh Sửa Khách Sạn' 
-                    : action === 'lock' ? 'Khóa Khách Sạn' 
-                    : action === 'unlock' ? 'Mo Khoa Khách Sạn'
-                    : 'Chi Tiết Khách Sạn'}
+                    {action === 'add' ? 'Thêm Khách Sạn Mới'
+                        : action === 'edit' ? 'Chỉnh Sửa Khách Sạn'
+                            : action === 'lock' ? 'Dừng hoạt động khách sạn'
+                                : action === 'unlock' ? 'Mở hoạt động khách sạn'
+                                    : 'Chi Tiết Khách Sạn'}
                 </h3>
                 <form onSubmit={action !== 'lock' && action !== 'unlock' ? handleSubmit : null}>
                     {renderFormFields()}
                     {action !== 'view' && action !== 'lock' && action !== 'unlock' && (
                         <div>
-                            <button 
-                            type="submit" 
-                            className="hap-submit-btn" 
-                            onClick={(e) => {
-                                if (action === 'add' || action === 'edit') {
-                                    handleSubmit(e);
-                                }
-                            }}
+                            <button
+                                type="submit"
+                                className="hap-submit-btn"
+                                onClick={(e) => {
+                                    if (action === 'add' || action === 'edit') {
+                                        handleSubmit(e);
+                                    }
+                                }}
                             >
                                 {action === 'add' ? 'Thêm Khách Sạn' : 'Lưu Thay Đổi'}
                             </button>
@@ -455,13 +463,13 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                                 Huy
                             </button>
                         </div>
-                        
+
                     )}
-                    {(action === 'lock' || action === 'unlock' )&& (
+                    {(action === 'lock' || action === 'unlock') && (
                         <div>
                             <button type="button" className="hap-submit-btn" onClick={() => {
-                            onSubmit();
-                            onClose();
+                                onSubmit();
+                                onClose();
                             }}> {action === 'lock' ? 'Khoá Khách Sạn' : 'Mở khóa '}
                             </button>
                             <span> </span>
@@ -469,7 +477,7 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                                 Hủy
                             </button>
                         </div>
-                        
+
                     )}
                 </form>
             </div>

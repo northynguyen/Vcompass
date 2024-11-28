@@ -2,6 +2,7 @@ import React from 'react';
 import './ProfileCards.css';
 import { useNavigate } from 'react-router-dom';
 
+
 const ProfileCards = ({ profile, type }) => {
     const navigate = useNavigate();
 
@@ -27,6 +28,7 @@ const ProfileCards = ({ profile, type }) => {
                     <p><strong>Account Created:</strong> {new Date(Date.parse(profile.createdAt)).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 </div>
             </div>
+
         </div>
     );
 };

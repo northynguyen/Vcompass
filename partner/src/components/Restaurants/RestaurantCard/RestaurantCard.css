@@ -48,8 +48,12 @@
     background-color: #ffc107;
 }
 
-.status-badge.locked {
+.status-badge.block {
     background-color: #dc3545;
+}
+
+.status-badge.unActive {
+    background-color: #6c757d;
 }
 
 .restaurant-actions {
