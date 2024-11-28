@@ -28,7 +28,7 @@ const getListFoodService = async (req, res) => {
 
         // Execute query
         const foodService = await FoodService.find(query);
-        
+
         res.status(200).json({
             success: true,
             message: "Get list food service successfully",
@@ -70,21 +70,33 @@ const getListByPartner = async (req, res) => {
     try {
         const foodService = await FoodService.find({ idPartner: partnerId });
         if (!foodService) {
-            return res.status(404).json({success: false, message: "Food service not found or partner mismatch" });
+            return res.status(404).json({ success: false, message: "Food service not found or partner mismatch" });
         }
-        res.status(200).json({success: true, message: "Get list food service successfully", foodService: foodService});
+        res.status(200).json({ success: true, message: "Get list food service successfully", foodService: foodService });
     } catch (error) {
-        res.status(404).json({success: false, message: "Error getting food service" });
+        res.status(404).json({ success: false, message: "Error getting food service" });
+        console.log(error);
+    }
+}
+const getAdminGetListByPartner = async (req, res) => {
+    const partnerId = req.params.partnerId;
+    try {
+        const foodService = await FoodService.find({ idPartner: partnerId });
+        if (!foodService) {
+            return res.status(404).json({ success: false, message: "Food service not found or partner mismatch" });
+        }
+        res.status(200).json({ success: true, message: "Get list food service successfully", foodServices: foodService });
+    } catch (error) {
+        res.status(404).json({ success: false, message: "Error getting food service" });
         console.log(error);
     }
 }
 
-
 const createFoodService = async (req, res) => {
 
-    const  idPartner  = req.userId
+    const idPartner = req.userId
     try {
-        const newFoodService = new FoodService(JSON.parse(req.body.foodServiceData)); 
+        const newFoodService = new FoodService(JSON.parse(req.body.foodServiceData));
         newFoodService.idPartner = idPartner;
         console.log("newFoodService:", newFoodService);
         await newFoodService.save();
@@ -122,7 +134,7 @@ const createFoodService = async (req, res) => {
 
 const updateFoodService = async (req, res) => {
     const foodServiceId = req.body.Id;
-    const updateData = JSON.parse(req.body.foodServiceData); 
+    const updateData = JSON.parse(req.body.foodServiceData);
     try {
         const foodService = await FoodService.findById(foodServiceId);
         if (!foodService) {
@@ -178,6 +190,35 @@ const updateFoodService = async (req, res) => {
     }
 };
 
+const updateStatusFoodServiceAdmin = async (req, res) => {
+    const foodServiceId = req.params.foodServiceId;
+    const { status, adminId } = req.body; // Nhận dữ liệu từ request body
+    console.log("foodServiceId:", foodServiceId);
+    try {
+        // Tìm foodService theo ID
+        const foodService = await FoodService.findById(foodServiceId);
+
+        if (!foodService) {
+            return res.status(404).json({ success: false, message: "Food service not found" });
+        }
+
+        // Cập nhật trạng thái và adminId
+        foodService.status = status;
+        foodService.adminId = adminId;
+
+        // Lưu thay đổi vào database
+        await foodService.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Updated food service status successfully",
+            updatedFoodService: foodService,
+        });
+    } catch (error) {
+        res.status(400).json({ success: false, message: "Error updating food service status" });
+        console.error("Error updating food service status:", error);
+    }
+};
 
 
 const deleteFoodService = async (req, res) => {
@@ -231,25 +272,25 @@ const addReview = async (req, res) => {
         console.log(reviewData);
         // Validate the required fields for the rating
         if (!reviewData.idUser || !reviewData.userName || !reviewData.userImage || !reviewData.rate || !reviewData.content) {
-          return res.status(400).json({ success: false, message: "Required fields are missing." });
+            return res.status(400).json({ success: false, message: "Required fields are missing." });
         }
-    
+
         // Find the accommodation by ID and add the review to the ratings array
         const foodService = await FoodService.findByIdAndUpdate(
-          id,
-          { $push: { ratings: reviewData } },
-          { new: true }
+            id,
+            { $push: { ratings: reviewData } },
+            { new: true }
         );
-    
-        if (!foodService) {
-          return res.status(404).json({success: false, message: "Accommodation not found." });
-        }
-    
-        res.status(200).json({success: true, message: "Review added successfully.", foodService });
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({success: false, message: "An error occurred while adding the review." });
-      }
- };
 
-export { getListFoodService, getListByPartner,createFoodService, updateFoodService, deleteFoodService,addReview };
+        if (!foodService) {
+            return res.status(404).json({ success: false, message: "Accommodation not found." });
+        }
+
+        res.status(200).json({ success: true, message: "Review added successfully.", foodService });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "An error occurred while adding the review." });
+    }
+};
+
+export { getListFoodService, getListByPartner, createFoodService, updateFoodService, deleteFoodService, addReview, getAdminGetListByPartner, updateStatusFoodServiceAdmin };

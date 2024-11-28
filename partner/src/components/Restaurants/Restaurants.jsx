@@ -19,7 +19,6 @@ const Restaurants = () => {
     const fetchRestaurants = async () => {
         console.log("aaaaaaaaaaa");
         try {
-            
             const response = await axios.get(`${url}/api/foodServices/partner/${user._id}`, 
                 { headers: { token } }
             );
@@ -61,12 +60,12 @@ const Restaurants = () => {
             const updateData = Object.assign({}, selectedRestaurant, {
                 status: action === 'lock' ? 'locked' : 'active',
             });
-    
-            const response = await axios.post(`${url}/api/foodServices/update`, 
+
+            const response = await axios.post(`${url}/api/foodServices/update`,
                 { foodServiceData: updateData },
                 { headers: { token } }
             );
-            
+
             if (response.data.success) {
                 toast.success(response.data.message);
                 fetchRestaurants();
@@ -79,8 +78,8 @@ const Restaurants = () => {
             console.error(errorMsg, error);
         }
     };
-    
-           
+
+
 
     const openRoomsTab = (restaurant) => {
         setSelectedRestaurant(restaurant);
@@ -102,36 +101,36 @@ const Restaurants = () => {
                         </div>
 
                         {restaurants.length > 0 ? (
-                                restaurants.map((restaurant, index) => (
-                                    <RestaurantCard 
-                                        key={index} 
-                                        restaurant={restaurant} 
-                                        onMenuClick={() => openPopup('menu', restaurant)} 
-                                        onCardClick={() => openRoomsTab(restaurant)}
-                                        url={url}
-                                    />
-                                ))
-                            ) : (
-                                <p></p>  
-                            )}
-                        </div>
+                            restaurants.map((restaurant, index) => (
+                                <RestaurantCard
+                                    key={index}
+                                    restaurant={restaurant}
+                                    onMenuClick={() => openPopup('menu', restaurant)}
+                                    onCardClick={() => openRoomsTab(restaurant)}
+                                    url={url}
+                                />
+                            ))
+                        ) : (
+                            <p></p>
+                        )}
+                    </div>
                     {showPopup && action === 'lock' && selectedRestaurant && (
-                        <RestaurantActionPopup 
-                            action="lock" 
-                            restaurant={selectedRestaurant} 
+                        <RestaurantActionPopup
+                            action="lock"
+                            restaurant={selectedRestaurant}
                             isOpen={showPopup}
-                            onClose={closePopup} 
-                            onSubmit={handleSubmit} 
+                            onClose={closePopup}
+                            onSubmit={handleSubmit}
                         />
                     )}
 
                     {showPopup && action === 'unlock' && selectedRestaurant && (
-                        <RestaurantActionPopup 
-                            action="unlock" 
-                            restaurant={selectedRestaurant} 
+                        <RestaurantActionPopup
+                            action="unlock"
+                            restaurant={selectedRestaurant}
                             isOpen={showPopup}
-                            onClose={closePopup} 
-                            onSubmit={() => {handleSubmit();}} // No submit needed for view
+                            onClose={closePopup}
+                            onSubmit={() => { handleSubmit(); }} // No submit needed for view
                         />
                     )}
 
@@ -145,7 +144,7 @@ const Restaurants = () => {
                                             Khóa Nhà Hàng/Quán Nước
                                         </button>
                                     )}
-                                     {selectedRestaurant.status !== 'active' && (
+                                    {selectedRestaurant.status !== 'active' && (
                                         <button onClick={() => { closePopup(); openPopup('unlock', selectedRestaurant); }}>
                                             Mở Nhà Hàng/Quán Nước
                                         </button>
@@ -162,7 +161,7 @@ const Restaurants = () => {
                     )}
                 </div>
             ) : (
-                <RestaurantDetail RestaurantData={selectedRestaurant} onBack={() => { setSelectedTab(null); fetchRestaurants(); }}  />
+                <RestaurantDetail RestaurantData={selectedRestaurant} onBack={() => { setSelectedTab(null); fetchRestaurants(); }} />
             )}
         </div>
     );

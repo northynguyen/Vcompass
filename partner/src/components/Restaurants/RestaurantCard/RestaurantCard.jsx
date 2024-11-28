@@ -11,7 +11,6 @@ const RestaurantCard = ({ restaurant, onMenuClick, onCardClick, url }) => {
         e.stopPropagation(); // Ngăn chặn sự kiện click lên card
         setIsExpanded((prev) => !prev);
     };
-
     return (
         <div className="restaurant-card" onClick={onCardClick}>
             <img
@@ -39,7 +38,7 @@ const RestaurantCard = ({ restaurant, onMenuClick, onCardClick, url }) => {
                 <p>
                     <strong>Trạng Thái:</strong>
                     <span className={`status-badge ${restaurant.status}`}>
-                        {restaurant.status === 'active' ? 'Đang hoạt động' : restaurant.status === 'locked' ? 'Đã khóa' : 'Đang được duyệt'}
+                        {restaurant.status === 'active' ? 'Đang hoạt động' : restaurant.status === 'block' ? 'Đã bị khóa' : restaurant.status === 'pending' ? 'Đang được duyệt' : 'Dừng hoạt động'}
                     </span>
                 </p>
             </div>

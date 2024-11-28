@@ -7,31 +7,36 @@ const FoodServiceSchema = new Schema({
   serviceType: { type: String, required: true },
   foodServiceName: { type: String, required: true },
   description: { type: String, required: true },
-  location: { 
+  location: {
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
     address: { type: String, required: true },
   },
   city: { type: String, required: true },
-  price: { 
+  price: {
     maxPrice: { type: Number, required: true },
     minPrice: { type: Number, required: true },
-   },
+  },
   images: [{ type: String }],
   registerDate: { type: Date, default: Date.now },
-  status: { type: String, required: true },
+  status: {
+    type: String,
+    required: true,
+    enum: ['active', 'block', 'pending', 'unActive'],
+    default: 'pending',
+  },
   ratings: [{ type: RatingSchema, required: false }],
   amenities: [{ type: String }],
   contactNumber: { type: String, required: true },
   email: { type: String, required: true },
   menuImages: [{ type: String }],
   operatingHours: [
-      {
-          startDay: { type: String, required: true },
-          endDay: { type: String, required: true },
-          openTime: { type: String, required: true },
-          closeTime: { type: String, required: true },
-      }
+    {
+      startDay: { type: String, required: true },
+      endDay: { type: String, required: true },
+      openTime: { type: String, required: true },
+      closeTime: { type: String, required: true },
+    }
   ],
 });
 

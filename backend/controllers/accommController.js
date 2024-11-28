@@ -227,10 +227,38 @@ export const updateAccommodation = async (req, res) => {
   }
 };
 
+export const updateAccommodationStatusByAdmin = async (req, res) => {
+  const { id } = req.params; // ID của accommodation cần cập nhật
+  const { status, adminId } = req.body;// Trạng thái mới từ request body
+  try {
+    const accommodation = await Accommodation.findById(id);
+    if (!accommodation) {
+      return res.json({
+        success: false,
+        message: "Accommodation not found",
+      });
+    }
+    accommodation.status = status;
+    await accommodation.save();
+    res.json({
+      success: true,
+      message: "Accommodation status updated successfully",
+      accommodation,
+    });
+  } catch (error) {
+    res.json({
+      success: false,
+      message: "Error updating accommodation status",
+      error,
+    });
+    console.error(error);
+  }
+};
+
 // Add a new room type to an accommodation by partnerId and accommodationId
 export const addNewRoom = async (req, res) => {
   const { accommodationId } = req.params;
-  const roomTypeData =  JSON.parse(req.body.roomTypeUpdate);
+  const roomTypeData = JSON.parse(req.body.roomTypeUpdate);
 
   console.log(roomTypeData);
 
@@ -323,7 +351,7 @@ export const listRooms = async (req, res) => {
         message: "Accommodation not found or partner mismatch",
       });
     }
-    res.json({ success: true, rooms: accommodation.roomTypes ,accommodation:accommodation});
+    res.json({ success: true, rooms: accommodation.roomTypes, accommodation: accommodation });
   } catch (error) {
     res.json({ success: false, message: "Error getting rooms", error });
   }
@@ -416,12 +444,12 @@ export const addReview = async (req, res) => {
     );
 
     if (!accommodation) {
-      return res.status(404).json({success: false, message: "Accommodation not found." });
+      return res.status(404).json({ success: false, message: "Accommodation not found." });
     }
 
-    res.status(200).json({success: true, message: "Review added successfully.", accommodation });
+    res.status(200).json({ success: true, message: "Review added successfully.", accommodation });
   } catch (error) {
     console.error(error);
-    res.status(500).json({success: false, message: "An error occurred while adding the review." });
+    res.status(500).json({ success: false, message: "An error occurred while adding the review." });
   }
 };
