@@ -1,0 +1,15 @@
+.checked-in {
+    background-color: #d4edda;
+    color: black;
+  }
+  
+  .due-out {
+    background-color: #f8d7da;
+    color: black;
+  }
+  
+  .due-in {
+    background-color: #fff3cd;
+    color: black;
+  }
+  

@@ -67,7 +67,7 @@ export const getFoodServiceById = async (req, res) => {
 };
 
 const getListByPartner = async (req, res) => {
-    const partnerId = req.body.userId;
+    const  partnerId  = req.params.partnerId;
     try {
         const foodService = await FoodService.find({ idPartner: partnerId });
         if (!foodService) {

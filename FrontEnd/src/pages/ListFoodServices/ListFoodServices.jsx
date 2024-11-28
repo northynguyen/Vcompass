@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
 import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import "./ListFoodServices.css";
+import { Range } from 'react-range';
 
 // TourItem Component
 const FoodServiceItem = ({ foodService, status, setCurDes, id }) => {
@@ -95,8 +96,12 @@ const Filters = ({
     <div className="list-accom__filters">
       {/* Name Filter */}
       <h4>Filter by Name</h4>
-      <input type="text" placeholder="Accommodation Name" value={nameFilter} 
-        onChange={(e) => setNameFilter(e.target.value)} />
+      <input 
+        type="text" 
+        placeholder="Accommodation Name" 
+        value={nameFilter} 
+        onChange={(e) => setNameFilter(e.target.value)} 
+      />
       
       <hr />
 
@@ -104,23 +109,47 @@ const Filters = ({
       <h4>Filter by Price</h4>
       <label>Price Range</label>
       <div className="price-range-slider">
-        <input 
-          type="range" 
-          min="0" 
-          max="1000000" 
-          defaultValue={0}
-          value={minPrice} 
-          onChange={(e) => setMinPrice(e.target.value)} 
+        <Range
+          values={[minPrice, maxPrice]} // Current min and max price
+          step={10000} // The step for each slider tick
+          min={0} // Minimum value
+          max={10000000} // Maximum value
+          onChange={(values) => {
+            setMinPrice(values[0]);
+            setMaxPrice(values[1]);
+          }}
+          renderTrack={({ props, children }) => (
+            <div
+              {...props}
+              style={{
+                ...props.style,
+                height: '6px',
+                width: '100%',
+                backgroundColor: '#ddd',
+              }}
+            >
+              {children}
+            </div>
+          )}
+          renderThumb={({ props, index }) => (
+            <div
+              {...props}
+              style={{
+                ...props.style,
+                height: '20px',
+                width: '20px',
+                borderRadius: '50%',
+                backgroundColor: '#007BFF',
+                cursor: 'pointer',
+                boxShadow: '0 0 2px rgba(0, 0, 0, 0.5)',
+              }}
+            />
+          )}
         />
-        <input 
-          type="range" 
-          min="0" 
-          max="20000000" 
-          defaultValue={1000000}
-          value={maxPrice} 
-          onChange={(e) => setMaxPrice(e.target.value)} 
-        />
-        <div>Min: {minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - Max: {maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</div>
+        <div className="price-range-value">
+          {minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} 
+          -  {maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+        </div>
       </div>
 
       <button onClick={handleFilterChange} disabled={isLoading}>

@@ -75,3 +75,10 @@
 .my-schedule .schedule-item:last-child {
     margin-bottom: 0; /* Remove margin from the last item */
 }
+
+ .my-schedule-section {
+    margin-top: 20px;
+    padding: 20px;
+    min-height: 500px;
+    animation: fadeIn 1.5s ;
+}

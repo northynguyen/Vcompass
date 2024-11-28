@@ -1,0 +1,263 @@
+/* Tổng thể */
+.search-schedule {
+    max-width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .search-bar {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .search-header { 
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  
+  .search-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #495057;
+  }
+  
+  .search-field {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.3s;
+  }
+  
+  .search-field:focus {
+    border-color: #007bff;
+  }
+  
+  .search-action-btn {
+    padding: 12px 20px;
+    background-color: #007bff;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .search-action-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .search-action-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  @media (min-width: 768px) {
+    .search-container {
+      flex-direction: row;
+      gap: 20px;
+    }
+  
+    .search-group {
+      flex: 1;
+    }
+  
+    .search-action-btn {
+      width: auto;
+      flex-shrink: 0;
+      align-self: flex-end;
+    }
+  }
+  
+  
+  
+  /* Bố cục chính */
+  .main-content {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    margin : 20px auto;
+  }
+  
+  /* Sidebar (lọc và khoảng giá) */
+  .filters-container {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .filters,
+  .price-slider {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filters h3,
+  .price-slider h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .filters label {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .filters label span {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .filters select,
+  .filters input[type="checkbox"] {
+    font-size: 14px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* Danh sách PostCard */
+  .schedule-list {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .schedule-list .post-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: all 0.3s ease;
+  }
+  
+  .schedule-list .post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .price-slider .slider-track {
+    position: absolute;
+    height: 8px;
+    background-color: #ddd;
+    width: 100%;
+    top: 0;
+  }
+  
+  .price-slider input[type="range"] {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+  }
+  
+  .price-slider {
+    position: relative;
+    margin-top: 10px;
+  }
+  
+  .price-range {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  
+  .price-range span {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .main-content {
+      flex-direction: column;
+      gap: 40px;
+    }
+    
+    .filters-container {
+      width: 100%;
+    }
+  
+    .schedule-list {
+      grid-template-columns: 1fr;
+    }
+
+  .schedule-list {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 0 auto;
+  }
+  
+}
+  /* Pagination */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 30px;
+  }
+  
+  .pagination-container button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+  }
+  
+  .pagination-container button:hover {
+    background-color: #0056b3;
+  }
+  
+  .pagination-container button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .main-content {
+      flex-direction: column;
+      gap: 40px;
+    }
+    
+    .filters-container {
+      width: 100%;
+    }
+  
+    .schedule-list {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+

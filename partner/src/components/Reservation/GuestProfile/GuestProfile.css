@@ -52,14 +52,30 @@
   }
   
   .loyalty-program {
-    background-color: #eaf8ea;
     padding: 15px;
     border-radius: 8px;
   }
   
+  .loyalty-program.confirmed {
+    background-color: #eaf8ea;
+  }
+  
+  .loyalty-program.cancelled {
+    background-color: #ff7373;
+  }
+  
+  .loyalty-program.completed {
+    background-color: #1a8bd1;
+  }
+  
+  .loyalty-program h3 {
+    font-size: 1.2em;
+    color: #ffffff;
+    margin-bottom: 10px;
+  }
   .loyalty-program p {
     font-weight: bold;
-    color: #2b8e2b;
+    color: #ffffff;
   }
   
   .membership-status {
@@ -74,7 +90,7 @@
   }
   
   .booking-info h3, .room-info h3, .price-summary h3 {
-    font-size: 1.4em;
+    font-size: 1.2em;
     margin-bottom: 20px;
     color: #555;
   }
@@ -127,6 +143,7 @@
   /* Price Summary */
   .price-summary {
     grid-column: 3 / span 1;
+    margin-top: 20px;
   }
   
   .price-summary p {

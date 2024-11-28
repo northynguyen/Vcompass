@@ -16,9 +16,13 @@ import Schedule from './pages/Schedule/Schedule'
 import UserService from './pages/UserService/UserService'
 import { ToastContainer } from 'react-toastify';
 import BookingProcess from './pages/Booking/Booking'
+
 import HomeBooking from './pages/HomeBooking/HomeBooking'
 import HomeAttractions from './pages/HomeAttractions/HomeAttractions';
 import HomeFoodService from './pages/HomeFoodService/HomeFoodService'
+
+
+import SearchSchedule  from './pages/SearchSchedule/SearchSchedule'
 
 
 function App() {
@@ -40,11 +44,14 @@ function App() {
           <Route path="/attractions" element={<HomeAttractions />} />
           <Route path="/foodservices" element={<HomeFoodService />} />
           <Route path="/my-schedule" element={<MySchedule />} />
-          <Route path="/schedule-edit/:id" element={<Schedule mode={"edit"} />} />
-          <Route path="/schedule-view/:id" element={<Schedule mode={"view"} />} />
-          <Route path="/booking-process/step2" element={<BookingProcess />}>
-          </Route>
-          <Route path="/booking-process/finalstep" element={<BookingProcess />} />
+
+          <Route path="/schedule-edit/:id" element={<Schedule mode = {"edit"}/>} />
+          <Route path="/schedule-view/:id" element={<Schedule mode = {"view"}/>} />
+          <Route path="/booking-process/step2" element={<BookingProcess />}/>
+          <Route path="/searchSchedule" element={<SearchSchedule />} />
+          
+          <Route path="/booking-process/finalstep" element={<BookingProcess />}/>    
+
         </Routes>
         <Footer />
       </div>

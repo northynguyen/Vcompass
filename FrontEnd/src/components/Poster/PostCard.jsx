@@ -142,11 +142,38 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
         </div>
       </header>
 
-      <img
-        className="content-image"
-        src={schedule.imgSrc[0]? `${url}/images/${schedule.imgSrc[0]}` : "https://bazantravel.com/cdn/medias/uploads/83/83317-khu-nghi-duong-lan-rung-700x420.jpg"}
-        alt="Alaska"
-      />
+      <div className="content-container">
+        {schedule.imgSrc && schedule.imgSrc[0] ? (
+          // Hiển thị ảnh nếu có imgSrc
+          <img
+            className="content-image"
+            src={`${url}/images/${schedule.imgSrc[0]}`}
+            alt="Schedule Image"
+          />
+        ) : schedule.videoSrc ? (
+          // Hiển thị video từ Cloudinary nếu có videoSrc
+          <video
+            className="content-video"
+            src={schedule.videoSrc}
+            thumbnail={`${url}/images/${schedule.imgSrc[0]}`}
+            autoPlay
+            loop
+            muted
+            controls
+          >
+            Your browser does not support the video tag.
+          </video>
+        ) : (
+          // Hiển thị ảnh mặc định nếu không có cả imgSrc lẫn videoSrc
+          <img
+            className="content-image"
+            src="https://bazantravel.com/cdn/medias/uploads/83/83317-khu-nghi-duong-lan-rung-700x420.jpg"
+            alt="Default Image"
+          />
+        )}
+      </div>
+
+
       <div className='content-container'>
         <div className="card-content">
           <div className="details">

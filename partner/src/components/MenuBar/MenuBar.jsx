@@ -1,70 +1,89 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
 import './MenuBar.css';
+import { Link, useLocation } from 'react-router-dom'; // Import Link and useLocation from react-router-dom
 import { FaThLarge, FaCalendarAlt, FaHome, FaEnvelope, FaBroom, FaBox, FaDollarSign, FaStar, FaConciergeBell } from 'react-icons/fa'; // Import icons
 
-const MenuBar = ({ onTabChange }) => {
-  // State to manage the active tab
-  const [activeTab, setActiveTab] = useState('Expenses');
-
-  const onClickTab = (tab) => {
-    setActiveTab(tab); // Set the active tab
-    onTabChange(tab);  // Notify the parent component of the tab change
-  };
+const MenuBar = () => {
+  // Use useLocation hook to get the current route
+  const location = useLocation();
 
   return (
     <aside className="sidebar">
       {/* Menu Items */}
       <nav className="menu">
         <ul>
-          <li className={activeTab === 'Dashboard' ? 'active' : ''} onClick={() => onClickTab('Dashboard')}>
-            <FaThLarge />
-            Dashboard
+          <li className={location.pathname === '/dashboard' ? 'active' : ''}>
+            <Link to="/dashboard">
+              <FaThLarge />
+              Dashboard
+            </Link>
           </li>
-          <li className={activeTab === 'Reservation' ? 'active' : ''} onClick={() => onClickTab('Reservation')}>
-            <FaCalendarAlt />
-            Reservation
+          <li className={location.pathname === '/reservation' ? 'active' : ''}>
+            <Link to="/reservation">
+              <FaCalendarAlt />
+              Reservation
+            </Link>
           </li>
-          <li className={activeTab === 'Hotels' ? 'active' : ''} onClick={() => onClickTab('Hotels')}>
-            <FaHome />
-            Hotels
+          <li className={location.pathname === '/hotels' ? 'active' : ''}>
+            <Link to="/hotels">
+              <FaHome />
+              Hotels
+            </Link>
           </li>
-          <li className={activeTab === 'Concierge' ? 'active' : ''} onClick={() => onClickTab('Concierge')}>
-            <FaConciergeBell />
-            FABS
+          <li className={location.pathname === '/concierge' ? 'active' : ''}>
+            <Link to="/concierge">
+              <FaConciergeBell />
+              FABS
+            </Link>
           </li>
-          <li className={activeTab === 'Messages' ? 'active' : ''} onClick={() => onClickTab('Messages')}>
-            <FaEnvelope />
-            Messages
-            <span className="notification-badge">5</span>
+          <li className={location.pathname === '/messages' ? 'active' : ''}>
+            <Link to="/messages">
+              <FaEnvelope />
+              Messages
+              <span className="notification-badge">5</span>
+            </Link>
           </li>
-          <li className={activeTab === 'Housekeeping' ? 'active' : ''} onClick={() => onClickTab('Housekeeping')}>
-            <FaBroom />
-            Housekeeping
+          <li className={location.pathname === '/housekeeping' ? 'active' : ''}>
+            <Link to="/housekeeping">
+              <FaBroom />
+              Housekeeping
+            </Link>
           </li>
-          <li className={activeTab === 'Inventory' ? 'active' : ''} onClick={() => onClickTab('Inventory')}>
-            <FaBox />
-            Inventory
+          <li className={location.pathname === '/inventory' ? 'active' : ''}>
+            <Link to="/inventory">
+              <FaBox />
+              Inventory
+            </Link>
           </li>
-          <li className={activeTab === 'Calendar' ? 'active' : ''} onClick={() => onClickTab('Calendar')}>
-            <FaCalendarAlt />
-            Calendar
+          <li className={location.pathname === '/calendar' ? 'active' : ''}>
+            <Link to="/calendar">
+              <FaCalendarAlt />
+              Calendar
+            </Link>
           </li>
-          <li className={activeTab === 'Financials' ? 'active' : ''} onClick={() => onClickTab('Financials')}>
-            <FaDollarSign />
-            Financials
+          <li className={location.pathname === '/financials' ? 'active' : ''}>
+            <Link to="/financials">
+              <FaDollarSign />
+              Financials
+            </Link>
           </li>
           <ul className="submenu">
-            <li className={activeTab === 'Invoice' ? 'active' : ''} onClick={() => onClickTab('Invoice')}>
-              Invoice
+            <li className={location.pathname === '/invoice' ? 'active' : ''}>
+              <Link to="/invoice">
+                Invoice
+              </Link>
             </li>
-            <li className={activeTab === 'Expenses' ? 'active' : ''} onClick={() => onClickTab('Expenses')}>
-              <span className="highlight">Expenses</span>
+            <li className={location.pathname === '/expenses' ? 'active' : ''}>
+              <Link to="/expenses">
+                <span className="highlight">Expenses</span>
+              </Link>
             </li>
           </ul>
-          <li className={activeTab === 'Reviews' ? 'active' : ''} onClick={() => onClickTab('Reviews')}>
-            <FaStar />
-            Reviews
+          <li className={location.pathname === '/dashboard' ? 'active' : ''}>
+            <Link to="/dashboard">
+              <FaStar />
+              Reviews
+            </Link>
           </li>
         </ul>
       </nav>

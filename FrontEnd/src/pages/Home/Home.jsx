@@ -27,7 +27,11 @@ const Home = () => {
     try {
       const response = await axios.get(`${url}/api/schedule/getAllSchedule`);
       if (response.data.success) {
-        setSchedules(response.data.schedule);
+        const publicSchedules = response.data.schedule.filter((schedule) => {
+          return schedule.isPublic === true;
+        });
+        setSchedules(publicSchedules);
+
         setIsLoading(false);
       } else {
         console.error("Failed to fetch schedules:", response.data.message);
@@ -116,7 +120,7 @@ const Home = () => {
                   value={scheduleName}
                   onChange={(e) => handleScheduleChange(e)} />
               </div>
-              <button className="search-button" onClick={handleSearch}>Tìm kiếm</button>
+              <button className="search-button" onClick={()=> navigate(`/searchSchedule?address=${address}&scheduleName=${scheduleName}`)}>Tìm kiếm</button>
             </div>
           </div>
 

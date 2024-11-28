@@ -26,7 +26,7 @@ const AdditionalExpenseSchema = new Schema({
 const ReplySchema = new Schema({
   idUser: { type: String, required: true },
   userName: { type: String, required: true },
-  avatar: { type: String, required: true },
+  avatar: { type: String },
   content: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
 });
@@ -51,6 +51,7 @@ const ScheduleSchema = new Schema(
     scheduleName: { type: String, required: true },
     description: { type: String },
     address: { type: String, required: true },
+    videoSrc: { type: String },
     imgSrc: [{ type: String }],
     numDays: { type: Number, required: true },
     dateStart: { type: String, required: true },
@@ -64,6 +65,7 @@ const ScheduleSchema = new Schema(
       type: Date,
       default: Date.now,
     },
+    isPublic: { type: Boolean, default: false },
   },
 );
 

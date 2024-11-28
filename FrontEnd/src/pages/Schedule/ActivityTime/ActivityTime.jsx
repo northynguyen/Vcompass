@@ -246,6 +246,8 @@ export const AccomActivity = ({
     </div>
   );
 };
+
+
 export const FoodServiceActivity = ({
   activity,
   data,
@@ -290,10 +292,12 @@ export const FoodServiceActivity = ({
     const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
     window.open(`/place-details/food/${safeEncryptedServiceId}`, "_blank");
   };
-  console.log(data);
-  if (!data) {
+  console.log("data", data);
+  if (!data || data.length === 0) {
     return <div className="div">...</div>;
   }
+  
+
   return (
     <div className="time-schedule-item">
       <div className="activity-item-header">
@@ -384,6 +388,8 @@ export const FoodServiceActivity = ({
     </div>
   );
 };
+
+
 export const AttractionActivity = ({
   activity,
   data,

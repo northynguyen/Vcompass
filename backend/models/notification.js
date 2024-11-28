@@ -12,3 +12,4 @@ const Notification =
   mongoose.model("notification", NotificationSchema);
 
 export { Notification };
+   

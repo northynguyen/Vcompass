@@ -7,7 +7,6 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
 
   const [bookingHistory, setBookingHistory] = useState(null);
   const [roomInfo, setRoomInfo] = useState(null);
-  const [accommodationName, setAccommodationName] = useState(null);  // State to store accommodation name
   const {url} = useContext(StoreContext);
 
   useEffect(() => {
@@ -30,6 +29,7 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
         }));
 
         setBookingHistory(updatedHistory);  // Set the fetched and updated booking history
+        console.log("Updated Booking History:", updatedHistory);
       } catch (error) {
         console.error("Error fetching booking history:", error);
       }
@@ -43,7 +43,6 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
           console.log("Room Info:", response.data.rooms);
           const room = response.data.rooms.find(room => room._id === selectedReservation.roomId);
           setRoomInfo(room);
-          setAccommodationName(room.accommodationName);  // Store accommodation name
         } else {
           console.error("Error fetching room info:", response.data.message);
         }
@@ -58,7 +57,7 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
   
   // Re-run if userId changes
   if (!selectedReservation || !bookingHistory || !roomInfo) {
-    return <div>Loading...</div>;
+    return <div>{"Loading..."}</div>;
   }
   
   return (
@@ -67,7 +66,6 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
         <button onClick={onBack}>← Back to Reservations</button>
       </div>
       <div className="guest-profile">
-        {/* Profile Section */}
         <div className="profile">
           <div className="profile-info">
             <img
@@ -95,7 +93,16 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
           <p><strong>Check-Out:</strong> {new Date(selectedReservation.checkOutDate).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric'})}, Check out at 12:00</p>
           <p><strong>Duration:</strong> {selectedReservation.duration} days</p>
           <p><strong>Requests:</strong> {selectedReservation.specialRequest}</p>
-          <div className="loyalty-program">
+          <div
+            className={`loyalty-program ${
+              selectedReservation.status === "cancelled"
+                ? "cancelled"
+                : selectedReservation.status === "confirmed"
+                ? "confirmed"
+                : "completed"
+            }`}
+          >
+
             <h3>Booking status</h3>
             <p><strong>Status:</strong> {selectedReservation.status}</p>
             {selectedReservation.status === 'cancelled' && (
@@ -107,6 +114,15 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
                 )}
               </div>
             )}
+          </div>
+
+          {/* Price Summary Section */}
+          <div className="price-summary">
+            <h3>Price Summary</h3>
+            <p><strong>Room and offer:</strong> {new Intl.NumberFormat().format(roomInfo.pricePerNight)} VND x {selectedReservation.duration} nights</p>
+            <p><strong>Extras:</strong> 0 VND </p>
+            <p><strong>VAT:</strong> {new Intl.NumberFormat().format(roomInfo.pricePerNight * selectedReservation.duration * 0.08)} VND </p>
+            <p><strong>Total Price:</strong> {new Intl.NumberFormat().format(selectedReservation.totalAmount)} VND</p>
           </div>
         </div>
 
@@ -126,14 +142,7 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
           <p style={{ color: "#ff23322", fontWeight: "bold", fontSize: "20px"}}><strong>Price:</strong> { new Intl.NumberFormat().format(roomInfo.pricePerNight)} VND</p>
         </div>
 
-        {/* Price Summary Section */}
-        <div className="price-summary">
-          <h3>Price Summary</h3>
-          <p><strong>Room and offer:</strong> {new Intl.NumberFormat().format(roomInfo.pricePerNight)} VND x {selectedReservation.duration} nights</p>
-          <p><strong>Extras:</strong> 0 VND </p>
-          <p><strong>VAT:</strong> {new Intl.NumberFormat().format(roomInfo.pricePerNight * selectedReservation.duration * 0.08)} VND </p>
-          <p><strong>Total Price:</strong> {new Intl.NumberFormat().format(selectedReservation.totalAmount)} VND</p>
-        </div>
+        
 
         {/* Booking History Section */}
         <div className="booking-history">
@@ -144,28 +153,32 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
             <table>
               <thead>
                 <tr>
-                  <th>Booking ID</th>
                   <th>Booking Date</th>
                   <th>Room Type</th>
                   <th>Accommodation Name</th>
                   <th>Check-In</th>
                   <th>Check-Out</th>
                   <th>Guests</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {bookingHistory.map((history, index) => (
                   <tr key={index}>
-                    <td>{history.bookingId}</td>
-                    <td>{history.createdAt}</td>
-                    <td>{history.nameRoomType}</td> {/* Display nameRoomType */}
-                    <td>{history.accommodationName}</td> {/* Display accommodationName */}
+                    {/* Start of row */}
+                    <td>{new Date(history.createdAt).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
+                    <td>{history.nameRoomType}</td>
+                    <td>{history.accommodationName}</td>
                     <td>{new Date(history.checkInDate).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
-                    <td>{new Date(history.checkOutDate).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</td> 
+                    <td>{new Date(history.checkOutDate).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</td>
                     <td>{history.numberOfGuests.adult} adult + {history.numberOfGuests.child} child</td>
+                    <td>{history.status}</td>
+                    {/* End of row */}
                   </tr>
                 ))}
               </tbody>
+
+
             </table>
           )}
         </div>

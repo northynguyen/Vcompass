@@ -18,7 +18,9 @@
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
+    align-items: flex-start; /* Đảm bảo các thẻ căn trên cùng */
 }
+
 
 /* Hotel Card */
 .hotel-card {
@@ -28,10 +30,11 @@
     width: 300px;
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
     display: flex;
     flex-direction: column;
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s, height 0.3s;
 }
 
 .hotel-card:hover {
@@ -160,6 +163,7 @@
     background-color: #f8f9fa;
     cursor: pointer;
     transition: background-color 0.3s, border-color 0.3s;
+    height: 500px;
 }
 
 .add-hotel-card:hover {
@@ -215,4 +219,28 @@
 
 .close-popup:hover {
     color: #000;
+}
+
+.hotel-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* Giới hạn số dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-align: justify;
+    text-overflow: ellipsis;
+}
+
+.hotel-description.expanded {
+    -webkit-line-clamp: unset; /* Bỏ giới hạn số dòng khi mở rộng */
+    overflow: visible;
+}
+
+.show-more-btn, .show-less-btn {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    margin-left: 5px;
+    padding: 0;
+    font-size: 14px;
 }
