@@ -10,7 +10,7 @@ const Users = () => {
 
     useEffect(() => {
         // Fetch users from the API
-        fetch(`${url}/api/user/users/getall`)
+        fetch(`${url}/api/user/users/`)
             .then(response => response.json())
             .then(data => setUsers(data))
             .catch(error => console.error('Error fetching users:', error));

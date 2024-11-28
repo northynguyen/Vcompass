@@ -6,20 +6,20 @@ import Rooms from '../Rooms/Rooms';
 import axios from 'axios';
 import { StoreContext } from '../../Context/StoreContext';
 import { useContext } from 'react';
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 import Loading from '../Loading/Loading';
 
 const Hotels = () => {
-   
+
     const [hotels, setHotels] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
     const [action, setAction] = useState('');
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [selectedTab, setSelectedTab] = useState(null);
-    const {url , user} = useContext(StoreContext);
+    const { url, user } = useContext(StoreContext);
     const [isLoading, setIsLoading] = useState(true); // State loading
 
-    const partnerId = user._id;  
+    const partnerId = user._id;
     useEffect(() => {
         // Fetch accommodations for the partner
         const fetchAccommodations = async () => {
@@ -44,7 +44,7 @@ const Hotels = () => {
 
         fetchAccommodations();
     }, [partnerId]);
-    
+
     const openPopup = (actionType, hotel = null) => {
         setAction(actionType);
         setSelectedHotel(hotel);
@@ -57,7 +57,7 @@ const Hotels = () => {
         setSelectedHotel(null);
     };
 
-  
+
 
     const handleSubmit = async (formData) => {
         if (action === 'add') {
@@ -94,7 +94,7 @@ const Hotels = () => {
                 toast.error("Error updating accommodation. Please try again later.");
             }
         } else if (action === 'lock' || action === 'unlock') {
-            const updatedStatus = action === 'lock' ? 'locked' : 'active';
+            const updatedStatus = action === 'lock' ? 'unActive' : 'active';
             try {
                 const response = await axios.put(`${url}/api/accommodations/${partnerId}/${selectedHotel._id}`, { status: updatedStatus });
                 if (response.data.success) {
@@ -122,130 +122,130 @@ const Hotels = () => {
         setSelectedHotel(null);
     };
 
-    
+
 
     return (
         <div>
-           {isLoading ? ( // Kiểm tra trạng thái loading
+            {isLoading ? ( // Kiểm tra trạng thái loading
                 <Loading size="60px" color="#007bff" /> // Hiển thị vòng xoay nếu đang tải dữ liệu
             ) : (
-                !selectedTab ? (    
-                <div className="partner-hotels-container">
-                    <h2>Danh Sách Khách Sạn Đăng Ký</h2>
-                    <div className="hotels-list">
-                        <div className="hotel-card add-hotel-card" onClick={() => openPopup('add')}>
-                            <div className="add-hotel-content">
-                                <FaPlus size={50} color="#007bff" />
-                                <p>Thêm Khách Sạn Mới</p>
+                !selectedTab ? (
+                    <div className="partner-hotels-container">
+                        <h2>Danh Sách Khách Sạn Đăng Ký</h2>
+                        <div className="hotels-list">
+                            <div className="hotel-card add-hotel-card" onClick={() => openPopup('add')}>
+                                <div className="add-hotel-content">
+                                    <FaPlus size={50} color="#007bff" />
+                                    <p>Thêm Khách Sạn Mới</p>
+                                </div>
                             </div>
+
+                            {hotels.map((hotel) => (
+                                <div key={hotel._id} className="hotel-card" onClick={() => openRoomsTab(hotel)}>
+                                    <img src={`${url}/images/${hotel.images[0]}`} alt={`${hotel.name}`} className="hotel-image" />
+                                    <div className="hotel-info">
+                                        <h3>{hotel.name}</h3>
+                                        <p><strong>Địa Điểm:</strong> {hotel.location.address}</p>
+                                        <p><strong>Thành phố:</strong> {hotel.city}</p>
+                                        <p><strong>Mô Tả:</strong> {hotel.description}</p>
+                                        <p>
+                                            <strong>Trạng Thái:</strong>
+                                            <span className={`status-badge ${hotel.status}`}>
+                                                {hotel.status === 'active' ? 'Đang hoạt động' : hotel.status === 'pending' ? 'Đang chờ duyệt' : hotel.status === 'unActive' ? 'Dừng hoạt động' : "Đã bị khóa"}
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div className="hotel-actions">
+                                        <FaEllipsisV
+                                            className="actions-icon"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                openPopup('menu', hotel);
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
                         </div>
 
-                        {hotels.map((hotel) => (
-                            <div key={hotel._id} className="hotel-card" onClick={() => openRoomsTab(hotel)}>
-                                <img src={`${url}/images/${hotel.images[0]}`} alt={`${hotel.name}`} className="hotel-image" />
-                                <div className="hotel-info">
-                                    <h3>{hotel.name}</h3>
-                                    <p><strong>Địa Điểm:</strong> {hotel.location.address}</p>
-                                    <p><strong>Thành phố:</strong> {hotel.city}</p>
-                                    <p><strong>Mô Tả:</strong> {hotel.description}</p>
-                                    <p>
-                                        <strong>Trạng Thái:</strong> 
-                                        <span className={`status-badge ${hotel.status}`}>
-                                            {hotel.status === 'active' ? 'Đang hoạt động' : hotel.status === 'pending' ? 'Đang được duyệt' : 'Đã khóa'}
-                                        </span>
-                                    </p>
-                                </div>
-                                <div className="hotel-actions">
-                                    <FaEllipsisV 
-                                        className="actions-icon" 
-                                        onClick={(e) => { 
-                                            e.stopPropagation(); 
-                                            openPopup('menu', hotel);
-                                        }} 
-                                    />
+                        {showPopup && action === 'add' && (
+                            <HotelActionPopup
+                                action="add"
+                                hotel={null}
+                                onClose={closePopup}
+                                onSubmit={handleSubmit}
+                            />
+                        )}
+
+                        {showPopup && action === 'edit' && selectedHotel && (
+                            console.log('......' + selectedHotel.contact),
+                            <HotelActionPopup
+                                action="edit"
+                                hotel={selectedHotel}
+                                onClose={closePopup}
+                                onSubmit={handleSubmit}
+                            />
+                        )}
+
+                        {showPopup && action === 'lock' && selectedHotel && (
+                            <HotelActionPopup
+                                action="lock"
+                                hotel={selectedHotel}
+                                onClose={closePopup}
+                                onSubmit={handleSubmit}
+                            />
+                        )}
+
+                        {showPopup && action === 'unlock' && selectedHotel && (
+                            <HotelActionPopup
+                                action="unlock"
+                                hotel={selectedHotel}
+                                onClose={closePopup}
+                                onSubmit={handleSubmit}
+                            />
+                        )}
+
+                        {showPopup && action === 'view' && selectedHotel && (
+                            <HotelActionPopup
+                                action="view"
+                                hotel={selectedHotel}
+                                onClose={closePopup}
+                                onSubmit={handleSubmit}
+                            />
+                        )}
+
+                        {showPopup && action === 'menu' && selectedHotel && (
+                            <div className="popup menu-popup">
+                                <div className="popup-content menu-popup-content">
+                                    <FaTimes className="close-popup" onClick={closePopup} />
+                                    <div className="menu-options">
+                                        {selectedHotel.status === 'lock' ? (
+                                            <button onClick={() => { closePopup(); openPopup('unlock', selectedHotel); }}>
+                                                Mở Khách Sạn
+                                            </button>
+                                        ) : (
+                                            <button onClick={() => { closePopup(); openPopup('lock', selectedHotel); }}>
+                                                Khóa Khách Sạn
+                                            </button>
+                                        )}
+                                        <button onClick={() => { closePopup(); openPopup('edit', selectedHotel); }}>
+                                            Chỉnh Sửa
+                                        </button>
+                                        <button onClick={() => { closePopup(); openPopup('view', selectedHotel); }}>
+                                            Xem Chi Tiết
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        ))}
+                        )}
                     </div>
-
-                    {showPopup && action === 'add' && (
-                        <HotelActionPopup 
-                            action="add" 
-                            hotel={null} 
-                            onClose={closePopup} 
-                            onSubmit={handleSubmit} 
-                        />
-                    )}
-
-                    {showPopup && action === 'edit' && selectedHotel && (
-                        console.log('......'+selectedHotel.contact),
-                        <HotelActionPopup 
-                            action="edit" 
-                            hotel={selectedHotel} 
-                            onClose={closePopup} 
-                            onSubmit={handleSubmit} 
-                        />
-                    )}
-
-                    {showPopup && action === 'lock' && selectedHotel && (
-                        <HotelActionPopup 
-                            action="lock" 
-                            hotel={selectedHotel} 
-                            onClose={closePopup} 
-                            onSubmit={handleSubmit} 
-                        />
-                    )}
-
-                    {showPopup && action === 'unlock' && selectedHotel && (
-                        <HotelActionPopup 
-                            action="unlock" 
-                            hotel={selectedHotel} 
-                            onClose={closePopup} 
-                            onSubmit={handleSubmit} 
-                        />
-                    )}
-
-                    {showPopup && action === 'view' && selectedHotel && (
-                        <HotelActionPopup 
-                            action="view" 
-                            hotel={selectedHotel} 
-                            onClose={closePopup} 
-                            onSubmit={handleSubmit} 
-                        />
-                    )}
-
-                    {showPopup && action === 'menu' && selectedHotel && (
-                        <div className="popup menu-popup">
-                            <div className="popup-content menu-popup-content">
-                                <FaTimes className="close-popup" onClick={closePopup} />
-                                <div className="menu-options">
-                                    {selectedHotel.status === 'locked' ? (
-                                        <button onClick={() => { closePopup(); openPopup('unlock', selectedHotel); }}>
-                                            Mở Khách Sạn
-                                        </button>
-                                    ) : (
-                                        <button onClick={() => { closePopup(); openPopup('lock', selectedHotel); }}>
-                                            Khóa Khách Sạn
-                                        </button>
-                                    )}
-                                    <button onClick={() => { closePopup(); openPopup('edit', selectedHotel); }}>
-                                        Chỉnh Sửa
-                                    </button>
-                                    <button onClick={() => { closePopup(); openPopup('view', selectedHotel); }}>
-                                        Xem Chi Tiết
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            ) : (
-                <Rooms hotel={selectedHotel} onBack={closeRoomsTab} />
-            )
+                ) : (
+                    <Rooms hotel={selectedHotel} onBack={closeRoomsTab} />
+                )
             )}
 
-        
-        
+
+
         </div>
     );
 };

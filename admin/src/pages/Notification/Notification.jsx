@@ -1,42 +1,141 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import './Notification.css';
 import axios from 'axios';
 import { StoreContext } from '../../Context/StoreContext';
+import { useNavigate } from 'react-router-dom';
 
-const Notification = ({ userData }) => {
-    const { admin, url } = useContext(StoreContext); // Lấy admin từ StoreContext
-    const [userName, setUserName] = useState(userData?.name || ""); // State để nhập tên user
-    const [content, setContent] = useState("");   // State để nhập nội dung thông báo
-    const getTypeNo = () => {
-        if (!userData) {
-            return "normal";
-        } else if (userData.status === "blocked") {
-            return "blocked";
-        } else if (userData.status === "unclock") { // Assuming you meant "unclock" should be "unlock"
-            return "unlock";
+const Notification = ({ userData, accommodationData, foodserviceData }) => {
+    const { admin, url } = useContext(StoreContext);
+    const [userName, setUserName] = useState(userData?.name || "");
+    const [content, setContent] = useState("");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Set nội dung mẫu khi có userData, accommodationData hoặc foodserviceData
+        if (accommodationData) {
+            // Nội dung mẫu cho chỗ ở
+            let statusMessage = "";
+            switch (accommodationData.status) {
+                case "active":
+                    statusMessage = `Chỗ ở ${accommodationData.partnerName} hiện đang hoạt động. Cảm ơn bạn đã hợp tác cùng chúng tôi!`;
+                    break;
+                case "inactive":
+                    statusMessage = `Chỗ ở ${accommodationData.partnerName} hiện không hoạt động. Nếu cần hỗ trợ, vui lòng liên hệ với chúng tôi.`;
+                    break;
+                case "pending":
+                    statusMessage = `Chỗ ở ${accommodationData.partnerName} đang chờ duyệt. Chúng tôi sẽ sớm cập nhật trạng thái cho bạn.`;
+                    break;
+                case "block":
+                    statusMessage = `Chỗ ở ${accommodationData.partnerName} đã bị khóa. Vui lòng liên hệ với bộ phận hỗ trợ để giải quyết.`;
+                    break;
+                default:
+                    statusMessage = `Thông báo trạng thái chỗ ở.`;
+            }
+            setContent(statusMessage);
+        } else if (foodserviceData) {
+            // Nội dung mẫu cho dịch vụ ăn uống
+            let statusMessage = "";
+            switch (foodserviceData.status) {
+                case "active":
+                    statusMessage = `Dịch vụ ăn uống ${foodserviceData.partnerName} hiện đang hoạt động. Cảm ơn bạn đã hợp tác cùng chúng tôi!`;
+                    break;
+                case "inactive":
+                    statusMessage = `Dịch vụ ăn uống ${foodserviceData.partnerName} hiện không hoạt động. Nếu cần hỗ trợ, vui lòng liên hệ với chúng tôi.`;
+                    break;
+                case "pending":
+                    statusMessage = `Dịch vụ ăn uống ${foodserviceData.partnerName} đang chờ duyệt. Chúng tôi sẽ sớm cập nhật trạng thái cho bạn.`;
+                    break;
+                case "block":
+                    statusMessage = `Dịch vụ ăn uống ${foodserviceData.partnerName} đã bị khóa. Vui lòng liên hệ với bộ phận hỗ trợ để giải quyết.`;
+                    break;
+                default:
+                    statusMessage = `Thông báo trạng thái dịch vụ ăn uống.`;
+            }
+            setContent(statusMessage);
+        } else if (userData) {
+            // Nội dung mẫu cho người dùng
+            let statusMessage = "";
+            if (userData.status === "active") {
+                statusMessage = `Tài khoản của bạn, ${userData.name}, hiện đang hoạt động. Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!`;
+            } else if (userData.status === "blocked") {
+                statusMessage = `Tài khoản của bạn, ${userData.name}, đã bị khóa. Vui lòng liên hệ với bộ phận hỗ trợ để được giải quyết.`;
+            } else {
+                statusMessage = `Thông báo trạng thái tài khoản. Nếu bạn có thắc mắc, vui lòng liên hệ với chúng tôi.`;
+            }
+            setContent(statusMessage);
         }
-        return "normal"; // Default if no condition matches
+    }, [userData, accommodationData, foodserviceData]); // Chạy lại khi có dữ liệu mới
+
+    const getTypeNo = () => {
+        if (userData) {
+            return userData.status === "blocked" ? "blockedUser" : "activeUser";
+        }
+        if (accommodationData) {
+            return accommodationData.status + "Accommodation";
+        }
+        if (foodserviceData) {
+            return foodserviceData.status + "FoodService";
+        }
+        return "normal";
     };
+
     // Xử lý gửi form
     const handleSubmit = async (event) => {
         event.preventDefault();
         const typeNo = getTypeNo();
+
         try {
-            // Thực hiện gửi yêu cầu POST đến server
-            const response = await axios.post(`${url}/api/notifications/notifications/`, {
-                idSender: admin._id,     // Truyền ID của admin
-                idReceiver: userData?._id,  // Truyền ID của user nếu có
-                content,
-                typeNo,                // Nội dung thông báo
-            });
-            if (userData.type === "user") {
-                await axios.put(`${url}/api/user/users/update`, { type: "user", id: userData._id, status: userData.status });
+            if (accommodationData) {
+                // Gửi thông báo liên quan đến chỗ ở
+                await axios.post(`${url}/api/notifications/notifications/`, {
+                    idSender: admin._id,
+                    idReceiver: accommodationData.partnerId,
+                    content,
+                    typeNo,
+                });
+
+                // Cập nhật trạng thái của chỗ ở
+                await axios.put(`${url}/api/accommodations/${accommodationData._id}`, {
+                    status: accommodationData.status,
+                    adminId: admin._id,
+                });
+
+                setContent("");
+                navigate("/partners");
+            } else if (foodserviceData) {
+                // Gửi thông báo liên quan đến dịch vụ ăn uống
+                await axios.post(`${url}/api/notifications/notifications/`, {
+                    idSender: admin._id,
+                    idReceiver: foodserviceData.partnerId,
+                    content,
+                    typeNo,
+                });
+
+                // Cập nhật trạng thái của dịch vụ ăn uống
+                await axios.put(`${url}/api/foodservices/${foodserviceData._id}`, {
+                    status: foodserviceData.status,
+                    adminId: admin._id,
+                });
+
+                setContent("");
+                navigate("/partners");
+            } else if (userData) {
+                // Gửi thông báo liên quan đến người dùng hoặc đối tác
+                await axios.post(`${url}/api/notifications/notifications/`, {
+                    idSender: admin._id,
+                    idReceiver: userData._id,
+                    content,
+                    typeNo,
+                });
+
+                // Cập nhật trạng thái người dùng/đối tác
+                await axios.put(`${url}/api/user/${userData.type === "user" ? "users" : "partners"}/${userData._id}`, {
+                    type: userData.type,
+                    status: userData.status,
+                });
+
+                navigate(userData.type === "user" ? "/users" : "/partners");
             }
-            else if (userData.type === "partner") {
-                await axios.put(`${url}/api/user/partners/update`, { type: "partner", id: userData._id, status: userData.status });
-            }
-            // Reset lại các trường input sau khi gửi
-            setContent("");
         } catch (error) {
             console.error("Error adding notification:", error);
         }
@@ -49,12 +148,18 @@ const Notification = ({ userData }) => {
                 <input type="text" value={admin.name} disabled className="form-control" />
             </div>
             <div className="form-group">
-                <label>User Name:</label>
+                <label>{accommodationData || foodserviceData ? "Partner Name" : "User Name"}:</label>
                 <input
                     type="text"
-                    value={userName}
+                    value={
+                        accommodationData
+                            ? accommodationData.partnerName
+                            : foodserviceData
+                                ? foodserviceData.partnerName
+                                : userName
+                    }
                     onChange={(e) => setUserName(e.target.value)}
-                    disabled={!!userData?.name} // Nếu có userData, khóa trường nhập
+                    disabled={!!accommodationData || !!foodserviceData || !!userData?.name}
                     required
                     className="form-control"
                 />

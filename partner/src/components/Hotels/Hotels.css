@@ -27,7 +27,7 @@
     border-radius: 8px;
     width: 300px;
     overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -36,7 +36,7 @@
 
 .hotel-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 /* Hotel Image */
@@ -77,15 +77,23 @@
 
 
 .status-badge.active {
-    background-color: #28a745; /* Màu xanh */
+    background-color: #28a745;
+    /* Màu xanh */
 }
 
 .status-badge.pending {
-    background-color: #dc3545; /* Màu đỏ */
+    background-color: #f1a20d;
+    /* Màu đỏ */
 }
 
-.status-badge.locked {
-    background-color: #6c757d; /* Màu xám */
+.status-badge.unActive {
+    background-color: #6c757d;
+    /* Màu xám */
+}
+
+.status-badge.block {
+    background-color: #dc3545;
+    /* Màu xám */
 }
 
 /* Three-Dot Button */
@@ -104,7 +112,8 @@
 /* Popup Menu */
 .menu-popup {
     position: absolute;
-    bottom: -120px; /* Positioned below the card */
+    bottom: -120px;
+    /* Positioned below the card */
     left: 0;
     right: 0;
     background: white;
@@ -115,7 +124,8 @@
     width: 95%;
     margin: 0 auto;
     border-radius: 8px;
-    display: none; /* Hidden by default */
+    display: none;
+    /* Hidden by default */
     transition: opacity 0.3s ease;
 }
 
@@ -175,7 +185,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;

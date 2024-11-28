@@ -7,7 +7,7 @@ const addNotification = async (req, res) => {
       idSender,
       idReceiver,
       content,
-      typeNo
+      type: typeNo
     });
     await newNotification.save();
     res.json({ success: true, message: "Notification added successfully" });

@@ -20,7 +20,7 @@ export const getUserFavoritesWithDetails = async (req, res) => {
     // Kiểm tra loại hợp lệ
     const validTypes = ['attraction', 'accommodation', 'foodService'];
     if (!validTypes.includes(type)) {
-      return res.status(400).json({success: false, message: 'Invalid type parameter' });
+      return res.status(400).json({ success: false, message: 'Invalid type parameter' });
     }
 
     // Tìm user và populate trường liên quan
@@ -37,7 +37,7 @@ export const getUserFavoritesWithDetails = async (req, res) => {
 
     // Lấy danh sách yêu thích tuỳ thuộc vào `type`
     const favorites = user.favorites[type];
-    return res.status(200).json({success: true, favorites });
+    return res.status(200).json({ success: true, favorites });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ success: false, message: 'Server error' });
@@ -336,7 +336,8 @@ const getAllPartners = async (req, res) => {
 };
 
 const updateUserOrPartner = async (req, res) => {
-  const { type, id, name, password, address, date_of_birth, gender, avatar, status } = req.body;
+  const { type, name, password, address, date_of_birth, gender, avatar, status } = req.body;
+  const id = req.params.id;
   const updates = {};
 
   if (name) updates.name = name;
@@ -467,7 +468,7 @@ export {
   registerAdmin,
   getAllUsers,
   getAllPartners,
-  updateUserOrPartner,addtoWishlist,
+  updateUserOrPartner, addtoWishlist,
   getUserById, getPartnerById, getAdminById // Export the new function
 };
 

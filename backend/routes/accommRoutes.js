@@ -8,7 +8,8 @@ import {
   getListAccommbyPartner,
   listRooms,
   updateAccommodation,
-  updateRoomType,addReview
+  updateRoomType, addReview,
+  updateAccommodationStatusByAdmin
 } from "../controllers/accommController.js";
 import { upload } from "../middleware/upload.js";
 const accommRoutes = express.Router();
@@ -21,6 +22,10 @@ accommRoutes.put(
   upload.array("newImages", 5),
   updateAccommodation
 ); // Update accommodation
+accommRoutes.put(
+  "/:id",
+  updateAccommodationStatusByAdmin
+);
 accommRoutes.post(
   "/:accommodationId/rooms",
   upload.array("newImages", 5),
