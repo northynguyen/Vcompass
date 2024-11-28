@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import Loading from "../Loading/Loading";
 
 const Hotels = () => {
-   
+
   const [hotels, setHotels] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [action, setAction] = useState("");
@@ -69,58 +69,58 @@ const Hotels = () => {
     setSelectedHotel(null);
   };
 
-    const handleSubmit = async (formData) => {
-        if (action === 'add') {
-            try {
-                const response = await axios.post(`${url}/api/accommodations/${partnerId}`, formData);
-                if (response.data.success) {
-                    setHotels([...hotels, response.data.accommodation]);
-                    closePopup();
-                    toast.success(response.data.message);
-                }
-                else {
-                    toast.error(response.data.message);
-                }
-            } catch (error) {
-                console.error("Error adding new accommodation:", error);
-                toast.error("Error adding new accommodation. Please try again later.");
-            }
-        } else if (action === 'edit') {
-            try {
-                const response = await axios.put(`${url}/api/accommodations/${partnerId}/${selectedHotel._id}`, formData);
-                if (response.data.success) {
-                    toast.success(response.data.message);
-                    const updatedHotels = hotels.map((hotel) =>
-                        hotel._id === selectedHotel._id ? response.data.accommodation : hotel
-                    );
-                    setHotels(updatedHotels);
-                    closePopup();
-                }
-                else {
-                    toast.error(response.data.message);
-                }
-            } catch (error) {
-                console.error("Error updating accommodation:", error);
-                toast.error("Error updating accommodation. Please try again later.");
-            }
-        } else if (action === 'lock' || action === 'unlock') {
-          const updatedStatus = action === 'lock' ? 'unActive' : 'active';
-            try {
-                const response = await axios.put(`${url}/api/accommodations/${partnerId}/${selectedHotel._id}`, { status: updatedStatus });
-                if (response.data.success) {
-                    toast.success(response.data.message);
-                    const updatedHotels = hotels.map((hotel) =>
-                        hotel._id === selectedHotel._id ? response.data.accommodation : hotel
-                    );
-                    setHotels(updatedHotels);
-                }
-            } catch (error) {
-                console.error("Error updating status:", error);
-                toast.error("Error updating status. Please try again later.");
-                console.error(`Error ${action} accommodation:`, error);
-            }
+  const handleSubmit = async (formData) => {
+    if (action === 'add') {
+      try {
+        const response = await axios.post(`${url}/api/accommodations/${partnerId}`, formData);
+        if (response.data.success) {
+          setHotels([...hotels, response.data.accommodation]);
+          closePopup();
+          toast.success(response.data.message);
         }
-    };
+        else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        console.error("Error adding new accommodation:", error);
+        toast.error("Error adding new accommodation. Please try again later.");
+      }
+    } else if (action === 'edit') {
+      try {
+        const response = await axios.put(`${url}/api/accommodations/${partnerId}/${selectedHotel._id}`, formData);
+        if (response.data.success) {
+          toast.success(response.data.message);
+          const updatedHotels = hotels.map((hotel) =>
+            hotel._id === selectedHotel._id ? response.data.accommodation : hotel
+          );
+          setHotels(updatedHotels);
+          closePopup();
+        }
+        else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        console.error("Error updating accommodation:", error);
+        toast.error("Error updating accommodation. Please try again later.");
+      }
+    } else if (action === 'lock' || action === 'unlock') {
+      const updatedStatus = action === 'lock' ? 'unActive' : 'active';
+      try {
+        const response = await axios.put(`${url}/api/accommodations/${partnerId}/${selectedHotel._id}`, { status: updatedStatus });
+        if (response.data.success) {
+          toast.success(response.data.message);
+          const updatedHotels = hotels.map((hotel) =>
+            hotel._id === selectedHotel._id ? response.data.accommodation : hotel
+          );
+          setHotels(updatedHotels);
+        }
+      } catch (error) {
+        console.error("Error updating status:", error);
+        toast.error("Error updating status. Please try again later.");
+        console.error(`Error ${action} accommodation:`, error);
+      }
+    }
+  };
 
   const openRoomsTab = (hotel) => {
     setSelectedHotel(hotel);
@@ -174,9 +174,8 @@ const Hotels = () => {
                     <p>
                       <strong>Mô Tả:</strong>
                       <span
-                        className={`hotel-description ${
-                          isExpanded ? "expanded" : ""
-                        }`}
+                        className={`hotel-description ${isExpanded ? "expanded" : ""
+                          }`}
                       >
                         {hotel.description}
                       </span>
@@ -204,10 +203,12 @@ const Hotels = () => {
                         </button>
                       )}
                     </p>
+
                     <p>
                       <strong>Trạng Thái:</strong>
-                      {hotel.status === 'active' ? 'Đang hoạt động' : hotel.status === 'pending' ? 'Đang chờ duyệt' : hotel.status === 'unActive' ? 'Dừng hoạt động' : "Đã bị khóa"}
-
+                      <span className={`status-badge ${hotel.status}`}>
+                        {hotel.status === 'active' ? 'Đang hoạt động' : hotel.status === 'pending' ? 'Đang chờ duyệt' : hotel.status === 'unActive' ? 'Dừng hoạt động' : "Đã bị khóa"}
+                      </span>
                     </p>
                   </div>
                   <div className="hotel-actions">
@@ -237,14 +238,14 @@ const Hotels = () => {
             action === "edit" &&
             selectedHotel &&
             (console.log("......" + selectedHotel.contact),
-            (
-              <HotelActionPopup
-                action="edit"
-                hotel={selectedHotel}
-                onClose={closePopup}
-                onSubmit={handleSubmit}
-              />
-            ))}
+              (
+                <HotelActionPopup
+                  action="edit"
+                  hotel={selectedHotel}
+                  onClose={closePopup}
+                  onSubmit={handleSubmit}
+                />
+              ))}
 
           {showPopup && action === "lock" && selectedHotel && (
             <HotelActionPopup
