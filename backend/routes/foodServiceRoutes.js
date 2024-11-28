@@ -13,7 +13,7 @@ import { upload } from "../middleware/upload.js";
 const foodServiceRoutes = express.Router();
 
 foodServiceRoutes.get("/", getListFoodService);
-foodServiceRoutes.get("/partner", authMiddleware, getListByPartner);
+foodServiceRoutes.get("/partner/:partnerId",getListByPartner);
 
 foodServiceRoutes.post(
   "/add",

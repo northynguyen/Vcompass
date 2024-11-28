@@ -1,0 +1,42 @@
+.list-accom__filters {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    width: 300px;
+  
+  
+  .price-range-slider {
+    margin-top: 20px;
+    
+  }
+
+  .price-range-value{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+  
+  input[type="text"] {
+    padding: 8px;
+    margin-bottom: 20px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+}

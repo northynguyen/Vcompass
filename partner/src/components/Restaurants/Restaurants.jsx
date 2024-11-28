@@ -14,14 +14,25 @@ const Restaurants = () => {
     const [action, setAction] = useState(''); // 'add', 'edit', 'lock', 'view', 'menu'
     const [selectedRestaurant, setSelectedRestaurant] = useState(null);
     const [selectedTab, setSelectedTab] = useState(null); // 'rooms'
-    const { url, token  } = useContext(StoreContext);
+    const { url, token, user  } = useContext(StoreContext);
 
     const fetchRestaurants = async () => {
+        console.log("aaaaaaaaaaa");
         try {
-            const response = await axios.get(`${url}/api/foodServices/partner`, 
+            
+            const response = await axios.get(`${url}/api/foodServices/partner/${user._id}`, 
                 { headers: { token } }
             );
-            setRestaurants(response.data.foodService); // Assuming the response data contains the restaurant array
+            if (response.data.success)
+            {
+                console.log(response.data);
+                setRestaurants(response.data.foodService); // Assuming the response data contains the restaurant array
+            }
+            else
+            {
+                console.error(response.data.message);
+            }
+           
 
         } catch (error) {
             console.error('Error fetching restaurant data:', error);
@@ -30,7 +41,7 @@ const Restaurants = () => {
 
     useEffect(() => {
         fetchRestaurants();
-    }, [token ]); 
+    }, [token, url]); 
     
 
     const openPopup = (actionType, restaurant = null) => {
@@ -76,15 +87,7 @@ const Restaurants = () => {
         setSelectedTab('rooms');
     };
 
-    if(restaurants.length === 0) {
-        return (
-            <div className="Restaurants-container">
-                <h2>Danh Sách Nhà Hàng/Quán Nước</h2>
-                <p></p>
-            </div>
-        );
-    }
-
+  
     return (
         <div className="Restaurants-container">
             {!selectedTab ? (

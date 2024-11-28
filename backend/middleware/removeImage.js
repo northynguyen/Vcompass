@@ -10,19 +10,14 @@ deleteRouter.use(express.json());
 deleteRouter.delete("/", async (req, res) => {
   try {
     const { imagePath } = req.body; // Lấy imagePath từ body
-
+    console.log(imagePath);
     if (!imagePath) {
       return res.status(400).json({ success: false, message: "Đường dẫn ảnh không hợp lệ" });
     }
 
-    // Tạo đường dẫn đầy đủ đến file ảnh bằng cách sử dụng import.meta.url
-    const __dirname = path.dirname(new URL(import.meta.url).pathname);
-    const fullPath = path.join(__dirname, "..", "uploads", imagePath); // Điều chỉnh lại đường dẫn nếu cần thiết
-
-    // Kiểm tra nếu file tồn tại
-    try {
+      try {
       // Sử dụng fs.promises.unlink để xóa file
-      await fs.promises.unlink(fullPath);
+      await fs.promises.unlink(`uploads/${imagePath}`);
       return res.json({ success: true, message: "Ảnh đã được xóa thành công" });
     } catch (error) {
       return res.status(404).json({ success: false, message: "Ảnh không tồn tại" });

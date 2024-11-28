@@ -3,7 +3,7 @@ import { StoreContext } from "../../Context/StoreContext";
 import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import CryptoJS from "crypto-js";
 import "./ListAccommodation.css";
-
+import { Range } from 'react-range';
 // Accommodation Item Component
 const AccomItem = ({ accommodation, status, setCurDes, id }) => {
   const handleSelect = (e) => {
@@ -109,23 +109,48 @@ const Filters = ({
       <h4>Lọc theo giá</h4>
       <label>Giá </label>
       <div className="price-range-slider">
-        <input 
-          type="range" 
-          min="0" 
-          max="1000000" 
-          value={minPrice} 
-          onChange={(e) => setMinPrice(e.target.value)} 
+        <Range
+          step={100000}
+          min={0}
+          max={2000000}
+          values={[minPrice, maxPrice]}
+          onChange={([newMinPrice, newMaxPrice]) => {
+            setMinPrice(newMinPrice);
+            setMaxPrice(newMaxPrice);
+          }}
+          renderTrack={({ props, children }) => (
+            <div
+              {...props}
+              style={{
+                ...props.style,
+                height: '6px',
+                width: '100%',
+                backgroundColor: '#ddd',
+                borderRadius: '3px',
+              }}
+            >
+              {children}
+            </div>
+          )}
+          renderThumb={({ props, index }) => (
+            <div
+              {...props}
+              style={{
+                ...props.style,
+                height: '20px',
+                width: '20px',
+                borderRadius: '50%',
+                backgroundColor: '#007bff',
+                boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.3)',
+                cursor: 'pointer',
+              }}
+            />
+          )}
         />
-        <input 
-          type="range" 
-          min="0" 
-          max="20000000" 
-          value={maxPrice} 
-          onChange={(e) => setMaxPrice(e.target.value)} 
-        />
-        <div>Min: {minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - Max: {maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</div>
+        <div className="price-range-value">
+         {minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - {maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+        </div>
       </div>
-
       <button onClick={handleFilterChange} disabled={isLoading}>
         {isLoading ? <div className="loading-spinner"></div> : 'Lọc'}
       </button>

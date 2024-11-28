@@ -3,9 +3,7 @@
   display: inline-block;
   margin: 10px;
 }
-.time-schedule-item:hover {
-  cursor: pointer;
-}
+
 .time-select-wrapper .icon {
   position: absolute;
   left: 0px;
@@ -64,6 +62,10 @@
 .activity-content-card{
   display: flex;
   
+}
+
+.activity-content-card:hover {
+  cursor: pointer;
 }
 
 .wishlist-icon {

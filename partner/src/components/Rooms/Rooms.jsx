@@ -13,7 +13,7 @@ const Rooms = ({ onBack, hotel }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const { url } = useContext(StoreContext);
-  const roomsPerPage = 6;
+  const roomsPerPage = 5;
 
   // Fetching room data
   useEffect(() => {

@@ -12,27 +12,30 @@
     font-size: 1.8em;
 }
 
-/* Restaurant List */
-.restaurants-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-}
-
 /* Restaurant Card */
 .restaurant-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Đảm bảo nội dung được phân bố đều */
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
     width: 300px;
     overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
-    display: flex;
-    flex-direction: column;
     transition: transform 0.3s, box-shadow 0.3s;
 }
+
+/* Để nội dung không ảnh hưởng chiều cao của các thẻ khác */
+.restaurants-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: flex-start; /* Giữ các thẻ căn trên cùng */
+}
+
 
 .restaurant-card:hover {
     transform: translateY(-5px);
@@ -148,6 +151,8 @@
     cursor: pointer;
     transition: background-color 0.3s, border-color 0.3s;
     border-radius: 8px;
+    width: 300px;
+    height: 450px;
 }
 
 .add-restaurant-card:hover {

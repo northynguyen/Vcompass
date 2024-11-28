@@ -44,8 +44,11 @@
     background-color: white;
     padding: 20px;
     border-radius: 8px;
-    width: 40%;
+    width: 50%;
     max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    margin: 0 auto;
 }
 
   .expense-details p {

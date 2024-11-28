@@ -95,6 +95,7 @@ const ReviewCard = ({ review , type  }) => (
   </div>
 );
 
+
 const PlaceReview = ({ type, id }) => {
   const [reviews, setReviews] = useState([]);
   const [visibleReviews, setVisibleReviews] = useState(5);

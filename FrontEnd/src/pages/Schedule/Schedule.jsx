@@ -17,6 +17,8 @@ import Comment from "./Comment/Comment";
 import Expense from "./Expense/Expense";
 import "./Schedule.css";
 import ConfirmDialog from "../../components/Dialog/ConfirmDialog";
+import { DragDropContext, Droppable,Draggable } from "react-beautiful-dnd";
+
 const Activity = ({
   activity,
   setCurrentActivity,
@@ -31,6 +33,14 @@ const Activity = ({
     <div className="time-schedule-list">
       {activity.length > 0 &&
         activity.map((myactivity, index) => (
+          <Draggable key={myactivity._id} draggableId={myactivity._id} index={index}>
+          {(provided) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              className="activity-item"
+            >
           <ActivityItem
             key={index}
             activity={myactivity}
@@ -42,6 +52,9 @@ const Activity = ({
             openModal={openModal}
             mode={mode}
           />
+           </div>
+          )}
+        </Draggable>
         ))}
     </div>
   );
@@ -88,6 +101,9 @@ const ActivityItem = ({
       if (!response.ok) {
         throw new Error(result.message || "Error fetching data");
       }
+
+      console.log('Fetched food service data:', result);
+
       setData(result);
     } catch (err) {
       console.log(err);
@@ -165,8 +181,8 @@ const ActivityItem = ({
       {!isLoading && (
         <>
           {activity.activityType === "Accommodation" &&
-            (console.log("accommodation"),
-            (
+           
+            
               <AccomActivity
                 data={data.accommodation}
                 activity={activity}
@@ -174,8 +190,9 @@ const ActivityItem = ({
                 setIsOpenModal={setIsModalOpen}
                 mode={mode}
               />
-            ))}
+            }
           {activity.activityType === "FoodService" && (
+            console.log("11111111" + data.foodService),
             <FoodServiceActivity
               data={data.foodService}
               activity={activity}
@@ -224,11 +241,7 @@ const convertDateFormat = (date) => {
   return `${day}-${month}-${year}`;
 };
 
-// Hàm chuyển đổi ngày từ định dạng "dd-MM-yyyy" sang "yyyy-MM-dd" (ISO)
-const parseDatetoDate = (dateStr) => {
-  const [day, month, year] = dateStr.split("-");
-  return new Date(`${year}-${month}-${day}`);
-};
+
 
 const InforScheduleMedal = ({
   isOpen,
@@ -242,7 +255,13 @@ const InforScheduleMedal = ({
   const [numDays, setNumDays] = useState(0);
   const [description, setDescription] = useState("");
   const [imgSrc, setImgSrc] = useState([]);
+  const [mediaType, setMediaType] = useState('image'); // 'image' or 'video'
+  const [videoFile, setVideoFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null); // Preview ảnh
+  const [videoPreview, setVideoPreview] = useState(null); // Preview video
+  const [isLoading, setIsLoading] = useState(false);
   const { url } = useContext(StoreContext);
+
   useEffect(() => {
     if (inforSchedule) {
       const startDate = convertDateToJSDateVietnam(inforSchedule.dateStart);
@@ -253,22 +272,21 @@ const InforScheduleMedal = ({
       setEndDate(endDate);
       setNumDays(inforSchedule.numDays || 0);
       setDescription(inforSchedule.description || "");
+      setImgSrc(inforSchedule.imgSrc || []);
+      setVideoPreview(inforSchedule.videoSrc || null);
     }
   }, [inforSchedule, isOpen]);
 
   const convertDateToJSDateVietnam = (dateString) => {
     const [day, month, year] = dateString.split("-");
-    const date = new Date(year, month - 1, day); // Tạo đối tượng Date cơ bản
-    date.setHours(date.getHours() + 7 - date.getTimezoneOffset() / 60); // Cộng thêm múi giờ Việt Nam
+    const date = new Date(year, month - 1, day);
+    date.setHours(date.getHours() + 7 - date.getTimezoneOffset() / 60);
     return date;
   };
   
-  // Test
-  console.log(convertDateToJSDateVietnam("22-11-2024"));
-  
   const convertJSDateToDateString = (jsDate) => {
     const day = String(jsDate.getDate()).padStart(2, "0");
-    const month = String(jsDate.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
+    const month = String(jsDate.getMonth() + 1).padStart(2, "0");
     const year = jsDate.getFullYear();
     return `${day}-${month}-${year}`;
   };
@@ -299,60 +317,178 @@ const InforScheduleMedal = ({
       }
     }
   };
+
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    setImgSrc(files); // Lưu trữ mảng các tệp hình ảnh
+    setImgSrc(files);
+    if (files.length > 0) {
+      const previewUrl = URL.createObjectURL(files[0]);
+      setImagePreview(previewUrl);
+    }
+  };
+
+  const handleVideoChange = (e) => {
+    const file = e.target.files[0];
+    const video = document.createElement('video');
+    video.src = URL.createObjectURL(file);
+
+    video.onloadedmetadata = () => {
+      const duration = video.duration;
+      if (duration > 30) {
+        alert('Video quá dài, giới hạn 30 giây!');
+        setVideoFile(null);
+        setVideoPreview(null); // Xóa video preview nếu quá dài
+      } else {
+        setVideoFile(file);
+        setVideoPreview(video.src);
+      }
+    };
+  };
+
+
+  const uploadVideo = async (videoFile) => {
+    const formData = new FormData();
+    formData.append('video', videoFile);
+  
+    try {
+      const response = await axios.post(`${url}/api/videos/upload`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+  
+      if (response.data.success) {
+        return response.data.url;  // Trả về URL của video
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error uploading video:", error);
+      throw error;
+    }
+  };
+  
+  // Hàm upload ảnh lên server
+  const uploadImages = async (imgFiles) => {
+    const formData = new FormData();
+    formData.append('images', imgFiles);
+  
+    try {
+      const response = await axios.post(`${url}/api/schedule/upload`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+  
+      if (response.data.success) {
+        return response.data.files.map((file) => file.filename); // Trả về tên các file ảnh
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      throw error;
+    }
+  };
+  
+  // Hàm xóa dữ liệu cũ (video hoặc ảnh)
+  const deleteOldMedia = async (media) => {
+    if (media && media.length > 0) {
+      try {
+        const response = await axios.delete(`${url}/api/deleteImage`, {
+          data: { imagePath: media },
+        });
+
+        if (response.data.success) {
+          console.log("Deleted old media successfully.");
+        } else {
+          console.error("Error deleting old media:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error deleting old media:", error);
+      }
+    }
+  };
+  const extractVideoPath = (videoSrc) => {
+    
+    try {
+      const urlParts = new URL(videoSrc);
+      const pathParts = urlParts.pathname.split('/');
+      
+      // Bỏ đi những phần không cần thiết, giữ lại "videos/apb3yzzgyotcagjxnqbz"
+      const videoPath = pathParts.slice(-2).join('/').replace(/\.[^/.]+$/, ""); // Xóa phần đuôi file (.mov, .mp4,...)
+      return videoPath;
+    } catch (error) {
+      console.error("Invalid video URL:", error);
+      return null;
+    }
+  };
+  const deleteVideo = async (videoSrc) => {
+    if (!videoSrc) {
+      return;
+    }
+    try {
+      const videoPath = extractVideoPath(videoSrc);
+      const response = await axios.delete(`${url}/api/videos/`, {
+        data: { videoPath: videoPath },
+      });
+  
+      if (response.data.success) {
+        console.log("Deleted video successfully.");
+      } else {
+        console.error("Error deleting video:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting video:", error);
+    }
   };
   
   const handleSubmit = async () => {
     if (isNaN(startDay)) {
       console.error("Invalid start date");
-      return; // Handle invalid date case
+      return;
     }
-  
+    
     const startDayString = convertJSDateToDateString(startDay);
     const endDateString = convertJSDateToDateString(endDate);
   
     let uploadedImgSrc = [];
+    let videoSrc = null;
   
-    // Kiểm tra nếu có ảnh được chọn và gửi lên server
-    if (imgSrc.length > 0) {
-      const formData = new FormData();
-      imgSrc.forEach((file) => {
-        formData.append("images", file);
-      });
-  
-      try {
-        const uploadResponse = await axios.post(`${url}/api/schedule/upload`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-  
-        if (uploadResponse.data.success) {
-          console.log("Thành công khi upload ảnh:", uploadResponse.data);
-          uploadedImgSrc = uploadResponse.data.files.map((file) => file.filename);
-        } else {
-          console.error("Lỗi khi upload ảnh:", uploadResponse.data.message);
-        }
-      } catch (error) {
-        console.error("Lỗi khi upload ảnh:", error);
+    try {
+      setIsLoading(true);
+      // Upload video nếu có
+      if (mediaType === 'video' && videoFile) {
+        const uploadResponse = await uploadVideo(videoFile);
+        videoSrc = uploadResponse;
+        await deleteOldMedia(inforSchedule.imgSrc[0]);
+        await deleteVideo(inforSchedule.videoSrc);
       }
+  
+      // Upload ảnh nếu có
+      else if (mediaType === 'image' && imgSrc.length > 0) {
+        const uploadedFiles = await uploadImages(imgSrc[0]);
+        uploadedImgSrc = uploadedFiles;
+        await deleteOldMedia(inforSchedule.imgSrc[0]);
+        await deleteVideo(inforSchedule.videoSrc);
+      }
+  
+      // Cập nhật thông tin lịch trình
+      setInforSchedule((prev) => ({
+        ...prev,
+        scheduleName,
+        description,
+        dateStart: startDayString,
+        dateEnd: endDateString,
+        imgSrc: mediaType === 'image' ? uploadedImgSrc : [],
+        videoSrc,  // Chỉ gán videoSrc nếu có video
+      }));
+  
+      toast.success("Lịch trình đã được cập nhật thành công!");
+      closeModal();
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Có lỗi xảy ra trong quá trình upload!");
     }
   
-    // Cập nhật thông tin lịch trình với tên ảnh đã tải lên
-    setInforSchedule((prev) => ({
-      ...prev,
-      scheduleName,
-      description,
-      dateStart: startDayString,
-      dateEnd: endDateString,
-      imgSrc: uploadedImgSrc, // Lưu trữ tên ảnh vào inforSchedule
-    }));
-  
-    closeModal();
+    setIsLoading(false);
   };
-  
 
   return (
     <Modal
@@ -360,7 +496,12 @@ const InforScheduleMedal = ({
       onRequestClose={closeModal}
       className="add-expense-modal"
       overlayClassName="modal-overlay"
-    >
+    > 
+      {isLoading && 
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+        </div>
+      }
       <div className="add-activity">
         <div className="modal-header">
           <h4>Chỉnh sửa lịch trình</h4>
@@ -398,7 +539,6 @@ const InforScheduleMedal = ({
               min={new Date().toISOString().split("T")[0]}
             />
 
-
             <label className="expense-sub-title" htmlFor="description">
               Mô tả
             </label>
@@ -411,33 +551,84 @@ const InforScheduleMedal = ({
               placeholder="Nhập ghi chú chi tiết"
             ></textarea>
 
+            <label className="expense-sub-title">Chọn loại tệp</label>
+            <div className="radio-group">
+              <div style={{ display: 'flex' }}>
+                <input
+                  type="radio"
+                  id="image"
+                  name="mediaType"
+                  value="image"
+                  checked={mediaType === 'image'}
+                  onChange={() =>{ setMediaType('image') , setImgSrc([])}}
+                />
+                <label htmlFor="image">Ảnh</label>
+              </div>
+              <div style={{ display: 'flex' }}>
+                <input
+                  type="radio"
+                  id="video"
+                  name="mediaType"
+                  value="video"
+                  checked={mediaType === 'video'}
+                  onChange={() => setMediaType('video')}
+                />
+                <label htmlFor="video">Video</label>
+              </div>
+            </div>
 
-              <label className="expense-sub-title" htmlFor="image-upload">
-                Ảnh bìa
-              </label>
-              <input
-                className="input-field"
-                id="image-upload"
-                name="image-upload"
-                type="file"
-                accept="image/*"
-                onChange={(e) => handleImageChange(e)}
-                multiple
-              />
+            {mediaType === 'image' && (
+              <div>
+                <label className="expense-sub-title" htmlFor="image-upload">
+                  Ảnh bìa
+                </label>
+                <input
+                  className="input-field"
+                  id="image-upload"
+                  name="image-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  multiple
+                />
+                  <img src={imagePreview} alt="Image Preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
+              </div>
+            )}
 
+            {mediaType === 'video' && (
+              <div>
+                <label className="expense-sub-title" htmlFor="video-upload">
+                  Video
+                </label>
+                <input
+                  className="input-field"
+                  id="video-upload"
+                  name="video-upload"
+                  type="file"
+                  accept="video/*"
+                  onChange={handleVideoChange}
+                />
+                  <video width="100%" controls>
+                  <source src={videoPreview} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            )}
           </div>
-        </div>
 
-        <div className="modal-footer">
-          <button className="save-btn" onClick={handleSubmit}>
-            Lưu
-          </button>
+          <div className="modal-footer">
+            <button className="btn-cancel" onClick={closeModal}>
+              Hủy bỏ
+            </button>
+            <button className="btn-submit" onClick={handleSubmit}>
+              Lưu
+            </button>
+          </div>
         </div>
       </div>
     </Modal>
   );
 };
-
 
 
 
@@ -448,6 +639,7 @@ const DateSchedule = ({
   mode,
   city,
   inforSchedule,
+  index,
 }) => {
   console.log("schedule", schedule);
   const [scheduleDate, setScheduleDate] = useState(schedule);
@@ -486,104 +678,114 @@ const DateSchedule = ({
 
   return (
     <div className="detail-container">
-      <div className="activity-details">
-        <div className="date-section">
-          <div className="date-header">
-            <h2>
-              Ngày {scheduleDate.day}{" "}
-              <i
-                className={`fa-solid ${
-                  isOpen ? "fa-chevron-down" : "fa-chevron-left"
-                }`}
-                style={{ cursor: "pointer" }}
-                onClick={toggleDetails}
-              ></i>
-            </h2>
-            <div className="date-actions">
-              <button
-                className={`btn-overview ${
-                  viewMode === "overview" ? "active" : ""
-                }`}
-                onClick={() => setViewMode("overview")}
-              >
-                Tổng quan
-              </button>
-              <button
-                className={`btn-details ${
-                  viewMode === "details" ? "active" : ""
-                }`}
-                onClick={() => setViewMode("details")}
-              >
-                Xem chi tiết
-              </button>
+      <Droppable droppableId={`${index}`}>
+        {(provided) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="activity-details"
+            >
+            <div className="date-section">
+              <div className="date-header">
+                <h2>
+                  Ngày {scheduleDate.day}{" "}
+                  <i
+                    className={`fa-solid ${
+                      isOpen ? "fa-chevron-down" : "fa-chevron-left"
+                    }`}
+                    style={{ cursor: "pointer" }}
+                    onClick={toggleDetails}
+                  ></i>
+                </h2>
+                <div className="date-actions">
+                  <button
+                    className={`btn-overview ${
+                      viewMode === "overview" ? "active" : ""
+                    }`}
+                    onClick={() => setViewMode("overview")}
+                  >
+                    Tổng quan
+                  </button>
+                  <button
+                    className={`btn-details ${
+                      viewMode === "details" ? "active" : ""
+                    }`}
+                    onClick={() => setViewMode("details")}
+                  >
+                    Xem chi tiết
+                  </button>
+                </div>
+              </div>
+
+              {isOpen &&
+                (viewMode === "details" ? (
+                  // Chế độ chi tiết
+                  scheduleDate.activity && scheduleDate.activity.length > 0 ? (
+                    <Activity
+                      activity={scheduleDate.activity}
+                      setCurrentActivity={setCurrentActivity}
+                      openModal={openModal}
+                      inforSchedule={inforSchedule}
+                      setInforSchedule={setInforSchedule}
+                      setCurrentDestination={setCurrentDestination}
+                      mode={mode}
+                    />
+                  ) : (
+                    <p>Chưa có hoạt động nào</p>
+                  )
+                ) : (
+                  // Chế độ tổng quan
+                  <div className="activity-overview-container">
+                    {scheduleDate.activity && scheduleDate.activity.length > 0 ? (
+                      <ul className="activity-overview-list">
+                        {scheduleDate.activity.map((act, index) => {
+                          const activityTypeMap = {
+                            Accommodation: "Chỗ ở",
+                            Attraction: "Tham quan",
+                            FoodService: "Ăn uống",
+                          };
+
+                          return (
+                            <li
+                              key={index}
+                              className={`activity-type-${act.activityType}`}
+                            >
+                              <span className="activity-time">
+                                {act.timeStart} - {act.timeEnd}
+                              </span>
+                              <span className="activity-type">
+                                {activityTypeMap[act.activityType] || "Khác"}
+                              </span>
+                              <span className="activity-description">
+                                {act.description || "Không có mô tả"}
+                              </span>
+                              <span className="activity-cost">
+                                {act.cost.toLocaleString()} VND
+                              </span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    ) : (
+                      <p className="no-activity-message">Chưa có hoạt động nào trong ngày này.</p>
+                    )}
+                  </div>
+                ))}
+
+              {isOpen && mode === "edit" && (
+                <div className="add-new">
+                  <button onClick={openModal}>
+                    <i className="fa-solid fa-plus add-icon"></i>
+                    Thêm mới
+                  </button>
+                </div>
+              )}
+
+                {provided.placeholder}
             </div>
           </div>
-
-          {isOpen &&
-            (viewMode === "details" ? (
-              // Chế độ chi tiết
-              scheduleDate.activity && scheduleDate.activity.length > 0 ? (
-                <Activity
-                  activity={scheduleDate.activity}
-                  setCurrentActivity={setCurrentActivity}
-                  openModal={openModal}
-                  inforSchedule={inforSchedule}
-                  setInforSchedule={setInforSchedule}
-                  setCurrentDestination={setCurrentDestination}
-                  mode={mode}
-                />
-              ) : (
-                <p>Chưa có hoạt động nào</p>
-              )
-            ) : (
-              // Chế độ tổng quan
-              <div className="activity-overview-container">
-                {scheduleDate.activity && scheduleDate.activity.length > 0 ? (
-                  <ul className="activity-overview-list">
-                    {scheduleDate.activity.map((act, index) => {
-                      const activityTypeMap = {
-                        Accommodation: "Chỗ ở",
-                        Attraction: "Tham quan",
-                        FoodService: "Ăn uống",
-                      };
-
-                      return (
-                        <li
-                          key={index}
-                          className={`activity-type-${act.activityType}`}
-                        >
-                          <span className="activity-time">
-                            {act.timeStart} - {act.timeEnd}
-                          </span>
-                          <span className="activity-type">
-                            {activityTypeMap[act.activityType] || "Khác"}
-                          </span>
-                          <span className="activity-description">
-                            {act.description || "Không có mô tả"}
-                          </span>
-                          <span className="activity-cost">
-                            {act.cost.toLocaleString()} VND
-                          </span>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                ) : (
-                  <p className="no-activity-message">Chưa có hoạt động nào trong ngày này.</p>
-                )}
-              </div>
-            ))}
-
-          {isOpen && mode === "edit" && (
-            <div className="add-new">
-              <button onClick={openModal}>
-                <i className="fa-solid fa-plus add-icon"></i>
-                Thêm mới
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
+        )}
+      </Droppable>
 
       <AddActivity
         isOpen={isModalOpen}
@@ -598,10 +800,6 @@ const DateSchedule = ({
   );
 };
 
-const parseDate = (dateString) => {
-  const parts = dateString.split("/");
-  return new Date(parts[2], parts[1] - 1, parts[0]); // Tháng trong Date bắt đầu từ 0
-};
 
 const Schedule = ({ mode }) => {
   const { url, token, user } = useContext(StoreContext);
@@ -613,6 +811,10 @@ const Schedule = ({ mode }) => {
   const [dateStart, setDateStart] = useState("");
   const [dateEnd, setDateEnd] = useState("");
   const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+
+  const openVideoPopup = () => setIsVideoOpen(true);
+  const closeVideoPopup = () => setIsVideoOpen(false);
 
   const toggleWishlist = async () => {
     try {
@@ -771,6 +973,58 @@ const Schedule = ({ mode }) => {
     return `${daysDifference} ngày ${nights} đêm`;
   };
 
+  const onDragEnd = (result) => {
+    const { source, destination } = result;
+
+    // Nếu không có điểm đến (thả ra ngoài)
+    if (!destination) return;
+
+    // Nếu cùng một DateSchedule
+    if (source.droppableId === destination.droppableId) {
+      const dayIndex = parseInt(source.droppableId, 10);
+      const updatedActivities = Array.from(
+        inforSchedule.activities[dayIndex].activity
+      );
+
+      // Di chuyển trong cùng một ngày
+      const [movedItem] = updatedActivities.splice(source.index, 1);
+      updatedActivities.splice(destination.index, 0, movedItem);
+
+      const updatedSchedule = [...inforSchedule.activities];
+      updatedSchedule[dayIndex].activity = updatedActivities;
+
+      setInforSchedule((prev) => ({
+        ...prev,
+        activities: updatedSchedule,
+      }));
+    } else {
+      // Nếu khác DateSchedule
+      const sourceDayIndex = parseInt(source.droppableId, 10);
+      const destDayIndex = parseInt(destination.droppableId, 10);
+
+      const sourceDay = Array.from(
+        inforSchedule.activities[sourceDayIndex].activity
+      );
+      const destDay = Array.from(
+        inforSchedule.activities[destDayIndex].activity
+      );
+
+      // Di chuyển sang ngày khác
+      const [movedItem] = sourceDay.splice(source.index, 1);
+      destDay.splice(destination.index, 0, movedItem);
+
+      const updatedSchedule = [...inforSchedule.activities];
+      updatedSchedule[sourceDayIndex].activity = sourceDay;
+      updatedSchedule[destDayIndex].activity = destDay;
+
+      setInforSchedule((prev) => ({
+        ...prev,
+        activities: updatedSchedule,
+      }));
+    }
+  };
+
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -791,82 +1045,113 @@ const Schedule = ({ mode }) => {
           )}
         </div>
       </div>
-      <div className="schedule-container">
-        <img
-          className="custom-schedule-image"
-          src={inforSchedule.imgSrc[0] ? `${url}/images/${inforSchedule.imgSrc[0]}` : "https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"}
-          alt="Alaska"
-        />
-        <div className="header-container">
-          <div className="activity-header">
-            <div className="title-des">
-              <h2>{inforSchedule.scheduleName}</h2>
-              <div className="date-schedule">
-                <div className="numday-title">
-                  <i className="fa-regular fa-calendar-days"></i>
-                  <p>Từ</p>
-                </div>
-                <input value={inforSchedule.dateStart} disabled={true} />
-                <p>Đến</p>
-                {/* Bind the date input to dateEnd state */}
-                <input value={inforSchedule.dateEnd} disabled={true} />
-              </div>
-              <div className="date-schedule">
-                <div className="numday-title">
-                  <i className="fa-regular fa-clock"></i>
-                  <p>Số ngày</p>
-                </div>
-                <p>{calculateDaysAndNights(dateStart, dateEnd)}</p>
-              </div>
-              <p className="des-schedule">{inforSchedule.description}</p>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="schedule-container">
+        <div className="schedule-image">
+          {inforSchedule.imgSrc && inforSchedule.imgSrc[0] ? (
+            // Nếu có ảnh trong imgSrc, hiển thị ảnh
+            <img
+              className="custom-schedule-image"
+              src={`${url}/images/${inforSchedule.imgSrc[0]}`}
+              alt="Schedule Image"
+            />
+          ) : inforSchedule.videoSrc ? (
+            <div> 
+              <video
+                className="custom-schedule-video"
+                controls
+                src={inforSchedule.videoSrc}
+                poster="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
+              >
+                Your browser does not support the video tag.
+              </video>
+              <button onClick={openVideoPopup} className="video-button">
+                Xem video
+              </button>
             </div>
-            <div className="confirm-booking">
-              {mode === "edit" ? (
-                <div className="title-button" onClick={openInforSchedule}>
-                  <i className="fa-solid fa-pen schedule-icon"></i>
-                  <button className="save-and-share-btn">
-                    Chỉnh sửa thông tin
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <div className={`title-button ${isSaved ? "saved" : ""} `}>
-                    <i className="fa-solid fa-bookmark schedule-icon"></i>
-                    <button
-                      className="save-and-share-btn"
-                      onClick={toggleWishlist}
-                    >
-                      Lưu lịch trình
-                    </button>
+          ) : (
+            // Nếu không có cả ảnh lẫn video, hiển thị ảnh mặc định
+            <img
+              className="custom-schedule-image"
+              src="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
+              alt="Default Alaska"
+            />
+          )}
+        </div>
+
+          <div className="header-container">
+            <div className="activity-header">
+              <div className="title-des">
+                <h2>{inforSchedule.scheduleName}</h2>
+                <div className="date-schedule">
+                  <div className="numday-title">
+                    <i className="fa-regular fa-calendar-days"></i>
+                    <p>Từ</p>
                   </div>
-                  <div className="title-button">
-                    <i className="fa-solid fa-share schedule-icon"></i>
+                  <input value={inforSchedule.dateStart} disabled={true} />
+                  <p>Đến</p>
+                  {/* Bind the date input to dateEnd state */}
+                  <input value={inforSchedule.dateEnd} disabled={true} />
+                </div>
+                <div className="date-schedule">
+                  <div className="numday-title">
+                    <i className="fa-regular fa-clock"></i>
+                    <p>Số ngày</p>
+                  </div>
+                  <p>{calculateDaysAndNights(dateStart, dateEnd)}</p>
+                </div>
+                <p className="des-schedule">{inforSchedule.description}</p>
+              </div>
+              <div className="confirm-booking">
+                {mode === "edit" ? (
+                  <div className="title-button" onClick={openInforSchedule}>
+                    <i className="fa-solid fa-pen schedule-icon"></i>
                     <button className="save-and-share-btn">
-                      Chia sẻ lịch trình
+                      Chỉnh sửa thông tin
                     </button>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div>
+                    <div className={`title-button ${isSaved ? "saved" : ""} `}>
+                      <i className="fa-solid fa-bookmark schedule-icon"></i>
+                      <button
+                        className="save-and-share-btn"
+                        onClick={toggleWishlist}
+                      >
+                        Lưu lịch trình
+                      </button>
+                    </div>
+                    <div className="title-button">
+                      <i className="fa-solid fa-share schedule-icon"></i>
+                      <button className="save-and-share-btn">
+                        Chia sẻ lịch trình
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
+          {inforSchedule.activities?.length > 0 ? (
+            inforSchedule.activities.map((schedule, index) => {
+              return (
+                <DateSchedule
+                  key={index}
+                  index={index}
+                  schedule={schedule}
+                  city={inforSchedule.address}
+                  setInforSchedule={setInforSchedule}
+                  mode={mode}
+                  inforSchedule={inforSchedule}
+                />
+              );
+            })
+          ) : (
+            <p>No schedule available</p>
+          )}
         </div>
-        {inforSchedule.activities?.length > 0 ? (
-          inforSchedule.activities.map((schedule, index) => {
-            return (
-              <DateSchedule
-                key={index}
-                schedule={schedule}
-                city={inforSchedule.address}
-                setInforSchedule={setInforSchedule}
-                mode={mode}
-                inforSchedule={inforSchedule}
-              />
-            );
-          })
-        ) : (
-          <p>No schedule available</p>
-        )}
-      </div>
+      </DragDropContext>
+
       <div className="footer-schedule">
         <Expense
           expenses={extractExpenses(inforSchedule)}
@@ -890,6 +1175,30 @@ const Schedule = ({ mode }) => {
         inforSchedule={inforSchedule}
         setInforSchedule={setInforSchedule}
       />
+
+
+      <Modal
+        isOpen={isVideoOpen}
+        onRequestClose={closeVideoPopup}
+        contentLabel="Video Popup"
+        className="video-popup-modal"
+        overlayClassName="video-popup-overlay"
+      >
+        <div className="video-popup-content">
+          <button onClick={closeVideoPopup} className="close-popup-button" >
+            <i className="fa-regular fa-circle-xmark"></i>
+          </button>
+          <video
+            className="popup-video"
+            controls
+            autoPlay
+            loop
+            src={inforSchedule.videoSrc}
+          >
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </Modal>
     </div>
   );
 };

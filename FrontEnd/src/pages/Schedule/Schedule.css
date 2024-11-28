@@ -118,7 +118,7 @@ button.btn-save-schedule {
   flex: 3;
   width: 70%;
 }
-img.custom-schedule-image {
+img.custom-schedule-image , .custom-schedule-video {
   position: absolute;
   left: 0;
   top: 0;
@@ -671,4 +671,204 @@ i.fa-solid.fa-plus.add-icon {
   text-align: center;
   margin-top: 20px;
 }
+}
+
+.modal-footer .btn-cancel {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #cc4a4a;
+  color: white;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.modal-footer .btn-cancel:hover {
+  background-color: #ff0000;
+}
+
+.modal-footer .btn-submit {
+  padding: 10px 20px;
+  border: none;
+  background-color: #6291c3;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  margin-left: 10px;
+}
+
+.modal-footer .btn-submit:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.add-expense-modal .radio-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.add-expense-modal .radio-group label {
+  font-size: 14px;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.video-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+}
+  .video-popup-modal {
+    position: relative;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    height: 80%;
+    max-width: 90%; /* Đảm bảo không gian modal rộng, tối đa 90% chiều rộng màn hình */
+    max-height: 90vh; /* Tối đa chiều cao modal là 90% chiều cao của màn hình */
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Căn giữa nội dung trong modal */
+    overflow: hidden; /* Đảm bảo không có thanh cuộn */
+  }
+  
+  .video-popup-content {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .video-popup-content video {
+    width: 100%; /* Video chiếm toàn bộ chiều rộng của modal */
+    height: 100%; /* Video chiếm toàn bộ chiều cao của modal */
+    object-fit: contain; /* Giữ tỉ lệ khung hình video */
+    border-radius: 8px;
+  }
+  
+  .close-popup-button i {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+  }
+  
+  .close-popup-button i:hover {
+    color: #ff0000;
+  }
+  
+  /* Responsive: */
+  @media (max-width: 768px) {
+    .video-popup-modal {
+      max-width: 95%; /* Đảm bảo modal vẫn có thể điều chỉnh kích thước trên màn hình nhỏ */
+      max-height: 90vh;
+    }
+  
+    .video-popup-content video {
+      object-fit: contain; /* Giữ video không bị vỡ hình */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .video-popup-modal {
+      max-width: 100%;
+      padding: 10px;
+    }
+  
+    .video-popup-content video {
+      object-fit: contain;
+    }
+  }
+
+
+.video-button {
+  display: inline-block;
+  background-color: #007bff; /* Màu xanh đậm */
+  color: #ffffff; /* Màu chữ trắng */
+  font-size: 18px; /* Kích thước chữ */
+  font-weight: bold;
+  padding: 10px 20px; /* Khoảng cách bên trong */
+  border: none;
+  border-radius: 25px; /* Bo góc tròn */
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.video-button:hover {
+  background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* Tăng bóng khi hover */
+  transform: translateY(-2px); /* Hiệu ứng nhấn nút */
+}
+
+.video-button:active {
+  transform: translateY(1px); /* Hiệu ứng khi nhấn nút */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.video-button:focus {
+  outline: none; /* Loại bỏ viền focus mặc định */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.7); /* Hiệu ứng focus */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .video-button {
+    font-size: 16px; /* Giảm kích thước chữ trên màn hình nhỏ */
+    padding: 8px 16px; /* Giảm padding */
+  }
+}
+
+@media (max-width: 480px) {
+  .video-button {
+    font-size: 14px; /* Giảm thêm kích thước chữ trên màn hình rất nhỏ */
+    padding: 6px 12px; /* Giảm padding */
+  }
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Nền mờ */
+  z-index: 9999; /* Đảm bảo overlay nằm trên cùng */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-spinner {
+  border: 8px solid rgba(255, 255, 255, 0.3); /* Viền mờ */
+  border-top: 8px solid #fff; /* Viền quay chính */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+/* Hiệu ứng quay */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

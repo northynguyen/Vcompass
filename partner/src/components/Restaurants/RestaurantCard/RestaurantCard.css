@@ -66,3 +66,16 @@
 .actions-icon:hover {
     color: #000;
 }
+
+.restaurant-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* Giới hạn 4 dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.restaurant-description.expanded {
+    -webkit-line-clamp: unset; /* Hiển thị đầy đủ khi mở rộng */
+    overflow: visible;
+}

@@ -19,11 +19,17 @@
 .post-card-container {
   width: 100%; /* Chiếm 75% diện tích */
   display: grid ;
+  min-height: 100vh;
   grid-template-columns: repeat(2, 1fr);
   padding: 16px;
   border-radius: 8px;
+  animation: fadeIn 1.5s;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 /* .filter-sidebar {
   width: 25%; 
   padding: 16px;

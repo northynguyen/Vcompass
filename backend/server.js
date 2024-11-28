@@ -10,6 +10,7 @@ import scheduleRouter from "./routes/scheduleRoutes.js";
 import userRoutes from "./routes/userRoute.js";
 import bookingRouter from "./routes/bookingRoutes.js";
 import deleteRouter from "./middleware/removeImage.js";
+import videoRouter from "./routes/videoRoutes.js";
 // App config
 const app = express();
 const port = process.env.PORT || 4000; // Lấy cổng từ biến môi trường hoặc mặc định là 4000
@@ -36,6 +37,7 @@ app.use("/api/schedule", scheduleRouter);
 app.use("/api/deleteImage", deleteRouter);
 app.use("/api/attractions", Attractionrouter);
 app.use("/api/bookings", bookingRouter);
+app.use("/api/videos", videoRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -18,7 +18,7 @@ const MyBooking = ({send}) => {
     const [highlightFirstBooking, setHighlightFirstBooking] = useState(false); // New state for highlight
     const reviewPopupRef = useRef(null);
     const cancelPopupRef = useRef(null);
-    const { token, url } = useContext(StoreContext);
+    const { token, url, user} = useContext(StoreContext);
 
     useEffect(() => {
         const fetchBookings = async () => {
@@ -88,6 +88,15 @@ const MyBooking = ({send}) => {
         setSelectedBooking(null);
     };
 
+    const isReviewed = (accommodation) => {
+        for (const review of accommodation.ratings) {
+            if (review.userId === user._id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     return (
         <div className="my-booking">
             <h2>My Booking</h2>
@@ -110,7 +119,7 @@ const MyBooking = ({send}) => {
                 filteredBookings.map((booking, index) => {
                     const accommodationData = accommodations.find(accommodation => accommodation._id === booking.accommodationId);
                     const roomInfo = accommodationData ? accommodationData.roomTypes.find(roomType => roomType._id === booking.roomId) : null;
-
+                    const isReviewedAccommodation = accommodationData && isReviewed(accommodationData);
                     return (
                         <div
                             key={booking._id}
@@ -132,11 +141,11 @@ const MyBooking = ({send}) => {
                                 {booking.status === "cancelled" && <p style={{ color: "red" }}><strong>Reason:</strong> {booking.cancellationReason}</p>}
                             </div>
                             <div className="booking-actions">
-                                {booking.status === "expired" && (
+                                {booking.status === "expired" && isReviewedAccommodation &&   (
                                     <button className="review-btn" onClick={() => handleReviewClick(booking)}>Review</button>
                                 ) }
                                 {
-                                    (booking.status === "confirmed" || booking.status === "pending" ) && (
+                                    (booking.status === "confirmed" || booking.status === "pending"  ) && (
                                         <button className="cancel-btn" onClick={() => handleCancelClick(booking)}>Cancel</button>) }
                                 
                                    
@@ -150,7 +159,7 @@ const MyBooking = ({send}) => {
                 <div className="popup">
                     <div className="popup-content" ref={reviewPopupRef}>
                         <button className="close-popup" onClick={handleCloseReviewPopup}>×</button>
-                        <Review booking={selectedBooking} onClose={handleCloseReviewPopup} />
+                        <Review type="accommodation" booking={selectedBooking} onClose={handleCloseReviewPopup}  id={selectedBooking.accommodationId} />
                     </div>
                 </div>
             )}
@@ -159,7 +168,7 @@ const MyBooking = ({send}) => {
                 <div className="popup">
                     <div className="popup-content" ref={cancelPopupRef}>
                         <button className="close-popup" onClick={handleCloseCancelPopup}>×</button>
-                        <CancelBooking booking={selectedBooking} onClose={handleCloseCancelPopup} />
+                        <CancelBooking booking={selectedBooking} onClose={handleCloseCancelPopup}/>
                     </div>
                 </div>
             )}
