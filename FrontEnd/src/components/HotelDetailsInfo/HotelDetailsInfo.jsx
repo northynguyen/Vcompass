@@ -164,7 +164,6 @@ const HotelDetailsInfo = ({ serviceId }) => {
   };
 
 
-
   const handleButtonClick = (action, type, event) => {
     event.preventDefault(); // Ngăn việc tải lại trang
     event.stopPropagation(); // Ngăn đóng dropdown

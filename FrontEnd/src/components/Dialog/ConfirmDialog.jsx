@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ConfirmDialog.css';
 
-const ConfirmDialog = ({ isOpen, onConfirm, onCancel, message }) => {
+const ConfirmDialog = ({ isOpen, onConfirm, onCancel, message ,successMessage}) => {
     const [showSuccess, setShowSuccess] = useState(false);
 
     const handleConfirm = () => {
@@ -19,7 +19,7 @@ const ConfirmDialog = ({ isOpen, onConfirm, onCancel, message }) => {
             {showSuccess ? (
                 <div className="custom-success-container">
                     <div className="custom-checkmark"></div>
-                    <p>Xóa thành công!</p>
+                    <p>{successMessage || 'Xóa thành công'}</p>
                 </div>
             ) : (
                 <div className="custom-modal-container">

@@ -28,13 +28,13 @@ const FoodServiceCard = ({ partnerId, onStatusChange }) => {
     useEffect(() => {
         const fetchFoodServices = async () => {
             try {
-                const response = await fetch(`${url}/api/foodservices/${partnerId}`);
+                const response = await fetch(`${url}/api/foodservices/partner/${partnerId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch food services');
                 }
                 const data = await response.json();
                 if (data.success) {
-                    setFoodServices(data.foodServices);
+                    setFoodServices(data.foodService);
                 } else {
                     throw new Error('Failed to load food services');
                 }

@@ -35,7 +35,20 @@
   }
   .add-expense{
     margin-top: 5px;
+    padding: 10px 20px;
+    background-color: #33b3ba;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
   }
+
+  .add-expense:hover {
+    background-color: #249197;
+  }
+
+
   label.expense-sub-title {
     font-size: 15px;
     color: #545353;

@@ -17,7 +17,6 @@ const Restaurants = () => {
     const { url, token, user  } = useContext(StoreContext);
 
     const fetchRestaurants = async () => {
-        console.log("aaaaaaaaaaa");
         try {
             const response = await axios.get(`${url}/api/foodServices/partner/${user._id}`, 
                 { headers: { token } }
@@ -44,6 +43,7 @@ const Restaurants = () => {
     
 
     const openPopup = (actionType, restaurant = null) => {
+        console.log("restaurant", restaurant);
         setAction(actionType);
         setSelectedRestaurant(restaurant);
         setShowPopup(true);
@@ -56,28 +56,51 @@ const Restaurants = () => {
     };
 
     const handleSubmit = async () => {
+        // Initialize loading state
         try {
-            const updateData = Object.assign({}, selectedRestaurant, {
-                status: action === 'lock' ? 'locked' : 'active',
-            });
-
-            const response = await axios.post(`${url}/api/foodServices/update`,
-                { foodServiceData: updateData },
+            // Prepare the updated data object
+            const updateData = {
+                ...selectedRestaurant,
+                status: action === 'lock' ? 'unActive' : 'active',
+            };
+    
+            // Prepare FormData payload
+            const dataToSend = new FormData();
+            dataToSend.append('foodServiceData', JSON.stringify(updateData));
+            dataToSend.append('Id', selectedRestaurant._id);
+            // Send the POST request
+            const response = await axios.post(
+                `${url}/api/foodServices/update`,
+                dataToSend,
                 { headers: { token } }
             );
-
+    
+            // Handle the response
             if (response.data.success) {
-                toast.success(response.data.message);
-                fetchRestaurants();
-            } else {
-                toast.error(response.data.message);
+                toast.success(response.data.message || 'Operation successful!');
+                fetchRestaurants(); // Refresh the restaurant list
+} else {
+                toast.error(response.data.message || 'Operation failed!');
             }
         } catch (error) {
-            const errorMsg = action === 'lock' ? "Error locking restaurant." : "Error unlocking restaurant.";
-            toast.error(errorMsg);
+            // Handle errors
+            const errorMsg =
+                action === 'lock' ? 'Error locking restaurant.' : 'Error unlocking restaurant.';
             console.error(errorMsg, error);
-        }
+    
+            // Check for specific server error messages
+            if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error(errorMsg);
+            }
+        } finally {
+
+            // Reset the loading state
+            setShowPopup(false);
+            setAction('');}
     };
+    
 
 
 
@@ -130,7 +153,7 @@ const Restaurants = () => {
                             restaurant={selectedRestaurant}
                             isOpen={showPopup}
                             onClose={closePopup}
-                            onSubmit={() => { handleSubmit(); }} // No submit needed for view
+onSubmit={() => { handleSubmit(); }} 
                         />
                     )}
 
@@ -139,7 +162,7 @@ const Restaurants = () => {
                             <div className="popup-content menu-popup-content">
                                 <FaTimes className="close-popup" onClick={closePopup} />
                                 <div className="menu-options">
-                                    {selectedRestaurant.status !== 'locked' && (
+                                    {selectedRestaurant.status !== 'unactive' && (
                                         <button onClick={() => { closePopup(); openPopup('lock', selectedRestaurant); }}>
                                             Khóa Nhà Hàng/Quán Nước
                                         </button>

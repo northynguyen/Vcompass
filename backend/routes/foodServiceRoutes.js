@@ -16,7 +16,6 @@ const foodServiceRoutes = express.Router();
 
 foodServiceRoutes.get("/", getListFoodService);
 foodServiceRoutes.get("/partner/:partnerId",getListByPartner);
-foodServiceRoutes.get("/:partnerId", getAdminGetListByPartner);
 foodServiceRoutes.post(
   "/add",
   authMiddleware,

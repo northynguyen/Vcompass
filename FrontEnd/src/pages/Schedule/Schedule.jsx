@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState,useCallback, useRef } from "react";
 import Modal from "react-modal";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -18,6 +18,206 @@ import Expense from "./Expense/Expense";
 import "./Schedule.css";
 import ConfirmDialog from "../../components/Dialog/ConfirmDialog";
 import { DragDropContext, Droppable,Draggable } from "react-beautiful-dnd";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import L from "leaflet";
+import "leaflet-routing-machine";
+
+
+const MapViewWithRoute = ({ activities, scheduleID }) => {
+  const [activitiesWithCoordinates, setActivitiesWithCoordinates] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Trạng thái loading
+  const { url } = useContext(StoreContext);
+  const mapRef = useRef(null); // Tham chiếu bản đồ
+  const routingControlRef = useRef(null); // Tham chiếu cho routing control
+  const mapContainerId = `map-container-${scheduleID}`; // ID duy nhất cho mỗi bản đồ
+
+  // Hàm fetch dữ liệu từ API
+  const fetchData = useCallback(
+    async (id, type) => {
+      try {
+        let response;
+        let location = null;
+
+        switch (type) {
+          case "Accommodation":
+            response = await fetch(`${url}/api/accommodations/getAccomm/${id}`);
+            location = await response.json();
+            break;
+          case "FoodService":
+            response = await fetch(`${url}/api/foodservices/${id}`);
+            location = await response.json();
+            break;
+          case "Attraction":
+            response = await fetch(`${url}/api/attractions/${id}`);
+            location = await response.json();
+            break;
+          case "Other":
+            response = await fetch(`${url}/api/schedule/${scheduleID}?activityId=${id}`);
+            location = await response.json();
+            break;
+          default:
+            throw new Error("Unknown type");
+        }
+
+        return location;
+      } catch (err) {
+        console.error(err);
+        return null;
+      }
+    },
+    [url, scheduleID]
+  );
+
+  // Hàm lấy thông tin vị trí các hoạt động và cập nhật trạng thái
+  useEffect(() => {
+    const fetchActivitiesCoordinates = async () => {
+      setIsLoading(true); // Bắt đầu tải
+      const updatedActivities = await Promise.all(
+        activities.map(async (activity) => {
+          if (activity.latitude && activity.longitude) {
+            return activity;
+          }
+
+          const locationData =
+            activity.activityType === "Other"
+              ? await fetchData(activity._id, "Other")
+              : await fetchData(activity.idDestination, activity.activityType);
+
+          if (locationData) {
+            let coordinates = null;
+
+            switch (activity.activityType) {
+              case "Accommodation":
+                coordinates = locationData?.accommodation?.location
+                  ? [
+                      locationData.accommodation.location.latitude,
+                      locationData.accommodation.location.longitude,
+                    ]
+                  : null;
+                break;
+              case "Attraction":
+                coordinates = locationData?.attraction?.location
+                  ? [
+                      locationData.attraction.location.latitude,
+                      locationData.attraction.location.longitude,
+                    ]
+                  : null;
+                break;
+              case "FoodService":
+                coordinates = locationData?.foodService?.location
+                  ? [
+                      locationData.foodService.location.latitude,
+                      locationData.foodService.location.longitude,
+                    ]
+                  : null;
+                break;
+              case "Other":
+                if (locationData?.other?.address) {
+                  const encodedAddress = encodeURIComponent(locationData.other.address);
+                  const response = await fetch(
+                    `https://nominatim.openstreetmap.org/search?q=${encodedAddress}&format=json`
+                  );
+                  const data = await response.json();
+                  if (data && data.length > 0) {
+                    coordinates = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+                  }
+                }
+                break;
+              default:
+                break;
+            }
+
+            if (coordinates) {
+              return { ...activity, latitude: coordinates[0], longitude: coordinates[1] };
+            }
+          }
+
+          return activity; // Trả về hoạt động gốc nếu không có thông tin vị trí
+        })
+      );
+
+      setActivitiesWithCoordinates(updatedActivities);
+      setIsLoading(false); // Kết thúc tải
+    };
+
+    if (activities.length > 0) {
+      fetchActivitiesCoordinates();
+    }
+  }, [activities, fetchData]);
+
+  // Hàm khởi tạo và cập nhật bản đồ, thêm markers và tuyến đường
+  useEffect(() => {
+    if (activitiesWithCoordinates.length > 0) {
+      // Khởi tạo bản đồ nếu chưa có
+      if (!mapRef.current) {
+        mapRef.current = L.map(mapContainerId).setView(
+          [activitiesWithCoordinates[0].latitude, activitiesWithCoordinates[0].longitude],
+          12
+        );
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(mapRef.current);
+      }
+
+      // Thêm markers cho các hoạt động
+      activitiesWithCoordinates.forEach((activity, index) => {
+        if (activity.latitude && activity.longitude) {
+          L.marker([activity.latitude, activity.longitude], {
+            icon: L.divIcon({
+              className: "custom-icon",
+              html: `<div class="marker-number">${index + 1}</div>`,
+              iconSize: [30, 30],
+              iconAnchor: [15, 30],
+            }),
+          })
+            .addTo(mapRef.current)
+            .bindPopup(`Điểm ${index + 1}: ${activity.description || "Không có mô tả"}`);
+        }
+      });
+
+      // Cập nhật tuyến đường
+      if (routingControlRef.current) {
+        mapRef.current.removeControl(routingControlRef.current); // Gỡ bỏ routing cũ
+      }
+
+      routingControlRef.current = L.Routing.control({
+        waypoints: activitiesWithCoordinates
+          .filter((activity) => activity.latitude && activity.longitude)
+          .map((activity) => L.latLng(activity.latitude, activity.longitude)),
+        routeWhileDragging: true,
+        lineOptions: {
+          styles: [{ color: "blue", weight: 4 }],
+        },
+        show: false,
+      }).addTo(mapRef.current);
+    }
+
+    // Cleanup khi component unmount hoặc activities thay đổi
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, [activitiesWithCoordinates, mapContainerId]);
+
+  return (
+    <div>
+      {isLoading ? (
+        <div style={{ display: "flex", justifyContent: "center", textAlign: "center", padding: "20px" }}>
+          <div className="spinner-map"></div> 
+        </div>
+      ) : (
+        <div id={mapContainerId} style={{ height: "400px", width: "100%" }}></div>
+      )}
+    </div>
+  );
+};
+
+
+
+
 
 const Activity = ({
   activity,
@@ -33,7 +233,7 @@ const Activity = ({
     <div className="time-schedule-list">
       {activity.length > 0 &&
         activity.map((myactivity, index) => (
-          <Draggable key={myactivity._id} draggableId={myactivity._id} index={index}>
+          <Draggable key={myactivity._id} draggableId={myactivity._id} index={index} isDragDisabled={mode === "view"}>
           {(provided) => (
             <div
               ref={provided.innerRef}
@@ -647,7 +847,8 @@ const DateSchedule = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentActivity, setCurrentActivity] = useState(null);
   const [currentDestination, setCurrentDestination] = useState(null);
-  const [viewMode, setViewMode] = useState("overview"); // Chế độ hiển thị: 'overview' hoặc 'details'
+  const [viewMode, setViewMode] = useState("overview"); // Overview, details, or map view
+  const [currentMapIndex, setCurrentMapIndex] = useState(null); // Track which day map is open
 
   useEffect(() => {
     if (schedule) {
@@ -676,15 +877,24 @@ const DateSchedule = ({
     setIsModalOpen(false);
   };
 
+  const toggleMapView = (dayIndex) => {
+    if (currentMapIndex === dayIndex) {
+      setViewMode("overview");
+      setCurrentMapIndex(null); // Close the map view if it's already open for this day
+    } else {
+      setCurrentMapIndex(dayIndex); // Open the map view for the selected day
+    }
+  };
+
   return (
     <div className="detail-container">
-      <Droppable droppableId={`${index}`}>
+      <Droppable droppableId={`${index}`} disabled={mode === "view"}>
         {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              className="activity-details"
-            >
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className="activity-details"
+          >
             <div className="date-section">
               <div className="date-header">
                 <h2>
@@ -699,27 +909,35 @@ const DateSchedule = ({
                 </h2>
                 <div className="date-actions">
                   <button
-                    className={`btn-overview ${
-                      viewMode === "overview" ? "active" : ""
-                    }`}
+                    className={`btn-overview ${viewMode === "overview" ? "active" : ""}`}
                     onClick={() => setViewMode("overview")}
                   >
                     Tổng quan
                   </button>
                   <button
-                    className={`btn-details ${
-                      viewMode === "details" ? "active" : ""
-                    }`}
+                    className={`btn-details ${viewMode === "details" ? "active" : ""}`}
                     onClick={() => setViewMode("details")}
                   >
                     Xem chi tiết
+                  </button>
+                  <button
+                    className={`btn-details ${viewMode === "map" ? "active" : ""}`}
+                    onClick={() => {
+                      toggleMapView(index); // Toggle map for the current day
+                      setViewMode("map"); // Switch to map view
+                    }}
+                  >
+                    Xem map
                   </button>
                 </div>
               </div>
 
               {isOpen &&
-                (viewMode === "details" ? (
-                  // Chế độ chi tiết
+                (viewMode === "map" && currentMapIndex === index ? (
+                  // Show the map only if the currentMapIndex matches the day index
+                  <MapViewWithRoute activities={scheduleDate.activity} scheduleID={inforSchedule._id} />
+                ) : viewMode === "details" ? (
+                  // Detailed view
                   scheduleDate.activity && scheduleDate.activity.length > 0 ? (
                     <Activity
                       activity={scheduleDate.activity}
@@ -734,7 +952,7 @@ const DateSchedule = ({
                     <p>Chưa có hoạt động nào</p>
                   )
                 ) : (
-                  // Chế độ tổng quan
+                  // Overview view
                   <div className="activity-overview-container">
                     {scheduleDate.activity && scheduleDate.activity.length > 0 ? (
                       <ul className="activity-overview-list">
@@ -781,7 +999,7 @@ const DateSchedule = ({
                 </div>
               )}
 
-                {provided.placeholder}
+              {provided.placeholder}
             </div>
           </div>
         )}
@@ -799,6 +1017,7 @@ const DateSchedule = ({
     </div>
   );
 };
+
 
 
 const Schedule = ({ mode }) => {
@@ -1045,7 +1264,7 @@ const Schedule = ({ mode }) => {
           )}
         </div>
       </div>
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={onDragEnd} >
         <div className="schedule-container">
         <div className="schedule-image">
           {inforSchedule.imgSrc && inforSchedule.imgSrc[0] ? (

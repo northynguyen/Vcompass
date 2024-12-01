@@ -21,6 +21,8 @@ import HomeBooking from './pages/HomeBooking/HomeBooking'
 import HomeAttractions from './pages/HomeAttractions/HomeAttractions';
 import HomeFoodService from './pages/HomeFoodService/HomeFoodService'
 
+import "leaflet/dist/leaflet.css";
+import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 
 import SearchSchedule  from './pages/SearchSchedule/SearchSchedule'
 

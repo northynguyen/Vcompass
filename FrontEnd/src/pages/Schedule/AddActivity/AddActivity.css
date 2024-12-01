@@ -238,3 +238,21 @@ i.fa-regular.fa-circle-xmark:hover{
   background-color: #e60000;
 }
 }
+
+.search-results {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ddd;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.search-results li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.search-results li:hover {
+  background-color: #f0f0f0;
+}

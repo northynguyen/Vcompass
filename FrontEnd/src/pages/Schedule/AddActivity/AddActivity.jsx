@@ -15,7 +15,38 @@ const OtherItem = ({ setCurDes, curDes }) => {
     curDes?.imgSrc?.map((img) => (typeof img === "string" ? img : URL.createObjectURL(img))) || []
   );
   const [address, setAddress] = useState(curDes?.address || "");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
   const { url } = useContext(StoreContext);
+
+  // Hàm tìm kiếm địa chỉ
+  const handleSearchAddress = async () => {
+    if (!address) return;
+
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json`
+      );
+      setSearchResults(response.data);
+      setShowResults(true);
+    } catch (error) {
+      console.error("Lỗi khi tìm kiếm địa chỉ:", error);
+    }
+  };
+
+  // Hàm chọn địa chỉ từ danh sách gợi ý
+  const handleSelectAddress = (selected) => {
+    setAddress(selected.display_name);
+    setShowResults(false);
+
+    // Cập nhật thông tin địa chỉ và tọa độ vào curDes
+    setCurDes((prev) => ({
+      ...prev,
+      address: selected.display_name,
+      latitude: parseFloat(selected.lat),
+      longitude: parseFloat(selected.lon),
+    }));
+  };
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files).slice(0, 3);
@@ -41,7 +72,6 @@ const OtherItem = ({ setCurDes, curDes }) => {
       imgSrc: prev?.imgSrc?.filter((_, i) => i !== index),
     }));
 
-    // Nếu ảnh bị xóa tồn tại trên backend, xóa nó bằng API
     if (!imgToRemove.startsWith("blob:")) {
       try {
         await axios.delete(`${url}/api/deleteImage`, {
@@ -73,17 +103,28 @@ const OtherItem = ({ setCurDes, curDes }) => {
 
       <div className="form-group">
         <label htmlFor="activity-address">Địa chỉ:</label>
-        <input
-          type="text"
-          id="activity-address"
-          className="input-field"
-          placeholder="Nhập địa chỉ"
-          value={address}
-          onChange={(e) => {
-            setAddress(e.target.value);
-            setCurDes((prev) => ({ ...prev, address: e.target.value }));
-          }}
-        />
+        <div className="address-input-group">
+          <input
+            type="text"
+            id="activity-address"
+            className="input-field"
+            placeholder="Nhập địa chỉ"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          />
+          <button type="button" className="search-btn" onClick={handleSearchAddress}>
+            Tìm kiếm
+          </button>
+        </div>
+        {showResults && (
+          <ul className="search-results">
+            {searchResults.map((result, index) => (
+              <li key={index} onClick={() => handleSelectAddress(result)}>
+                {result.display_name}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="form-group">

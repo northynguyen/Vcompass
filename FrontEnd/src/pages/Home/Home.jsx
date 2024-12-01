@@ -56,15 +56,7 @@ const Home = () => {
   const handleScheduleClick = (id) => {
     navigate(`/schedule-view/${id}`);
   };
-  const handleSearch = () => {
-    const filtered = schedules.filter((schedule) => {
-      const isAddressMatch = schedule.address.toLowerCase().includes(address.toLowerCase());
-      const isScheduleNameMatch = schedule.scheduleName.toLowerCase().includes(scheduleName.toLowerCase());
-      return isAddressMatch && isScheduleNameMatch;
-    });
 
-    setFilteredSchedules(filtered);
-  };
   const handleFilterByCity = (nameCity) => {
     const filtered = schedules.filter((schedule) => {
       const isAddressMatch = schedule.address.toLowerCase().includes(nameCity.toLowerCase());
@@ -139,9 +131,13 @@ const Home = () => {
           </section>
         </div>
       </div>
-
+      
+      <div className="city-banners">
+           {topCity.map((city, index) => (
+              <AccommodationBanner key={index} cityName={city.name} />
+            ))}
+      </div>
       <div className="post-card-page" >
-         {/* Bộ lọc */}
          
         <div className="post-card-container">
           {!isLoading &&
@@ -156,8 +152,7 @@ const Home = () => {
         </div>
 
        
-      </div>
-      
+      </div>     
 
       <div>
         <AccommodationBanner />

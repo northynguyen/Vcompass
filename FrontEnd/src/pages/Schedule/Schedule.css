@@ -340,23 +340,26 @@ p.des-schedule {
 }
 
 .date-actions .btn-overview {
-  background-color: #007bff;
+  background-color: #7BBCB0;
   color: white;
 }
 
 .date-actions .btn-overview:hover {
-  background-color: #0056b3;
 }
 
 .date-actions .btn-details {
-  background-color: #28a745;
+  background-color: #7BBCB0;
   color: white;
 }
 
 .date-actions .btn-details:hover {
-  background-color: #1e7e34;
+  background-color: #7BBCB0;
 }
+.date-actions .active {
+  background-color: #054338;
+  color: white;
 
+}
 }
 
 .add-new button {
@@ -869,6 +872,40 @@ i.fa-solid.fa-plus.add-icon {
     transform: rotate(0deg);
   }
   to {
+    transform: rotate(360deg);
+  }
+}
+.custom-icon{
+  z-index: 9999 !important;
+}
+.marker-number {
+  position : absolute;
+  background-color: #c11313;
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px; /* Center the number */
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.spinner-map {
+  
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
     transform: rotate(360deg);
   }
 }

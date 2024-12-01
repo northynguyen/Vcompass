@@ -15,6 +15,7 @@ const MySchedule = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [message, setMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [action, setAction] = useState("");
   const navigate = useNavigate();
   const popupRef = useRef(null);
@@ -132,7 +133,14 @@ const MySchedule = () => {
       private: "Bạn có chắc chắn muốn ẩn lịch trình?",
     };
 
+    const actionSuccessMessages = {
+      delete: "Xóa lịch trình thành công.",
+      public: "Công khai lịch trình thành công.",
+      private: "Ẩn lịch trình thành công.",
+    };
+
     setMessage(actionMessages[actionType]);
+    setSuccessMessage(actionSuccessMessages[actionType]);
     setIsConfirmOpen(true);
   };
 
@@ -256,6 +264,7 @@ const MySchedule = () => {
       <ConfirmDialog
         isOpen={isConfirmOpen}
         message={message}
+        successMessage={successMessage}
         onConfirm={handleConfirmAction}
         onCancel={() => setIsConfirmOpen(false)}
       />
