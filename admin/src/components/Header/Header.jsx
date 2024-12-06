@@ -12,7 +12,7 @@ const Header = () => {
   const [isNotificationsVisible, setNotificationsVisible] = useState(false); // State for notifications dropdown
   const menuRef = useRef(null);
   const notificationRef = useRef(null); // Reference for the notifications dropdown
-  const { token, setToken, admin } = useContext(StoreContext);
+  const { token, setToken, admin, url } = useContext(StoreContext);
   const navigate = useNavigate();
   // Sample notifications array
   const notifications = [
@@ -49,7 +49,9 @@ const Header = () => {
     toast.success('Đăng xuất thành công');
     setToken(null);
   };
-
+  const handleMyProfile = () => {
+    navigate('/myprofile');
+  }
   // Toggle profile popup visibility
   const toggleProfilePopup = () => {
     setProfilePopupVisible(!isProfilePopupVisible);
@@ -126,7 +128,7 @@ const Header = () => {
         {/* User Profile */}
         <div className="user-profile">
           <img
-            src={admin.avatar}
+            src={`${url}/images/${admin.avatar}`}
             alt="User Avatar"
             className="user-avatar"
             onClick={toggleProfilePopup} // Toggle profile popup on click
@@ -142,7 +144,7 @@ const Header = () => {
           <div className="profile-popup" ref={menuRef}>
             <ul className="menu">
               <li><CiSettings /> My Settings</li>
-              <li><MdManageAccounts /> My Profile</li>
+              <li onClick={handleMyProfile}><MdManageAccounts /> My Profile</li>
               <hr />
               <li onClick={handleLogout}><CiLogout /> Log Out</li>
             </ul>

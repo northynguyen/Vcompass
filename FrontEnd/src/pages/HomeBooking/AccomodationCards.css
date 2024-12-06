@@ -10,8 +10,7 @@
     overflow: hidden;
     background-color: #ffffff;
     transition: box-shadow 0.3s ease-in-out;
-    /* Thêm con trỏ chỉ tay khi hover lên card */
-
+}
 
 .card-content-container:hover {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
@@ -23,14 +22,11 @@
     font-weight: bold;
     color: #333;
     transition: color 0.3s ease-in-out;
-    /* Thêm hiệu ứng chuyển màu mượt */
     cursor: pointer;
-    /* Con trỏ chỉ tay khi hover tên */
 }
 
 .card-content h3:hover {
     color: #007bff;
-    /* Thay đổi màu chữ khi hover */
 }
 
 .card-content-img {
@@ -41,7 +37,6 @@
 .card-content-img img {
     width: 100%;
     height: 200px;
-    /* Định nghĩa chiều cao cố định */
     object-fit: cover;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
@@ -83,5 +78,4 @@
 
 .card-content-price p {
     margin: 0;
-}
 }

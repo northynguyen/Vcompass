@@ -1,156 +1,133 @@
-import React, { useState, useRef, useEffect } from 'react';
-import DatePicker from 'react-datepicker';
+import React, { useState, useEffect, useContext } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import './HomeAttractions.css';
-import AccomodationCards from './AttractionsCards';
+import AttractionsCards from './AttractionsCards';
 import LeftSideBar from './LeftSideBar';
+import { StoreContext } from '../../Context/StoreContext';
+import axios from 'axios';
 
 const HomeAttractions = () => {
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
-    const [adults, setAdults] = useState(1);
-    const [children, setChildren] = useState(0);
-    const [numRooms, setNumRooms] = useState(1);
-    const [showGuestDropdown, setShowGuestDropdown] = useState(false);
-    const dropdownRef = useRef(null);
-
-    const setDateRange = ([start, end]) => {
-        const today = new Date();
-        if (start && start < today) start = today; // Điều chỉnh nếu ngày bắt đầu nhỏ hơn hôm nay
-        setStartDate(start);
-        setEndDate(end);
-    };
-
-
-    const calculateNights = (start, end) => {
-        if (!start || !end) return 0;
-        const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-        return diff;
-    };
-
-    const handleButtonClick = (type, field, e) => {
-        e.stopPropagation();
-        if (field === 'adults') {
-            setAdults((prev) => (type === 'increment' ? prev + 1 : Math.max(1, prev - 1)));
-        } else if (field === 'children') {
-            setChildren((prev) => (type === 'increment' ? prev + 1 : Math.max(0, prev - 1)));
-        } else if (field === 'rooms') {
-            setNumRooms((prev) => (type === 'increment' ? prev + 1 : Math.max(1, prev - 1)));
-        }
-    };
-
-    const handleSearch = () => {
-        console.log({
-            location: 'Milan Homestay - The Song Vung Tau',
-            startDate,
-            endDate,
-            adults,
-            children,
-            numRooms,
-        });
-    };
-
-    const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-            setShowGuestDropdown(false);
-        }
+    const [location, setLocation] = useState('');
+    const [backupAttractions, setBackupAttractions] = useState([]);
+    const [filterData, setFilterData] = useState({ priceRange: { min: 0, max: Infinity }, selectedAmenities: [], rating: 0 });
+    const [attractionsFound, setAttractionsFound] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const { url } = useContext(StoreContext);
+    // Xử lý khi bộ lọc thay đổi
+    const handleFilterChange = (newFilterData) => {
+        setFilterData((prevData) => ({ ...prevData, ...newFilterData }));
     };
 
     useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+        const fetchAttractions = async () => {
+            try {
+                let attractions = [];
+                if (isSearching && backupAttractions.length > 0) {
+                    // Khi đang tìm kiếm, sử dụng dữ liệu đã backup
+                    attractions = [...backupAttractions];
+                } else {
+                    // Nếu không tìm kiếm, gọi API để lấy dữ liệu đầy đủ
+                    const response = await axios.get(`${url}/api/attractions`);
+                    attractions = response.data.attractions;
+                    setBackupAttractions(response.data.attractions);
+                }
 
+                const filteredAttractions = applyFilters(attractions);
+                setAttractionsFound(filteredAttractions);
+            } catch (error) {
+                console.error("Error fetching attractions:", error);
+            }
+        };
+
+        fetchAttractions();
+    }, [url, filterData, isSearching]);
+
+    // Hàm áp dụng bộ lọc
+    const applyFilters = (attractions) => {
+        return attractions.filter((attraction) => {
+            // Lọc theo giá
+            if (filterData.priceRange && (attraction.price > filterData.priceRange.max || attraction.price < filterData.priceRange.min)) {
+                return false;
+            }
+
+            // Lọc theo tiện ích
+            if (filterData.selectedAmenities.length > 0) {
+                const hasAllSelectedAmenities = filterData.selectedAmenities.every((amenity) =>
+                    attraction.amenities.includes(amenity)
+                );
+                if (!hasAllSelectedAmenities) return false;
+            }
+
+            // Tính điểm đánh giá trung bình
+            let averageRating = null;
+            if (attraction.ratings && attraction.ratings.length > 0) {
+                const totalRating = attraction.ratings.reduce((sum, rating) => sum + rating.rate, 0);
+                averageRating = totalRating / attraction.ratings.length;
+            }
+
+            // Lọc theo đánh giá
+            if (filterData.rating && (averageRating === null || averageRating < parseFloat(filterData.rating))) {
+                return false;
+            }
+
+            return true;
+        });
+    };
+
+    // Hàm tìm kiếm theo địa điểm
+    const handleSearch = async () => {
+        setAttractionsFound([]); // Reset danh sách tạm thời
+        try {
+            const response = await axios.get(`${url}/api/attractions?name=${location}`);
+            if (!response.data.success) {
+                throw new Error("Failed to fetch attractions");
+            }
+
+            setBackupAttractions(response.data.attractions); // Lưu lại kết quả tìm kiếm vào backup
+            setAttractionsFound(response.data.attractions); // Cập nhật danh sách hiển thị
+            setIsSearching(true); // Đánh dấu là đang tìm kiếm
+        } catch (error) {
+            console.error("Error fetching attractions:", error);
+        }
+    };
+
+    // Reset trạng thái tìm kiếm
+    const resetSearch = () => {
+        setIsSearching(false);
+        setAttractionsFound(applyFilters(backupAttractions));
+    };
     return (
-        <div className="home-booking-container">
-            <form className="home-booking-search-form" onSubmit={(e) => e.preventDefault()}>
+        <div className="home-attractions-container">
+
+            <form className="attractions-search-form" onSubmit={(e) => e.preventDefault()}>
                 {/* Location Input */}
-                <div className="home-booking-search-item">
+                <div className="attractions-search-item">
                     <span role="img" aria-label="location">📍</span>
                     <input
                         type="text"
-                        placeholder="Milan Homestay - The Song Vung Tau"
-                        className="home-booking-input"
+                        placeholder="Bà Rịa - Vũng Tàu"
+                        className="attractions-input"
+                        onChange={(e) => setLocation(e.target.value)}
+                        value={location}
                     />
-                </div>
-
-                {/* Date Picker */}
-                <div className="home-booking-search-item">
-                    <span role="img" aria-label="calendar">📅</span>
-                    <DatePicker
-                        selected={startDate}
-                        onChange={(update) => setDateRange(update)}
-                        startDate={startDate}
-                        endDate={endDate}
-                        selectsRange
-                        monthsShown={2}
-                        placeholderText="Chọn ngày"
-                        dateFormat="dd/MM/yyyy"
-                        className="home-booking-datepicker"
-                        minDate={new Date()}
-                    />
-
-                    {startDate && endDate && (
-                        <span className="home-booking-nights"> &nbsp;&nbsp;{calculateNights(startDate, endDate)} nights</span>
-                    )}
-                </div>
-
-                {/* Guests and Rooms */}
-                <div
-                    className="home-booking-search-item"
-                    onClick={() => setShowGuestDropdown(!showGuestDropdown)}
-                    style={{ position: 'relative' }}
-                >
-                    <span role="img" aria-label="people">👥</span>
-                    <input
-                        type="text"
-                        value={`${adults} người lớn, ${children} trẻ em, ${numRooms} phòng`}
-                        readOnly
-                        className="home-booking-input"
-                    />
-                    {showGuestDropdown && (
-                        <div className="home-booking-guest-dropdown" ref={dropdownRef}>
-                            <div className="home-booking-guest-option">
-                                <span>Người lớn</span>
-                                <button onClick={(e) => handleButtonClick('decrement', 'adults', e)}>-</button>
-                                <span className="num">{adults}</span>
-                                <button onClick={(e) => handleButtonClick('increment', 'adults', e)}>+</button>
-                            </div>
-                            <div className="home-booking-guest-option">
-                                <span>Trẻ em</span>
-                                <button onClick={(e) => handleButtonClick('decrement', 'children', e)}>-</button>
-                                <span className="num">{children}</span>
-                                <button onClick={(e) => handleButtonClick('increment', 'children', e)}>+</button>
-                            </div>
-                            <div className="home-booking-guest-option">
-                                <span>Phòng</span>
-                                <button onClick={(e) => handleButtonClick('decrement', 'rooms', e)}>-</button>
-                                <span className="num">{numRooms}</span>
-                                <button onClick={(e) => handleButtonClick('increment', 'rooms', e)}>+</button>
-                            </div>
-
-                            <button className="home-booking-ok-btn" onClick={() => setShowGuestDropdown(false)}>Xong</button>
-                        </div>
-                    )}
                 </div>
 
                 {/* Search Button */}
                 <button
                     type="submit"
-                    className="home-booking-search-btn"
+                    className="attractions-search-btn"
                     onClick={handleSearch}
                 >
                     Tìm kiếm
                 </button>
             </form>
 
-            <div className='homeBooking-accomodations-container'>
-                <LeftSideBar />
-                <AccomodationCards />
+            <div className="attractions-content-container">
+                <LeftSideBar onFilterChange={handleFilterChange} />
+                {attractionsFound.length > 0 && <AttractionsCards attractionsFound={attractionsFound} />}
             </div>
         </div>
+
     );
 };
 

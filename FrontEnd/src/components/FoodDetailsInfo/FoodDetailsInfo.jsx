@@ -9,13 +9,14 @@ const FoodDetailsInfo = ({ serviceId }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [foodService, setFoodService] = useState(null); // To store food service details
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-
+    const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
     // Fetch the food service details based on serviceId
     useEffect(() => {
         const fetchFoodService = async () => {
             try {
                 const response = await axios.get(`${url}/api/foodservices/`)
                 setFoodService(response.data.foodService.find(service => service._id === serviceId));
+
             } catch (error) {
                 console.error('Error fetching food service details:', error);
             }
@@ -30,7 +31,10 @@ const FoodDetailsInfo = ({ serviceId }) => {
         setSelectedImageIndex(index);
         setIsModalOpen(true);
     };
-
+    const openModalMenu = (index) => {
+        setSelectedMenuIndex(index);
+        setIsModalOpen(true);
+    };
     // Close the Modal
     const closeModal = () => {
         setIsModalOpen(false);
@@ -40,42 +44,57 @@ const FoodDetailsInfo = ({ serviceId }) => {
     if (!foodService) return <div>Loading...</div>;
 
     return (
-        <div className="place-details-info">
+        <div className="food-details-info">
             {/* Left Column: Food Service Details */}
-            <div className="tour-details">
+            <div className="food-details">
                 <h1>{foodService.foodServiceName}</h1>
                 <p>{foodService.city} ★★★★☆ (348 reviews)</p>
 
                 {/* Image Gallery */}
-                <div className="gallery">
-                    <img src={`${url}/images/${foodService.images[0]}`} alt="Main" className="main-img" />
-                    <div className="thumbnails">
-                        {foodService.images.map((image, index) => (
-                            <img
-                                key={index}
-                                src={`${url}/images/${image}`}
-                                alt={`Thumb ${index + 1}`}
-                                onClick={() => openModal(index + 1)}
-                            />
-                        ))}
+                <div className='food-gallery-container'>
+                    <div className="food-gallery">
+                        <img src={`${url}/images/${foodService.images[0]}`} alt="Main" className="food-main-img" />
+                        <div className="food-thumbnails">
+                            {foodService.images.map((image, index) => (
+                                <img
+                                    key={index}
+                                    src={`${url}/images/${image}`}
+                                    alt={`Thumb ${index + 1}`}
+                                    onClick={() => openModal(index + 1)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                    <div className="food-gallery" onClick={() => openModalMenu(0)}>
+                        <img src={`${url}/images/${foodService.menuImages[0]}`} alt="Main" className="food-main-img" />
+                        <div className="food-thumbnails">
+                            {foodService.menuImages.map((image, index) => (
+                                <img
+                                    key={index}
+                                    src={`${url}/images/${image}`}
+                                    alt={`Thumb ${index + 1}`}
+                                    onClick={() => openModalMenu(index + 1)}
+                                />
+                            ))}
+                        </div>
+
                     </div>
                 </div>
-
                 {/* Features */}
-                <div className="features">
+                <div className="food-features">
                     {foodService.amenities.map((amenity, index) => (
                         <p key={index}>✔️ {amenity}</p>
                     ))}
                 </div>
 
                 {/* Description */}
-                <div className="description">
+                <div className="food-description">
                     <h3>Description</h3>
                     <p>{foodService.description}</p>
                 </div>
 
                 {/* Location (Google Map) */}
-                <div className="map">
+                <div className="food-map">
                     <h3 style={{ marginBottom: '20px' }}>Location</h3>
                     <iframe
                         title="map"
@@ -89,42 +108,20 @@ const FoodDetailsInfo = ({ serviceId }) => {
                 </div>
             </div>
 
-            {/* Right Column: Booking Form */}
-            <div className="booking-form">
-                <form>
-                    <h2>Booking</h2>
 
-                    <label htmlFor="from">From</label>
-                    <input type="date" id="from" />
-
-                    <label htmlFor="to">To</label>
-                    <input type="date" id="to" />
-
-                    <label htmlFor="guests">No. of Guests</label>
-                    <select id="guests">
-                        <option value="1">1 adult</option>
-                        <option value="2">2 adults</option>
-                    </select>
-
-                    <div className="total-price">
-                        <h3>Price Range: ${foodService.price.minPrice} - ${foodService.price.maxPrice}</h3>
-                    </div>
-
-                    <button type="submit" className="book-btn">Confirm Booking</button>
-                    <button type="button" className="wishlist-btn" onClick={() => alert('Saved to wishlist')}>
-                        Save to Wishlist
-                    </button>
-                    <button type="button" className="share-btn" onClick={() => alert('Shared the activity')}>
-                        Share the Activity
-                    </button>
-                </form>
-            </div>
 
             {/* Modal for displaying clicked images */}
             <ImagesModal
                 isOpen={isModalOpen}
                 images={foodService.images}
                 selectedIndex={selectedImageIndex}
+                onClose={closeModal}
+            />
+            {/* Modal for displaying clicked images */}
+            <ImagesModal
+                isOpen={isModalOpen}
+                images={foodService.menuImages}
+                selectedIndex={selectedMenuIndex}
                 onClose={closeModal}
             />
         </div>

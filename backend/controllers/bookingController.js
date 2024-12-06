@@ -6,7 +6,7 @@ export const getBookingsByUser = async (req, res) => {
   const { userId } = req.body;
   const { status, startDate, endDate, page = 1, limit = 5 } = req.query;
 
-  
+
   const filter = { userId };
   if (status) filter.status = status;
   if (startDate || endDate) {
@@ -17,13 +17,13 @@ export const getBookingsByUser = async (req, res) => {
 
   try {
     // Count total documents for pagination metadata
-      const total = await Booking.countDocuments(filter);
+    const total = await Booking.countDocuments(filter);
 
     // Retrieve paginated bookings with filter
     const bookings = await Booking.find(filter)
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
-      .sort({ createdAt: -1 }); 
+      .sort({ createdAt: -1 });
 
     res.json({
       success: true,
@@ -73,7 +73,7 @@ export const getAvailableRooms = async (req, res) => {
     const availableRooms = accommodation.roomTypes.filter(room => {
       const isAvailable = !unavailableRoomIds.includes(room._id.toString()); // Check if room is not booked
       const meetsCapacity =
-        room.numPeople.adult >= adults && room.numPeople.child >= Math.max(0, children -1); // Check capacity for adults and children
+        room.numPeople.adult >= adults && room.numPeople.child >= Math.max(0, children - 1); // Check capacity for adults and children
       return isAvailable && meetsCapacity;
     });
 
@@ -112,10 +112,10 @@ export const createBooking = async (req, res) => {
     // Lưu booking vào database
     await newBooking.save();
 
-    res.status(201).json( { success: true, message: 'Booking created successfully', booking: newBooking});
+    res.status(201).json({ success: true, message: 'Booking created successfully', booking: newBooking });
   } catch (error) {
     console.error(error);
-    res.status(500).json({success: false, message: 'Error creating booking' });
+    res.status(500).json({ success: false, message: 'Error creating booking' });
   }
 };
 
@@ -222,9 +222,9 @@ export const getBookingHistory = async (req, res) => {
     }
 
     // Return the booking history in the response
-    res.status(200).json({success: true, bookingHistory: bookingHistory});
+    res.status(200).json({ success: true, bookingHistory: bookingHistory });
   } catch (error) {
     console.error("Error fetching booking history:", error);
-    res.status(500).json({success: false, message: "Server error, unable to fetch booking history." });
+    res.status(500).json({ success: false, message: "Server error, unable to fetch booking history." });
   }
 };

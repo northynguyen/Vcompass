@@ -24,6 +24,26 @@
     color: #555;
 }
 
+.price-range-inputs {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.price-input {
+    width: 45%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.price-range-value {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
 /* Input Styles */
 .left-sidebar input[type="number"] {
     width: 100%;

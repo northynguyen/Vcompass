@@ -11,7 +11,10 @@ const getListFoodService = async (req, res) => {
 
         // Add name filter if provided
         if (name) {
-            query.foodServiceName = { $regex: name, $options: 'i' }; // case-insensitive search
+            query.$or = [
+                { "foodServiceName": { $regex: name, $options: 'i' } }, // Tìm kiếm trong tên địa điểm
+                { "city": { $regex: name, $options: 'i' } }, // Tìm kiếm trong tên tính
+            ];
         }
 
         // Add price range filter if provided
@@ -67,7 +70,7 @@ export const getFoodServiceById = async (req, res) => {
 };
 
 const getListByPartner = async (req, res) => {
-    const  partnerId  = req.params.partnerId;
+    const partnerId = req.params.partnerId;
     try {
         const foodService = await FoodService.find({ idPartner: partnerId });
         if (!foodService) {

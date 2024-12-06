@@ -1,0 +1,242 @@
+/* Profile Wrapper Styles */
+.profile-wrapper {
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    gap: 20px;
+}
+
+/* Sidebar Styles */
+.profile-sidebar {
+    width: 25%;
+    background-color: #f0f2f5;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sidebar-button {
+    padding: 12px 16px;
+    border: none;
+    background-color: #e0e0e0;
+    color: #333;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 18px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar-button.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.sidebar-button:hover {
+    background-color: #d1e0ff;
+    color: #007bff;
+}
+
+/* Main Content Styles */
+.profile-main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile Section Styles */
+.profile-section-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.profile-title {
+    font-size: 26px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.profile-edit-icon {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    transition: transform 0.3s ease;
+}
+
+.profile-edit-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Avatar Section */
+.avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #007bff;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.avatar-input {
+    display: block;
+    margin-top: 10px;
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    outline: none;
+}
+
+/* Details Section */
+.details-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 60%;
+}
+
+.details-section p {
+    font-size: 16px;
+    margin: 10px 0;
+    color: #555;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.details-section label {
+    font-weight: 600;
+    color: #333;
+}
+
+.details-input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.details-input:focus {
+    border-color: #007bff;
+    box-shadow: inset 0 2px 6px rgba(0, 123, 255, 0.1);
+}
+
+.readonly-input {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 8px;
+    color: #666;
+    border-radius: 5px;
+    display: inline-block;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.save-button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4caf50;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    align-self: flex-start;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.save-button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+/* Password Section Styles */
+.password-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.password-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.password-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.password-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.update-password-button {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #2196f3;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    align-self: flex-start;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.update-password-button:hover {
+    background-color: #1976d2;
+    transform: translateY(-2px);
+}
+
+.gender-select {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+}

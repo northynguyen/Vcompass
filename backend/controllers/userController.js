@@ -9,6 +9,9 @@ import adminModel from "../models/admin.js";
 import userModel from "../models/user.js";
 import mongoose, { model } from 'mongoose';
 
+
+import fs from 'fs';
+import path from 'path';
 import Attraction from '../models/attraction.js'; // Import Attraction
 import Accommodation from '../models/accommodation.js'; // Import Accommodation
 import FoodService from '../models/foodService.js'; // Import FoodService
@@ -162,11 +165,11 @@ const handleRegister = async (req, res, model, userRole = "user") => {
       email,
       password: hashedPassword,
       roles: [userRole],
-      address: "Ho Chi Minh City",
-      date_of_birth: "01-01-2000",
-      gender: "male",
+      address: "",
+      date_of_birth: "",
+      gender: "",
       phone_number: "",
-      avatar: "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg",
+      avatar: "profile_icon.png",
       status: "active" // Initialize roles array with the specified role\
     });
 
@@ -260,7 +263,7 @@ const googleSignIn = async (req, res) => {
         address: "Ho Chi Minh City",
         date_of_birth: "01-01-2000",
         gender: "male",
-        avatar: "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg",
+        avatar: "profile_icon.png",
         status: "active",
       });
 
@@ -335,59 +338,73 @@ const getAllPartners = async (req, res) => {
   }
 };
 
-const updateUserOrPartner = async (req, res) => {
-  const { type, name, password, address, date_of_birth, gender, avatar, status } = req.body;
-  const id = req.params.id;
+const updateUserOrPartnerOrAdmin = async (req, res) => {
+  const { type, name, password, address, date_of_birth, gender, phone_number, status } = req.body;
+  const { id } = req.params;
   const updates = {};
+  try {
+    // Lấy thông tin người dùng hiện tại để kiểm tra ảnh cũ
+    const currentUser = await (
+      type === 'user' ? userModel.findById(id) :
+        type === 'partner' ? partnerModel.findById(id) :
+          type === 'admin' ? adminModel.findById(id) :
+            null
+    );
 
-  if (name) updates.name = name;
-  if (password) {
-    const salt = await bcrypt.genSalt(10);
-    updates.password = await bcrypt.hash(password, salt);
-  }
-  if (address) updates.address = address;
-  if (date_of_birth) updates.date_of_birth = date_of_birth;
-  if (gender) updates.gender = gender;
-  if (avatar) updates.avatar = avatar;
-  if (status) updates.status = status;
-
-  if (type === "user") {
-    try {
-      // Tìm người dùng theo ID và cập nhật thông tin
-      const user = await userModel.findByIdAndUpdate(id, updates, { new: true });
-
-      if (!user) {
-        return res.status(404).json({ success: false, message: "Người dùng không tồn tại." });
-      }
-
-      res.json({
-        success: true,
-        message: "Cập nhật thông tin thành công.",
-        user
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: "Đã xảy ra lỗi máy chủ." });
+    if (!currentUser) {
+      return res.status(404).json({ success: false, message: `${type} not found.` });
     }
-  }
-  else if (type === "partner") {
-    try {
-      // Tìm người dùng theo ID và cập nhật thông tin
-      const user = await partnerModel.findByIdAndUpdate(id, updates, { new: true });
 
-      if (!user) {
-        return res.status(404).json({ success: false, message: "Parner không tồn tại." });
+    if (req.files.image && req.files.image.length > 0) {
+      const avatarFile = req.files.image[0].filename;
+      if (avatarFile) {
+        const oldAvatarPath = `uploads/${currentUser.avatar}`;
+
+        fs.unlink(oldAvatarPath, (err) => {
+          if (err) {
+            console.error(`Failed to delete old avatar: ${err}`);
+            // Tiếp tục cập nhật dù không xóa được ảnh cũ
+          }
+        });
+        console.log("avatarFile", avatarFile);
+        updates.avatar = avatarFile;
       }
-
-      res.json({
-        success: true,
-        message: "Cập nhật thông tin thành công.",
-        user
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: "Đã xảy ra lỗi máy chủ." });
     }
+
+    // Thêm các trường khác vào đối tượng cập nhật
+    if (name) updates.name = name;
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updates.password = await bcrypt.hash(password, salt);
+    }
+    if (address) updates.address = address;
+    if (date_of_birth) {
+      updates.date_of_birth = new Date(date_of_birth).toISOString().split('T')[0];
+    }
+    if (gender) updates.gender = gender;
+    if (status) updates.status = status;
+    if (phone_number) updates.phone_number = phone_number;
+    updates.updated_at = new Date().toISOString();
+
+    // Cập nhật thông tin người dùng
+    const updatedUser = await (
+      type === 'user' ? userModel.findByIdAndUpdate(id, updates, { new: true }) :
+        type === 'partner' ? partnerModel.findByIdAndUpdate(id, updates, { new: true }) :
+          type === 'admin' ? adminModel.findByIdAndUpdate(id, updates, { new: true }) :
+            null
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ success: false, message: `${type} not found.` });
+    }
+
+    res.json({
+      success: true,
+      message: "Update successful.",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error occurred." });
   }
 };
 
@@ -456,6 +473,56 @@ const addtoWishlist = async (req, res) => {
 };
 
 
+const checkPassword = async (req, res) => {
+  try {
+    const { password, type, id } = req.body;
+
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        message: "Password is required"
+      });
+    }
+
+    let user = {};
+    if (type === "user") {
+      user = await userModel.findOne({ _id: id });
+    } else if (type === "partner") {
+      user = await partnerModel.findOne({ _id: id });
+    } else if (type === "admin") {
+      user = await adminModel.findOne({ _id: id });
+    }
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: `${type.charAt(0).toUpperCase() + type.slice(1)} not found`
+      });
+    }
+
+    // So sánh mật khẩu đầu vào với mật khẩu lưu trữ
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Incorrect password"
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Password is correct"
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+};
+
+
 export {
   loginUser,
   registerUser,
@@ -468,8 +535,8 @@ export {
   registerAdmin,
   getAllUsers,
   getAllPartners,
-  updateUserOrPartner, addtoWishlist,
-  getUserById, getPartnerById, getAdminById // Export the new function
+  updateUserOrPartnerOrAdmin, addtoWishlist,
+  getUserById, getPartnerById, getAdminById, checkPassword // Export the new function
 };
 
 

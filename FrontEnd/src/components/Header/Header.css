@@ -15,6 +15,13 @@
     cursor: pointer;
 }
 
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
 .header hr {
     width: 1px;
     height: 40px;

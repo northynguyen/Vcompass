@@ -1,6 +1,5 @@
 .place-details-info {
     display: grid;
-    grid-template-columns: 2fr 1fr;
     gap: 20px;
     max-width: 1200px;
     margin: 0 auto;

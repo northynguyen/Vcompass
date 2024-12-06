@@ -1,20 +1,36 @@
-import { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import './MyAccount.css';
-
+import { StoreContext } from '../../../Context/StoreContext';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 const MyAccount = () => {
+    const { url, user, setUser } = useContext(StoreContext);
+    const [selectedAvatar, setSelectedAvatar] = useState(null);
+    const navigate = useNavigate();
+    // Initialize formData with the user data from context
     const [formData, setFormData] = useState({
-        fullName: "Phạm Thành",
-        gender: "",
-        birthdate: "",
-        city: ""
+        name: user.name || '',
+        gender: user.gender || '',
+        date_of_birth: user.date_of_birth || '',
+        address: user.address || '',
+        phoneNumber: user.phoneNumber || '' // Single phone number as a string
     });
 
-    const [email] = useState("phambathanh1803@gmail.com"); // Không cho phép thay đổi email
-    const [mobileNumbers, setMobileNumbers] = useState([]);
-    const [activeTab, setActiveTab] = useState('personal'); // New state for tab control
-    const [isEditing, setIsEditing] = useState(false); // State to control editing
+    const [activeTab, setActiveTab] = useState('personal');
+    const [isEditing, setIsEditing] = useState(false);
+    useEffect(() => {
+        // Ensure formData updates if user data changes
+        setFormData({
+            name: user.name || '',
+            gender: user.gender || '',
+            date_of_birth: user.date_of_birth || '',
+            address: user.address || '',
+            phone_number: user.phone_number || '' // Single phone number as a string
+        });
 
-   
+    }, [user]);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -23,53 +39,84 @@ const MyAccount = () => {
         });
     };
 
-    const handleMobileChange = (e, index) => {
-        const updatedMobileNumbers = [...mobileNumbers];
-        updatedMobileNumbers[index] = e.target.value;
-        setMobileNumbers(updatedMobileNumbers);
-    };
-
-    const addMobileNumber = () => {
-        // Chỉ thêm số điện thoại mới nếu số hiện tại đã được nhập
-        if (mobileNumbers.length < 3 && mobileNumbers[mobileNumbers.length - 1] !== '') {
-            setMobileNumbers([...mobileNumbers, '']); // Thêm một mục trống
-        }
-    };
-
-
     const toggleEdit = () => {
-        setIsEditing(!isEditing); // Chuyển đổi trạng thái giữa edit và view
+        setIsEditing(!isEditing);
     };
 
     const handleCancel = () => {
-        setIsEditing(false); // Hủy bỏ chỉnh sửa
-        // Khôi phục lại giá trị cũ nếu cần (nếu có lưu trữ dữ liệu ban đầu)
+        setIsEditing(false);
+        // Optionally reset formData to original user data if needed
+        setFormData({
+            name: user.name || '',
+            gender: user.gender || '',
+            date_of_birth: user.date_of_birth || '',
+            address: user.address || '',
+            phone_number: user.phone_number || ''
+        });
     };
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        const formDataUser = new FormData();
 
-    const [passwordVisibility, setPasswordVisibility] = useState({
-        currentPassword: false,
-        newPassword: false,
-        confirmPassword: false
-    });
+        formDataUser.append('type', 'user');
+        if (selectedAvatar && selectedAvatar instanceof File) {
+            formDataUser.append('image', selectedAvatar);
+        }
+        for (const key in formData) {
+            if (formData.hasOwnProperty(key)) {
+                formDataUser.append(key, formData[key]);
+            }
+        }
 
-
-    const handlePasswordChange = () => {
-        // Handle password input changes
+        try {
+            const response = await axios.put(`${url}/api/user/users/${user._id}`, formDataUser, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log(response.data);
+            if (response.data.success) {
+                setUser({ ...formData, avatar: selectedAvatar });
+                localStorage.setItem("user", JSON.stringify(response.data.user));
+                setIsEditing(false);
+                toast.success('Profile updated successfully.');
+                window.location.reload();
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            toast.error('Failed to update profile.');
+            console.error(error);
+        }
+        setIsEditing(false);
     };
-
-    const togglePasswordVisibility = (field) => {
-        setPasswordVisibility((prevState) => ({
-            ...prevState,
-            [field]: !prevState[field]
-        }));
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setSelectedAvatar(file); // Lưu trực tiếp File vào state thay vì base64
+        }
     };
 
     return (
         <div className="my-account">
             <h2>Account Information</h2>
-
-            {/* Tab Navigation */}
+            <div >
+                <img
+                    src={selectedAvatar ? URL.createObjectURL(selectedAvatar) : `${url}/images/${user.avatar}`}
+                    alt="Avatar"
+                    className="profile-pic"
+                />
+                {isEditing && (
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarChange}
+                        className="avatar-input"
+                    />
+                )}
+            </div>
             <div className="tab-navigation">
+
                 <button
                     className={activeTab === 'personal' ? 'active-tab' : ''}
                     onClick={() => setActiveTab('personal')}
@@ -84,19 +131,17 @@ const MyAccount = () => {
                 </button>
             </div>
 
-            {/* Tab Content */}
             {activeTab === 'personal' && (
-                <form>
-                    {/* Personal Data Section */}
+                <form onSubmit={handleFormSubmit}>
                     <div className="personal-data">
                         <h3>Personal Data</h3>
-                        <label>Full Name</label>
+                        <label>Name</label>
                         <input
                             type="text"
-                            name="fullName"
-                            value={formData.fullName}
+                            name="name"
+                            value={formData.name}
                             onChange={handleInputChange}
-                            disabled={!isEditing} // Disable nếu không ở trạng thái edit
+                            disabled={!isEditing}
                         />
 
                         <label>Gender</label>
@@ -104,51 +149,42 @@ const MyAccount = () => {
                             name="gender"
                             value={formData.gender}
                             onChange={handleInputChange}
-                            disabled={!isEditing} // Disable nếu không ở trạng thái edit
+                            disabled={!isEditing}
                         >
                             <option value="">Select Gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                         </select>
 
-                        <label>Birthdate</label>
-                        <input
-                            type="date"
-                            name="birthdate"
-                            value={formData.birthdate}
-                            onChange={handleInputChange}
-                            disabled={!isEditing} // Disable nếu không ở trạng thái edit
-                        />
-
-                        <label>City of Residence</label>
+                        <label>Date of Birth</label>
                         <input
                             type="text"
-                            name="city"
-                            value={formData.city}
+                            name="date_of_birth"
+                            value={formData.date_of_birth ? new Date(formData.date_of_birth).toISOString().split('T')[0] : ''}
                             onChange={handleInputChange}
-                            disabled={!isEditing} // Disable nếu không ở trạng thái edit
+                            disabled={!isEditing}
+
                         />
-                        {/* Mobile Number Section */}
-                    <div className="mobile-section">
-                        <label>Mobile Number</label>
-                        <p>You may use up to 3 mobile numbers.</p>
-                        {mobileNumbers.map((number, index) => (
-                            <div key={index}>
-                                <input
-                                    type="text"
-                                    value={number}
-                                    onChange={(e) => handleMobileChange(e, index)}
-                                    placeholder="Enter mobile number"
-                                    disabled={!isEditing} // Disable nếu không ở trạng thái edit
-                                />
-                            </div>
-                        ))}
-                        {isEditing && (
-                            <button type="button" onClick={addMobileNumber}>
-                                + Add Mobile Number
-                            </button>
-                        )}
-                    </div>
+
+                        <label>Address</label>
+                        <input
+                            type="text"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleInputChange}
+                            disabled={!isEditing}
+                        />
+
+                        <label>Phone Number</label>
+                        <input
+                            type="text"
+                            name="phone_number"
+                            value={formData.phone_number}
+                            onChange={handleInputChange}
+                            placeholder="Enter phone number"
+                            disabled={!isEditing}
+                        />
+
                         {!isEditing ? (
                             <button type="button" onClick={toggleEdit} className="edit-btn">
                                 Edit
@@ -165,21 +201,18 @@ const MyAccount = () => {
                         )}
                     </div>
 
-                    {/* Email Section */}
                     <div className="email-section">
                         <h3>Email</h3>
-                        
-                                <input
-                                    type="email"
-                                    value={email}
-                                    disabled={true} // Không cho phép thay đổi email
-                                />
-                       
+                        <input
+                            type="email"
+                            value={user.email}
+                            disabled={true}
+                            readOnly
+                        />
                     </div>
                 </form>
             )}
 
-            {/* Reset Password Tab */}
             {activeTab === 'password' && (
                 <form className="reset-password">
                     <h3>Reset Password</h3>
@@ -187,36 +220,36 @@ const MyAccount = () => {
                     <label>Current Password</label>
                     <div className="password-input">
                         <input
-                            type={passwordVisibility.currentPassword ? 'text' : 'password'}
+                            type="password"
                             name="currentPassword"
-                            onChange={handlePasswordChange}
+                        // onChange={handlePasswordChange} // Implement password handling as needed
                         />
-                        <button type="button" className="toggle-password" onClick={() => togglePasswordVisibility('currentPassword')}>
-                            {passwordVisibility.currentPassword ? 'Hide' : 'Show'}
+                        <button type="button" className="toggle-password">
+                            Show/Hide
                         </button>
                     </div>
 
                     <label>New Password</label>
                     <div className="password-input">
                         <input
-                            type={passwordVisibility.newPassword ? 'text' : 'password'}
+                            type="password"
                             name="newPassword"
-                            onChange={handlePasswordChange}
+                        // onChange={handlePasswordChange} // Implement password handling as needed
                         />
-                        <button type="button" className="toggle-password" onClick={() => togglePasswordVisibility('newPassword')}>
-                            {passwordVisibility.newPassword ? 'Hide' : 'Show'}
+                        <button type="button" className="toggle-password">
+                            Show/Hide
                         </button>
                     </div>
 
                     <label>Confirm New Password</label>
                     <div className="password-input">
                         <input
-                            type={passwordVisibility.confirmPassword ? 'text' : 'password'}
+                            type="password"
                             name="confirmPassword"
-                            onChange={handlePasswordChange}
+                        // onChange={handlePasswordChange} // Implement password handling as needed
                         />
-                        <button type="button" className="toggle-password" onClick={() => togglePasswordVisibility('confirmPassword')}>
-                            {passwordVisibility.confirmPassword ? 'Hide' : 'Show'}
+                        <button type="button" className="toggle-password">
+                            Show/Hide
                         </button>
                     </div>
 

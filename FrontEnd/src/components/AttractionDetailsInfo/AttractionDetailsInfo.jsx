@@ -3,12 +3,12 @@
 import './AttractionDetailsInfo.css'
 import { useState, useContext, useEffect } from 'react'
 import ImagesModal from '../ImagesModal/ImagesModal';
-import {StoreContext} from '../../Context/StoreContext'
-import {toast as Toast} from 'react-toastify'
+import { StoreContext } from '../../Context/StoreContext'
+import { toast as Toast } from 'react-toastify'
 import axios from 'axios'
 
 
-const AttractionDetailsInfo = ({serviceId}) => {
+const AttractionDetailsInfo = ({ serviceId }) => {
     const { url } = useContext(StoreContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImageIndex, setSelectedImageIndex] = useState('');
@@ -22,7 +22,7 @@ const AttractionDetailsInfo = ({serviceId}) => {
     // Close the Modal
     const closeModal = () => {
         setIsModalOpen(false);
-       
+
     };
 
     useEffect(() => {
@@ -44,7 +44,7 @@ const AttractionDetailsInfo = ({serviceId}) => {
         fetchAttraction();
     }, [serviceId, url]);
 
-        
+
     if (!attraction) {
         return <p>Loading...</p>;
     }
@@ -56,21 +56,21 @@ const AttractionDetailsInfo = ({serviceId}) => {
                 <p>Gothenburg ★★★★☆ (348 reviews)</p>
 
                 <div className="gallery">
-                    <img src={`${url}/images/${attraction.images[0]}`}  alt="Main" className="main-img" />
+                    <img src={`${url}/images/${attraction.images[0]}`} alt="Main" className="main-img" />
                     <div className="thumbnails">
                         {attraction.images.map((image, index) => (
-                            <img 
-                                key={index} 
+                            <img
+                                key={index}
                                 src={`${url}/images/${image}`}
-                                alt={`Thumb ${index + 1}`} 
-                                onClick={() => openModal(index+1)} 
+                                alt={`Thumb ${index + 1}`}
+                                onClick={() => openModal(index + 1)}
                             />
                         ))}
                     </div>
                 </div>
 
-                 {/* Features */}
-                 <div className="features">
+                {/* Features */}
+                <div className="features">
                     {attraction.amenities.map((amenity, index) => (
                         <p key={index}>✔️ {amenity}</p>
                     ))}
@@ -98,49 +98,8 @@ const AttractionDetailsInfo = ({serviceId}) => {
                 </div>
             </div>
 
-            {/* Right Column: Booking Form */}
-            <div className="booking-form">
-                <form >
-                    <h2>Booking</h2>
 
-                    <label htmlFor="from">From</label>
-                    <input
-                        type="date"
-                        id="from"
-                        onChange={(e) => setFromDate(e.target.value)}
-                    />
 
-                    <label htmlFor="to">To</label>
-                    <input
-                        type="date"
-                        id="to"
-                        onChange={(e) => setToDate(e.target.value)}
-                    />
-
-                    <label htmlFor="guests">No. of Guests</label>
-                    <select
-                        id="guests"
-                        // eslint-disable-next-line no-undef
-                        onChange={(e) => setGuests(e.target.value)}
-                    >
-                        <option value="1">1 adult</option>
-                        <option value="2">2 adults</option>
-                    </select>
-
-                    <div className="total-price">
-                        <h3>Subtotal: $78.90</h3>
-                    </div>
-
-                    <button type="submit" className="book-btn">Confirm Booking</button>
-                    <button type="button" className="wishlist-btn" onClick={() => alert('Saved to wishlist')}>
-                        Save to Wishlist
-                    </button>
-                    <button type="button" className="share-btn" onClick={() => alert('Shared the activity')}>
-                        Share the Activity
-                    </button>
-                </form>
-            </div>
-        
             {/* Modal for displaying clicked images */}
             <ImagesModal
                 isOpen={isModalOpen}

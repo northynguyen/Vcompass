@@ -5,32 +5,27 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 
-const FoodServiceCards = () => {
+const FoodServiceCards = (foodServicesFound) => {
     const { url } = useContext(StoreContext);
     const [foodService, setFoodService] = useState([]);
     const navigate = useNavigate();
+
     useEffect(() => {
-        const fetchFoodService = async () => {
-            try {
-                const response = await axios.get(`${url}/api/foodservices`, { params: { status: 'active' } });
-                setFoodService(response.data.foodService);
-                console.log(response.data);
-            } catch (error) {
-                console.error('Error fetching attractions:', error);
-            }
-        };
-        fetchFoodService();
-    }, [url]);
+        setFoodService(foodServicesFound.foodServicesFound || []);
+    }, [foodServicesFound]);
+
     const onClick = (serviceId) => {
         const encryptedServiceId = CryptoJS.AES.encrypt(serviceId, 'mySecretKey').toString();
         const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
-        navigate(`/place-details/attraction/${safeEncryptedServiceId}`);
+        navigate(`/place-details/food/${safeEncryptedServiceId}`);
         window.scrollTo(0, 0);
     };
     return (
         <div className="accomodation-cards">
             <h2>Danh sách nhà hàng</h2>
+
             <div className="card-list">
+                {foodService.length === 0 && <p>Không tìm thấy nhà hàng</p>}
                 {foodService.map((item) => {
                     // Lấy giá thấp nhất và cao nhất từ dữ liệu
                     const minPrice = item.price?.minPrice || 0;

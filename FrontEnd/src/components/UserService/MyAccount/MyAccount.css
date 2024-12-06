@@ -1,8 +1,19 @@
-
-
 .my-account .tab-navigation {
     display: flex;
     margin-bottom: 20px;
+}
+
+.my-account .profile-pic {
+    width: 150px;
+    height: 150px;
+    background-color: #007bff;
+    border-radius: 10px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px auto;
+    font-size: 20px;
 }
 
 .my-account .tab-navigation button {
@@ -19,7 +30,7 @@
     color: white;
 }
 
-.my-account .personal-data, 
+.my-account .personal-data,
 .my-account .reset-password {
     padding: 20px;
     border: 1px solid #ddd;
@@ -32,7 +43,7 @@
     margin: 10px 0 5px;
 }
 
-.my-account input, 
+.my-account input,
 .my-account select {
     width: 100%;
     padding: 8px;
@@ -41,7 +52,8 @@
     border-radius: 4px;
 }
 
-.my-account .save-btn, .my-account .edit-btn ,
+.my-account .save-btn,
+.my-account .edit-btn,
 .my-account .cancel-btn {
     padding: 10px 20px;
     margin-right: 10px;
@@ -50,7 +62,7 @@
     background-color: #007bff;
     color: white;
     border-radius: 5px;
-    
+
 }
 
 .my-account .cancel-btn {
@@ -67,7 +79,7 @@
 
 }
 
-.mobile-section  button{
+.mobile-section button {
     padding: 10px 20px;
     margin-right: 10px;
     border: none;
@@ -80,6 +92,7 @@
     font-size: 14px;
     color: #e15959;
 }
+
 /* Email and Mobile Sections */
 .my-account .email-section h3,
 .my-account .linked-accounts h3 {
@@ -118,13 +131,17 @@
 .password-input {
     display: flex;
     align-items: center;
-    margin-bottom: 10px; /* Optional: add space between input fields */
+    margin-bottom: 10px;
+    /* Optional: add space between input fields */
 }
 
 .password-input input {
-    flex: 1; /* Make input take up available space */
-    margin-right: 10px; /* Space between input and button */
-    max-width: 80%; /* Optional: set maximum width of input field */
+    flex: 1;
+    /* Make input take up available space */
+    margin-right: 10px;
+    /* Space between input and button */
+    max-width: 80%;
+    /* Optional: set maximum width of input field */
 }
 
 .password-input .toggle-password {
@@ -133,9 +150,11 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     cursor: pointer;
-    align-self: flex-start; /* Align toggle-password to the left */
+    align-self: flex-start;
+    /* Align toggle-password to the left */
 }
 
 .password-input .toggle-password:hover {
-    background-color: #e0e0e0; /* Change background on hover */
+    background-color: #e0e0e0;
+    /* Change background on hover */
 }

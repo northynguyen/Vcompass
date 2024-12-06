@@ -61,7 +61,29 @@ const AttractionDetails = () => {
     );
 
     const mapRef = useRef();
-    const availableAmenities = ["Free Wi-Fi", "Outdoor seating", "Live music", "Parking", "Wheelchair access", "Pets allowed"];
+    const availableAmenities = [
+        "Wi-Fi",
+        "Bãi đậu xe",
+        "Dịch vụ 24/7",
+        "Dịch vụ đưa đón sân bay",
+        "Dịch vụ phòng",
+        "Hồ bơi",
+        "Nhà hàng và quầy bar",
+        "Phòng hội nghị",
+        "Trung tâm thể dục thể thao",
+        "Dịch vụ spa và massage",
+        "Khu vui chơi trẻ em",
+        "Tổ chức tour du lịch",
+        "Dịch vụ giặt ủi",
+        "Két an toàn",
+        "Tủ lạnh mini",
+        "Phục vụ ăn sáng",
+        "Dịch vụ đặt vé",
+        "Công viên và khu vườn",
+        "Truyền hình cáp và truyền hình vệ tinh",
+        "Dịch vụ hỗ trợ khách hàng"
+    ];
+
     const vietnamProvinces = [
         "An Giang", "Bà Rịa - Vũng Tàu", "Bắc Giang", "Bắc Kạn", "Bến Tre", "Bình Định",
         "Bình Dương", "Bình Phước", "Bình Thuận", "Cà Mau", "Cao Bằng", "Đắk Lắk",
