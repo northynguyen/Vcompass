@@ -7,7 +7,7 @@ import {
   getListFoodService,
   updateFoodService, addReview,
   getAdminGetListByPartner,
-  updateStatusFoodServiceAdmin
+  updateStatusFoodServiceAdmin, getWishlist
 } from "../controllers/foodServiceController.js";
 import authMiddleware from "../middleware/auth.js";
 import { upload } from "../middleware/upload.js";
@@ -16,9 +16,7 @@ const foodServiceRoutes = express.Router();
 
 foodServiceRoutes.get("/", getListFoodService);
 foodServiceRoutes.get("/partner/:partnerId",getListByPartner);
-foodServiceRoutes.post(
-  "/add",
-  authMiddleware,
+foodServiceRoutes.post( "/add", authMiddleware,
   upload.fields([
     { name: "images", maxCount: 5 },
     { name: "menuImages", maxCount: 5 },
@@ -26,10 +24,7 @@ foodServiceRoutes.post(
   createFoodService
 );
 
-foodServiceRoutes.post(
-  "/update",
-  authMiddleware,
-  upload.fields([
+foodServiceRoutes.post( "/update",authMiddleware,upload.fields([
     { name: "images", maxCount: 5 },
     { name: "menuImages", maxCount: 5 },
   ]),
@@ -39,5 +34,6 @@ foodServiceRoutes.put("/:foodServiceId", updateStatusFoodServiceAdmin);
 foodServiceRoutes.post("/delete", authMiddleware, deleteFoodService);
 foodServiceRoutes.get("/:id", getFoodServiceById);
 foodServiceRoutes.post("/addReview/:id", addReview);
+foodServiceRoutes.get("/user/get/wishList",authMiddleware, getWishlist);
 
 export default foodServiceRoutes;

@@ -6,41 +6,107 @@ import { FaBell } from "react-icons/fa"; // Importing Bell icon from react-icons
 import { StoreContext } from '../../Context/StoreContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import {io} from 'socket.io-client'
+
 const Header = () => {
   // State to handle the visibility of the profile popup
   const [isProfilePopupVisible, setProfilePopupVisible] = useState(false);
   const [isNotificationsVisible, setNotificationsVisible] = useState(false); // State for notifications dropdown
   const menuRef = useRef(null);
   const notificationRef = useRef(null); // Reference for the notifications dropdown
-  const { token, setToken, admin } = useContext(StoreContext);
+  const { token, setToken, admin, url } = useContext(StoreContext);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
   // Sample notifications array
-  const notifications = [
-    {
-      id: 1,
-      user: "Tuan Kùng",
-      content: "đã gắn thẻ bạn và những người khác vào một ảnh trong THANH LÝ UNIQLO CHÍNH HÃNG",
-      image: "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-1/322550024_839445640689536_4961462336093581748_n.jpg?stp=cp0_dst-jpg_s40x40&_nc_cat=105&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeHL1GYVZ9WwyqLejlMn2ntK545RmbWPU9HnjlGZtY9T0U98Wje6cSi2T1vblvEu6lorGjsDzFxUXt5-FFnKWQDv&_nc_ohc=n2W3pUe425MQ7kNvgGaV_YJ&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=ADaDCAF8IkQoCPdMcRHB6Hu&oh=00_AYBlG5v-cIX696vGJRMk6l8WShxIml3hrt5Y-wINXWvYnA&oe=6703CA30",
-      time: "13 hours ago",
-      isUnread: true,
-    },
-    {
-      id: 2,
-      user: "Tien Vu",
-      content: "đã gắn thẻ bạn vào một ảnh trong Cộng Đồng Fan Leo Messi Tại Việt Nam",
-      image: "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-1/264778127_3108269189497712_7784999328014109379_n.jpg?stp=cp0_dst-jpg_s40x40&_nc_cat=105&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeEN5b4W_dA3NQNYQiEhCYLeMRj4OtVoeDYxGPg61Wh4NjEoOgbX_Iar6Y7GxoM6-cAu4qtMEBEhzLYlcW0CEkAz&_nc_ohc=V_1LB3RAZdYQ7kNvgG7arNl&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=ADaDCAF8IkQoCPdMcRHB6Hu&oh=00_AYBcsTFX5BmA_5k8j7PwXXgfrCa-BH911L2fIgiYJJjYTw&oe=6703C571",
-      time: "1 ngày trước",
-      isUnread: true,
-    },
-    {
-      id: 3,
-      user: "LEGO - Leading Gen Organization",
-      content: "đã nhắc đến bạn và những người khác trong Project X",
-      image: "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-1/455344148_1632076224032785_2241770548559965588_n.jpg?stp=cp0_dst-jpg_s40x40&_nc_cat=108&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeGKQk-2I9PBJ69Zj6_gY0ELS-86aMTLaDRL7zpoxMtoNK3LIGavXHLsVFJMtdpaBWKwiL3QfKDSmFDs1vUyvkq2&_nc_ohc=1gSfi-v1HJ0Q7kNvgFwn-5W&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=ADaDCAF8IkQoCPdMcRHB6Hu&oh=00_AYA6Qz7V0l2bX8JKHoSQsxxxdSxJgAIOl48nAPNJtQhPlw&oe=6703C128",
-      time: "2 ngày trước",
-      isUnread: false,
-    },
-  ];
+  
+
+  const handleNotificationClick = async (id) => {
+    try {
+      const response = await axios.put(`${url}/api/notifications/${id}`, 
+        { status: "read" }, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      if (response.status === 200) {
+        toast.success("Thành công!");
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((notification) =>
+            notification._id === id ? { ...notification, status: "read" } : notification
+          )
+        );
+        setUnreadCount((prevCount) => prevCount - 1);
+      }
+      else {
+        toast.error("Không thể cập nhật trạng thái thông báo!");
+      }
+     
+    } catch (error) {
+      console.error("Error updating notification status:", error);
+      toast.error("Không thể cập nhật trạng thái thông báo!");
+    }
+  };
+
+  const fetchNotifications = async () => {
+    try {
+      setLoading(true); // Bật trạng thái loading
+      const response = await axios.get(`${url}/api/notifications/admin`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Gửi token để xác thực nếu cần
+        },
+      });
+      setNotifications(response.data.notifications); 
+      setUnreadCount(response.data.notifications.filter(notification => notification.status === "unread").length); 
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      toast.error("Không thể tải thông báo!");
+    } finally {
+      setLoading(false); // Tắt trạng thái loading
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      fetchNotifications();
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (!admin?._id) return;
+  
+    console.log("Connecting to socket...");
+    const socket = io("http://localhost:4000");
+  
+    socket.on(`admin`, (notification) => {
+      console.log("Received notification:", notification);
+      setNotifications((prev) => [notification, ...prev]); // Cập nhật danh sách thông báo
+      setUnreadCount((prev) => prev + 1); 
+      toast.info(
+        <div className="custom-toast">
+          <h4>🔔 {notification.nameSender} </h4>
+          <p>{notification.content}</p>
+          <small>{new Date(notification.createdAt).toLocaleString()}</small>
+        </div>,
+        {
+          autoClose: 5000,
+          pauseOnHover: true,
+          theme: "light",
+          position: "top-right",
+        });
+    });
+  
+    // Ngắt kết nối khi component unmounts
+    return () => {
+      socket.disconnect();
+      console.log("Disconnected from socket");
+    };
+  }, [url, admin?._id]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -92,31 +158,41 @@ const Header = () => {
 
       {/* Right section (Icons and User Profile) */}
       <div className="header-right">
-        {/* Notification Icon with Badge */}
-        <div className="notification-container">
-          <button className="icon-button" onClick={toggleNotifications}>
-            <FaBell className="bell-icon" />
-            <span className="notification-badge">{notifications.length}</span> {/* Red badge with the number of notifications */}
-          </button>
+         <div className="notification-container">
+              <button className="icon-button" onClick={toggleNotifications}>
+                <FaBell className="bell-icon" />
+                {unreadCount > 0 && 
+                <span className="notification-badge">
+                  {<span className="unread-count">{unreadCount}</span>}
+                </span>
+                } 
 
-          {/* Notifications Dropdown */}
-          {isNotificationsVisible && (
-            <div className="notifications-dropdown" ref={notificationRef}>
-              <ul className="notifications-list">
-                {notifications.map((notification) => (
-                  <li key={notification.id} className={`notification-item ${notification.isUnread ? 'unread' : ''}`}>
-                    <img src={notification.image} alt={notification.user} className="notification-image" />
-                    <div className="notification-content">
-                      <p><strong>{notification.user}</strong> {notification.content}</p>
-                      <span className="notification-time">{notification.time}</span>
-                    </div>
-                    {notification.isUnread && <span className="unread-dot"></span>}
-                  </li>
-                ))}
-              </ul>
+              </button>
+
+              {/* Notifications Dropdown */}
+              {isNotificationsVisible && (
+                <div className="notifications-dropdown" ref={notificationRef}>
+                  <ul className="notifications-list">
+                    {loading && <p>Loading notifications...</p>}
+                    {!loading && notifications.length === 0 && <p>No notifications</p>}
+                    {notifications.map((notification, index) => (
+                      <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}` } onClick={() =>{ notification.status === 'unread' && handleNotificationClick(notification._id)}}>
+                        <div className="notification-avatar"> 
+                          <img src={notification.imgSender ? notification.imgSender : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
+                          <p><strong>{notification.nameSender ? notification.nameSender : "Admin" }</strong></p>
+                        </div>
+                        <div className="notification-content">
+                          <p> {notification.content}</p>
+                          <span className="notification-time">{new Date(notification.createdAt).toLocaleString()}</span>
+                        </div>
+                        {notification.status === 'unread' && <span className="unread-dot"></span>}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+
 
         {/* Settings Icon */}
         <button className="icon-button">

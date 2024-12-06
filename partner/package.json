@@ -25,7 +25,9 @@
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.26.2",
     "react-tabs": "^6.0.2",
-    "react-toastify": "^10.0.6"
+    "react-toastify": "^10.0.6",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

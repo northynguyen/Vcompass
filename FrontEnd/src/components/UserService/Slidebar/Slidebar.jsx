@@ -28,17 +28,17 @@ const Sidebar = ({ activeTab, onTabChange , img} ) => {
                 <li 
                     className={activeTab === 'booking' ? 'active-tab' : ''} 
                     onClick={() => onClick('booking')}>
-                    <CiViewList /> My Booking
+                    <CiViewList /> Booking của tôi
                 </li>
                 <li 
                     className={activeTab === 'account' ? 'active-tab' : ''} 
                     onClick={() => onClick('account')}>
-                    <CiSettings /> My Account
+                    <CiSettings /> Tài khoản
                 </li>
                 <li 
                     className={activeTab === 'schedule' ? 'active-tab' : ''} 
                     onClick={() => onClick('schedule')}>
-                    <AiOutlineSchedule />  My Schedule
+                    <AiOutlineSchedule /> Đã lưu 
                 </li>
                 <hr />
                 <li  className={activeTab === 'logout' ? 'active-tab' : ''} 

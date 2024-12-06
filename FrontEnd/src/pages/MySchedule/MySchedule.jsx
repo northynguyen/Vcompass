@@ -6,8 +6,8 @@ import "./MySchedule.css";
 import { FaTrash, FaGlobe, FaUserSecret } from "react-icons/fa";
 import ConfirmDialog from "../../components/Dialog/ConfirmDialog";
 
-const MySchedule = () => {
-  const { url, token } = useContext(StoreContext);
+const MySchedule = ({setShowLogin}) => {
+  const { url, token, user } = useContext(StoreContext);
   const [schedules, setSchedules] = useState([]);
   const [wishlists, setWishlists] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +25,11 @@ const MySchedule = () => {
     setActiveScheduleId((prev) => (prev === scheduleId ? null : scheduleId));
   };
 
-  // Hide popup when clicking outside
+  useEffect(() => {
+    if(!token){
+      setShowLogin(true);
+    }
+  })
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (popupRef.current && !popupRef.current.contains(event.target)) {
@@ -39,7 +43,6 @@ const MySchedule = () => {
     };
   }, []);
 
-  // Fetch schedules and wishlists
   useEffect(() => {
     const fetchSchedulesData = async () => {
       try {
@@ -73,7 +76,28 @@ const MySchedule = () => {
     if (token) fetchSchedulesData();
   }, [token, url, isConfirmOpen]);
 
-  // Handle delete schedule
+  const calculateDaysAndNights = (startDateStr, endDateStr) => {
+    const parseDate = (dateStr) => {
+      const [day, month, year] = dateStr.split('-').map(Number);
+      return new Date(year, month - 1, day);
+    };
+  
+    const startDate = parseDate(startDateStr);
+    const endDate = parseDate(endDateStr);
+  
+    // Calculate the difference in time (in milliseconds)
+    const durationInMs = endDate - startDate;
+  
+    if (durationInMs <= 0) {
+      return "Ngày kết thúc phải sau ngày bắt đầu.";
+    }
+  
+    // Convert milliseconds to days
+    const days = Math.floor(durationInMs / (1000 * 60 * 60 * 24));
+  
+    return `${days}`;
+  };
+  
   const handleDeleteSchedule = async () => {
     try {
       const response = await axios.delete(
@@ -244,20 +268,41 @@ const MySchedule = () => {
                 className="schedule-card"
                 onClick={() => navigate(`/schedule-view/${schedule._id}`)}
               >
-                <img
-                  src="https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"
-                  alt={schedule.scheduleName}
-                />
+                <div className="schedule-header">
+                  <img
+                    src={schedule.image ? `${url}/${schedule.image}` : "https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"}
+                    alt={schedule.scheduleName}
+                  />
+                  <div className="schedule-date">
+                    <h3> {calculateDaysAndNights(schedule.dateStart, schedule.dateEnd)}</h3>
+                    <span>Ngày</span>
+                   </div>
+                 
+                 </div>
+               
                 <div className="schedule-info">
                   <h3>{schedule.scheduleName}</h3>
-                  <p>Địa điểm: {schedule.address}</p>
+                  <p> Địa điểm: {schedule.address}</p>
                   <p>Ngày bắt đầu: {schedule.dateStart}</p>
+                  <p>Ngày kết thúc: {schedule.dateEnd}</p>
+                </div>
+
+                <div className="schedule-user"> 
+                  <img
+                    className="avatar"
+                    src={ schedule.idUser.avatar ? `${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                    alt={schedule.userName}
+                  />
+                  <p>{schedule.idUser.name || "Unknown User"}</p>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <p>Không có lịch trình đã lưu.</p>
+          <>
+            <p>Không có lịch trình đã lưu.</p>
+            <a href="/searchSchedule">Tìm kiếm lịch trình </a>
+          </>
         )}
       </section>
 

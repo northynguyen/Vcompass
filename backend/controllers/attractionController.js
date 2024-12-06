@@ -1,5 +1,6 @@
 import Attraction from '../models/attraction.js'; // Import the Attraction model
 import mongoose from "mongoose"; // Import mongoose (though it's not used here)
+import userModel from "../models/user.js";
 import fs from "fs";
 // Controller function to get all attractions
 const getAttractions = async (req, res) => {
@@ -185,6 +186,25 @@ const addReview = async (req, res) => {
     }
 };
 
+const getAttracWishList = async (req, res) => {
+    const { userId } = req.body; 
 
-export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview, deleteAttraction }; // Export the getAttractions;
+    try {
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        const wishListAttractions = await Attraction.find({ _id: { $in: user.favorites.attraction } });
+        if (!wishListAttractions.length) {
+            return res.json({ success: true, message: "No attractions found in wish list", attractions: [] });
+        }
+
+        res.status(200).json({ success: true, attractions: wishListAttractions });
+    } catch (error) {
+        console.error("Error retrieving wish list attractions:", error);
+        res.status(500).json({ success: false, message: "Error retrieving wish list attractions" });
+    }
+}
+export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview, deleteAttraction,getAttracWishList }; // Export the getAttractions;
 

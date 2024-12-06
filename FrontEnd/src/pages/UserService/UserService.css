@@ -2,8 +2,8 @@
 
 .user-service-container {
     display: flex;
-    max-width: 1200px;
-    min-width: 1200px;
+    max-width: 70%;
+    min-width: 70%;
     margin: 0 auto;
    
  
@@ -11,6 +11,14 @@
 .content {
     flex-grow: 1;
     padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 80vh;
+    max-width: 68%;
+    margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 50px;
 }
 
 

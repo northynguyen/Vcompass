@@ -75,9 +75,7 @@ const SlideBar = ({ type }) => {
 
 
     const onClick = (serviceId) => {
-        console.log(serviceId);
         const encryptedServiceId = CryptoJS.AES.encrypt(serviceId, 'mySecretKey').toString();
-        console.log('Encrypted Service ID:', encryptedServiceId);
         const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
         navigate(`/place-details/${type}/${safeEncryptedServiceId}`);
         window.scrollTo(0, 0);
@@ -154,12 +152,13 @@ const SlideBar = ({ type }) => {
 
     return (
         <div className="slidebar-container">
-            <h2 className="title">Những {getTypeInVietnamese(type)} phổ biến</h2>
+            <h3 className="title">Những {getTypeInVietnamese(type)} phổ biến</h3>
             {popularServices.length === 0 && <p>No {type} services found.</p>}
             <Swiper
                 modules={[Navigation]}
                 spaceBetween={20}
                 slidesPerView={4}
+                
                 navigation
                 className="custom-swiper"
             >

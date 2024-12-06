@@ -10,8 +10,8 @@
   align-items: center;
   gap: 5px;
   margin-bottom: 30px;
-  margin-left: 40px;
-  height: fit-content;
+  margin-left: 10px;
+  padding-top:10px;
 }
 
 .card-header {
@@ -152,6 +152,7 @@
 
 .card-footer {
   display: flex;
+  margin-top: auto;
   justify-content: space-between;
   align-items: center;
   padding: 15px 15px;
@@ -255,6 +256,7 @@ label.action-text {
   position: relative;
   color: #fff;
   height: 400px;
+  margin: 0 auto;
   margin-bottom: 50px;
 }
 
@@ -426,6 +428,7 @@ label.action-text {
 
 /* Container for the title and button */
 .pricing-box {
+  margin-top: auto;
   width: 95%;
   background-color: #fafafa;
   border-radius: 10px;
@@ -492,6 +495,7 @@ label.action-text {
 }
 
 .attractions-box {
+  margin-top: auto;
   padding: 0 10px 0 10px;
   border-radius: 8px;
   margin-bottom: 10px;
@@ -545,4 +549,47 @@ label.action-text {
   color: #555;
   margin: 0;
   word-break: break-word;
+}
+
+.heart-container {
+ position: relative;
+}
+
+.heart-container .heart-icon {
+ position: absolute;
+ top: 0;
+ right: 0;
+ font-size: 20px;
+ color: red;
+ cursor: pointer;
+ border:none;
+ padding: 10px 10px 6px 10px;
+ border-radius: 50%;
+ transition: color 0.3s ease;
+}
+
+.heart-container .heart-icon:hover {
+ color: #ff4d4f;
+ background-color: rgba(255, 255, 255, 0.8);
+ transition: scale 0.3s ease;
+ transform: scale(1.1);
+}
+
+.heart-container .heart-icon-empty {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 20px;
+  color: rgb(255, 255, 255); /* White icon color */
+  border: none;
+  cursor: pointer;
+  padding: 10px 10px 6px 10px;
+  border-radius: 50%;
+  transition: color 0.3s ease, background-color 0.3s ease;
+  background-color: rgba(0, 0, 0, 0.3); /* Light background for contrast */
+}
+
+.heart-container .heart-icon-empty:hover {
+  color: rgb(255, 0, 0); /* Red color on hover */
+  background-color: rgba(255, 0, 0, 0.2); /* Slight red background on hover */
 }

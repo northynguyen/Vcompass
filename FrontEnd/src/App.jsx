@@ -16,7 +16,7 @@ import Schedule from './pages/Schedule/Schedule'
 import UserService from './pages/UserService/UserService'
 import { ToastContainer } from 'react-toastify';
 import BookingProcess from './pages/Booking/Booking'
-
+import Page404 from '../src/components/Page404/Page404'
 import HomeBooking from './pages/HomeBooking/HomeBooking'
 import HomeAttractions from './pages/HomeAttractions/HomeAttractions';
 import HomeFoodService from './pages/HomeFoodService/HomeFoodService'
@@ -41,11 +41,11 @@ function App() {
           <Route path="/partnership" element={<Partnership />} />
           <Route path="/about" element={<Schedule />} />
           <Route path="/create-schedule" element={<CreateSchedule />} />
-          <Route path="/user-service/*" element={<UserService />} />
+          <Route path="/user-service/*" element={<UserService setShowLogin={setShowLogin} />} />
           <Route path="/booking" element={<HomeBooking />} />
           <Route path="/attractions" element={<HomeAttractions />} />
           <Route path="/foodservices" element={<HomeFoodService />} />
-          <Route path="/my-schedule" element={<MySchedule />} />
+          <Route path="/my-schedule" element={<MySchedule setShowLogin={setShowLogin} />} />
 
           <Route path="/schedule-edit/:id" element={<Schedule mode = {"edit"}/>} />
           <Route path="/schedule-view/:id" element={<Schedule mode = {"view"}/>} />
@@ -53,7 +53,8 @@ function App() {
           <Route path="/searchSchedule" element={<SearchSchedule />} />
           
           <Route path="/booking-process/finalstep" element={<BookingProcess />}/>    
-
+          <Route path="*" element={<Page404 />} />
+          <Route path="/404" element={<Page404 />}/>
         </Routes>
         <Footer />
       </div>

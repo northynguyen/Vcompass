@@ -1,5 +1,5 @@
 .tour-search-container {
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 }
 
 .home-container {
@@ -10,10 +10,24 @@
 
 .post-card-page {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
   padding: 16px;
   width: 70%;
   margin: 0 auto;
+}
+
+.post-card-header {
+  padding: 10px;
+  text-align: center;
+}
+
+.post-card-header h3 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  letter-spacing: 2px; /* Khoảng cách giữa các chữ cái */
+  margin: 0; /* Loại bỏ khoảng trống mặc định */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Hiệu ứng bóng chữ */
 }
 
 .post-card-container {
@@ -235,6 +249,12 @@
   font-size: medium;
 }
 
+.home-header .header-menu a:hover {
+  color: #b25a09;
+  text-decoration: none;
+  transform: scale(1.1);
+  transition: transform 0.3s ease-in-out;
+}
 .home-header .header .logo {
   color: rgb(255, 255, 255);
   width: 150px;
@@ -256,4 +276,51 @@
 .search-title {
   width: 40%;
   text-align: left;
+}
+
+.city-slider {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+}
+
+.swiper-pagination-bullet {
+  background: #007bff;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #c1c0c0 !important;
+  font-weight: bold;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  color: #353637 !important;
+}
+
+.post-card-recommendations {
+  justify-content: space-around;
+  padding: 16px;
+  width: 70%;
+  margin: 0 auto;
+}
+
+.post-card-recommendations__container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  margin: 0 auto;
+  margin-top: 20px;
+
+}
+
+.post-card-recommendations__message {
+  text-align: center;
+  color: #777;
+  font-size: 1.2rem;
 }

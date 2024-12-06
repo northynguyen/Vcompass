@@ -215,10 +215,6 @@ const MapViewWithRoute = ({ activities, scheduleID }) => {
   );
 };
 
-
-
-
-
 const Activity = ({
   activity,
   setCurrentActivity,
@@ -440,7 +436,6 @@ const convertDateFormat = (date) => {
   const [day, month, year] = date.split("-");
   return `${day}-${month}-${year}`;
 };
-
 
 
 const InforScheduleMedal = ({
@@ -830,9 +825,6 @@ const InforScheduleMedal = ({
   );
 };
 
-
-
-
 const DateSchedule = ({
   schedule,
   setInforSchedule,
@@ -1081,8 +1073,22 @@ const Schedule = ({ mode }) => {
       console.log("mode:", mode);
       setDateStart(convertDateFormat(inforSchedule.dateStart));
       setDateEnd(convertDateFormat(inforSchedule.dateEnd));
+      
     }
   }, [loading ]);
+
+  useEffect(() => {
+    setLoading(true);
+    if (inforSchedule ) {
+      if( mode==="edit" && inforSchedule.idUser !== user?._id )
+        {      
+          setLoading(false);    
+          window.location.href = "/404";
+        }
+      setLoading(false);
+    }
+
+  }, [inforSchedule, mode]);
 
   useEffect(() => {
     if (inforSchedule && mode === "edit") {
@@ -1147,7 +1153,7 @@ const Schedule = ({ mode }) => {
       navigate(`/schedule-edit/${scheduleId}`);
       toast.success("Lấy thành công");
     } else {
-      console.error("Error adding schedule:", response.data.message);
+      toast.error(response.data.message);
     }
   };
   const extractExpenses = (tour) => {
@@ -1156,9 +1162,9 @@ const Schedule = ({ mode }) => {
       day.activity.forEach((activity) => {
         const expense = {
           id: Math.random(),
-          name: activity.title,
           location: tour.address,
           cost: activity.cost,
+          costDescription: activity.costDescription,
           icon: activity.imgSrc,
         };
         expenses.push(expense);

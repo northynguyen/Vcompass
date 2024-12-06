@@ -66,23 +66,22 @@ const Notification = ({ userData, accommodationData, foodserviceData }) => {
         }
     }, [userData, accommodationData, foodserviceData]); // Chạy lại khi có dữ liệu mới
 
-    const getTypeNo = () => {
-        if (userData) {
-            return userData.status === "blocked" ? "blockedUser" : "activeUser";
-        }
-        if (accommodationData) {
-            return accommodationData.status + "Accommodation";
-        }
-        if (foodserviceData) {
-            return foodserviceData.status + "FoodService";
-        }
-        return "normal";
-    };
+    // const getTypeNo = () => {
+    //     if (userData) {
+    //         return userData.status === "blocked" ? "blockedUser" : "activeUser";
+    //     }
+    //     if (accommodationData) {
+    //         return accommodationData.status + "Accommodation";
+    //     }
+    //     if (foodserviceData) {
+    //         return foodserviceData.status + "FoodService";
+    //     }
+    //     return "normal";
+    // };
 
     // Xử lý gửi form
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const typeNo = getTypeNo();
 
         try {
             if (accommodationData) {
@@ -91,7 +90,9 @@ const Notification = ({ userData, accommodationData, foodserviceData }) => {
                     idSender: admin._id,
                     idReceiver: accommodationData.partnerId,
                     content,
-                    typeNo,
+                    typeNo: "partner",
+                    nameSender: admin.name,
+                    imgSender: admin.img || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
                 });
 
                 // Cập nhật trạng thái của chỗ ở
@@ -108,7 +109,9 @@ const Notification = ({ userData, accommodationData, foodserviceData }) => {
                     idSender: admin._id,
                     idReceiver: foodserviceData.partnerId,
                     content,
-                    typeNo,
+                    typeNo: "partner",
+                    nameSender: admin.name || "Admin",
+                    imgSender: admin.img || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
                 });
 
                 // Cập nhật trạng thái của dịch vụ ăn uống
@@ -125,7 +128,10 @@ const Notification = ({ userData, accommodationData, foodserviceData }) => {
                     idSender: admin._id,
                     idReceiver: userData._id,
                     content,
-                    typeNo,
+                    typeNo: userData.type === "user" ? "user" : "partner",  
+                    nameSender: admin.name || "Admin",
+                    imgSender: admin.img || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+
                 });
 
                 // Cập nhật trạng thái người dùng/đối tác

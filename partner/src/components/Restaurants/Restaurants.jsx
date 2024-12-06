@@ -162,20 +162,20 @@ onSubmit={() => { handleSubmit(); }}
                             <div className="popup-content menu-popup-content">
                                 <FaTimes className="close-popup" onClick={closePopup} />
                                 <div className="menu-options">
-                                    {selectedRestaurant.status !== 'unactive' && (
+                                    {selectedRestaurant.status !== 'unActive' && selectedRestaurant.status !== 'block' &&  (
                                         <button onClick={() => { closePopup(); openPopup('lock', selectedRestaurant); }}>
                                             Khóa Nhà Hàng/Quán Nước
                                         </button>
                                     )}
-                                    {selectedRestaurant.status !== 'active' && (
+                                    {selectedRestaurant.status !== 'active' && selectedRestaurant.status !== 'block' && (
                                         <button onClick={() => { closePopup(); openPopup('unlock', selectedRestaurant); }}>
                                             Mở Nhà Hàng/Quán Nước
                                         </button>
                                     )}
-                                    <button onClick={() => { closePopup(); openPopup('edit', selectedRestaurant); }}>
+                                    <button onClick={() => openRoomsTab(selectedRestaurant)}>
                                         Chỉnh Sửa
                                     </button>
-                                    <button onClick={() => { closePopup(); openPopup('view', selectedRestaurant); }}>
+                                    <button onClick={() => openRoomsTab(selectedRestaurant)}>
                                         Xem Chi Tiết
                                     </button>
                                 </div>

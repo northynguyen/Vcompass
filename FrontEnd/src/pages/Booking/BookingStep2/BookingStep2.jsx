@@ -44,6 +44,7 @@ const BookingStep2 = ({ dataSend, roomInfo, bookingInfo }) => {
     e.preventDefault();
     if (validateForm()) {
       navigate('/booking-process/finalstep', { state: { step: 3, dataSend: sendData } });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     else {
       // Nếu có lỗi, focus vào phần đầu của form

@@ -65,7 +65,7 @@ const BookingModal = ({ isOpen, onRequestClose, bookingDetails , onSubmit}) => {
                 </p>
             </div>
 
-            <button className="confirm-button" onClick={() => {alert("Booking confirmed!") , onSubmit}}>
+            <button className="confirm-button" onClick={() =>  onSubmit}>
                 <FaLock />
                 Looks good, complete my booking!
             </button>
@@ -75,11 +75,17 @@ const BookingModal = ({ isOpen, onRequestClose, bookingDetails , onSubmit}) => {
 
 const BookingFinalStep = ({bookingDetails}) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const {url} = useContext(StoreContext);
+    const {url, user} = useContext(StoreContext);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const handleSubmit = async () => {
+        window.scrollTo(0, 0);
+        if(!user){
+            toast.error("Bạn cần đăng nhập để đặt phòng. Vui lòng đăng nhập trên trang chính.");
+            return
+        }
         try {
-            const user = JSON.parse(localStorage.getItem("user"))
+            setLoading(true);           
             const response = await fetch(`${url}/api/bookings/create`, {
                 method: 'POST',
                 headers: {
@@ -109,25 +115,32 @@ const BookingFinalStep = ({bookingDetails}) => {
             });
 
             if (response.ok) {
+                setLoading(false);
+
                 const bookingConfirmation = await response.json();
                 toast.success("Booking created successfully");
                 console.log("Booking created successfully:", bookingConfirmation);
                 navigate('/user-service/booking', { state: { tab: 'booking', send: true }, replace: true });
                 
             } else {
+                setLoading(false);
                 console.error("Failed to create booking:", response.statusText);
                 toast.error("Failed to create booking " );
             }
         } catch (error) {
+            setLoading(false);
             console.error("Error while creating booking:", error);
             toast.error("Error while creating booking " );  
         }
+        
     };
 
 
    
     return (
         <div className="final-step-container">
+           
+    
             <h2 className="title">No payment details required</h2>
             <p>Your payment will be handled by Joi Hospitality - Hoang Anh, so you don’t need to enter any payment details for this booking.</p>
 
@@ -147,7 +160,7 @@ const BookingFinalStep = ({bookingDetails}) => {
 
             <div className="button-container">
                 <button className="button" onClick={() => setModalIsOpen(true)}>Check your booking</button>
-                <button className="button" onClick={handleSubmit} >Complete booking</button>
+                <button className="button" onClick={handleSubmit} disabled={loading}>Complete booking</button>
             </div>
 
             <BookingModal 
@@ -158,6 +171,12 @@ const BookingFinalStep = ({bookingDetails}) => {
             />
 
             <p className="note"><a href="#">What are my booking conditions?</a></p>
+
+            {loading && (
+                <div className="loading-overlay">
+                    <div className="spinner"></div>
+                </div>
+            )}
         </div>
     );
 };

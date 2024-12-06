@@ -118,7 +118,7 @@ const AccommodationBanner = ({ cityName }) => {
         </div>
         <p className="description">{city.description}</p>
         <div className="actions">
-          <button className="book-now" onClick={() => navigate(`/searchSchedule?location=${city.name}`)}>Đặt ngay</button>
+          <button className="book-now" onClick={() => navigate(`/searchSchedule` , { state: { city: city.name } }) }>Đặt ngay</button>
           <i className="fa-solid fa-heart fa-shake book-schedule-icon"></i>
           <i className="fa-solid fa-share fa-shake book-schedule-icon"></i>
         </div>

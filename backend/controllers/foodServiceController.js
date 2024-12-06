@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
 import fs from "fs";
 import FoodService from "../models/foodService.js";
-
+import userModel from "../models/user.js";
+import partnerModel from "../models/partner.js";
+import { name } from "@cloudinary/url-gen/actions/namedTransformation";
+import { createNotification } from "./notiController.js";
 
 const getListFoodService = async (req, res) => {
     try {
@@ -117,7 +120,22 @@ const createFoodService = async (req, res) => {
 
             await newFoodService.save();
         }
+        
+        const partner = await partnerModel.findById(idPartner);
+        if (!partner) {
+            return res.status(404).json({ success: false, message: "Partner not found" });
+        }
 
+        const notificationData = {
+            idSender: idPartner,
+            idReceiver: "admin",
+            type: "admin",
+            content: `Partner ${partner.name} vừa thêm một dịch vụ ăn uống: ${newFoodService.name}`,
+            nameSender: partner.name || "Partner",
+            imgSender: partner.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        };
+
+        await createNotification(global.io, notificationData);
         res.status(201).json({
             success: true,
             message: "Create food service successfully",
@@ -209,7 +227,16 @@ const updateStatusFoodServiceAdmin = async (req, res) => {
 
         // Lưu thay đổi vào database
         await foodService.save();
-
+        // const notificationData = {
+        //     idSender: adminId,
+        //     idReceiver: foodService.idPartner,
+        //     type: "partner",
+        //     content: `Admin vừa ${status === "active" ? "duyệt" : status=== "block" ? "khóa" : "huy"} dịch vụ: ${foodService.name} `,
+        //     nameSender: "Admin",
+        //     imgSender: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        // };
+        // await createNotification(global.io, notificationData);
+        
         res.status(200).json({
             success: true,
             message: "Updated food service status successfully",
@@ -287,6 +314,16 @@ const addReview = async (req, res) => {
             return res.status(404).json({ success: false, message: "Accommodation not found." });
         }
 
+        const notificationData ={ 
+            idSender: reviewData.idUser,
+            idReceiver: foodService.idPartner,
+            nameSender: reviewData.userName,
+            type: "partner",
+            imgSender: reviewData.userImage,
+            content: `${reviewData.userName} đã đánh giá dịch vụ của bạn với điểm ${reviewData.rate} sao.`,
+        }
+
+        await createNotification(global.io, notificationData);
         res.status(200).json({ success: true, message: "Review added successfully.", foodService });
     } catch (error) {
         console.error(error);
@@ -294,4 +331,25 @@ const addReview = async (req, res) => {
     }
 };
 
-export { getListFoodService, getListByPartner, createFoodService, updateFoodService, deleteFoodService, addReview, getAdminGetListByPartner, updateStatusFoodServiceAdmin };
+const getWishlist = async (req, res) => {
+    const { userId } = req.body;
+
+    try {
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        const wishlist = await FoodService.find({ _id: { $in: user.favorites.foodService } });
+        if (!wishlist.length) {
+            return res.status(200).json({ success: true, message: "No food services found in wishlist" , foodServices: []});
+        }
+
+        res.status(200).json({ success: true, foodServices: wishlist });
+    } catch (error) {
+        console.error("Error retrieving wishlist:", error);
+        res.status(500).json({ success: false, message: "Error retrieving wishlist" });
+    }
+};
+
+export { getListFoodService, getListByPartner, createFoodService, updateFoodService, deleteFoodService, addReview, getAdminGetListByPartner, updateStatusFoodServiceAdmin,getWishlist };

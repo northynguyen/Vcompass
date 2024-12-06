@@ -195,6 +195,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   const [option, setOption] = React.useState("Accommodation");
   const [choice, setChoice] = React.useState("List");
   const [cost, setCost] = React.useState("")
+  const [costDes, setCostDes] = React.useState("")
   const [description, setDescription] = React.useState("")
   const [curDes, setCurDes] = React.useState(null)
   const { url } = useContext(StoreContext);
@@ -204,9 +205,11 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
       if (activity) {
         setCurDes(destination)
         setCost(activity.cost)
+        setCostDes(activity.costDescription)
         setDescription(activity.description)
       } else {
         setCurDes(null);
+        setCostDes()
         setCost()
         setDescription()
       }
@@ -252,6 +255,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         imgSrc: curDes.imgSrc || ["default-image"],
         name: curDes.name || "default-name",
         cost: parseInt(cost) || 0,
+        costDescription: costDes? costDes : "",
         description: description,
         timeStart: activity ? activity.timeStart : "00:00",
         timeEnd: activity ? activity.timeEnd : "00:30",
@@ -363,7 +367,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
            
             {
               (curDes || option==="Other") && (
-                <FormAddActivity images={curDes?.images || null} cost={cost} setCost={setCost}
+                <FormAddActivity images={curDes?.images || null} cost={cost} setCost={setCost} costDes={costDes} setCostDes={setCostDes}
                   description={description} setDescription={setDescription} option={option} />
               )
             }
@@ -382,7 +386,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   )
 };
 
-const FormAddActivity = ({ images, cost, setCost, description, setDescription, option }) => {
+const FormAddActivity = ({ images, cost, setCost, description, setDescription, option, costDes, setCostDes }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { url } = useContext(StoreContext);
   const handlePrev = () => {
@@ -401,6 +405,14 @@ const FormAddActivity = ({ images, cost, setCost, description, setDescription, o
       <div className="name-price-container">
         <div className="title-container">
           <label className="expense-sub-title" htmlFor="name-expense">Tên chi phí</label>
+          <input className="input-field"
+            id="name-expense" required
+            name="name"
+            placeholder="Nhập tên chi phí"
+            value={costDes}
+            onChange={(e) => setCostDes(e.target.value)}
+          />
+          <label className="expense-sub-title" htmlFor="des">Chi phí</label>
           <input className="input-field"
             id="name-expense" required
             name="name"

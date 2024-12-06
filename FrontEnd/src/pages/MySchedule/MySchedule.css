@@ -297,6 +297,47 @@
     width: 100%;
     height: 140px;
     object-fit: cover;
+    opacity: 0.5;
+  }
+
+  .schedule-card .schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #000000;
+    position: relative;
+  }
+  
+  .schedule-card .schedule-header h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+  }
+  
+  .schedule-card .schedule-header .schedule-date {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: #666;
+  }
+
+  .schedule-card .schedule-header .schedule-date h3 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 2.5rem;
+    text-align: center;
+  }
+
+  .schedule-card .schedule-header .schedule-date span {
+    margin: 0;
+    color: #ffffff;
+    text-align: center;
   }
   
   .schedule-info {
@@ -315,5 +356,25 @@
     font-size: 1rem;
     color: #666;
     margin-bottom: 6px;
+  }
+
+  .schedule-user {
+    display: flex;
+    align-items: center;
+    margin: 10px
+  }
+
+  .schedule-user img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+    
+  }
+
+  .schedule-user span {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333;
   }
 }

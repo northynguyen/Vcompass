@@ -180,11 +180,10 @@ const Expense = ({ expenses, additionExpenses, setInforSchedule, mode }) => {
           {expenses.map((expense) => (
             <div className="expense-item" key={expense.id}>
               <div className="expense-icon">
-                <img src={expense.icon} alt={expense.name} />
+                <img src="https://png.pngtree.com/png-clipart/20230504/original/pngtree-money-flat-icon-png-image_9138340.png" alt={expense.name} />
               </div>
               <div className="expense-details">
-                <h3>{expense.name}</h3>
-                <p>{expense.location}</p>
+                <h3>{expense.costDescription}</h3>
               </div>
               <div className="expense-cost">
                 <p>{expense.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>

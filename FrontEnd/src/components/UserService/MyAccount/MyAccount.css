@@ -1,11 +1,11 @@
 
 
-.my-account .tab-navigation {
+ .tab-navigation {
     display: flex;
     margin-bottom: 20px;
 }
 
-.my-account .tab-navigation button {
+ .tab-navigation button {
     padding: 10px 20px;
     margin-right: 10px;
     border: none;
@@ -14,7 +14,7 @@
     border-radius: 5px;
 }
 
-.my-account .tab-navigation .active-tab {
+ .tab-navigation .active-tab {
     background-color: #007bff;
     color: white;
 }

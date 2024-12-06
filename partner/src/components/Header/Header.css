@@ -127,15 +127,32 @@
   .notifications-dropdown {
     position: absolute;
     top: 40px;
-    right: -200px;
-    
+    right: -180px;
+    max-height: 400px;
     background-color: rgb(192, 189, 189);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 250px;
     z-index: 2;
+    overflow-y: auto;
   }
   
+  .notifications-dropdown::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .notifications-dropdown::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+  }
+  
+  .notifications-dropdown::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+  .notifications-dropdown .notification-avatar {
+    margin-right: 10px;
+    width: 80px;
+  }
   .notifications-list {
     list-style: none;
     margin: 0;
@@ -226,3 +243,51 @@
     color: rgb(13, 189, 243);
   }
   
+  /* Tùy chỉnh nội dung thông báo */
+.custom-toast {
+  background-color: #fefefe; /* Nền trắng nhẹ */
+  font-family: Arial, sans-serif;
+}
+
+/* Tiêu đề (h4) trong thông báo */
+.custom-toast h4 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #2c3e50; /* Màu chữ đậm */
+}
+
+/* Nội dung thông báo (p) */
+.custom-toast p {
+  margin: 5px 0;
+  color: #555; /* Màu chữ xám */
+  font-size: 1em;
+}
+
+/* Thời gian thông báo (small) */
+.custom-toast small {
+  color: #888; /* Màu chữ nhạt hơn */
+  font-size: 0.9em;
+  display: block;
+  margin-top: 5px;
+}
+
+/* Tùy chỉnh thêm cho Toastify container */
+.Toastify__toast-container {
+  width: 350px; /* Độ rộng container */
+}
+
+/* Thêm hiệu ứng trượt khi hiện thông báo */
+.Toastify__toast--info {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

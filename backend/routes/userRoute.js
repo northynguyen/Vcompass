@@ -16,7 +16,7 @@ import {
     getAllUsers,
     getAllPartners,
     updateUserOrPartner,
-    getAdminById, addtoWishlist, getUserFavoritesWithDetails
+    getAdminById, addtoWishlist, getUserFavoritesWithDetails,getPartnerById, getUserById
 } from "../controllers/userController.js";
 
 const userRoutes = express.Router();
@@ -44,4 +44,7 @@ userRoutes.put('/users/:id', updateUserOrPartner);
 userRoutes.post('/admin/getbyid', authMiddleware, getAdminById);
 userRoutes.post('/user/:userId/addtoWishlist', authMiddleware, addtoWishlist);
 userRoutes.get('/user/favorites-with-details', getUserFavoritesWithDetails);
+
+userRoutes.get('/partner/:id', getPartnerById);
+userRoutes.get('/user/:id', getUserById);
 export default userRoutes;

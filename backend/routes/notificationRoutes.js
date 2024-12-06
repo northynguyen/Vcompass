@@ -2,15 +2,15 @@ import express from "express";
 import {
   addNotification,
   getNotifications,
-  removeNotification,
+  updateNotificationStatus
 } from "../controllers/notiController.js";
 
 const notificationRoutes = express.Router();
 
 notificationRoutes.post("/notifications", addNotification);
 
-notificationRoutes.delete("/notifications", removeNotification);
+notificationRoutes.get("/:idReceiver", getNotifications);
 
-notificationRoutes.get("/notifications", getNotifications);
+notificationRoutes.put("/:id" ,updateNotificationStatus )
 
 export { notificationRoutes };

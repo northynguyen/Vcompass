@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { StoreContext } from "../../Context/StoreContext";
 import axios from "axios";
 import PostCard from "../../components/Poster/PostCard";
@@ -7,16 +7,13 @@ import "./SearchSchedule.css";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const SearchSchedule = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const address = searchParams.get("address");
-  const scheduleName = searchParams.get("scheduleName");
   const { url } = useContext(StoreContext);
-
+  const hasSearchedRef = useRef(false);
   const [schedules, setSchedules] = useState([]);
-  const [addressFilter, setAddressFilter] = useState(address || "");
-  const [scheduleNameFilter, setScheduleNameFilter] = useState(scheduleName || "");
+  const [addressFilter, setAddressFilter] = useState("");
+  const [scheduleNameFilter, setScheduleNameFilter] = useState ("");
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 10000000]);
   const [filters, setFilters] = useState({
@@ -29,14 +26,28 @@ const SearchSchedule = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [schedulesPerPage] = useState(4); // Number of schedules per page
 
+  const city = location.state?.city || "";
+  const name = location.state?.name || "";
+  // Helper function to calculate price
+  const calculateTotalCost = (activities) => {
+    return activities.reduce((sum, day) => {
+      return (
+        sum +
+        day.activity.reduce((acc, act) => {
+          return acc + (act.cost || 0);
+        }, 0)
+      );
+    }, 0);
+  };
+
   // Fetch all schedules when the component is mounted
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
         const response = await axios.get(url + "/api/schedule/getAllSchedule");
         if (response.data.success) {
-          setSchedules(response.data.schedule);
-          setFilteredSchedules(response.data.schedule);
+          setSchedules(response.data.schedules); // Ensure correct response property
+          setFilteredSchedules(response.data.schedules);
         } else {
           console.error("Failed to fetch schedules:", response.data.message);
         }
@@ -51,21 +62,15 @@ const SearchSchedule = () => {
   const handleSearch = () => {
     const filtered = schedules.filter((schedule) => {
       const matchesSearch =
-        (addressFilter === "" || schedule.address.toLowerCase().includes(addressFilter.toLowerCase())) &&
-        (scheduleNameFilter === "" || schedule.scheduleName.toLowerCase().includes(scheduleNameFilter.toLowerCase()));
-  
+        (addressFilter === "" ||
+          schedule.address.toLowerCase().includes(addressFilter.toLowerCase())) &&
+        (scheduleNameFilter === "" ||
+          schedule.scheduleName.toLowerCase().includes(scheduleNameFilter.toLowerCase()));
+
       const matchesPrice =
-        schedule.activities.reduce(
-          (sum, day) =>
-            sum + day.activity.reduce((acc, act) => acc + act.cost, 0),
-          0
-        ) >= priceRange[0] &&
-        schedule.activities.reduce(
-          (sum, day) =>
-            sum + day.activity.reduce((acc, act) => acc + act.cost, 0),
-          0
-        ) <= priceRange[1];
-  
+        calculateTotalCost(schedule.activities) >= priceRange[0] &&
+        calculateTotalCost(schedule.activities) <= priceRange[1];
+
       const matchesType =
         !filters.activityType ||
         schedule.activities.some((day) =>
@@ -74,16 +79,14 @@ const SearchSchedule = () => {
               act.activityType.toLowerCase() === filters.activityType.toLowerCase()
           )
         );
-  
-        const matchesDuration =
-        (!filters.days || filters.days === 0) ||
-        schedule.numDays === filters.days; // Directly compare as numbers
-      
-  
+
+      const matchesDuration =
+        !filters.days || filters.days === 0 || schedule.numDays === filters.days; // Directly compare as numbers
+
       const matchesMedia =
         (!filters.hasVideo || schedule.videoSrc) &&
         (!filters.hasImage || schedule.imgSrc.length > 0);
-  
+
       return (
         matchesSearch &&
         matchesPrice &&
@@ -92,7 +95,7 @@ const SearchSchedule = () => {
         matchesMedia
       );
     });
-  
+
     // Sort by likes or comments if specified
     if (filters.sortBy === "likes") {
       filtered.sort((a, b) => b.likes.length - a.likes.length);
@@ -108,10 +111,10 @@ const SearchSchedule = () => {
             ))
       );
     }
-  
+
     setFilteredSchedules(filtered);
   };
-  
+
   // Handle pagination logic
   const indexOfLastSchedule = currentPage * schedulesPerPage;
   const indexOfFirstSchedule = indexOfLastSchedule - schedulesPerPage;
@@ -124,68 +127,69 @@ const SearchSchedule = () => {
   const handleScheduleClick = (id) => {
     navigate(`/schedule-view/${id}`);
   };
-  // Auto search based on URL parameters (address and scheduleName)
-  useEffect(() => {
-    if (address || scheduleName) {
-      setAddressFilter(address || "");
-      setScheduleNameFilter(scheduleName || "");
-      handleSearch(); // Ensure search is triggered when params change
-    }
-  }, [address, scheduleName]); // This will trigger whenever address or scheduleName changes
 
+  useEffect(() => {
+    if (city && !hasSearchedRef.current) {
+      setAddressFilter(city);
+      setScheduleNameFilter(name);
+      hasSearchedRef.current = true; // Only set this flag once
+    }
+  }, [city, name]);  // Trigger only when city or name changes
+  
+  
   // Re-run search whenever filters change
   useEffect(() => {
     handleSearch();
-  }, [address, scheduleName, priceRange, filters]);
+  }, [ priceRange, filters]);
 
   return (
     <div className="search-schedule">
       {/* Search bar */}
       <div className="search-bar">
         <div className="search-group">
-            <div className="search-header">
+          <div className="search-header">
             <i className="fa fa-map-marker" aria-hidden="true"></i>
             <label className="search-label" htmlFor="destination">
-                Địa điểm
+              Địa điểm
             </label>
-            </div>
-            <input
+          </div>
+          <input
             type="text"
             placeholder="Tìm kiếm theo địa điểm"
             className="search-field"
             id="destination"
             value={addressFilter}
             onChange={(e) => setAddressFilter(e.target.value)}
-            />
+          />
         </div>
 
         <div className="search-group">
-            <div className="search-header">
+          <div className="search-header">
             <i className="fa-solid fa-calendar-days"></i>
             <label className="search-label" htmlFor="schedule">
-                Tên lịch trình
+              Tên lịch trình
             </label>
-            </div>
-            <input
+          </div>
+          <input
             type="text"
             placeholder="Tìm kiếm theo tên lịch trình"
             className="search-field"
             id="schedule"
             value={scheduleNameFilter}
             onChange={(e) => setScheduleNameFilter(e.target.value)}
-            />
+          />
         </div>
         <button className="search-action-btn" onClick={handleSearch}>
-            Tìm kiếm
+          Tìm kiếm
         </button>
-        </div>
-
+      </div>
 
       <div className="main-content">
         {/* Filters */}
         <div className="filters-container">
           <div className="filters">
             <h3>Lọc & Sắp xếp</h3>
+            {/* Activity Type Filter */}
             <label>
               <span>Loại hoạt động</span>
               <select
@@ -202,25 +206,27 @@ const SearchSchedule = () => {
               </select>
             </label>
 
+            {/* Number of Days Filter */}
             <label>
-                <span>Số ngày </span>
-                <select
-                    value={filters.days}
-                    onChange={(e) => 
-                        setFilters({ ...filters, days: parseInt(e.target.value, 10) }) // Convert to number
-                    }
-                >
-                    <option value="0">Tất cả</option>
-                    <option value="1">1 ngày</option>
-                    <option value="2">2 ngày 1 đêm </option>
-                    <option value="3">3 ngày 2 đêm</option>
-                    <option value="4">4 ngày 3 đêm</option>
-                    <option value="5">5 ngày 4 đêm</option>
-                    <option value="6">6 ngày 5 đêm</option>
-                    <option value="7">7 ngày 6 đêm</option>
-                </select>
+              <span>Số ngày </span>
+              <select
+                value={filters.days}
+                onChange={(e) =>
+                  setFilters({ ...filters, days: parseInt(e.target.value, 10) }) // Convert to number
+                }
+              >
+                <option value="0">Tất cả</option>
+                <option value="1">1 ngày</option>
+                <option value="2">2 ngày 1 đêm </option>
+                <option value="3">3 ngày 2 đêm</option>
+                <option value="4">4 ngày 3 đêm</option>
+                <option value="5">5 ngày 4 đêm</option>
+                <option value="6">6 ngày 5 đêm</option>
+                <option value="7">7 ngày 6 đêm</option>
+              </select>
             </label>
 
+            {/* Sorting Filter */}
             <label>
               <span>Sắp xếp</span>
               <select
@@ -234,6 +240,8 @@ const SearchSchedule = () => {
                 <option value="comments">Nhiều bình luận</option>
               </select>
             </label>
+
+            {/* Media Filters */}
             <label>
               <input
                 type="checkbox"
@@ -256,8 +264,8 @@ const SearchSchedule = () => {
             </label>
           </div>
 
+          {/* Price Range Slider */}
           <div className="price-slider">
-            {/* Price range slider */}
             <Range
               step={100000}
               min={0}
@@ -307,16 +315,20 @@ const SearchSchedule = () => {
           </div>
         </div>
 
-        <div style={{ width: "100%", marginTop: "20px" }}>
-       
+        {/* Schedule List */}
+        <div>
         <div className="schedule-list">
           {currentSchedules.map((schedule, index) => (
             <PostCard key={index} schedule={schedule} handleScheduleClick={handleScheduleClick} />
           ))}
         </div>
 
-         {/* Pagination */}
-         <div className="pagination-container">
+        {currentSchedules.length === 0 && 
+          <div className="no-schedule">
+             <h3>Không tìm thấy lịch trình</h3>
+          </div>}
+        { currentSchedules.length > 0 &&
+        <div className="pagination-container">
           <button
             className="prev-button"
             onClick={() => paginate(currentPage - 1)}
@@ -332,7 +344,7 @@ const SearchSchedule = () => {
           >
             Next
           </button>
-        </div>
+        </div>}
         </div>
         
       </div>

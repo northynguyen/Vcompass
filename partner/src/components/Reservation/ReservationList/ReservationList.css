@@ -1,129 +1,199 @@
+/* General styles */
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f5f7;
+  color: #333;
+}
+
 .reservation-list {
-    padding: 20px;
-  }
-  
-  .reservation-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .filters {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .filters input[type="text"],
-  .filters select,
-  .filters input[type="date"] {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .add-booking-btn {
-    background-color: #a1e057;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th,
-  td {
-    text-align: left;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .status-label {
-    padding: 5px 10px;
-    border-radius: 4px;
-    color: white;
-  }
-  
-  .confirmed {
-    background-color: #28a745;
-  }
-  
-  .pending {
-    background-color: #ffc107;
-  }
-  
-  .cancelled {
-    background-color: #dc3545;
-  }
-  
-  .expired {
-    background-color:#007bff;
-  }
-  .action-btn {
-    border: none;
-    padding: 5px 10px;
-    margin: 2px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .action-btn.view {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .action-btn.edit {
-    background-color: #17a2b8;
-    color: white;
-  }
-  
-  .action-btn.confirm {
-    background-color: #28a745;
-    color: white;
-  }
-  
-  .action-btn.cancel {
-    background-color: #dc3545;
-    color: white;
-  }
-  
-  .pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .pagination button {
-    padding: 8px 16px;
-    font-size: 14px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .pagination button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
-  .pagination button:not(:disabled):hover {
-    background-color: #0056b3;
-  }
-  
-  .pagination span {
-    font-size: 14px;
-    font-weight: 500;
-  }
-  
+  margin: 10px auto;
+  max-width: 1200px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  background: #2e2e3a; /* Charcoal header */
+  padding: 20px;
+  border-radius: 12px;
+  color: #fff;
+}
+
+.reservation-header h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.filters {
+  display: flex;
+  gap: 20px;
+}
+
+.filters select,
+.filters input {
+  padding: 10px 15px;
+  border: 1px solid #dcdfe6;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: #f9f9fb;
+  transition: all 0.3s ease;
+}
+
+.filters select:hover,
+.filters input:hover {
+  border-color: #b6bcc6;
+}
+
+/* Cards styles */
+.reservation-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 20px;
+}
+
+.reservation-card {
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #ffffff, #f9f9f9);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reservation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  padding: 20px;
+  background: #2e2e3a;
+  color: #fff;
+  display: flex;
+  border-radius: 12px 12px 0 0;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #fff;
+}
+
+.status-label {
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #fff;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-label.pending {
+  background: #ffcc00; /* Vàng */
+}
+
+.status-label.confirmed {
+  background: #4caf50; /* Xanh lá */
+}
+
+.status-label.expired {
+  background: #6c757d; /* Xám */
+}
+
+.status-label.cancelled {
+  background: #ff3e4d; /* Đỏ */
+}
+
+.card-body {
+  padding: 20px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.card-body p {
+  margin: 10px 0;
+  color: #555;
+}
+
+.card-actions {
+  padding: 15px 20px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  background: #f4f5f7;
+  border-top: 1px solid #eaeef5;
+}
+
+.action-btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-btn.view {
+  background: #4caf50;
+  color: #fff;
+}
+
+.action-btn.confirm {
+  background: #2196f3;
+  color: #fff;
+}
+
+.action-btn.cancel {
+  background: #ff3e4d;
+  color: #fff;
+}
+
+.action-btn:hover {
+  opacity: 0.9;
+}
+
+/* Pagination styles */
+.pagination {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.pagination button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #2e2e3a;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.pagination button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 1rem;
+  color: #666;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #494961;
+}

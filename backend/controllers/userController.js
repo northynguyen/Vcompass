@@ -61,8 +61,7 @@ const getModelByType = (type) => {
 
 // Import passport
 const handlegetInfoById = async (req, res, model) => {
-  const id = req.body.userId;
-  console.log(id);
+  const id = req.params.id;
   try {
     const user = await model.findById(id);
     if (!user) {

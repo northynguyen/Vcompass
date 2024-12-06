@@ -258,6 +258,15 @@
     .schedule-list {
       grid-template-columns: 1fr;
     }
+
+    
+  }
+
+  .no-schedule{
+    font-size: 20px;
+    text-align: center;
+    width: 800px;
+    margin: 10px auto;
   }
   
 
