@@ -7,7 +7,7 @@ import {
   getListFoodService,
   updateFoodService, addReview,
   getAdminGetListByPartner,
-  updateStatusFoodServiceAdmin, getWishlist
+  updateStatusFoodServiceAdmin,getWishlist,updateRatingResponse
 } from "../controllers/foodServiceController.js";
 import authMiddleware from "../middleware/auth.js";
 import { upload } from "../middleware/upload.js";
@@ -34,6 +34,7 @@ foodServiceRoutes.put("/:foodServiceId", updateStatusFoodServiceAdmin);
 foodServiceRoutes.post("/delete", authMiddleware, deleteFoodService);
 foodServiceRoutes.get("/:id", getFoodServiceById);
 foodServiceRoutes.post("/addReview/:id", addReview);
+foodServiceRoutes.put('/updateRating/:foodServiceId/ratings/:ratingId', updateRatingResponse);
 foodServiceRoutes.get("/user/get/wishList",authMiddleware, getWishlist);
 
 export default foodServiceRoutes;

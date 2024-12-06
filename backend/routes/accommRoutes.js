@@ -9,7 +9,7 @@ import {
   listRooms,
   updateAccommodation,
   updateRoomType, addReview,
-  updateAccommodationStatusByAdmin, getAccommWishList
+  updateAccommodationStatusByAdmin,updateRatingResponse,getAccommWishList
 } from "../controllers/accommController.js";
 import { upload } from "../middleware/upload.js";
 import authMiddleware from "../middleware/auth.js";
@@ -26,5 +26,6 @@ accommRoutes.delete("/:accommodationId/rooms/:roomTypeId", deleteRoom); // Delet
 accommRoutes.get("/:accommodationId/rooms", listRooms); // Get list of rooms
 accommRoutes.get("/getAccomm/:id", getAccommodationById);
 accommRoutes.post("/addReview/:id", addReview);
+accommRoutes.put('/updateRating/:accommodationId/ratings/:ratingId', updateRatingResponse);
 accommRoutes.get("/user/wishlist", authMiddleware, getAccommWishList);
 export default accommRoutes;

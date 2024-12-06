@@ -1,18 +1,20 @@
 /* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
-import './AttractionDetailsInfo.css'
-import { useState, useContext, useEffect } from 'react'
+import axios from 'axios';
+import { useContext, useEffect, useState } from 'react';
+import { toast as Toast, toast } from 'react-toastify';
+import { StoreContext } from '../../Context/StoreContext';
 import ImagesModal from '../ImagesModal/ImagesModal';
-import {StoreContext} from '../../Context/StoreContext'
-import {toast as Toast} from 'react-toastify'
-import axios from 'axios'
+import './AttractionDetailsInfo.css';
 
 
-const AttractionDetailsInfo = ({serviceId}) => {
-    const { url } = useContext(StoreContext);
+const AttractionDetailsInfo = ({ serviceId }) => {
+    const { url, token, user } = useContext(StoreContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImageIndex, setSelectedImageIndex] = useState('');
     const [attraction, setAttraction] = useState(null);
+    const [isSave, setIsSave] = useState(false);
+    console.log(user)
 
     const openModal = (index) => {
         setSelectedImageIndex(index)
@@ -22,7 +24,6 @@ const AttractionDetailsInfo = ({serviceId}) => {
     // Close the Modal
     const closeModal = () => {
         setIsModalOpen(false);
-       
     };
 
     useEffect(() => {
@@ -43,8 +44,31 @@ const AttractionDetailsInfo = ({serviceId}) => {
         };
         fetchAttraction();
     }, [serviceId, url]);
+    const toggleWishlist = async () => {
+        try {
+            const newStatus = !isSave;
+            setIsSave(newStatus);
+            const action = newStatus ? "add" : "remove";
+            const response = await fetch(
+                `${url}/api/user/user/${user._id}/addtoWishlist?type=attraction&itemId=${serviceId}&action=${action}`,
+                {
+                    method: "POST",
+                    headers: { token: token },
+                }
+            );
 
-        
+            const result = await response.json();
+            if (!result.success) {
+                toast.error(result.message);
+            }
+            toast.success(result.message);
+            console.log(result.message);
+        } catch (error) {
+            console.error("Failed to update wishlist:", error.message);
+            setIsSave((prevState) => !prevState);
+        }
+    };
+
     if (!attraction) {
         return <p>Loading...</p>;
     }
@@ -52,25 +76,26 @@ const AttractionDetailsInfo = ({serviceId}) => {
     return (
         <div className="place-details-info">
             <div className="tour-details">
-                <h1>{attraction.attractionName}</h1>
-                <p>Gothenburg ★★★★☆ (348 reviews)</p>
-
+                <div className="place-header">
+                    <h1>{attraction.attractionName}</h1>
+                    <p> ★★★★☆  ( {attraction.ratings.length} reviews)</p>
+                </div>
                 <div className="gallery">
-                    <img src={`${url}/images/${attraction.images[0]}`}  alt="Main" className="main-img" />
+                    <img src={`${url}/images/${attraction.images[0]}`} alt="Main" className="main-img" />
                     <div className="thumbnails">
                         {attraction.images.map((image, index) => (
-                            <img 
-                                key={index} 
+                            <img
+                                key={index}
                                 src={`${url}/images/${image}`}
-                                alt={`Thumb ${index + 1}`} 
-                                onClick={() => openModal(index+1)} 
+                                alt={`Thumb ${index + 1}`}
+                                onClick={() => openModal(index + 1)}
                             />
                         ))}
                     </div>
                 </div>
 
-                 {/* Features */}
-                 <div className="features">
+                {/* Features */}
+                <div className="features">
                     {attraction.amenities.map((amenity, index) => (
                         <p key={index}>✔️ {amenity}</p>
                     ))}
@@ -100,47 +125,33 @@ const AttractionDetailsInfo = ({serviceId}) => {
 
             {/* Right Column: Booking Form */}
             <div className="booking-form">
-                <form >
-                    <h2>Booking</h2>
-
-                    <label htmlFor="from">From</label>
-                    <input
-                        type="date"
-                        id="from"
-                        onChange={(e) => setFromDate(e.target.value)}
-                    />
-
-                    <label htmlFor="to">To</label>
-                    <input
-                        type="date"
-                        id="to"
-                        onChange={(e) => setToDate(e.target.value)}
-                    />
-
-                    <label htmlFor="guests">No. of Guests</label>
-                    <select
-                        id="guests"
-                        // eslint-disable-next-line no-undef
-                        onChange={(e) => setGuests(e.target.value)}
-                    >
-                        <option value="1">1 adult</option>
-                        <option value="2">2 adults</option>
-                    </select>
-
-                    <div className="total-price">
-                        <h3>Subtotal: $78.90</h3>
+                <h3>Thông tin thêm</h3>
+                <div className="infor-form-wrapper">
+                    <div className="wrapper">
+                        <div className="addition-infor-item">
+                            <p htmlFor="from">Giờ mở cửa:</p>
+                            <p className='addition-infor-content' htmlFor="from">{attraction.operatingHours[0].openTime}</p>
+                        </div>
+                        <div className="addition-infor-item">
+                            <p htmlFor="from">Giờ đóng cửa:</p>
+                            <p className='addition-infor-content' htmlFor="from">{attraction.operatingHours[0].closeTime}</p>
+                        </div>
+                        <div className="addition-infor-item">
+                            <p htmlFor="from">Giá vé:</p>
+                            <p className='addition-infor-content' htmlFor="from">{attraction.price == 0 ? "Miễn phí" : attraction.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
+                        </div>
                     </div>
-
-                    <button type="submit" className="book-btn">Confirm Booking</button>
-                    <button type="button" className="wishlist-btn" onClick={() => alert('Saved to wishlist')}>
-                        Save to Wishlist
-                    </button>
-                    <button type="button" className="share-btn" onClick={() => alert('Shared the activity')}>
-                        Share the Activity
-                    </button>
-                </form>
+                    <div className="wrapper">
+                        <div className={`title-button ${isSave ? "saved" : ""} `} onClick={toggleWishlist}>
+                            <i className="fa-solid fa-bookmark schedule-icon"></i>
+                            <button className="save-and-share-btn">
+                                Lưu vào danh sách yêu thích
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        
+
             {/* Modal for displaying clicked images */}
             <ImagesModal
                 isOpen={isModalOpen}

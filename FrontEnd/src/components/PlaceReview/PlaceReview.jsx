@@ -196,7 +196,7 @@ const PlaceReview = ({ type, id }) => {
 
       <div className="reviews-list">
         {filteredReviews.slice(0, visibleReviews).map((review) => (
-          <ReviewCard key={review.id} review={review} type={type} />
+          <ReviewCard key={review._id} review={review} type={type} />
         ))}
       </div>
       <div className="show-more-container">

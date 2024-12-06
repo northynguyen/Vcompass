@@ -330,14 +330,6 @@ p.des-schedule {
 }
 
 /* Phong cách nút */
-.date-actions button {
-  padding: 5px 10px;
-  font-size: 14px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
 
 .date-actions .btn-overview {
   background-color: #7BBCB0;
