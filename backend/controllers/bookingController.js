@@ -38,7 +38,20 @@ export const getBookingsByUser = async (req, res) => {
     res.status(500).json({ success: false, message: 'Error getting bookings' });
   }
 };
-
+export const getBookingsByPartner = async (req, res) => {
+  const { userId } = req.body;
+  const filter = { partnerId: userId };
+  try {
+    const bookings = await Booking.find(filter)
+    res.json({
+      success: true,
+      bookings,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Error getting bookings' });
+  }
+};
 
 export const getAvailableRooms = async (req, res) => {
   const { accommodationId, startDate, endDate, adults, children } = req.query;

@@ -15,6 +15,7 @@ const RatingSchema = new Schema({
   duration : { type: Number },
   roomType : { type: String },
   numPeople : { type: String },
-  respone : { type: String },
+  response : { type: String },
+  responseTime: {type: Date}
 },{timestamps: true} );
 export { RatingSchema };

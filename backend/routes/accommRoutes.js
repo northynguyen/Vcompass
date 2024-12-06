@@ -9,7 +9,8 @@ import {
   listRooms,
   updateAccommodation,
   updateRoomType, addReview,
-  updateAccommodationStatusByAdmin
+  updateAccommodationStatusByAdmin,
+  updateRatingResponse
 } from "../controllers/accommController.js";
 import { upload } from "../middleware/upload.js";
 const accommRoutes = express.Router();
@@ -40,4 +41,5 @@ accommRoutes.delete("/:accommodationId/rooms/:roomTypeId", deleteRoom); // Delet
 accommRoutes.get("/:accommodationId/rooms", listRooms); // Get list of rooms
 accommRoutes.get("/getAccomm/:id", getAccommodationById);
 accommRoutes.post("/addReview/:id", addReview);
+accommRoutes.put('/updateRating/:accommodationId/ratings/:ratingId', updateRatingResponse);
 export default accommRoutes;

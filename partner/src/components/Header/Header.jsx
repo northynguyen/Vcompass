@@ -123,7 +123,9 @@ const Header = () => {
         </button>
 
         {/* User Profile */}
-        <div className="user-profile">
+        {
+          user &&
+          <div className="user-profile">
           <img
             src={user.avatar}
             alt="User Avatar"
@@ -135,6 +137,7 @@ const Header = () => {
             <span>Partner</span>
           </div>
         </div>
+        }
 
         {/* Profile Popup Menu */}
         {isProfilePopupVisible && (

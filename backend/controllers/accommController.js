@@ -455,3 +455,36 @@ export const addReview = async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred while adding the review." });
   }
 };
+export const updateRatingResponse = async (req, res) => {
+  const { accommodationId, ratingId } = req.params; // Nhận accommodationId và ratingId từ URL
+  const { response, responseTime } = req.body; // Nhận dữ liệu phản hồi từ body
+
+  try {
+      // Tìm accommodation theo accommodationId
+      const accommodation = await Accommodation.findById(accommodationId);
+
+      if (!accommodation) {
+          return res.status(404).json({ error: 'Accommodation not found' });
+      }
+
+      // Tìm rating trong mảng ratings của accommodation
+      const rating = accommodation.ratings.id(ratingId); // Sử dụng phương thức `id()` của Mongoose để tìm rating theo ratingId
+
+      if (!rating) {
+          return res.status(404).json({ error: 'Rating not found' });
+      }
+
+      // Cập nhật phản hồi và thời gian phản hồi
+      rating.response = response;
+      rating.responseTime = responseTime || new Date();
+
+      // Lưu thay đổi vào cơ sở dữ liệu
+      await accommodation.save();
+
+      // Trả về kết quả thành công
+      res.status(200).json({ message: 'Phản hồi thành công' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+  }
+};

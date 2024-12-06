@@ -1,11 +1,11 @@
-import { useState, useRef, useEffect, useContext } from 'react';
-import './Header.css';
-import { CiSettings, CiLogout } from "react-icons/ci";
-import { MdManageAccounts } from "react-icons/md";
+import { useContext, useEffect, useRef, useState } from 'react';
+import { CiLogout, CiSettings } from "react-icons/ci";
 import { FaBell } from "react-icons/fa"; // Importing Bell icon from react-icons
-import { StoreContext } from '../../Context/StoreContext';
+import { MdManageAccounts } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { StoreContext } from '../../Context/StoreContext';
+import './Header.css';
 const Header = () => {
   // State to handle the visibility of the profile popup
   const [isProfilePopupVisible, setProfilePopupVisible] = useState(false);
@@ -124,18 +124,19 @@ const Header = () => {
         </button>
 
         {/* User Profile */}
-        <div className="user-profile">
-          <img
-            src={admin.avatar}
-            alt="User Avatar"
-            className="user-avatar"
-            onClick={toggleProfilePopup} // Toggle profile popup on click
-          />
-          <div className="user-info">
-            <p>{admin.name}</p>
-            <span>Admin</span>
-          </div>
-        </div>
+        {admin &&
+          <div className="user-profile">
+            <img
+              src={admin.avatar}
+              alt="User Avatar"
+              className="user-avatar"
+              onClick={toggleProfilePopup} // Toggle profile popup on click
+            />
+            <div className="user-info">
+              <p>{admin.name}</p>
+              <span>Admin</span>
+            </div>
+          </div>}
 
         {/* Profile Popup Menu */}
         {isProfilePopupVisible && (

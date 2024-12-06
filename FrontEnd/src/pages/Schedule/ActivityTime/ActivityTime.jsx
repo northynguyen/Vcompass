@@ -401,7 +401,7 @@ export const AttractionActivity = ({
   const { url, user, token } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
-      const newStatus = !isSaved; // Determine the new state
+      const newStatus = !isSaved;
 
       const action = newStatus ? "add" : "remove"; // Define the action
       const response = await fetch(

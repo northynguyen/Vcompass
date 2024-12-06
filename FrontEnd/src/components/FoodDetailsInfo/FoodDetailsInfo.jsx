@@ -3,9 +3,11 @@ import axios from 'axios'; // for API calls
 import { useContext, useEffect, useState } from 'react';
 import { StoreContext } from '../../Context/StoreContext';
 import ImagesModal from '../ImagesModal/ImagesModal';
+import { toast } from 'react-toastify';
 import './FoodDetailsInfo.css';
 const FoodDetailsInfo = ({ serviceId }) => {
-    const { url } = useContext(StoreContext);
+    const { url, token, user } = useContext(StoreContext);
+    const [isSave, setIsSave] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [foodService, setFoodService] = useState(null); // To store food service details
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -36,7 +38,30 @@ const FoodDetailsInfo = ({ serviceId }) => {
         setIsModalOpen(false);
 
     };
+    const toggleWishlist = async () => {
+        try {
+            const newStatus = !isSave;
+            setIsSave(newStatus);
+            const action = newStatus ? "add" : "remove";
+            const response = await fetch(
+                `${url}/api/user/user/${user._id}/addtoWishlist?type=foodService&itemId=${serviceId}&action=${action}`,
+                {
+                    method: "POST",
+                    headers: { token: token },
+                }
+            );
 
+            const result = await response.json();
+            if (!result.success) {
+                toast.error(result.message);
+            }
+            toast.success(result.message);
+            console.log(result.message);
+        } catch (error) {
+            console.error("Failed to update wishlist:", error.message);
+            setIsSave((prevState) => !prevState);
+        }
+    };
     if (!foodService) return <div>Loading...</div>;
 
     return (
@@ -91,33 +116,33 @@ const FoodDetailsInfo = ({ serviceId }) => {
 
             {/* Right Column: Booking Form */}
             <div className="booking-form">
-                <form>
-                    <h2>Booking</h2>
-
-                    <label htmlFor="from">From</label>
-                    <input type="date" id="from" />
-
-                    <label htmlFor="to">To</label>
-                    <input type="date" id="to" />
-
-                    <label htmlFor="guests">No. of Guests</label>
-                    <select id="guests">
-                        <option value="1">1 adult</option>
-                        <option value="2">2 adults</option>
-                    </select>
-
-                    <div className="total-price">
-                        <h3>Price Range: ${foodService.price.minPrice} - ${foodService.price.maxPrice}</h3>
+                <h3>Thông tin thêm</h3>
+                <div className="infor-form-wrapper">
+                    <div className="wrapper">
+                        <div className="addition-infor-item">
+                            <p htmlFor="from">Giờ mở cửa:</p>
+                            <p className='addition-infor-content' htmlFor="from">{foodService.operatingHours[0].openTime}</p>
+                        </div>
+                        <div className="addition-infor-item">
+                            <p htmlFor="from">Giờ đóng cửa:</p>
+                            <p className='addition-infor-content' htmlFor="from">{foodService.operatingHours[0].closeTime}</p>
+                        </div>
+                        <div className="addition-infor-item">
+                            <p htmlFor="from">Giá:</p>
+                            <p className='addition-infor-content' htmlFor="from">
+                                {foodService.price.minPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })} - {foodService.price.maxPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                            </p>
+                        </div>
                     </div>
-
-                    <button type="submit" className="book-btn">Confirm Booking</button>
-                    <button type="button" className="wishlist-btn" onClick={() => alert('Saved to wishlist')}>
-                        Save to Wishlist
-                    </button>
-                    <button type="button" className="share-btn" onClick={() => alert('Shared the activity')}>
-                        Share the Activity
-                    </button>
-                </form>
+                    <div className="wrapper">
+                        <div className={`title-button ${isSave ? "saved" : ""} `} onClick={toggleWishlist}>
+                            <i className="fa-solid fa-bookmark schedule-icon"></i>
+                            <button className="save-and-share-btn">
+                                Lưu vào danh sách yêu thích
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Modal for displaying clicked images */}

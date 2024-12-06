@@ -1,0 +1,79 @@
+.statistics-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding: 2rem;
+    background-color: #f7f7f7;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
+}
+
+.stat {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.stat:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    color: #0077cc;
+    margin-bottom: 0.5rem;
+}
+
+.stat h4 {
+    font-size: 1.1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.stat p {
+    font-size: 1.5rem;
+    color: #0077cc;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.stat ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+    color: #555;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.stat ul li {
+    padding: 0.3rem 0;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat ul li:last-child {
+    border-bottom: none;
+}
+
+.stat ul li .fa-star {
+    color: #FFD700;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .statistics-panel {
+        grid-template-columns: 1fr;
+    }
+}
