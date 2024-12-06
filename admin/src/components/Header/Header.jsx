@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import {io} from 'socket.io-client'
 import { StoreContext } from '../../Context/StoreContext';
+import './Header.css';
 const Header = () => {
   // State to handle the visibility of the profile popup
   const [isProfilePopupVisible, setProfilePopupVisible] = useState(false);
