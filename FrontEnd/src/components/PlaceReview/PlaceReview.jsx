@@ -5,7 +5,7 @@ import './PlaceReview.css';
 import axios from 'axios';
 import {StoreContext} from '../../Context/StoreContext'
 import Review from '../Review/Review';
-const StarRating = ({ rating }) => {
+export const StarRating = ({ rating }) => {
   return (
     <div className="star-rating">
       {Array.from({ length: 5 }).map((_, index) => (
@@ -53,12 +53,12 @@ const ReviewCard = ({ review , type  }) => (
       {type === "accommodation" && (
         <div>
           <div> 
-              <p><strong>Room quality:</strong> </p>
+              <p><strong>Chất lượng chỗ ở:</strong> </p>
               <StarRating rating={review.roomRate } />
           </div>
 
           <div> 
-              <p><strong>Service:</strong> </p>
+              <p><strong>Dịch vụ:</strong> </p>
               <StarRating rating={review.serviceRate} />
           </div>
         </div>
@@ -67,11 +67,11 @@ const ReviewCard = ({ review , type  }) => (
       {type === "food" && (
         <div>
           <div> 
-              <p><strong>Food quality:</strong> </p>
+              <p><strong>Chất lượng chỗ ở:</strong> </p>
               <StarRating rating={review.foodRate} />
           </div>
           <div>
-              <p><strong>Service:</strong> </p>
+              <p><strong>Dịch vụ:</strong> </p>
               <StarRating rating={review.serviceRate} />
           </div>
         </div>
@@ -80,11 +80,11 @@ const ReviewCard = ({ review , type  }) => (
       {type === "attraction" && (
         <div>
         <div> 
-            <p><strong>Place quality:</strong> </p>
+            <p><strong>Chất lượng chỗ ở:</strong> </p>
             <StarRating rating={review.attractionRate} />
         </div>
         <div>
-            <p><strong>Service:</strong> </p>
+            <p><strong>Dịch vụ:</strong> </p>
             <StarRating rating={review.serviceRate} />
         </div>
       </div>

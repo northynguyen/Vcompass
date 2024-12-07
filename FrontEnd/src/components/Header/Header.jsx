@@ -182,7 +182,7 @@ const Header = ({ setShowLogin }) => {
 
       <div className="header-right">
         <ul className="header-menu">
-          <Link to="/" className="header-menu-page">Trang chủ</Link>
+          <Link to="/" className="header-menu-page" onClick={() => window.location.replace('/')}>Trang chủ</Link>
           <Link to="/booking" className="header-menu-page">Đặt phòng</Link>
           <Link to="/attractions" className="header-menu-page">Tham quan</Link>
           <Link to="/foodservices" className="header-menu-page">Nhà hàng</Link>
@@ -203,7 +203,7 @@ const Header = ({ setShowLogin }) => {
             {menuVisible && (
               <div className="profile-menu" >
                 <div className="profile-name">
-                  <img src={`${url}/images/${user.avatar}`} alt="Profile" className="user-avatar" />
+                  <img src={user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt="Profile" className="user-avatar" />
                   <h3>{user.name} </h3>
                 </div>
 

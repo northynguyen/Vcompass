@@ -127,7 +127,7 @@ const HomeFoodService = () => {
 
             <div className="attractions-content-container">
                 <LeftSideBar onFilterChange={handleFilterChange} />
-                {foodServicesFound.length > 0 && <FoodServiceCards foodServicesFound={foodServicesFound} />}
+                <FoodServiceCards foodServicesFound={foodServicesFound} />
             </div>
         </div>
 

@@ -76,8 +76,9 @@ const MyAccount = () => {
             });
             console.log(response.data);
             if (response.data.success) {
-                setUser({ ...formData, avatar: selectedAvatar });
+                
                 localStorage.setItem("user", JSON.stringify(response.data.user));
+                setUser(response.data.user);
                 setIsEditing(false);
                 toast.success('Profile updated successfully.');
                 window.location.reload();

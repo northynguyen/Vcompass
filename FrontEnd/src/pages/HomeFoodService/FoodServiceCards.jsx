@@ -20,6 +20,15 @@ const FoodServiceCards = (foodServicesFound) => {
         navigate(`/place-details/food/${safeEncryptedServiceId}`);
         window.scrollTo(0, 0);
     };
+
+    const getRatingInfo = (ratings) => {
+        const totalReviews = ratings.length;
+        const averageRating = totalReviews > 0
+            ? (ratings.reduce((sum, r) => sum + (Number(r.rate) || 0), 0) / totalReviews).toFixed(1)
+            : 'Chưa có đánh giá';
+        return { totalReviews, averageRating };
+    };
+
     return (
         <div className="accomodation-cards">
             <h2>Danh sách nhà hàng</h2>
@@ -30,7 +39,7 @@ const FoodServiceCards = (foodServicesFound) => {
                     // Lấy giá thấp nhất và cao nhất từ dữ liệu
                     const minPrice = item.price?.minPrice || 0;
                     const maxPrice = item.price?.maxPrice || 0;
-
+                    const { totalReviews, averageRating } = getRatingInfo(item.ratings);
                     return (
                         <div key={item._id} className="accomodation-card-home">
                             <div className="card-content-container">
@@ -53,12 +62,22 @@ const FoodServiceCards = (foodServicesFound) => {
                                         {item.location.address}
                                     </a>
                                     <p>{item.description}</p>
+                                    <p className="card-reviews">
+                                        ⭐ {averageRating} ({totalReviews} đánh giá)
+                                    </p>
                                 </div>
 
                                 {/* Hiển thị giá */}
                                 <div className="card-content-price">
-                                    <p>
-                                        {minPrice.toLocaleString()} - {maxPrice.toLocaleString()} VND
+                                     
+                                    <p className="card-range-price">
+                                        {minPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                    </p>
+                                    <p className="card-range-price">
+                                        đến
+                                    </p>
+                                    <p className="card-range-price">
+                                        {maxPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </p>
                                 </div>
                             </div>

@@ -3,13 +3,18 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px;
+    padding: 10px;
     position: sticky;
     top: 0;
     z-index: 999;
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
 }
-
+.logo {
+  margin-left: 1%;
+}
+.logo:hover {
+  cursor: pointer;
+}
 .header .logo {
     width: 150px;
     cursor: pointer;
@@ -32,21 +37,27 @@
 .header-menu {
     display: flex;
     list-style: none;
-    gap: 40px;
     font-size: 18px;
+    gap:5px;
 }
 
 .header-menu a {
-    color: rgb(0, 0, 0);
+  color: rgb(104, 113, 118);
     text-decoration: none;
+    font-weight: bold;
+
     font-size: medium;
     transition: color 0.3s;
+    padding: 10px 20px;
     /* Add transition for hover effect */
 }
 
 .header-menu a:hover {
-    color: tomato;
-    /* Change color on hover */
+  text-decoration: none;
+  background-color: #b5eaf9;
+  border-radius: 10px;
+  transform: scale(1.1);
+  transition: transform 0.5s ease-in-out;
 }
 
 .header-right {

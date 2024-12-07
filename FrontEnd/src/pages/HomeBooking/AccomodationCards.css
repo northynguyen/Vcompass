@@ -42,7 +42,7 @@
     border-bottom-left-radius: 10px;
 }
 
-.card-content {
+.card-content-container.card-content {
     width: 50%;
     display: flex;
     flex-direction: column;
@@ -74,6 +74,7 @@
     color: #333;
     width: 20%;
     align-self: center;
+    
 }
 
 .card-content-price p {

@@ -207,7 +207,7 @@ const Header = () => {
 
         <div className="user-profile">
           <img
-            src={`${url}/images/${admin.avatar}`}
+            src={admin.avatar ? `${url}/images/${admin.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
             alt="User Avatar"
             className="user-avatar"
             onClick={toggleProfilePopup} // Toggle profile popup on click
@@ -218,7 +218,7 @@ const Header = () => {
           </div>
         </div>
 
-//         {admin &&
+{/* //         {admin &&
 //           <div className="user-profile">
 //             <img
 //               src={admin.avatar}
@@ -230,7 +230,7 @@ const Header = () => {
 //               <p>{admin.name}</p>
 //               <span>Admin</span>
 //             </div>
-//           </div>}
+//           </div>} */}
 
 
         {/* Profile Popup Menu */}

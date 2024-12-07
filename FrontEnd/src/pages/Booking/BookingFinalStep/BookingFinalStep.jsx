@@ -13,7 +13,7 @@ const BookingModal = ({ isOpen, onRequestClose, bookingDetails , onSubmit}) => {
         <Modal
             isOpen={isOpen}
             onRequestClose={onRequestClose}
-            contentLabel="Booking Details"
+            contentLabel="Chi tiết đặt phòng"
             className="booking-modal"
             overlayClassName="booking-modal-overlay"
         >
@@ -30,18 +30,18 @@ const BookingModal = ({ isOpen, onRequestClose, bookingDetails , onSubmit}) => {
             </a>
             
             <div className="booking-info">
-                <p><strong>Total length of stay:</strong> {bookingDetails.bookingInfo.diffDays + 1} night(s), {bookingDetails.bookingInfo.adults} adults</p>
+                <p><strong>Tổng thời gian lưu trú:</strong> {bookingDetails.bookingInfo.diffDays + 1} đêm, {bookingDetails.bookingInfo.adults} người lớn</p>
                 
                 <div className="dates">
                     <div>
-                        <strong>Check-in</strong>
+                        <strong>Nhận phòng</strong>
                         <p>{bookingDetails.bookingInfo.startDate}</p>
-                        <span>From 14:00</span>
+                        <span>Từ 14:00</span>
                     </div>
                     <div>
-                        <strong>Check-out</strong>
+                        <strong>Trả phòng</strong>
                         <p>{bookingDetails.bookingInfo.endDate}</p>
-                        <span>Until 12:00</span>
+                        <span>Đến 12:00</span>
                     </div>
                 </div>
                 
@@ -49,25 +49,25 @@ const BookingModal = ({ isOpen, onRequestClose, bookingDetails , onSubmit}) => {
                     
                         <p >
                             1× {bookingDetails.room.nameRoomType} <br />
-                            <span className="free-cancellation">Free cancellation anytime</span>
+                            <span className="free-cancellation">Hủy miễn phí bất kỳ lúc nào</span>
                         </p>
     
                 </div>
                 
                 <div className="price-section">
-                    <p>Price</p>
+                    <p>Giá</p>
                     <p className="total-price">{bookingDetails.bookingInfo.totalPrice.toLocaleString()} VND</p>
                 </div>
                 
                 <p className="info-text">
-                    * This price is converted to show you the approximate cost in VND. The exchange rate may change before you pay.
-                    Bear in mind that your card issuer may charge you a foreign transaction fee.
+                    * Giá này đã được chuyển đổi để hiển thị chi phí ước tính bằng VND. Tỷ giá có thể thay đổi trước khi bạn thanh toán.
+                    Lưu ý rằng tổ chức phát hành thẻ của bạn có thể tính phí giao dịch quốc tế.
                 </p>
             </div>
 
             <button className="confirm-button" onClick={() =>  onSubmit}>
                 <FaLock />
-                Looks good, complete my booking!
+                Tất cả đều ổn, hoàn tất đặt phòng của tôi!
             </button>
         </Modal>
     );
@@ -103,7 +103,7 @@ const BookingFinalStep = ({bookingDetails}) => {
                         child: bookingDetails.bookingInfo.children
                     },
                     totalAmount: bookingDetails.bookingInfo.totalPrice,
-                    specialRequest: "Late check-in", // You can change this based on user input if needed
+                    specialRequest: "Nhận phòng muộn", // You can change this based on user input if needed
                     guestInfo: {
                         name: bookingDetails.bookingInfo.firstName + " " + bookingDetails.bookingInfo.lastName, // Replace with actual guest name
                         email: bookingDetails.bookingInfo.email, // Replace with actual guest email
@@ -118,19 +118,19 @@ const BookingFinalStep = ({bookingDetails}) => {
                 setLoading(false);
 
                 const bookingConfirmation = await response.json();
-                toast.success("Booking created successfully");
-                console.log("Booking created successfully:", bookingConfirmation);
+                toast.success("Đặt phòng thành công");
+                console.log("Đặt phòng thành công:", bookingConfirmation);
                 navigate('/user-service/booking', { state: { tab: 'booking', send: true }, replace: true });
                 
             } else {
                 setLoading(false);
-                console.error("Failed to create booking:", response.statusText);
-                toast.error("Failed to create booking " );
+                console.error("Không thể đặt phòng:", response.statusText);
+                toast.error("Không thể đặt phòng" );
             }
         } catch (error) {
             setLoading(false);
-            console.error("Error while creating booking:", error);
-            toast.error("Error while creating booking " );  
+            console.error("Lỗi khi đặt phòng:", error);
+            toast.error("Lỗi khi đặt phòng" );  
         }
         
     };
@@ -141,26 +141,26 @@ const BookingFinalStep = ({bookingDetails}) => {
         <div className="final-step-container">
            
     
-            <h2 className="title">No payment details required</h2>
-            <p>Your payment will be handled by Joi Hospitality - Hoang Anh, so you don’t need to enter any payment details for this booking.</p>
+            <h2 className="title">Không cần thông tin thanh toán</h2>
+            <p>Thanh toán sẽ được xử lý bởi Joi Hospitality - Hoàng Anh, vì vậy bạn không cần nhập bất kỳ thông tin thanh toán nào cho đơn đặt phòng này.</p>
 
             <div className="checkbox-group">
                 <input type="checkbox" id="marketing-emails" />
-                <label htmlFor="marketing-emails">I consent to receiving marketing emails from Booking.com, including promotions, personalised recommendations, rewards, travel experiences and updates about Booking.com’s products and services.</label>
+                <label htmlFor="marketing-emails">Tôi đồng ý nhận email quảng cáo từ Booking.com, bao gồm các chương trình khuyến mãi, gợi ý cá nhân hóa, phần thưởng, trải nghiệm du lịch và cập nhật về các sản phẩm và dịch vụ của Booking.com.</label>
             </div>
 
             <div className="checkbox-group">
                 <input type="checkbox" id="transport-emails" />
-                <label htmlFor="transport-emails">I consent to receiving marketing emails from Booking.com, including promotions, personalised recommendations, rewards, travel experiences and updates about Booking.com Transport Limited’s products and services.</label>
+                <label htmlFor="transport-emails">Tôi đồng ý nhận email quảng cáo từ Booking.com, bao gồm các chương trình khuyến mãi, gợi ý cá nhân hóa, phần thưởng, trải nghiệm du lịch và cập nhật về các sản phẩm và dịch vụ của Booking.com Transport Limited.</label>
             </div>
 
-            <p className="note">By signing up, you let us tailor offers and content to your interests by monitoring how you use Booking.com through tracking technologies. Unsubscribe at any time. Read our <a href="#">privacy policy</a>.</p>
+            <p className="note">Bằng cách đăng ký, bạn cho phép chúng tôi cá nhân hóa ưu đãi và nội dung phù hợp với sở thích của bạn bằng cách theo dõi cách bạn sử dụng Booking.com thông qua công nghệ theo dõi. Bạn có thể hủy đăng ký bất kỳ lúc nào. Đọc <a href="#">chính sách bảo mật</a> của chúng tôi.</p>
 
-            <p>Your booking is with Joi Hospitality - Hoang Anh directly and by completing this booking you agree to the <a href="#">booking conditions</a>, <a href="#">general terms</a>, and <a href="#">privacy policy</a>.</p>
+            <p>Đơn đặt phòng của bạn sẽ được thực hiện bởi Joi Hospitality - Hoàng Anh và bằng cách hoàn tất đặt phòng này, bạn đồng ý với các <a href="#">điều kiện đặt phòng</a>, <a href="#">điều khoản chung</a>, và <a href="#">chính sách bảo mật</a>.</p>
 
             <div className="button-container">
-                <button className="button" onClick={() => setModalIsOpen(true)}>Check your booking</button>
-                <button className="button" onClick={handleSubmit} disabled={loading}>Complete booking</button>
+                <button className="button" onClick={() => setModalIsOpen(true)}>Kiểm tra đơn đặt phòng</button>
+                <button className="button" onClick={handleSubmit} disabled={loading}>Hoàn tất đặt phòng</button>
             </div>
 
             <BookingModal 
@@ -170,7 +170,7 @@ const BookingFinalStep = ({bookingDetails}) => {
                 onSubmit={handleSubmit}
             />
 
-            <p className="note"><a href="#">What are my booking conditions?</a></p>
+            <p className="note"><a href="#">Điều kiện đặt phòng của tôi là gì?</a></p>
 
             {loading && (
                 <div className="loading-overlay">

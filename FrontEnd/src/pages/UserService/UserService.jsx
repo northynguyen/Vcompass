@@ -26,9 +26,8 @@ const UserService = () => {
   }, [location.state]);
 
   console.log(send);
-  if (!token) {
-    return <Navigate to="/login" />;
-  }
+
+
 
   return (
     

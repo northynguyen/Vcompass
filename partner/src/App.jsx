@@ -13,6 +13,7 @@ import Hotels from '../src/components/Hotels/Hotels';
 import Restaurent from '../src/components/Restaurants/Restaurants';
 import Calendar from '../src/components/Calendar/Calendar';
 import ReviewDashboard from '../src/components/Review/ReviewDashBoard/ReviewDashBoard';
+import MyProfileContainer from '../src/components/MyProfile/MyProfile';
 import './index.css';
 import Header from '../src/components/Header/Header';
 
@@ -55,7 +56,8 @@ function App() {
                       <Route path="messages" element={<Message />} />
                       <Route path="concierge" element={<Restaurent />} />
                       <Route path="review" element={<ReviewDashboard />} />
-                      <Route index element={<Dashboard />} />
+                      <Route index element={<ReviewDashboard />} />
+                      <Route path="/myprofile" element={<MyProfileContainer />} />
                     </Routes>
                   </div>
                 </div>

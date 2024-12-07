@@ -4,7 +4,9 @@ import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { toast as Toast, toast } from 'react-toastify';
 import { StoreContext } from '../../Context/StoreContext';
+import { FaRegClock, FaTicketAlt   } from "react-icons/fa";
 import ImagesModal from '../ImagesModal/ImagesModal';
+import { StarRating } from '../PlaceReview/PlaceReview';
 import './AttractionDetailsInfo.css';
 
 const AttractionDetailsInfo = ({ serviceId }) => {
@@ -74,13 +76,15 @@ const AttractionDetailsInfo = ({ serviceId }) => {
     if (!attraction) {
         return <p>Loading...</p>;
     }
-
+    const totalRating = attraction.ratings.length
+    ? attraction.ratings.reduce((acc, review) => acc + review.rate, 0) / attraction.ratings.length
+    : 0;
     return (
         <div className="place-details-info">
             <div className="tour-details">
                 <div className="place-header">
                     <h1>{attraction.attractionName}</h1>
-                    <p> ★★★★☆  ( {attraction.ratings.length} reviews)</p>
+                    <p className="place-header-rating"><StarRating rating={Math.round(totalRating)}  />  {totalRating.toFixed(1)} / 5.0 ( {attraction.ratings.length} đánh giá)</p>
                 </div>
                 <div className="gallery">
                     <img src={`${url}/images/${attraction.images[0]}`} alt="Main" className="main-img" />
@@ -105,13 +109,13 @@ const AttractionDetailsInfo = ({ serviceId }) => {
 
                 {/* Description */}
                 <div className="description">
-                    <h3>Description</h3>
+                    <h3>Mô tả</h3>
                     <p>{attraction.description}</p>
                 </div>
 
                 {/* Embed Google Map */}
                 <div className="map">
-                    <h3 style={{ marginBottom: '20px' }}>Location</h3>
+                    <h3 style={{ marginBottom: '20px' }}>Vị trí</h3>
                     <p>{attraction.location.address}</p>
                     <iframe
                         title="map"
@@ -128,26 +132,28 @@ const AttractionDetailsInfo = ({ serviceId }) => {
 
             {/* Right Column: Booking Form */}
             <div className="booking-form">
+                <div className="addition-infor-header">
                 <h3>Thông tin thêm</h3>
+                </div>
                 <div className="infor-form-wrapper">
                     <div className="wrapper">
                         <div className="addition-infor-item">
-                            <p htmlFor="from">Giờ mở cửa:</p>
+                            <p htmlFor="from" className='addition-infor-title'><FaRegClock/>Mở cửa:</p>
                             <p className='addition-infor-content' htmlFor="from">{attraction.operatingHours[0].openTime}</p>
                         </div>
                         <div className="addition-infor-item">
-                            <p htmlFor="from">Giờ đóng cửa:</p>
+                            <p htmlFor="from" className='addition-infor-title'><FaRegClock/> Đóng cửa:</p>
                             <p className='addition-infor-content' htmlFor="from">{attraction.operatingHours[0].closeTime}</p>
                         </div>
                         <div className="addition-infor-item">
-                            <p htmlFor="from">Giá vé:</p>
+                            <p htmlFor="from" className='addition-infor-title'><FaTicketAlt /> Giá vé:</p>
                             <p className='addition-infor-content' htmlFor="from">{attraction.price == 0 ? "Miễn phí" : attraction.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
                         </div>
                     </div>
                     <div className="wrapper">
                         <div className={`title-button ${isSave ? "saved" : ""} `} onClick={toggleWishlist}>
                             <i className="fa-solid fa-bookmark schedule-icon"></i>
-                            <button className="save-and-share-btn">
+                            <button className="favourite-btn">
                                 Lưu vào danh sách yêu thích
                             </button>
                         </div>

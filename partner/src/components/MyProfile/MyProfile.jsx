@@ -81,7 +81,8 @@ const MyProfile = ({ user, setuser }) => {
 
             if (response.data.success) {
                 toast.success(response.data.message);
-                setuser({ ...editedInfo, avatar: selectedAvatar });
+                localStorage.setItem('user', JSON.stringify(response.data.user));
+                setuser(response.data.user);
                 setIsEditing(false);
                 toast.success('Profile updated successfully.');
             } else {

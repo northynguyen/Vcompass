@@ -81,7 +81,9 @@ const MyProfile = ({ admin, setAdmin }) => {
             });
 
             if (response.data.success) {
-                setAdmin({ ...editedInfo, avatar: selectedAvatar });
+
+                setAdmin(response.data.user);
+                localStorage.setItem('user', JSON.stringify(response.data.user));
                 setIsEditing(false);
                 toast.success('Profile updated successfully.');
             } else {

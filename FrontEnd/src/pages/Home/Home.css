@@ -235,7 +235,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
+  padding: 10px;
   width: 100%;
   position: absolute;
   top: 0;
@@ -244,16 +244,17 @@
 }
 
 .home-header .header-menu a {
-  color: rgb(255, 255, 255);
   text-decoration: none;
   font-size: medium;
+  padding: 10px 20px;
 }
 
 .home-header .header-menu a:hover {
-  color: #b25a09;
   text-decoration: none;
+  background-color: #b5eaf9;
+  border-radius: 10px;
   transform: scale(1.1);
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.5s ease-in-out;
 }
 .home-header .header .logo {
   color: rgb(255, 255, 255);

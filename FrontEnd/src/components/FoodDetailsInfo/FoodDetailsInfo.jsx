@@ -5,6 +5,7 @@ import { StoreContext } from '../../Context/StoreContext';
 import ImagesModal from '../ImagesModal/ImagesModal';
 import { toast } from 'react-toastify';
 import './FoodDetailsInfo.css';
+import { StarRating } from '../PlaceReview/PlaceReview';
 const FoodDetailsInfo = ({ serviceId }) => {
     const { url, token, user } = useContext(StoreContext);
     const [isSave, setIsSave] = useState(false);
@@ -67,13 +68,15 @@ const FoodDetailsInfo = ({ serviceId }) => {
         }
     };
     if (!foodService) return <div>Loading...</div>;
-
+    const totalRating = foodService.ratings.length
+    ? foodService.ratings.reduce((acc, review) => acc + review.rate, 0) / foodService.ratings.length
+    : 0;
     return (
         <div className="food-details-info">
             {/* Left Column: Food Service Details */}
             <div className="food-details">
                 <h1>{foodService.foodServiceName}</h1>
-                <p>{foodService.city} ★★★★☆ (348 reviews)</p>
+                <p className="place-header-rating"><StarRating rating={Math.round(totalRating)}  />  {totalRating.toFixed(1)} / 5.0 ( {foodService.ratings.length} đánh giá)</p>
 
                 {/* Image Gallery */}
                 <div className='food-gallery-container'>
@@ -90,6 +93,22 @@ const FoodDetailsInfo = ({ serviceId }) => {
                             ))}
                         </div>
                     </div>
+
+                </div>
+                {/* Features */}
+                <div className="food-features">
+                    {foodService.amenities.map((amenity, index) => (
+                        <p key={index}>✔️ {amenity}</p>
+                    ))}
+                </div>
+
+                {/* Description */}
+                <div className="food-description">
+                    <h3>Mô tả</h3>
+                    <p>{foodService.description}</p>
+                </div>
+                <div className="food-description">
+                    <h3>Thực đơn</h3>
                     <div className="food-gallery" onClick={() => openModalMenu(0)}>
                         <img src={`${url}/images/${foodService.menuImages[0]}`} alt="Main" className="food-main-img" />
                         <div className="food-thumbnails">
@@ -105,22 +124,11 @@ const FoodDetailsInfo = ({ serviceId }) => {
 
                     </div>
                 </div>
-                {/* Features */}
-                <div className="food-features">
-                    {foodService.amenities.map((amenity, index) => (
-                        <p key={index}>✔️ {amenity}</p>
-                    ))}
-                </div>
-
-                {/* Description */}
-                <div className="food-description">
-                    <h3>Description</h3>
-                    <p>{foodService.description}</p>
-                </div>
+               
 
                 {/* Location (Google Map) */}
                 <div className="food-map">
-                    <h3 style={{ marginBottom: '20px' }}>Location</h3>
+                    <h3 style={{ marginBottom: '20px' }}>Vị trí</h3>
                     <iframe
                         title="map"
                         src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAOVYRIgupAurZup5y1PRh8Ismb1A3lLao&q=${foodService.location.latitude},${foodService.location.longitude}`}
@@ -132,11 +140,11 @@ const FoodDetailsInfo = ({ serviceId }) => {
                     ></iframe>
                 </div>
             </div>
-
-
             {/* Right Column: Booking Form */}
             <div className="booking-form">
+            <div className="addition-infor-header">
                 <h3>Thông tin thêm</h3>
+                </div>
                 <div className="infor-form-wrapper">
                     <div className="wrapper">
                         <div className="addition-infor-item">
@@ -157,7 +165,7 @@ const FoodDetailsInfo = ({ serviceId }) => {
                     <div className="wrapper">
                         <div className={`title-button ${isSave ? "saved" : ""} `} onClick={toggleWishlist}>
                             <i className="fa-solid fa-bookmark schedule-icon"></i>
-                            <button className="save-and-share-btn">
+                            <button className="favourite-btn">
                                 Lưu vào danh sách yêu thích
                             </button>
                         </div>
