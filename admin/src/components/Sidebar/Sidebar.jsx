@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Sidebar.css';
-import { FaThLarge, FaUser, FaCalendarAlt, FaLocationArrow, FaBell, FaEnvelope, FaServicestack, FaUserFriends } from 'react-icons/fa'; // Import icons
-
+import { FaThLarge, FaUsers, FaUmbrellaBeach, FaLocationArrow, FaBell, FaEnvelope, FaServicestack, FaUserFriends } from 'react-icons/fa'; // Import icons
+import { FaBuildingUser } from "react-icons/fa6";
 const Sidebar = () => {
     const navigate = useNavigate();
     const location = useLocation(); // Lấy thông tin URL hiện tại
@@ -26,30 +26,30 @@ const Sidebar = () => {
                         onClick={() => handleNavigation('/dashboard')}
                     >
                         <FaThLarge />
-                        Dashboard
+                        Tổng quan
                     </li>
                     <li
                         className={isActive('/attraction') ? 'active' : ''}
                         onClick={() => handleNavigation('/attraction')}
                     >
-                        <FaLocationArrow />
-                        Attraction
+                        <FaUmbrellaBeach />
+                        Quản lý điểm tham quan
                     </li>
                     <li
                         className={isActive('/users') || isActive('/users/user/') ? 'active' : ''}
                         onClick={() => handleNavigation('/users')}
                     >
-                        <FaUser />
-                        Users
+                        <FaUsers />
+                        Quản lý người dùng
                     </li>
                     <li
                         className={isActive('/partners') || isActive('/partners/partner/') ? 'active' : ''}
                         onClick={() => handleNavigation('/partners')}
                     >
-                        <FaUserFriends />
-                        Partners
+                        <FaBuildingUser />
+                        Quản lý nhà cung cấp
                     </li>
-                    <li
+                    {/* <li
                         className={isActive('/tours') ? 'active' : ''}
                         onClick={() => handleNavigation('/tours')}
                     >
@@ -62,21 +62,21 @@ const Sidebar = () => {
                     >
                         <FaServicestack />
                         Services
-                    </li>
+                    </li> */}
                     <li
                         className={isActive('/notification') ? 'active' : ''}
                         onClick={() => handleNavigation('/notification')}
                     >
                         <FaBell />
-                        Notification
+                        Gửi thông báo
                     </li>
-                    <li
+                    {/* <li
                         className={isActive('/message') ? 'active' : ''}
                         onClick={() => handleNavigation('/message')}
                     >
                         <FaEnvelope />
-                        Message
-                    </li>
+                        Tin nhắn
+                    </li> */}
                 </ul>
             </nav>
         </aside>

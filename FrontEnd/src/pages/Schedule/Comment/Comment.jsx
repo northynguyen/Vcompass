@@ -96,6 +96,10 @@ const Comment = ({ schedule }) => {
     }, [schedule._id, url, token]);
 
     const handleLike = async () => {
+        if (!user) {
+            alert("Vui lòng đăng nhập trước");
+            return;
+        }
         try {
             const response = await axios.post(`${url}/api/schedule/user/updateLikeComment`, {
                 scheduleId: schedule._id,
@@ -114,6 +118,10 @@ const Comment = ({ schedule }) => {
     };
 
     const handleNewCommentSubmit = async () => {
+        if (!user) {
+            alert("Vui lòng đăng nhập trước");
+            return;
+        }
         if (!newComment.trim()) return;
         try {
             const response = await axios.post(`${url}/api/schedule/user/updateLikeComment`, {
@@ -143,6 +151,7 @@ const Comment = ({ schedule }) => {
 
     // Check if the current user has liked the post
     const isLike = () => {
+        if(!user) return false;
         return likes.some(like => like.idUser === user._id);
     };
 
@@ -183,6 +192,10 @@ const CommentContent = ({ comment, scheduleId, token, updateComments, url, user 
     const [showReplies, setShowReplies] = useState(false);
     const [replyInputVisible, setReplyInputVisible] = useState(false);
     const handleReplySubmit = async () => {
+        if (!user) {
+            alert("Vui lòng đăng nhập trước");
+            return;
+        }
         if (!replyText.trim()) return;
         try {
             const response = await axios.post(`${url}/api/schedule/user/updateLikeComment`, {

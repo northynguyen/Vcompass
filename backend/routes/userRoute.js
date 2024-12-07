@@ -15,9 +15,11 @@ import {
     googleCallback,
     getAllUsers,
     getAllPartners,
+
     updateUserOrPartnerOrAdmin,
     getAdminById, addtoWishlist, getUserFavoritesWithDetails, checkPassword,
     getPartnerById, getUserById,
+
 } from "../controllers/userController.js";
 
 const userRoutes = express.Router();
@@ -50,5 +52,10 @@ userRoutes.post('/user/getbyid', authMiddleware, getUserById);
 userRoutes.post('/user/:userId/addtoWishlist', authMiddleware, addtoWishlist);
 userRoutes.get('/user/favorites-with-details', getUserFavoritesWithDetails);
 
+
 userRoutes.post('/check-password', checkPassword);
+
+userRoutes.get('/partner/:id', getPartnerById);
+userRoutes.get('/user/:id', getUserById);
+
 export default userRoutes;

@@ -159,4 +159,28 @@
     transition: background-color 0.3s ease-in-out !important; /* Longer duration for smoother transition */
 }
 
-  
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+.my-booking {
+    .pagination-btn {
+        padding: 8px 16px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 12px;
+    }
+
+    .pagination-btn.active {
+        background-color: #007BFF;
+        color: white;
+    }
+
+    .pagination-btn:disabled {
+        cursor: not-allowed;
+        background-color: #f0f0f0;
+    }
+}

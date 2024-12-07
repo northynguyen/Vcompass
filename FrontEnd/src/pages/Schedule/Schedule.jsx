@@ -215,10 +215,6 @@ const MapViewWithRoute = ({ activities, scheduleID }) => {
   );
 };
 
-
-
-
-
 const Activity = ({
   activity,
   setCurrentActivity,
@@ -442,7 +438,6 @@ const convertDateFormat = (date) => {
 };
 
 
-
 const InforScheduleMedal = ({
   isOpen,
   closeModal,
@@ -577,7 +572,7 @@ const InforScheduleMedal = ({
       });
   
       if (response.data.success) {
-        return response.data.files.map((file) => file.filename); // Trả về tên các file ảnh
+        return response.data.files.map((file) => file.filename); 
       } else {
         throw new Error(response.data.message);
       }
@@ -662,7 +657,7 @@ const InforScheduleMedal = ({
       }
   
       // Upload ảnh nếu có
-      else if (mediaType === 'image' && imgSrc.length > 0) {
+      else if (mediaType === 'image' && imgSrc.length > 0 && imgSrc[0] instanceof File) {
         const uploadedFiles = await uploadImages(imgSrc[0]);
         uploadedImgSrc = uploadedFiles;
         await deleteOldMedia(inforSchedule.imgSrc[0]);
@@ -676,8 +671,8 @@ const InforScheduleMedal = ({
         description,
         dateStart: startDayString,
         dateEnd: endDateString,
-        imgSrc: mediaType === 'image' ? uploadedImgSrc : [],
-        videoSrc,  // Chỉ gán videoSrc nếu có video
+        imgSrc: mediaType === 'image' && imgSrc[0] instanceof File ? uploadedImgSrc : inforSchedule.imgSrc,
+        videoSrc,  
       }));
   
       toast.success("Lịch trình đã được cập nhật thành công!");
@@ -829,9 +824,6 @@ const InforScheduleMedal = ({
     </Modal>
   );
 };
-
-
-
 
 const DateSchedule = ({
   schedule,
@@ -1053,8 +1045,10 @@ const Schedule = ({ mode }) => {
       if (!result.success) {
         toast.error(result.message);
       }
-      toast.success(result.message);
-      console.log(result.message); // Optionally display a success message
+      else {
+        toast.success(result.message);
+      }
+      
     } catch (error) {
       console.error("Failed to update wishlist:", error.message);
       // Optionally revert the `isSaved` state if the request fails
@@ -1081,8 +1075,22 @@ const Schedule = ({ mode }) => {
       console.log("mode:", mode);
       setDateStart(convertDateFormat(inforSchedule.dateStart));
       setDateEnd(convertDateFormat(inforSchedule.dateEnd));
+      
     }
   }, [loading ]);
+
+  useEffect(() => {
+    setLoading(true);
+    if (inforSchedule ) {
+      if( mode==="edit" && ( !user || inforSchedule.idUser._id !== user._id ))
+        {      
+          setLoading(false);    
+          window.location.href = "/404";
+        }
+      setLoading(false);
+    }
+
+  }, [inforSchedule, mode]);
 
   useEffect(() => {
     if (inforSchedule && mode === "edit") {
@@ -1147,7 +1155,7 @@ const Schedule = ({ mode }) => {
       navigate(`/schedule-edit/${scheduleId}`);
       toast.success("Lấy thành công");
     } else {
-      console.error("Error adding schedule:", response.data.message);
+      toast.error(response.data.message);
     }
   };
   const extractExpenses = (tour) => {
@@ -1156,9 +1164,9 @@ const Schedule = ({ mode }) => {
       day.activity.forEach((activity) => {
         const expense = {
           id: Math.random(),
-          name: activity.title,
           location: tour.address,
           cost: activity.cost,
+          costDescription: activity.costDescription,
           icon: activity.imgSrc,
         };
         expenses.push(expense);
@@ -1331,11 +1339,10 @@ const Schedule = ({ mode }) => {
                   </div>
                 ) : (
                   <div>
-                    <div className={`title-button ${isSaved ? "saved" : ""} `}>
+                    <div className={`title-button ${isSaved ? "saved" : ""} `} onClick={toggleWishlist}>
                       <i className="fa-solid fa-bookmark schedule-icon"></i>
                       <button
-                        className="save-and-share-btn"
-                        onClick={toggleWishlist}
+                        className="save-and-share-btn"                       
                       >
                         Lưu lịch trình
                       </button>

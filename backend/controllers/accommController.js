@@ -1,10 +1,16 @@
 import fs from "fs";
 import mongoose from "mongoose";
 import Accommodation from "../models/accommodation.js";
-
+import userModel from "../models/user.js";
+import partnerModel from "../models/partner.js";
+import { createNotification } from "./notiController.js";
 export const getListAccomm = async (req, res) => {
   try {
+
     const { name, minPrice, maxPrice, city, status, filterData } = req.query;
+
+//     const { name, minPrice, maxPrice, city, status , rating} = req.query;
+
 
     const query = {};
 
@@ -136,6 +142,21 @@ export const addNew = async (req, res) => {
     });
 
     await newAccommodation.save();
+    const partner = await partnerModel.findById(partnerId);
+    if (!partner) {
+      return res.status(404).json({ success: false, message: "Partner not found" });
+    }
+
+    const notificationData = {
+      idSender: partnerId,
+      idReceiver: "admin",
+      type: "admin",
+      content: `Partner ${partner.name} vừa thêm một dịch vụ: ${newAccommodation.name}`,
+      nameSender: partner.name,
+      imgSender: partner.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    }
+
+    await createNotification(global.io, notificationData);
     res.json({
       success: true,
       message: "Accommodation added successfully",
@@ -249,6 +270,16 @@ export const updateAccommodationStatusByAdmin = async (req, res) => {
     }
     accommodation.status = status;
     await accommodation.save();
+    // const notificationData = {
+    //   idSender: adminId,
+    //   idReceiver: accommodation.idPartner,
+    //   type: "partner",
+    //   content: `Admin vừa ${status === "active" ? "duyệt" : status=== "block" ? "khóa" : "huy"} dịch vụ: ${accommodation.name} `,
+    //   nameSender: "Admin",
+    //   imgSender: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    // }
+
+    // await createNotification(global.io, notificationData);
     res.json({
       success: true,
       message: "Accommodation status updated successfully",
@@ -260,6 +291,7 @@ export const updateAccommodationStatusByAdmin = async (req, res) => {
       message: "Error updating accommodation status",
       error,
     });
+
     console.error(error);
   }
 };
@@ -456,9 +488,81 @@ export const addReview = async (req, res) => {
       return res.status(404).json({ success: false, message: "Accommodation not found." });
     }
 
+    const notificationData = {
+      idSender: reviewData.idUser,
+      idReceiver: accommodation.idPartner,
+      type: "partner",
+      nameSender: reviewData.userName,
+      imgSender: reviewData.userImage,
+      content: `${reviewData.userName} đã đánh giá khach san của bạn với điểm ${reviewData.rate} sao.`,
+    };
+
+    await createNotification(global.io, notificationData);
+
     res.status(200).json({ success: true, message: "Review added successfully.", accommodation });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "An error occurred while adding the review." });
   }
 };
+export const updateRatingResponse = async (req, res) => {
+  const { accommodationId, ratingId } = req.params; // Nhận accommodationId và ratingId từ URL
+  const { response, responseTime } = req.body; // Nhận dữ liệu phản hồi từ body
+
+  try {
+      // Tìm accommodation theo accommodationId
+      const accommodation = await Accommodation.findById(accommodationId);
+
+      if (!accommodation) {
+          return res.status(404).json({ error: 'Accommodation not found' });
+      }
+
+      // Tìm rating trong mảng ratings của accommodation
+      const rating = accommodation.ratings.id(ratingId); // Sử dụng phương thức `id()` của Mongoose để tìm rating theo ratingId
+
+      if (!rating) {
+          return res.status(404).json({ error: 'Rating not found' });
+      }
+
+      // Cập nhật phản hồi và thời gian phản hồi
+      rating.response = response;
+      rating.responseTime = responseTime || new Date();
+
+      // Lưu thay đổi vào cơ sở dữ liệu
+      await accommodation.save();
+
+      // Trả về kết quả thành công
+      res.status(200).json({ message: 'Phản hồi thành công' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
+  }
+};
+
+export const getAccommWishList = async (req, res) => {
+  const { userId } = req.body; 
+
+  try {
+      const user = await userModel.findById(userId);
+      if (!user) {
+          return res.status(404).json({ success: false, message: "User not found" });
+      }
+
+      const accomms = await Accommodation.find({ _id: { $in: user.favorites.accommodation } });
+      if (!accomms.length) {
+          return res.json({ success: true, message: "No accommodations found in wishlist" , accommodations: []});
+      }
+
+      return res.json({
+          success: true,
+          message: "Wishlist accommodations retrieved successfully",
+          accommodations: accomms,
+      });
+  } catch (error) {
+      console.error("Error retrieving wishlist accommodations:", error);
+      res.status(500).json({
+          success: false,
+          message: "Error retrieving wishlist accommodations",
+      })
+    }
+}

@@ -1,15 +1,21 @@
-import { FaBed, FaMoneyBillWave, FaUtensils, FaSmile } from 'react-icons/fa';
-import { Line } from 'react-chartjs-2';
+import axios from 'axios';
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
   LinearScale,
-  PointElement,
   LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
 } from 'chart.js'; // Import necessary chart components
+import { useContext, useEffect, useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import { FaHotel, FaUmbrellaBeach, FaUsers } from 'react-icons/fa';
+import { FaBuildingUser } from "react-icons/fa6";
+import { MdNoFood } from "react-icons/md";
+import ReactLoading from 'react-loading';
+import { StoreContext } from "../../Context/StoreContext";
 import './DashBoard.css';
 
 // Register the components
@@ -24,85 +30,253 @@ ChartJS.register(
 );
 
 const DashBoard = () => {
-  // Example data for charts (Revenue over time)
-  const data = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-    datasets: [
-      {
-        label: 'Hotel Revenue',
-        data: [12000, 19000, 3000, 5000, 20000, 30000],
-        fill: false,
-        backgroundColor: '#4CAF50',
-        borderColor: '#4CAF50',
-      },
-      {
-        label: 'Restaurant Revenue',
-        data: [15000, 21000, 5000, 4000, 15000, 25000],
-        fill: false,
-        backgroundColor: '#FFC107',
-        borderColor: '#FFC107',
-      },
-    ],
+  const [users, setUsers] = useState();
+  const [partners, setPartners] = useState();
+  const [foodServices, setFoodServices] = useState();
+  const [attractions, setAttractions] = useState();
+  const [accommodations, setAccommodations] = useState();
+  const { token, url } = useContext(StoreContext);
+  const [isUserLoading, setIsUserLoading] = useState(true);
+  const [isPartnerLoading, setIsPartnerLoading] = useState(true);
+  const [chartData, setChartData] = useState();
+  useEffect(() => {
+    const fetchAccommodations = async () => {
+      try {
+        const response = await axios.get(
+          `${url}/api/accommodations`
+        );
+        if (response.data.success) {
+          setAccommodations(response.data.accommodations);
+          console.log(response);
+        } else {
+          console.error("Error fetching accommodations:");
+        }
+      } catch (error) {
+      }
+    };
+    const fetchUsers = async () => {
+      try {
+        setIsUserLoading(true)
+        const response = await axios.get(
+          `${url}/api/user/users/`
+        );
+        if (response.data) {
+          setUsers(response.data);
+          console.log("user", response);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      } finally {
+        setIsUserLoading(false);
+      }
+    };
+    const fetchPartners = async () => {
+      try {
+        setIsPartnerLoading(true)
+        const response = await axios.get(
+          `${url}/api/user/partners/`
+        );
+        if (response.data) {
+          setPartners(response.data);
+        } else {
+        }
+      } catch (error) {
+      } finally {
+        setIsPartnerLoading(false);
+      }
+    };
+    const fetchFoodServices = async () => {
+      try {
+        const response = await axios.get(
+          `${url}/api/foodservices`
+        );
+        if (response.data.success) {
+          setFoodServices(response.data.foodService);
+          console.log("foodService", response.data);
+        } else {
+          console.error("Error fetching accommodations:");
+        }
+      } catch (error) {
+      }
+    };
+    const fetchAttractions = async () => {
+      try {
+        const response = await axios.get(
+          `${url}/api/attractions`
+        );
+        if (response.data.success) {
+          setAttractions(response.data.attractions);
+          console.log("attraction", response.data);
+        }
+      } catch (error) {
+      }
+    };
+    fetchAccommodations()
+    fetchAttractions()
+    fetchFoodServices()
+    fetchUsers()
+    fetchPartners()
+  }, [token, url]);
+
+  const calculateUnAccept = () => {
+    return accommodations.filter(accommodation => accommodation.status === 'unActive').length;
+  }
+  const calculateMonthlyRegistrations = (data, labelName) => {
+    if (!data || data.length === 0) return { labels: [], datasets: [] };
+    const dates = data.map((item) => new Date(item.createdAt));
+    const minDate = new Date(Math.min(...dates));
+    const maxDate = new Date(Math.max(...dates));
+    const labels = [];
+    const counts = [];
+    let currentDate = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+  
+    while (currentDate <= maxDate) {
+      labels.push(
+        `${currentDate.toLocaleString("default", { month: "long" })} ${currentDate.getFullYear()}`
+      );
+      counts.push(0);
+      currentDate.setMonth(currentDate.getMonth() + 1);
+    }
+  
+    // Đếm số lượng theo tháng
+    data.forEach((item) => {
+      const itemDate = new Date(item.createdAt);
+      const monthIndex =
+        (itemDate.getFullYear() - minDate.getFullYear()) * 12 +
+        itemDate.getMonth() -
+        minDate.getMonth();
+      counts[monthIndex]++;
+    });
+  
+    return {
+      labels,
+      datasets: [
+        {
+          label: labelName,
+          data: counts,
+          fill: false,
+          backgroundColor: labelName === "Người dùng" ? "#4CAF50" : "#2196F3",
+          borderColor: labelName === "Người dùng" ? "#4CAF50" : "#2196F3",
+        },
+      ],
+    };
   };
+  useEffect(() => {
+    if (!isPartnerLoading || !isUserLoading){
+      setChartData({
+        labels: calculateMonthlyRegistrations(users, "Người dùng").labels,
+        datasets: [
+          ...calculateMonthlyRegistrations(users, "Người dùng").datasets,
+          ...calculateMonthlyRegistrations(partners, "Nhà cung cấp").datasets,
+        ],
+      })
+    }
+  }, [isPartnerLoading, isUserLoading])
 
   const options = {
     responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+      },
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem) => {
+            return `${tooltipItem.raw} người đăng ký mới`;
+          },
+        },
+      },
+    },
     scales: {
+      x: {
+        beginAtZero: false,
+        title: {
+          display: true,
+          text: 'Tháng',
+        },
+        ticks: {
+          autoSkip: false, // Ngăn không cho tự động bỏ qua các tháng
+          maxRotation: 90, // Xoay nhãn trục x nếu cần
+          minRotation: 45, // Chỉ định góc quay tối thiểu
+        },
+      },
       y: {
-        beginAtZero: true,
+        beginAtZero: false,
+        title: {
+          display: true,
+          text: 'Số người dùng mới',
+        },
+        ticks: {
+          maxTicksLimit: 6,
+          callback: (value) => Math.floor(value),
+          beginAtZero: true,
+        },
       },
     },
   };
+  if (isUserLoading || isPartnerLoading) {
+    return (
+      <div className="loading-container">
+        <ReactLoading type="spin" color="#000" height={50} width={50} />
+      </div>
+    )
+  }
 
   return (
     <div className="dashboard-container">
       {/* Header with Summary Cards */}
+      <div className="summary-user-cards">
+        <div className="card">
+          <FaUsers className="card-icon" />
+          <div className="card-details">
+            <p>{users.length}</p>
+            <h3>Người dùng</h3>
+          </div>
+        </div>
+        <div className="card">
+          <FaBuildingUser className="card-icon" />
+          <div className="card-details">
+            <p>{partners.length}</p>
+            <h3>Nhà cung cấp</h3>
+          </div>
+        </div>
+      </div>
       <div className="summary-cards">
         <div className="card">
-          <FaBed className="card-icon" />
+          <FaHotel className="card-icon" />
           <div className="card-details">
-            <h3>Total Bookings</h3>
-            <p>250</p>
+            <p>{accommodations ? accommodations.length : "Đang tải"}</p>
+            <h3>Khách sạn, Chỗ ở</h3>
           </div>
         </div>
         <div className="card">
-          <FaUtensils className="card-icon" />
+          <FaHotel className="card-red-icon" />
           <div className="card-details">
-            <h3>Table Reservations</h3>
-            <p>75</p>
+            <p className="red-card-content">{accommodations ? calculateUnAccept(): "Đang tải" }</p>
+            <h3 className="red-card-title">Chưa xét duyệt</h3>
           </div>
         </div>
         <div className="card">
-          <FaMoneyBillWave className="card-icon" />
+          <MdNoFood className="card-icon" />
           <div className="card-details">
-            <h3>Total Revenue</h3>
-            <p>$45,000</p>
+            <p>{foodServices ? foodServices.length : "Đang tải"}</p>
+            <h3>Dịch vụ ăn uống</h3>
           </div>
         </div>
+
         <div className="card">
-          <FaSmile className="card-icon" />
+          <FaUmbrellaBeach className="card-icon" />
           <div className="card-details">
-            <h3>Customer Satisfaction</h3>
-            <p>95%</p>
+            <p>{attractions ? attractions.length : "Đang tải"}</p>
+            <h3>Điểm tham quan</h3>
           </div>
         </div>
       </div>
 
       {/* Revenue Chart */}
       <div className="chart-section">
-        <h3>Revenue Overview</h3>
-        <Line data={data} options={options} />
-      </div>
-
-      {/* Recent Activities */}
-      <div className="recent-activities">
-        <h3>Recent Activities</h3>
-        <ul>
-          <li>Room 101 was booked by John Doe.</li>
-          <li>Table for 4 reserved by Jane Smith.</li>
-          <li>Room 205 was checked out.</li>
-          <li>Table for 2 reserved by Mark Williams.</li>
-        </ul>
+        <h3>Biểu đồ thống kê người dùng theo tháng</h3>
+        <Line data={chartData} options={options} />
       </div>
     </div>
   );

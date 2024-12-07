@@ -12,6 +12,7 @@ const CancelBooking = ({ booking, onClose }) => {
     const [additionalComments, setAdditionalComments] = useState('');
     const [otherReasons, setOtherReasons] = useState('');
     const formRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (formRef.current) {
@@ -23,6 +24,7 @@ const CancelBooking = ({ booking, onClose }) => {
         e.preventDefault();
     
         try {
+            setIsLoading(true);
             const response = await fetch(`${url}/api/bookings/${booking._id}/cancel`, {
                 method: 'put',
                 headers: {
@@ -37,20 +39,23 @@ const CancelBooking = ({ booking, onClose }) => {
     
             const data = await response.json();
             if (data.success) {
-                console.log('Booking canceled:', data.booking);
+                setIsLoading(false);
                 toast.success('Booking canceled successfully!');
                 setTimeout(() => {
                     onClose();
                 }, 2000);
             } else {
+                setIsLoading(false);
                 console.error('Cancellation failed:', data.message);
             }
         } catch (error) {
+            setIsLoading(false);
             console.error('Error canceling booking:', error);
         }
     };
 
     return (
+       
         <div className="cancel-booking">
             <h3>Cancel Your Booking at {booking.hotel}</h3>
             <form onSubmit={handleSubmit} ref={formRef}>
@@ -92,6 +97,12 @@ const CancelBooking = ({ booking, onClose }) => {
 
                 <button type="submit" className="submit-btn">Confirm Cancellation</button>
             </form>
+
+            {isLoading && (
+                <div className="loading-overlay">
+                    <div className="spinner"></div>
+                </div>
+            )}
         </div>
     );
 };

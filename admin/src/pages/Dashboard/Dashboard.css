@@ -9,7 +9,27 @@
   gap: 20px;
   margin-bottom: 30px;
 }
+.summary-user-cards {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.card-details {
+  text-align: center;
+  width: 90%;
+}
 
+.card-red-icon {
+  font-size: 36px;
+  color: #fe3e25;
+}
+.red-card-content {
+  color: #b31a06;
+}
+.red-card-title {
+  color: #dc5b4a !important;
+}
 .card {
   background-color: #fff;
   border-radius: 8px;
@@ -27,7 +47,7 @@
 }
 
 .card-details h3 {
-  margin: 0;
+  margin-top: 5px;
   font-size: 18px;
   color: #555;
 }
@@ -35,7 +55,6 @@
 .card-details p {
   font-size: 24px;
   font-weight: bold;
-  margin: 0;
 }
 
 .chart-section {
@@ -72,4 +91,10 @@
 
 .recent-activities li:last-child {
   border-bottom: none;
+}
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import './MyBooking.css';
 import Review from '../../Review/Review';
 import CancelBooking from '../../CancelBooking/CancelBooking';
@@ -6,20 +6,22 @@ import axios from 'axios';
 import { StoreContext } from '../../../Context/StoreContext';
 import { useLocation } from 'react-router-dom';
 
-const MyBooking = ({send}) => {
+const MyBooking = ({ send }) => {
     const location = useLocation();
     const [bookings, setBookings] = useState([]);
+    const [accommodations, setAccommodations] = useState([]);
+    const [filteredBookings, setFilteredBookings] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
     const [showReviewPopup, setShowReviewPopup] = useState(false);
     const [showCancelPopup, setShowCancelPopup] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState(null);
-    const [accommodations, setAccommodations] = useState([]);
-    const [highlightFirstBooking, setHighlightFirstBooking] = useState(false); // New state for highlight
+    const [highlightFirstBooking, setHighlightFirstBooking] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1); // Trạng thái phân trang
+    const bookingsPerPage = 2; // Số booking mỗi trang
+    const { token, url } = useContext(StoreContext);
     const reviewPopupRef = useRef(null);
     const cancelPopupRef = useRef(null);
-    const { token, url, user} = useContext(StoreContext);
-
     useEffect(() => {
         const fetchBookings = async () => {
             try {
@@ -50,23 +52,34 @@ const MyBooking = ({send}) => {
         };
 
         fetchBookings();
-        if (send === true ) {
+
+        if (send === true) {
             setHighlightFirstBooking(true);
             const timer = setTimeout(() => {
                 setHighlightFirstBooking(false);
             }, 1400);
             return () => clearTimeout(timer);
         }
-       
-    }, [token, url, location.state,selectedBooking,send]);
 
-    
-    console.log("Send", send)
+    }, [token, url, location.state, selectedBooking, send]);
 
-    const filteredBookings = bookings.filter(booking => {
-        const matchesStatus = filterStatus === 'all' || booking.status === filterStatus;
-        return matchesStatus;
-    });
+    useEffect(() => {
+        const filtered = bookings.filter(booking => {
+            const matchesStatus = filterStatus === 'all' || booking.status === filterStatus;
+            return matchesStatus && booking.accommodationId;
+        });
+        setFilteredBookings(filtered);
+    }, [bookings, filterStatus]);
+
+    // Tính toán các dữ liệu của trang hiện tại
+    const indexOfLastBooking = currentPage * bookingsPerPage;
+    const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
+    const currentBookings = filteredBookings.slice(indexOfFirstBooking, indexOfLastBooking);
+
+    // Thay đổi trang khi người dùng bấm nút
+    const handlePageClick = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
 
     const handleReviewClick = (booking) => {
         setSelectedBooking(booking);
@@ -88,14 +101,7 @@ const MyBooking = ({send}) => {
         setSelectedBooking(null);
     };
 
-    const isReviewed = (accommodation) => {
-        for (const review of accommodation.ratings) {
-            if (review.userId === user._id) {
-                return true;
-            }
-        }
-        return false;
-    }
+    const totalPages = Math.ceil(filteredBookings.length / bookingsPerPage);
 
     return (
         <div className="my-booking">
@@ -109,17 +115,18 @@ const MyBooking = ({send}) => {
             />
             <div className="filter-buttons">
                 <button onClick={() => setFilterStatus('all')} className={filterStatus === 'all' ? 'active-filter' : ''}>All</button>
-                <button onClick={() => setFilterStatus('used')} className={filterStatus === 'used' ? 'active-filter' : ''}>Used</button>
+                <button onClick={() => setFilterStatus('expired')} className={filterStatus === 'expired' ? 'active-filter' : ''}>Used</button>
                 <button onClick={() => setFilterStatus('pending')} className={filterStatus === 'pending' ? 'active-filter' : ''}>Pending</button>
+                <button onClick={() => setFilterStatus('confirmed')} className={filterStatus === 'confirmed' ? 'active-filter' : ''}>Confirmed</button>
+                <button onClick={() => setFilterStatus('cancelled')} className={filterStatus === 'cancelled' ? 'active-filter' : ''}>Cancelled</button>
             </div>
 
-            {filteredBookings.length === 0 ? (
+            {currentBookings.length === 0 ? (
                 <p>No bookings found matching your search criteria.</p>
             ) : (
-                filteredBookings.map((booking, index) => {
+                currentBookings.map((booking, index) => {
                     const accommodationData = accommodations.find(accommodation => accommodation._id === booking.accommodationId);
                     const roomInfo = accommodationData ? accommodationData.roomTypes.find(roomType => roomType._id === booking.roomId) : null;
-                    const isReviewedAccommodation = accommodationData && isReviewed(accommodationData);
                     return (
                         <div
                             key={booking._id}
@@ -131,8 +138,8 @@ const MyBooking = ({send}) => {
                                 <p><strong>Room Name:</strong> {roomInfo ? roomInfo.nameRoomType : "N/A"}</p>
                                 <p><strong>Booking Date:</strong> {new Date(booking.createdAt).toLocaleDateString()}</p>
                                 <p><strong>Start Date:</strong> {new Date(booking.checkInDate).toLocaleDateString()}</p>
-                                <p><strong>End Date:</strong>{new Date(booking.checkOutDate).toLocaleDateString()}</p> 
-                                <p><strong>Nights:</strong> {booking.duration}</p>                             
+                                <p><strong>End Date:</strong>{new Date(booking.checkOutDate).toLocaleDateString()}</p>
+                                <p><strong>Nights:</strong> {booking.duration}</p>
                                 <p><strong>Price per Night:</strong> {roomInfo ? roomInfo.pricePerNight : "N/A"} VND</p>
                                 <p><strong>Taxes: </strong> Include VAT 8% - {booking.totalAmount * 0.08} VND</p>
                                 <p><strong>Total Price:</strong> {booking.totalAmount + booking.totalAmount * 0.08} VND</p>
@@ -141,19 +148,38 @@ const MyBooking = ({send}) => {
                                 {booking.status === "cancelled" && <p style={{ color: "red" }}><strong>Reason:</strong> {booking.cancellationReason}</p>}
                             </div>
                             <div className="booking-actions">
-                                {booking.status === "expired" && isReviewedAccommodation &&   (
+                                {booking.status === "expired" && (
                                     <button className="review-btn" onClick={() => handleReviewClick(booking)}>Review</button>
-                                ) }
-                                {
-                                    (booking.status === "confirmed" || booking.status === "pending"  ) && (
-                                        <button className="cancel-btn" onClick={() => handleCancelClick(booking)}>Cancel</button>) }
-                                
-                                   
+                                )}
+                                {(booking.status === "confirmed" || booking.status === "pending") && (
+                                    <button className="cancel-btn" onClick={() => handleCancelClick(booking)}>Cancel</button>
+                                )}
                             </div>
                         </div>
                     );
                 })
             )}
+
+            {/* Phân trang */}
+            <div className="pagination">
+                <button
+                    className="pagination-btn"
+                    onClick={() => handlePageClick(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                    Previous
+                </button>
+                <span className="pagination-info">
+                    Page {currentPage} of {totalPages}
+                </span>
+                <button
+                    className="pagination-btn"
+                    onClick={() => handlePageClick(currentPage + 1)}
+                    disabled={currentPage === totalPages || totalPages === 0}
+                >
+                    Next
+                </button>
+            </div>
 
             {showReviewPopup && selectedBooking && (
                 <div className="popup">

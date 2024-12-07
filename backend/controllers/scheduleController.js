@@ -3,6 +3,7 @@ import Schedule from "../models/schedule.js";
 import User from "../models/user.js";
 import {upload} from '../middleware/upload.js'
 import multer from 'multer';
+import { createNotification } from "./notiController.js";
 
 export const addSchedule = async (req, res) => {
   try {
@@ -121,9 +122,9 @@ export const getSchedulesByIdUser = async (req, res) => {
         return res.status(404).json({ success: false, message: "User not found" });
       }
 
-      const schedules = await Schedule.find({ _id: { $in: user.favorites.schedule } });
+      const schedules = await Schedule.find({ _id: { $in: user.favorites.schedule } }).populate("idUser");
       if (!schedules.length) {
-        return res.status(404).json({ success: false, message: "No schedules found in wishlist" });
+        return res.json({ success: true, message: "No schedules found in wishlist" , schedules: []});
       }
 
       return res.json({
@@ -165,26 +166,71 @@ export const getSchedulesByIdUser = async (req, res) => {
 
 export const getAllSchedule = async (req, res) => {
   try {
-    const schedule = await Schedule.find().populate("idUser");
-    if (!schedule || schedule.length === 0) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Schedule not found" });
+    // Lấy các query từ request
+    const {
+      cities, // Danh sách thành phố (truyền dưới dạng mảng hoặc chuỗi phân tách bởi dấu phẩy)
+      sortBy, // "likes", "comments"
+      page = 1, // Trang hiện tại
+      limit = 10, // Số lượng mỗi trang
+    } = req.query;
+
+    // Xử lý cities thành mảng nếu được truyền dưới dạng chuỗi
+    const cityList = cities ? cities.split(",") : [];
+
+    // Tạo điều kiện tìm kiếm
+    const query = {};
+    if (cityList.length > 0) {
+      query.address = { $in: cityList }; // Tìm kiếm lịch trình có địa chỉ thuộc danh sách thành phố
     }
+
+    // Lựa chọn sắp xếp
+    let sortOptions = {};
+    if (sortBy === "likes") {
+      sortOptions = { "likes.length": -1 }; // Sắp xếp theo số lượng lượt thích giảm dần
+    } else if (sortBy === "comments") {
+      sortOptions = { "comments.length": -1 }; // Sắp xếp theo số lượng bình luận giảm dần
+    } else {
+      sortOptions = { createdAt: -1 }; // Mặc định sắp xếp theo ngày tạo mới nhất
+    }
+
+    // Phân trang
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    // Tìm kiếm với điều kiện và phân trang
+    const schedules = await Schedule.find(query)
+      .populate("idUser") // Populate thông tin người dùng
+      .sort(sortOptions) // Sắp xếp
+      .skip(skip) // Bỏ qua các bản ghi trước đó
+      .limit(parseInt(limit)); // Giới hạn số bản ghi trả về
+
+    // Đếm tổng số lịch trình
+    const total = await Schedule.countDocuments(query);
+
+    if (!schedules || schedules.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy lịch trình phù hợp.",
+      });
+    }
+
     res.json({
       success: true,
-      message: "Get schedule success",
-      schedule,
+      message: "Lấy danh sách lịch trình thành công.",
+      total, // Tổng số lịch trình
+      currentPage: parseInt(page), // Trang hiện tại
+      totalPages: Math.ceil(total / limit), // Tổng số trang
+      schedules, // Dữ liệu lịch trình
     });
   } catch (error) {
     console.error("Error retrieving schedule:", error);
-    res.json({
+    res.status(500).json({
       success: false,
-      message: "Error retrieving schedule",
+      message: "Lỗi khi lấy danh sách lịch trình.",
       error,
     });
   }
 };
+
 
 export const getTopAddressSchedule = async (req, res) => {
   try {
@@ -225,6 +271,7 @@ export const getTopAddressSchedule = async (req, res) => {
     });
   }
 };
+
 export const updateLikeComment = async (req, res) => {
   const { scheduleId, userId, action, content, commentId } = req.body;
   const user = await User.findById(userId);
@@ -245,6 +292,19 @@ export const updateLikeComment = async (req, res) => {
       if (!schedule.likes.some((like) => like.idUser === userId)) {
         schedule.likes.push({ idUser: userId });
       }
+
+      const notificationData = {
+        idSender: userId,
+        idReceiver: schedule.idUser,
+        type: "user",
+        content: `${user.name} thích lịch trình: ${schedule.title}`,
+        createdAt: new Date(),
+        nameSender: user.name || "Unknown",
+        imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      }
+
+      await createNotification(global.io, notificationData);
+
     } else if (action === "comment") {
       // Add a comment
       const newComment = {
@@ -256,6 +316,18 @@ export const updateLikeComment = async (req, res) => {
         replies: [],
       };
       schedule.comments.push(newComment);
+      const notificationData = {
+        idSender: userId,
+        idReceiver: schedule.idUser,
+        type: "user",
+        content: `${user.name} đã bình luận lịch trình: ${schedule.title}`,
+        createdAt: new Date(),
+        nameSender: user.name || "Unknown",
+        imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      }
+
+      await createNotification(global.io, notificationData);
+
     } else if (action === "reply") {
       // Find the comment to add a reply to
       const comment = schedule.comments.id(commentId);
@@ -271,7 +343,30 @@ export const updateLikeComment = async (req, res) => {
         content,
         createdAt: new Date(),
       });
+
+      const notificationData = {
+        idSender: userId,
+        idReceiver: schedule.idUser,
+        type: "user",
+        content: `${user.name} phân bộc lịch trình: ${schedule.title}`,
+        createdAt: new Date(),
+        nameSender: user.name || "Unknown",
+        imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      }
+
+      const notificationData2 = {
+        idSender: userId,
+        idReceiver: comment.idUser,
+        type: "user",
+        content: `${user.name} đã trả lời bình luận của bạn: ${schedule.title}`,
+        createdAt: new Date(),
+        nameSender: user.name || "Unknown",
+        imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      }
+      await createNotification(global.io, notificationData);
+      await createNotification(global.io, notificationData2);
     }
+
 
     // Save the updated schedule
     await schedule.save();

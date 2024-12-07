@@ -1,0 +1,133 @@
+/* ReviewDashBoard.css */
+
+.review-dashboard {
+    padding: 20px;
+    background-color: #f7f9fc;
+    font-family: Arial, sans-serif;
+    color: #333;
+    width: 90%;
+    margin-left: max(5vw, 35px);
+    margin-top: 20px;
+    margin-right: max(5vw, 35px);
+}
+
+.review-dashboard h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Statistics Panel */
+.statistics-panel {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Filter Bar */
+.filter-bar, .service-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.filter-bar input[type="date"],
+.service-bar select {
+    padding: 10px;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+    width: 100%;
+}
+.filter-bar select {
+    padding: 10px;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+.filter-bar input[type="date"]:focus,
+.filter-bar select:focus {
+    border-color: #007bff;
+}
+
+/* Review List */
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Loading State */
+.loading {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #777;
+}
+.date-actions {
+    display: flex;
+    gap: 15px;
+  }
+.date-actions-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+  /* Phong cách nút */
+  .date-actions button {
+    padding: 5px 10px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .date-actions .btn-overview {
+    background-color: #7BBCB0;
+    color: white;
+  }
+  .date-actions .btn-overview:hover {
+}
+
+.date-actions .btn-details {
+  background-color: #7BBCB0;
+  color: white;
+}
+  .date-actions .active {
+    background-color: #054338;
+    color: white;
+  
+  }
+
+.dropdown-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 5px;
+    font-family: monospace;
+}
+
+.name {
+    text-align: left;
+}
+
+.ratings {
+    text-align: right;
+}

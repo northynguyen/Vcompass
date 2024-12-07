@@ -21,7 +21,7 @@ const RestaurantActionPopup = ({ action, restaurant, isOpen, onClose, onSubmit }
             className="modal"
             overlayClassName="overlay"
         >
-            { restaurant && (
+            { restaurant&& restaurant.status !== 'block' && (
                 <div className="lock-popup">
                     <h2>{action === 'lock' ? 'Khóa Nhà Hàng' : 'Mở khóa'} </h2>
                     {action === 'lock'? <p>Bắc có chắc chắn muốn khóa nhà hàng <strong>{restaurant.name}</strong> không?</p>

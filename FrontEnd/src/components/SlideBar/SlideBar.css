@@ -1,14 +1,21 @@
 .slidebar-container {
-  margin: 20px;
+  display: flex;
+  flex-direction: column;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
   min-width: 1200px;
+  margin-bottom: 30px;
 }
 
 .slidebar-container .title {
-  font-size: 24px;
-  margin-bottom: 10px;
+  font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    letter-spacing: 2px;
+    color: #333;
+    margin-top: 10px;
+    margin-bottom: 30px;
 }
 
 .slidebar-container .custom-swiper {

@@ -1,29 +1,30 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect, useContext } from 'react';
-import './ReservationList.css';
-import { StoreContext } from '../../../Context/StoreContext';
+import { useState, useEffect, useContext } from "react";
+import "./ReservationList.css";
+import { StoreContext } from "../../../Context/StoreContext";
 
 const ReservationList = ({ onReservationSelect }) => {
   const [reservations, setReservations] = useState([]);
-  const [hotels, setHotels] = useState([]); // List of hotels for combobox
+  const [hotels, setHotels] = useState([]); // Danh sách khách sạn cho combobox
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({
-    startDate: '',
-    endDate: '',
-    status: '',
-    hotel: '', // New filter for hotel
+    startDate: "",
+    endDate: "",
+    status: "",
+    hotel: "", // Bộ lọc mới cho khách sạn
   });
 
-  const { url } = useContext(StoreContext);
+  const { url, user } = useContext(StoreContext);
 
-  // Fetch reservations
+  // Lấy danh sách đặt phòng
   const fetchReservations = async () => {
     try {
       const { startDate, endDate, status, hotel } = filters;
       const queryParams = new URLSearchParams({
+        partnerId: user._id,
         page,
-        limit: 5,
+        limit: 6,
         ...(startDate && { startDate }),
         ...(endDate && { endDate }),
         ...(status && { status }),
@@ -42,8 +43,8 @@ const ReservationList = ({ onReservationSelect }) => {
 
             return {
               ...booking,
-              nameRoomType: room ? room.nameRoomType : 'Unknown',
-              accommodationName: roomData.accommodation ? roomData.accommodation.name : 'Unknown',
+              nameRoomType: room ? room.nameRoomType : "Không xác định",
+              accommodationName: roomData.accommodation ? roomData.accommodation.name : "Không xác định",
             };
           })
         );
@@ -52,21 +53,21 @@ const ReservationList = ({ onReservationSelect }) => {
         setTotalPages(data.totalPages);
       }
     } catch (error) {
-      console.error('Error fetching reservations:', error);
+      console.error("Lỗi khi lấy danh sách đặt phòng:", error);
     }
   };
 
-  // Fetch hotels
+  // Lấy danh sách khách sạn
   const fetchHotels = async () => {
     try {
-      const response = await fetch(`${url}/api/accommodations`);
+      const response = await fetch(`${url}/api/accommodations/${user._id}`);
       const data = await response.json();
 
       if (data.success) {
         setHotels(data.accommodations);
       }
     } catch (error) {
-      console.error('Error fetching hotels:', error);
+      console.error("Lỗi khi lấy danh sách khách sạn:", error);
     }
   };
 
@@ -95,9 +96,9 @@ const ReservationList = ({ onReservationSelect }) => {
       const bookingId = reservations[index]._id;
 
       const response = await fetch(`${url}/api/bookings/updateStatus`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ bookingId, status: newStatus }),
       });
@@ -108,22 +109,22 @@ const ReservationList = ({ onReservationSelect }) => {
         const updatedReservations = [...reservations];
         updatedReservations[index].status = newStatus;
         setReservations(updatedReservations);
-        fetchReservations(); // Refresh data
+        fetchReservations(); // Làm mới dữ liệu
       } else {
-        console.error('Failed to update status:', data.message);
+        console.error("Không thể cập nhật trạng thái:", data.message);
       }
     } catch (error) {
-      console.error('Error updating status:', error);
+      console.error("Lỗi khi cập nhật trạng thái:", error);
     }
   };
 
   return (
     <div className="reservation-list">
       <div className="reservation-header">
-        <h2>Reservation List</h2>
+        <h2>Danh sách đặt phòng</h2>
         <div className="filters">
           <select name="hotel" onChange={handleFilterChange}>
-            <option value="">All Hotels</option>
+            <option value="">Tất cả khách sạn</option>
             {hotels.map((hotel) => (
               <option key={hotel._id} value={hotel._id}>
                 {hotel.name}
@@ -131,96 +132,85 @@ const ReservationList = ({ onReservationSelect }) => {
             ))}
           </select>
           <select name="status" onChange={handleFilterChange}>
-            <option value="">All Status</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="pending">Pending</option>
-            <option value="cancelled">Cancelled</option>
+            <option value="">Tất cả trạng thái</option>
+            <option value="confirmed">Đã duyệt</option>
+            <option value="pending">Đang chờ duyệt</option>
+            <option value="cancelled">Đã hủy</option>
+            <option value="expired">Đã hoàn thành</option>
           </select>
           <input type="date" name="startDate" onChange={handleFilterChange} />
           <input type="date" name="endDate" onChange={handleFilterChange} />
         </div>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Booking Date</th>
-            <th>Room Type</th>
-            <th>Accommodation</th>
-            <th>Check-In</th>
-            <th>Check-Out</th>
-            <th>Guests</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {reservations.map((reservation, index) => (
-            <tr key={index}>
-              <td>{new Date(reservation.createdAt).toLocaleDateString('vi-VN')}</td>
-              <td>{reservation.nameRoomType}</td>
-              <td>{reservation.accommodationName}</td>
-              <td>{new Date(reservation.checkInDate).toLocaleDateString('vi-VN')}</td>
-              <td>{new Date(reservation.checkOutDate).toLocaleDateString('vi-VN')}</td>
-              <td>
-                {reservation.numberOfGuests.adult} adult
-                {reservation.numberOfGuests.adult > 1 ? 's' : ''} +{' '}
-                {reservation.numberOfGuests.child} child
-                {reservation.numberOfGuests.child > 1 ? 'ren' : ''}
-              </td>
-              <td>
-                <span
-                  className={`status-label ${
-                    reservation.status === 'confirmed'
-                      ? 'confirmed'
-                      : reservation.status === 'pending'
-                      ? 'pending'
-                      : reservation.status === 'cancelled'
-                      ? 'cancelled'
-                      : 'expired'
-                  }`}
-                >
-                  {reservation.status}
-                </span>
-              </td>
-              <td>
+      <div className="reservation-cards">
+        {reservations.map((reservation, index) => (
+          <div key={index} className="reservation-card">
+            <div className="card-header">
+              <h3>{reservation.accommodationName}</h3>
+              <span className={`status-label ${reservation.status}`}>
+                {
+                  reservation.status === 'confirmed' ? 'Đã duyệt' :
+                  reservation.status === 'pending' ? 'Chờ duyệt' :
+                  reservation.status === 'cancelled' ? 'Đã hủy' :
+                  reservation.status === 'expired' ? 'hoàn thành' :
+                  'Không xác định'
+                }
+              </span>
+
+            </div>
+            <div className="card-body">
+              <p>
+                <strong>Loại phòng:</strong> {reservation.nameRoomType}
+              </p>
+              <p>
+                <strong>Ngày đặt:</strong> {new Date(reservation.createdAt).toLocaleDateString("vi-VN")}
+              </p>
+              <p>
+                <strong>Nhận phòng:</strong> {new Date(reservation.checkInDate).toLocaleDateString("vi-VN")}
+              </p>
+              <p>
+                <strong>Trả phòng:</strong> {new Date(reservation.checkOutDate).toLocaleDateString("vi-VN")}
+              </p>
+              <p>
+                <strong>Số khách:</strong> {reservation.numberOfGuests.adult} người lớn{" "}
+                {reservation.numberOfGuests.child} trẻ em
+              </p>
+            </div>
+            <div className="card-actions">
+              <button className="action-btn view" onClick={() => onReservationSelect(reservation)}>
+                Xem chi tiết
+              </button>
+              {reservation.status === "pending" && (
                 <button
-                  className="action-btn view"
-                  onClick={() => onReservationSelect(reservation)}
+                  className="action-btn confirm"
+                  onClick={() => handleStatusChange(index, "confirmed")}
                 >
-                  👁
+                  Duyệt
                 </button>
-                {reservation.status === 'pending' && (
-                  <button
-                    className="action-btn confirm"
-                    onClick={() => handleStatusChange(index, 'confirmed')}
-                  >
-                    Confirm
-                  </button>
-                )}
-                {reservation.status === 'confirmed' && (
-                  <button
-                    className="action-btn cancel"
-                    onClick={() => handleStatusChange(index, 'expired')}
-                  >
-                    Complete
-                  </button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              )}
+              {reservation.status === "confirmed" && (
+                <button
+                  className="action-btn cancel"
+                  onClick={() => handleStatusChange(index, "expired")}
+                >
+                  Hoàn thành
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
 
       <div className="pagination">
         <button onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>
-          Previous
+          Trang trước
         </button>
         <span>
-          Page {page} of {totalPages}
+          Trang {page} trên {totalPages}
         </span>
         <button onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages}>
-          Next
+          Trang sau
         </button>
       </div>
     </div>

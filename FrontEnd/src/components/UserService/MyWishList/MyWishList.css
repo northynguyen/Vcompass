@@ -1,0 +1,165 @@
+/* MyWishList.css */
+
+.my-wishlist {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.my-wishlist h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.my-wishlist {
+.tab-navigation {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.tab-navigation button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f1f1f1;
+    color: #555;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tab-navigation button.active-tab {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.tab-navigation button:hover:not(.active-tab) {
+    background-color: #ddd;
+}
+
+.featured-schedules,
+.accommodation-content,
+.attraction-content,
+.foodservice-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.schedule-card,
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.schedule-card:hover,
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.image-container {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.image-container img,
+.image-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.heart-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    padding: 8px 8px 5px 8px; 
+    font-size: 16px;
+    color: #ff4d4f;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.heart-icon:hover {
+    background-color: #ff4d4f;
+    color: #fff;
+}
+
+.schedule-info,
+.card-content {
+    padding: 15px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.card-facilities,
+.card-price,
+.card-reviews,
+.card-duration {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.card-reviews {
+    color: #ff9900;
+    font-weight: bold;
+}
+
+p {
+    margin: 0;
+}
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .image-container {
+        height: 120px;
+    }
+
+    .schedule-card,
+    .card {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .tab-navigation {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .tab-navigation button {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+
+    .image-container {
+        height: 100px;
+    }
+}

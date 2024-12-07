@@ -4,8 +4,54 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-}
 
+.addition-infor-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0px;
+    font-size: 22px;
+    color: gray;
+
+}
+.title-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: solid 2px #7BBCB0 !important;
+    cursor: pointer;
+  }
+  .infor-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
+}
+  .title-button:hover {
+    background-color: #7BBCB0;
+  }
+  
+  .title-button.saved {
+    background-color: #a5f97b;
+    border-color: #13d102;
+  }
+.schedule-icon {
+    margin-right: 10px;
+    color: #000;
+  }
+  
+.save-and-share-btn {
+    color: #000;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 1.2rem;
+  }
+p.addition-infor-content {
+    color: #000;
+}
 .tour-details {
     padding: 20px;
 }
@@ -60,9 +106,9 @@ h1 {
 }
 
 .booking-form {
-    margin-top: 95px;
-    max-height: 600px;
-    background-color: #f4f4f4;
+    margin-top: 35px;
+    max-height: 350px;
+    background-color: #FFF;
     padding: 20px;
     border-radius: 10px;
     text-align: center;
@@ -78,16 +124,14 @@ h1 {
     margin: 10px 0 5px 0;
     text-align: left;
 }
-
-.booking-form input,
-.booking-form select,
-.booking-form button {
-    padding: 10px;
-    margin-bottom: 15px;
+button {
+    padding: 5px 10px;
+    font-size: 14px;
+    border: none;
     border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-}
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
 
 .booking-form .book-btn {
     background-color: #00bfa5;
@@ -104,10 +148,6 @@ h1 {
     border: solid 1px #778088;
     transition: background-color 0.3s ease;
     height: 50px;
-}
-
-.booking-form button:hover {
-    background-color: #009b86;
 }
 
 .total-price h3 {
@@ -158,4 +198,5 @@ h1 {
     font-size: 30px;
     cursor: pointer;
     color: #333;
+}
 }

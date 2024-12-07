@@ -48,9 +48,8 @@ const SignIn = ({ setShowLogin }) => {
             newUrl = `${url}/api/user/login/user`;
         } else if (curentState === "Sign Up") {
             newUrl = `${url}/api/user/register/user`;
-        } else if (curentState === "Forgot Password") {
-            newUrl = `${url}/api/user/forgot-password`;
-        }
+        } 
+        
 
         try {
             const response = await axios.post(newUrl, data);
@@ -77,6 +76,21 @@ const SignIn = ({ setShowLogin }) => {
     
     const onForgetPassword = async (event) => {
         event.preventDefault();
+        try {
+            setIsLoading(true); 
+            const response = await axios.post(`${url}/api/email/password`, { type : "user", email: data.email });
+            if (response.data.success) {
+                toast.success(response.data.message);
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.error("There was an error!", error);
+            toast.error(error.response.data.message);
+        }
+        finally {
+            setIsLoading(false); 
+        }
     }
     const onGoogleLogin = () => {
         window.open(`${url}/api/user/google`, "_self"); // Redirect to your backend Google login route

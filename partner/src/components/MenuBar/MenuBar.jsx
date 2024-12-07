@@ -15,41 +15,41 @@ const MenuBar = () => {
           <li className={location.pathname === '/dashboard' ? 'active' : ''}>
             <Link to="/dashboard">
               <FaThLarge />
-              Dashboard
+              Tổng quan
             </Link>
           </li>
           <li className={location.pathname === '/reservation' ? 'active' : ''}>
             <Link to="/reservation">
               <FaCalendarAlt />
-              Reservation
+              Quản lý đặt phòng
             </Link>
           </li>
           <li className={location.pathname === '/hotels' ? 'active' : ''}>
             <Link to="/hotels">
               <FaHome />
-              Hotels
+              Dịch vụ chỗ ở
             </Link>
           </li>
           <li className={location.pathname === '/concierge' ? 'active' : ''}>
             <Link to="/concierge">
               <FaConciergeBell />
-              FABS
+              Dịch vụ ăn uống
             </Link>
           </li>
-          <li className={location.pathname === '/messages' ? 'active' : ''}>
+          {/* <li className={location.pathname === '/messages' ? 'active' : ''}>
             <Link to="/messages">
               <FaEnvelope />
               Messages
               <span className="notification-badge">5</span>
             </Link>
-          </li>
-          <li className={location.pathname === '/housekeeping' ? 'active' : ''}>
+          </li> */}
+          {/* <li className={location.pathname === '/housekeeping' ? 'active' : ''}>
             <Link to="/housekeeping">
               <FaBroom />
               Housekeeping
             </Link>
-          </li>
-          <li className={location.pathname === '/inventory' ? 'active' : ''}>
+          </li> */}
+          {/* <li className={location.pathname === '/inventory' ? 'active' : ''}>
             <Link to="/inventory">
               <FaBox />
               Inventory
@@ -60,14 +60,14 @@ const MenuBar = () => {
               <FaCalendarAlt />
               Calendar
             </Link>
-          </li>
-          <li className={location.pathname === '/financials' ? 'active' : ''}>
+          </li> */}
+          {/* <li className={location.pathname === '/financials' ? 'active' : ''}>
             <Link to="/financials">
               <FaDollarSign />
               Financials
             </Link>
-          </li>
-          <ul className="submenu">
+          </li> */}
+          {/* <ul className="submenu">
             <li className={location.pathname === '/invoice' ? 'active' : ''}>
               <Link to="/invoice">
                 Invoice
@@ -78,11 +78,11 @@ const MenuBar = () => {
                 <span className="highlight">Expenses</span>
               </Link>
             </li>
-          </ul>
-          <li className={location.pathname === '/dashboard' ? 'active' : ''}>
-            <Link to="/dashboard">
+          </ul> */}
+          <li className={location.pathname === '/review' ? 'active' : ''}>
+            <Link to="/review">
               <FaStar />
-              Reviews
+              Đánh giá
             </Link>
           </li>
         </ul>

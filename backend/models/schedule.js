@@ -10,6 +10,7 @@ const ActivitySchema = new Schema({
       address: { type: String },
       imgSrc: [{ type: String }],
       cost: { type: Number, required: true },
+      costDescription: { type: String , default: ''},
       description: { type: String },
       timeStart: { type: String, required: true },
       timeEnd: { type: String, required: true },

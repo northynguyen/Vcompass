@@ -129,10 +129,10 @@ export const AccomActivity = ({
       const result = await response.json();
       if (!result.success) {
         toast.error(result.message);
+        setIsSaved((prevState) => !prevState);
       } else {
         toast.success(result.message);
-        console.log(result.message);
-        setIsSaved(newStatus);
+        setIsSaved((prevState) => !prevState);
       } // Optionally display a success message
     } catch (error) {
       console.error("Failed to update wishlist:", error.message);
@@ -401,7 +401,7 @@ export const AttractionActivity = ({
   const { url, user, token } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
-      const newStatus = !isSaved; // Determine the new state
+      const newStatus = !isSaved;
 
       const action = newStatus ? "add" : "remove"; // Define the action
       const response = await fetch(
