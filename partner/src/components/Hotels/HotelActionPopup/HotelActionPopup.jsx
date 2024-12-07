@@ -8,6 +8,7 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { StoreContext } from '../../../Context/StoreContext';
+import AmenitiesEditor from './AmenitiesEditor';
 // Define a custom icon for the marker
 const redIcon = new L.Icon({
     iconUrl: 'https://cdn.iconscout.com/icon/free/png-256/free-location-icon-download-in-svg-png-gif-file-formats--marker-pointer-map-pin-navigation-finance-and-economy-pack-business-icons-2561454.png?f=webp&w=256',
@@ -16,24 +17,37 @@ const redIcon = new L.Icon({
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
 });
-const vietnamProvinces = [
-    "An Giang", "Bà Rịa - Vũng Tàu", "Bắc Giang", "Bắc Kạn", "Bến Tre", "Bình Định",
-    "Bình Dương", "Bình Phước", "Bình Thuận", "Cà Mau", "Cao Bằng", "Đắk Lắk",
-    "Đắk Nông", "Điện Biên", "Đồng Nai", "Đồng Tháp", "Gia Lai", "Hà Giang", "Hà Nam",
-    "Hà Nội", "Hải Dương", "Hải Phòng", "Hậu Giang", "Hòa Bình", "Hồ Chí Minh", "Hưng Yên",
-    "Khánh Hòa", "Kiên Giang", "Kon Tum", "Lai Châu", "Lâm Đồng", "Lạng Sơn", "Lào Cai",
-    "Long An", "Nam Định", "Nghệ An", "Ninh Bình", "Ninh Thuận", "Phú Thọ", "Phú Yên",
-    "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh", "Quảng Trị", "Sóc Trăng",
-    "Sơn La", "Tây Ninh", "Thái Bình", "Thái Nguyên", "Thanh Hóa", "Thừa Thiên Huế",
-    "Tiền Giang", "TP Hồ Chí Minh", "Tuyên Quang", "Vĩnh Long", "Vĩnh Phúc", "Yên Bái"
+
+const availableAmenities = [
+    "Wi-Fi",
+    "Bãi đậu xe",
+    "Dịch vụ 24/7",
+    "Dịch vụ đưa đón sân bay",
+    "Dịch vụ phòng",
+    "Hồ bơi",
+    "Nhà hàng và quầy bar",
+    "Phòng hội nghị",
+    "Trung tâm thể dục thể thao",
+    "Dịch vụ spa và massage",
+    "Khu vui chơi trẻ em",
+    "Tổ chức tour du lịch",
+    "Dịch vụ giặt ủi",
+    "Két an toàn",
+    "Tủ lạnh mini",
+    "Phục vụ ăn sáng",
+    "Dịch vụ đặt vé",
+    "Công viên và khu vườn",
+    "Truyền hình cáp và truyền hình vệ tinh",
+    "Dịch vụ hỗ trợ khách hàng"
 ];
+
 const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
     const { url } = useContext(StoreContext);
     const [formData, setFormData] = useState({
         name: hotel ? hotel.name : '',
         description: hotel ? hotel.description : '',
         priceRange: hotel ? hotel.priceRange : { priceMin: '', priceMax: '' }, // Ensure it's an object
-        amenities: hotel ? hotel.amenities.join(", ") : '',
+        amenities: hotel ? hotel.amenities : [],
         contact: {
             phone: hotel ? hotel.contact.phone : '',
             email: hotel ? hotel.contact.email : '',
@@ -48,16 +62,39 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
     });
 
     const vietnamProvinces = [
-        "An Giang", "Bà Rịa - Vũng Tàu", "Bắc Giang", "Bắc Kạn", "Bến Tre", "Bình Định", 
-        "Bình Dương", "Bình Phước", "Bình Thuận", "Cà Mau", "Cao Bằng", "Đắk Lắk", 
-        "Đắk Nông", "Điện Biên", "Đồng Nai", "Đồng Tháp", "Gia Lai", "Hà Giang", "Hà Nam", 
-        "Hà Nội", "Hải Dương", "Hải Phòng", "Hậu Giang", "Hòa Bình", "Hồ Chí Minh", "Hưng Yên", 
-        "Khánh Hòa", "Kiên Giang", "Kon Tum", "Lai Châu", "Lâm Đồng", "Lạng Sơn", "Lào Cai", 
-        "Long An", "Nam Định", "Nghệ An", "Ninh Bình", "Ninh Thuận", "Phú Thọ", "Phú Yên", 
-        "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh", "Quảng Trị", "Sóc Trăng", 
-        "Sơn La", "Tây Ninh", "Thái Bình", "Thái Nguyên", "Thanh Hóa", "Thừa Thiên Huế", 
+        "An Giang", "Bà Rịa - Vũng Tàu", "Bắc Giang", "Bắc Kạn", "Bến Tre", "Bình Định",
+        "Bình Dương", "Bình Phước", "Bình Thuận", "Cà Mau", "Cao Bằng", "Đắk Lắk",
+        "Đắk Nông", "Điện Biên", "Đồng Nai", "Đồng Tháp", "Gia Lai", "Hà Giang", "Hà Nam",
+        "Hà Nội", "Hải Dương", "Hải Phòng", "Hậu Giang", "Hòa Bình", "Hồ Chí Minh", "Hưng Yên",
+        "Khánh Hòa", "Kiên Giang", "Kon Tum", "Lai Châu", "Lâm Đồng", "Lạng Sơn", "Lào Cai",
+        "Long An", "Nam Định", "Nghệ An", "Ninh Bình", "Ninh Thuận", "Phú Thọ", "Phú Yên",
+        "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh", "Quảng Trị", "Sóc Trăng",
+        "Sơn La", "Tây Ninh", "Thái Bình", "Thái Nguyên", "Thanh Hóa", "Thừa Thiên Huế",
         "Tiền Giang", "TP Hồ Chí Minh", "Tuyên Quang", "Vĩnh Long", "Vĩnh Phúc", "Yên Bái"
-      ];
+    ];
+    const availableAmenities = [
+        "Wi-Fi",
+        "Bãi đậu xe",
+        "Dịch vụ 24/7",
+        "Dịch vụ đưa đón sân bay",
+        "Dịch vụ phòng",
+        "Hồ bơi",
+        "Nhà hàng và quầy bar",
+        "Phòng hội nghị",
+        "Trung tâm thể dục thể thao",
+        "Dịch vụ spa và massage",
+        "Khu vui chơi trẻ em",
+        "Tổ chức tour du lịch",
+        "Dịch vụ giặt ủi",
+        "Két an toàn",
+        "Tủ lạnh mini",
+        "Phục vụ ăn sáng",
+        "Dịch vụ đặt vé",
+        "Công viên và khu vườn",
+        "Truyền hình cáp và truyền hình vệ tinh",
+        "Dịch vụ hỗ trợ khách hàng"
+    ];
+
     const [existingImages, setExistingImages] = useState(hotel?.images || []);
     const [newImages, setNewImages] = useState([]);
     const [newImagePreviews, setNewImagePreviews] = useState([]);
@@ -116,7 +153,7 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
 
 
         // Append amenities as individual items in FormData
-        formData.amenities.split(",").map(item => item.trim()).forEach(amenity => {
+        formData.amenities.map(item => item.trim()).forEach(amenity => {
             formDataToSubmit.append('amenities[]', amenity);
         });
 
@@ -214,6 +251,18 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
             alert("Geolocation is not supported by this browser.");
         }
     };
+    const handleAmenitiesChange = (e) => {
+        const { value, checked } = e.target;
+        setFormData(prevData => {
+            let updatedAmenities = [...prevData.amenities];
+            if (checked) {
+                updatedAmenities.push(value);
+            } else {
+                updatedAmenities = updatedAmenities.filter(amenity => amenity !== value);
+            }
+            return { ...prevData, amenities: updatedAmenities };
+        });
+    };
 
     // Render form fields based on action
     const renderFormFields = () => {
@@ -286,17 +335,11 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                             />
                         </div>
 
-                        <div className="hap-form-group">
-                            <label>Tiện Nghi:</label>
-                            <input
-                                type="text"
-                                name="amenities"
-                                value={formData.amenities}
-                                onChange={handleChange}
-                                placeholder="Free Wi-Fi, Breakfast Included"
-                                required
-                            />
-                        </div>
+                        <AmenitiesEditor
+                            availableAmenities={availableAmenities}
+                            selectedAmenities={formData.amenities}
+                            onAmenitiesChange={handleAmenitiesChange}
+                        />
                         <div className="hap-form-group">
                             <label>Số Điện Thoại Liên Hệ:</label>
                             <input
@@ -414,16 +457,22 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                         </div>
 
                         <div className="hap-form-group">
-                            <label>Tiện Nghi:</label>
-                            <input type="text" name="amenities" value={formData.amenities} readOnly />
+                            <label>Tiện nghi</label>
+                            <ul className="amenities">
+                                {formData.amenities.map((amenity, index) => (
+                                    <li key={index}>
+                                        {amenity}
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                         <div className="hap-form-group">
                             <label>Số Điện Thoại Liên Hệ:</label>
-                            <input type="text" name="contactPhone" value={formData.contactPhone} readOnly />
+                            <input type="text" name="contactPhone" value={formData.contact.phone} readOnly />
                         </div>
                         <div className="hap-form-group">
                             <label>Email Liên Hệ:</label>
-                            <input type="email" name="contactEmail" value={formData.contactEmail} readOnly />
+                            <input type="email" name="contactEmail" value={formData.contact.email} readOnly />
                         </div>
                         <div className="hap-form-group">
                             <label>Hình Ảnh:</label>

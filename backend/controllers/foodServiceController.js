@@ -7,25 +7,26 @@ import { name } from "@cloudinary/url-gen/actions/namedTransformation";
 import { createNotification } from "./notiController.js";
 
 const getListFoodService = async (req, res) => {
-  try {
-    const { name, minPrice, maxPrice, city, status } = req.query;
-    // Build query object
-    const query = {};
 
-    // Add name filter if provided
-    if (name) {
-      query.foodServiceName = { $regex: name, $options: "i" }; // case-insensitive search
-    }
+    try {
+        const { name, minPrice, maxPrice, city, status } = req.query;
+        // Build query object
+        const query = {};
 
-    // Add price range filter if provided
-    if (minPrice && maxPrice) {
-      query["price.minPrice"] = minPrice
-        ? { $gte: Number(minPrice) }
-        : undefined;
-      query["price.maxPrice"] = maxPrice
-        ? { $lte: Number(maxPrice) }
-        : undefined;
-    }
+        // Add name filter if provided
+        if (name) {
+            query.$or = [
+                { "foodServiceName": { $regex: name, $options: 'i' } }, // Tìm kiếm trong tên địa điểm
+                { "city": { $regex: name, $options: 'i' } }, // Tìm kiếm trong tên tính
+            ];
+        }
+
+        // Add price range filter if provided
+        if (minPrice && maxPrice) {
+            query["price.minPrice"] = minPrice ? { $gte: Number(minPrice) } : undefined;
+            query["price.maxPrice"] = maxPrice ? { $lte: Number(maxPrice) } : undefined;
+        }
+
 
     // Add city filter if provided
     if (city) {
@@ -86,6 +87,7 @@ export const getFoodServiceById = async (req, res) => {
 };
 
 const getListByPartner = async (req, res) => {
+
   const partnerId = req.params.partnerId;
   try {
     const foodService = await FoodService.find({ idPartner: partnerId });
@@ -96,6 +98,7 @@ const getListByPartner = async (req, res) => {
           success: false,
           message: "Food service not found or partner mismatch",
         });
+
     }
     res
       .status(200)

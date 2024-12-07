@@ -18,6 +18,7 @@ const StoreContextProvider = (props) => {
     setToken(token);
     setUser(JSON.parse(localStorage.getItem("user")));
     fetchAccommodation()
+    fetchUser(token);
   }, [])
 
   const fetchAccommodation = async () => {
@@ -28,7 +29,16 @@ const StoreContextProvider = (props) => {
       console.error('Error fetching accommodation:', error);
     }
   };
-
+  const fetchUser = async (authtoken) => {
+    if (authtoken) {
+      try {
+        const response = await axios.post(`${url}/api/user/user/getbyid`, {}, { headers: { token: authtoken } });
+        setUser(response.data.user);
+      } catch (error) {
+        console.error("Error loading admin data:", error);
+      }
+    }
+  };
   const contextValue = {
     url,
     token,

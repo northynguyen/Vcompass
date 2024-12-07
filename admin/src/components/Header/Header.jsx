@@ -15,9 +15,12 @@ const Header = () => {
   const menuRef = useRef(null);
   const notificationRef = useRef(null); // Reference for the notifications dropdown
   const { token, setToken, admin, url } = useContext(StoreContext);
+
+
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
+
   const navigate = useNavigate();
   // Sample notifications array
   
@@ -114,7 +117,9 @@ const Header = () => {
     toast.success('Đăng xuất thành công');
     setToken(null);
   };
-
+  const handleMyProfile = () => {
+    navigate('/myprofile');
+  }
   // Toggle profile popup visibility
   const toggleProfilePopup = () => {
     setProfilePopupVisible(!isProfilePopupVisible);
@@ -199,26 +204,41 @@ const Header = () => {
         </button>
 
         {/* User Profile */}
-        {admin &&
-          <div className="user-profile">
-            <img
-              src={admin.avatar}
-              alt="User Avatar"
-              className="user-avatar"
-              onClick={toggleProfilePopup} // Toggle profile popup on click
-            />
-            <div className="user-info">
-              <p>{admin.name}</p>
-              <span>Admin</span>
-            </div>
-          </div>}
+
+        <div className="user-profile">
+          <img
+            src={`${url}/images/${admin.avatar}`}
+            alt="User Avatar"
+            className="user-avatar"
+            onClick={toggleProfilePopup} // Toggle profile popup on click
+          />
+          <div className="user-info">
+            <p>{admin.name}</p>
+            <span>Admin</span>
+          </div>
+        </div>
+
+//         {admin &&
+//           <div className="user-profile">
+//             <img
+//               src={admin.avatar}
+//               alt="User Avatar"
+//               className="user-avatar"
+//               onClick={toggleProfilePopup} // Toggle profile popup on click
+//             />
+//             <div className="user-info">
+//               <p>{admin.name}</p>
+//               <span>Admin</span>
+//             </div>
+//           </div>}
+
 
         {/* Profile Popup Menu */}
         {isProfilePopupVisible && (
           <div className="profile-popup" ref={menuRef}>
             <ul className="menu">
               <li><CiSettings /> My Settings</li>
-              <li><MdManageAccounts /> My Profile</li>
+              <li onClick={handleMyProfile}><MdManageAccounts /> My Profile</li>
               <hr />
               <li onClick={handleLogout}><CiLogout /> Log Out</li>
             </ul>

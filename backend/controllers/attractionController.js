@@ -12,7 +12,10 @@ const getAttractions = async (req, res) => {
 
         // Add name filter if provided
         if (name) {
-            query.attraction_name = { $regex: name, $options: 'i' }; // case-insensitive search
+            query.$or = [
+                { attractionName: { $regex: name, $options: 'i' } }, // Tìm kiếm trong tên địa điểm
+                { city: { $regex: name, $options: 'i' } }, // Tìm kiếm trong tên thành phố
+            ];
         }
 
         // Add price range filter if provided

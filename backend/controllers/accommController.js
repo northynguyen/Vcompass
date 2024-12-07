@@ -6,13 +6,21 @@ import partnerModel from "../models/partner.js";
 import { createNotification } from "./notiController.js";
 export const getListAccomm = async (req, res) => {
   try {
-    const { name, minPrice, maxPrice, city, status , rating} = req.query;
+
+    const { name, minPrice, maxPrice, city, status, filterData } = req.query;
+
+//     const { name, minPrice, maxPrice, city, status , rating} = req.query;
+
 
     const query = {};
 
-    // Filter by name if provided (case-insensitive search)
     if (name) {
-      query.name = { $regex: name, $options: 'i' };
+      const regex = new RegExp(name.split('').join('.*'), 'i'); // Biểu thức chính quy có dạng: "t.*a.*u"
+
+      query.$or = [
+        { name: { $regex: regex } },
+        { city: { $regex: regex } }
+      ];
     }
 
     // Filter by city if provided
@@ -21,6 +29,9 @@ export const getListAccomm = async (req, res) => {
     }
     if (status) {
       query.status = status.toLowerCase();
+    }
+    if (filterData) {
+      console.log(filterData);
     }
     // Fetch accommodations based on the constructed query
     let accommodations = await Accommodation.find(query);

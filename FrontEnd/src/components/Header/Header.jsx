@@ -16,7 +16,6 @@ import {io} from 'socket.io-client'
 
 const Header = ({ setShowLogin }) => {
   const { token, setToken, user,url } = useContext(StoreContext);
-  console.log(user)
   const [activeTab, setActiveTab] = useState('');
   const [menuVisible, setMenuVisible] = useState(false); // State for menu visibility
   const menuRef = useRef(null); // Reference for the menu
@@ -196,7 +195,7 @@ const Header = ({ setShowLogin }) => {
         {token === null ? <button className="header-login" onClick={() => setShowLogin(true)}>Đăng nhập</button> :
           <div className="header-profile" ref={menuRef}>
             <div className="profile-section" onClick={toggleMenu}>
-              <img src={profile_icon} alt="Profile" className="profile-pic" />
+              <img src={`${url}/images/${user.avatar}`} alt="Profile" className="user-avatar" />
             </div>
 
             
@@ -204,7 +203,7 @@ const Header = ({ setShowLogin }) => {
             {menuVisible && (
               <div className="profile-menu" >
                 <div className="profile-name">
-                  <img src={user.avatar} alt="Profile" className="profile-pic" />
+                  <img src={`${url}/images/${user.avatar}`} alt="Profile" className="user-avatar" />
                   <h3>{user.name} </h3>
                 </div>
 

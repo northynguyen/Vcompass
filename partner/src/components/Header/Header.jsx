@@ -15,7 +15,9 @@ const Header = () => {
   const [isNotificationsVisible, setNotificationsVisible] = useState(false); // State for notifications dropdown
   const menuRef = useRef(null);
   const notificationRef = useRef(null); // Reference for the notifications dropdown
+
   const { token, setToken, user ,url} = useContext(StoreContext);
+
   const navigate = useNavigate();
 
   const [notifications, setNotifications] = useState([]);
@@ -147,7 +149,9 @@ const Header = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isProfilePopupVisible, isNotificationsVisible]);
-
+  const handleMyProfile = () => {
+    navigate('/myprofile');
+  }
   return (
     <header className="header-container">
       {/* Left section (Logo and Title) */}
@@ -202,7 +206,7 @@ const Header = () => {
           user &&
           <div className="user-profile">
           <img
-            src={user.avatar}
+            src={`${url}/images/${user.avatar}`}
             alt="User Avatar"
             className="user-avatar"
             onClick={toggleProfilePopup} // Toggle profile popup on click
@@ -219,7 +223,7 @@ const Header = () => {
           <div className="profile-popup" ref={menuRef}>
             <ul className="menu">
               <li><CiSettings /> My Settings</li>
-              <li><MdManageAccounts /> My Profile</li>
+              <li onClick={handleMyProfile}><MdManageAccounts /> My Profile</li>
               <hr />
               <li onClick={handleLogout}><CiLogout /> Log Out</li>
             </ul>

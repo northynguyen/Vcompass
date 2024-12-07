@@ -7,9 +7,9 @@ import { StoreContext } from '../../Context/StoreContext';
 import ImagesModal from '../ImagesModal/ImagesModal';
 import './AttractionDetailsInfo.css';
 
-
 const AttractionDetailsInfo = ({ serviceId }) => {
     const { url, token, user } = useContext(StoreContext);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedImageIndex, setSelectedImageIndex] = useState('');
     const [attraction, setAttraction] = useState(null);
@@ -24,6 +24,7 @@ const AttractionDetailsInfo = ({ serviceId }) => {
     // Close the Modal
     const closeModal = () => {
         setIsModalOpen(false);
+
     };
 
     useEffect(() => {
@@ -68,6 +69,7 @@ const AttractionDetailsInfo = ({ serviceId }) => {
             setIsSave((prevState) => !prevState);
         }
     };
+
 
     if (!attraction) {
         return <p>Loading...</p>;
@@ -123,6 +125,7 @@ const AttractionDetailsInfo = ({ serviceId }) => {
                 </div>
             </div>
 
+
             {/* Right Column: Booking Form */}
             <div className="booking-form">
                 <h3>Thông tin thêm</h3>
@@ -151,6 +154,7 @@ const AttractionDetailsInfo = ({ serviceId }) => {
                     </div>
                 </div>
             </div>
+
 
             {/* Modal for displaying clicked images */}
             <ImagesModal

@@ -1,7 +1,7 @@
 // routes/authRoutes.js
 
 import express from "express";
-
+import { upload } from "../middleware/upload.js";
 import authMiddleware from './../middleware/auth.js';
 
 import {
@@ -15,8 +15,11 @@ import {
     googleCallback,
     getAllUsers,
     getAllPartners,
-    updateUserOrPartner,
-    getAdminById, addtoWishlist, getUserFavoritesWithDetails,getPartnerById, getUserById
+
+    updateUserOrPartnerOrAdmin,
+    getAdminById, addtoWishlist, getUserFavoritesWithDetails, checkPassword,
+    getPartnerById, getUserById,
+
 } from "../controllers/userController.js";
 
 const userRoutes = express.Router();
@@ -38,13 +41,21 @@ userRoutes.get('/users/', getAllUsers);
 userRoutes.get('/partners/', getAllPartners);
 
 //update user
-userRoutes.put('/partners/:id', updateUserOrPartner);
-userRoutes.put('/users/:id', updateUserOrPartner);
+userRoutes.put('/partners/:id', upload.fields([{ name: "image", maxCount: 1 }]), updateUserOrPartnerOrAdmin);
+userRoutes.put('/users/:id', upload.fields([{ name: "image", maxCount: 1 }]), updateUserOrPartnerOrAdmin);
+userRoutes.put('/admin/:id', upload.fields([{ name: "image", maxCount: 1 }]), updateUserOrPartnerOrAdmin);
 
 userRoutes.post('/admin/getbyid', authMiddleware, getAdminById);
+userRoutes.post('/partner/getbyid', authMiddleware, getPartnerById);
+userRoutes.post('/user/getbyid', authMiddleware, getUserById);
+
 userRoutes.post('/user/:userId/addtoWishlist', authMiddleware, addtoWishlist);
 userRoutes.get('/user/favorites-with-details', getUserFavoritesWithDetails);
 
+
+userRoutes.post('/check-password', checkPassword);
+
 userRoutes.get('/partner/:id', getPartnerById);
 userRoutes.get('/user/:id', getUserById);
+
 export default userRoutes;

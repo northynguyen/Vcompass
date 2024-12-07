@@ -14,6 +14,7 @@ import UserDetails from '../../components/UserDetails/UserDetails';
 import PartnerDetails from '../../components/PartnerDetails/PartnerDetails';
 import Attraction from '../Attraction/Attraction';
 import AttractionDetails from '../Attraction/AttractionDetails';
+import MyProfileContainer from '../MyProfile/MyProfile';
 
 const MainPage = () => {
   return (
@@ -34,6 +35,7 @@ const MainPage = () => {
             <Route path="/attraction" element={<Attraction />} />
             <Route path="/attraction/details" element={<AttractionDetails />} />
             <Route path="/message" element={<Message />} />
+            <Route path="/myprofile" element={<MyProfileContainer />} />
 
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>

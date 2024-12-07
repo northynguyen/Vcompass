@@ -5,30 +5,26 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 
-const AccomodationCards = () => {
+const AccomodationCards = ({ accommodationsFound, startDay, endDay, adults, children }) => {
     const { url } = useContext(StoreContext);
     const [accomodations, setAccomodations] = useState([]);
     const navigate = useNavigate();
+    const filterData = { startDay, endDay, adults, children };
     useEffect(() => {
-        const fetchAccomodations = async () => {
-            try {
-                const response = await axios.get(`${url}/api/accommodations/`, { params: { status: 'active' } });
-                setAccomodations(response.data.accommodations);
-            } catch (error) {
-                console.error('Error fetching accomodations:', error);
-            }
-        };
-        fetchAccomodations();
-    }, [url]);
+        setAccomodations(accommodationsFound);
+    }, [url, accommodationsFound]);
+
     const onClick = (serviceId) => {
         const encryptedServiceId = CryptoJS.AES.encrypt(serviceId, 'mySecretKey').toString();
         const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
-        navigate(`/place-details/accommodation/${safeEncryptedServiceId}`);
+        navigate(`/place-details/accommodation/${safeEncryptedServiceId}`, { state: { filterData } });
         window.scrollTo(0, 0);
     };
+
     return (
         <div className="accomodation-cards">
             <h2>Danh sách khách sạn</h2>
+            {accomodations.length === 0 && <p>Không tìm thấy khách sạn</p>}
             <div className="card-list">
                 {accomodations.map((item) => {
                     const prices = item.roomTypes.map(room => room.pricePerNight);

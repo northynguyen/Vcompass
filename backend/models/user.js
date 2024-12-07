@@ -33,8 +33,8 @@ const UserSchema = new Schema({
     },
     gender: {
         type: String,
-        enum: ['male', 'female'],
-
+        enum: ['male', 'female', ''],
+        default: '',
     },
 
     password: {
@@ -51,7 +51,7 @@ const UserSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    favorites:{
+    favorites: {
         schedule: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: "schedule"
@@ -64,7 +64,7 @@ const UserSchema = new Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "attraction"
         }],
-        foodService:[{
+        foodService: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: "foodservice"
         }],

@@ -8,7 +8,11 @@ import Restaurent from '../../components/Restaurants/Restaurants';
 import Calendar from '../../components/Calendar/Calendar';
 import './MainPage.css';
 import Header from '../../components/Header/Header';
+
+import MyProfileContainer from '../../components/MyProfile/MyProfile';
+
 import ReviewDashboard from '../../components/Review/ReviewDashBoard/ReviewDashBoard';
+
 
 const MainPage = () => {
   return (
@@ -25,6 +29,7 @@ const MainPage = () => {
             <Route path="/hotels" element={<Hotels />} />
             <Route path="/messages" element={<Message />} />
             <Route path="/concierge" element={<Restaurent />} />
+            <Route path="/myprofile" element={<MyProfileContainer />} />
             <Route path="/" element={<Dashboard />} />
           </Routes>
         </div>
