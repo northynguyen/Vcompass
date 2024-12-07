@@ -3,11 +3,87 @@ import './MyAccount.css';
 import { StoreContext } from '../../../Context/StoreContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+
 const MyAccount = () => {
     const { url, user, setUser } = useContext(StoreContext);
     const [selectedAvatar, setSelectedAvatar] = useState(null);
-    const navigate = useNavigate();
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState({
+        current: false,
+        new: false,
+        confirm: false,
+    });
+
+    const togglePasswordVisibility = (field) => {
+        setShowPassword((prevState) => ({
+            ...prevState,
+            [field]: !prevState[field],
+        }));
+    };
+
+    const handlePasswordUpdate = (e) => {
+        e.preventDefault();
+        // Kiểm tra nếu mật khẩu mới và xác nhận mật khẩu không trùng khớp
+        if (newPassword !== confirmPassword) {
+            toast.error('Mật khẩu xac nhận không trùng khớp.');
+            return;
+        }
+        checkPassword(currentPassword);
+    };
+    const checkPassword = async (currentPassword) => {
+        try {
+            // Gửi yêu cầu kiểm tra mật khẩu hiện tại
+            const response = await fetch(`${url}/api/user/check-password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    password: currentPassword,
+                    id: user._id,
+                    type: "user",
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!data.success) {
+                toast.error("Mật khẩu hiện tại không chính xác.");
+
+                return;
+            }
+            else {
+                UpdatePassword();
+                toast.success("Câp nhật mật khẩu thành công.");
+                setCurrentPassword(''); 
+                setNewPassword(''); 
+                setConfirmPassword(''); 
+                               
+            }
+        } catch (error) {
+            // Xử lý lỗi và thông báo người dùng
+            toast.error("There was an error while verifying the password.");
+            console.error(error);
+        }
+    };
+
+    const UpdatePassword = async () => {
+        const response = axios.put(`${url}/api/user/users/${user._id}`, { password: newPassword, type: "user" });
+        try {
+
+            if (response.success) {
+                toast.success("Password updated successfully.");
+               
+
+            } else {
+                toast.error(response.message);
+            }
+        } catch (error) {
+            toast.error(error.response.message.message || 'There was an error');
+        }
+    };
     // Initialize formData with the user data from context
     const [formData, setFormData] = useState({
         name: user.name || '',
@@ -91,6 +167,7 @@ const MyAccount = () => {
         }
         setIsEditing(false);
     };
+    
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -215,44 +292,62 @@ const MyAccount = () => {
             )}
 
             {activeTab === 'password' && (
-                <form className="reset-password">
+                <form className="reset-password" onSubmit={handlePasswordUpdate}>
                     <h3>Reset Password</h3>
 
-                    <label>Current Password</label>
-                    <div className="password-input">
-                        <input
-                            type="password"
-                            name="currentPassword"
-                        // onChange={handlePasswordChange} // Implement password handling as needed
-                        />
-                        <button type="button" className="toggle-password">
-                            Show/Hide
-                        </button>
-                    </div>
+                    <label>Mật khẩu hiện tại</label>
+            <div className="password-input">
+                <input
+                    type={showPassword.current ? "text" : "password"}
+                    name="currentPassword"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    required
+                />
+                <button
+                    type="button"
+                    className="toggle-password"
+                    onClick={() => togglePasswordVisibility("current")}
+                >
+                    {showPassword.current ? "Hide" : "Show"}
+                </button>
+            </div>
 
-                    <label>New Password</label>
-                    <div className="password-input">
-                        <input
-                            type="password"
-                            name="newPassword"
-                        // onChange={handlePasswordChange} // Implement password handling as needed
-                        />
-                        <button type="button" className="toggle-password">
-                            Show/Hide
-                        </button>
-                    </div>
+            <label>Mật khẩu mới</label>
+            <div className="password-input">
+                <input
+                    type={showPassword.new ? "text" : "password"}
+                    name="newPassword"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                />
+                <button
+                    type="button"
+                    className="toggle-password"
+                    onClick={() => togglePasswordVisibility("new")}
+                >
+                    {showPassword.new ? "Hide" : "Show"}
+                </button>
+            </div>
 
-                    <label>Confirm New Password</label>
-                    <div className="password-input">
-                        <input
-                            type="password"
-                            name="confirmPassword"
-                        // onChange={handlePasswordChange} // Implement password handling as needed
-                        />
-                        <button type="button" className="toggle-password">
-                            Show/Hide
-                        </button>
-                    </div>
+            <label>Xác nhận mật khẩu</label>
+            <div className="password-input">
+                <input
+                    type={showPassword.confirm ? "text" : "password"}
+                    name="confirmPassword"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                />
+                <button
+                    type="button"
+                    className="toggle-password"
+                    onClick={() => togglePasswordVisibility("confirm")}
+                >
+                    {showPassword.confirm ? "Hide" : "Show"}
+                </button>
+            </div>
 
                     <button type="button" className="cancel-btn">Cancel</button>
                     <button type="submit" className="save-btn">Update Password</button>

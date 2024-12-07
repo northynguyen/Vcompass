@@ -354,7 +354,7 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
       return res.status(404).json({ success: false, message: `${type} not found.` });
     }
 
-    if (req.files.image && req.files.image.length > 0) {
+    if (req.files && req.files.image && req.files.image.length > 0) {
       const avatarFile = req.files.image[0].filename;
       if (avatarFile) {
         const oldAvatarPath = `uploads/${currentUser.avatar}`;
