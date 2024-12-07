@@ -572,7 +572,7 @@ const InforScheduleMedal = ({
       });
   
       if (response.data.success) {
-        return response.data.files.map((file) => file.filename); // Trả về tên các file ảnh
+        return response.data.files.map((file) => file.filename); 
       } else {
         throw new Error(response.data.message);
       }
@@ -657,7 +657,7 @@ const InforScheduleMedal = ({
       }
   
       // Upload ảnh nếu có
-      else if (mediaType === 'image' && imgSrc.length > 0) {
+      else if (mediaType === 'image' && imgSrc.length > 0 && imgSrc[0] instanceof File) {
         const uploadedFiles = await uploadImages(imgSrc[0]);
         uploadedImgSrc = uploadedFiles;
         await deleteOldMedia(inforSchedule.imgSrc[0]);
@@ -671,8 +671,8 @@ const InforScheduleMedal = ({
         description,
         dateStart: startDayString,
         dateEnd: endDateString,
-        imgSrc: mediaType === 'image' ? uploadedImgSrc : [],
-        videoSrc,  // Chỉ gán videoSrc nếu có video
+        imgSrc: mediaType === 'image' && imgSrc[0] instanceof File ? uploadedImgSrc : inforSchedule.imgSrc,
+        videoSrc,  
       }));
   
       toast.success("Lịch trình đã được cập nhật thành công!");
@@ -1045,8 +1045,10 @@ const Schedule = ({ mode }) => {
       if (!result.success) {
         toast.error(result.message);
       }
-      toast.success(result.message);
-      console.log(result.message); // Optionally display a success message
+      else {
+        toast.success(result.message);
+      }
+      
     } catch (error) {
       console.error("Failed to update wishlist:", error.message);
       // Optionally revert the `isSaved` state if the request fails
@@ -1080,7 +1082,7 @@ const Schedule = ({ mode }) => {
   useEffect(() => {
     setLoading(true);
     if (inforSchedule ) {
-      if( mode==="edit" && inforSchedule.idUser !== user?._id )
+      if( mode==="edit" && ( !user || inforSchedule.idUser._id !== user._id ))
         {      
           setLoading(false);    
           window.location.href = "/404";
@@ -1337,11 +1339,10 @@ const Schedule = ({ mode }) => {
                   </div>
                 ) : (
                   <div>
-                    <div className={`title-button ${isSaved ? "saved" : ""} `}>
+                    <div className={`title-button ${isSaved ? "saved" : ""} `} onClick={toggleWishlist}>
                       <i className="fa-solid fa-bookmark schedule-icon"></i>
                       <button
-                        className="save-and-share-btn"
-                        onClick={toggleWishlist}
+                        className="save-and-share-btn"                       
                       >
                         Lưu lịch trình
                       </button>

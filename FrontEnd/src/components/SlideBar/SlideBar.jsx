@@ -92,7 +92,7 @@ const SlideBar = ({ type }) => {
                         <p className="card-facilities">
                             {service.amenities?.join(' • ')}
                         </p>
-                        <p className="card-price">{service.roomTypes[0]?.pricePerNight}đ / đêm</p>
+                        <p className="card-price">{service.roomTypes[0]?.pricePerNight.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} / đêm</p>
                     </>
                 );
             case 'food':
@@ -108,7 +108,7 @@ const SlideBar = ({ type }) => {
                         <p className="card-facilities">
                             {service.amenities?.join(' • ')}
                         </p>
-                        <p className="card-price">{service.price.minPrice}đ - {service.price.maxPrice}đ / người</p>
+                        <p className="card-price">{service.price.minPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} - {service.price.maxPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}/ người</p>
                     </>
                 );
             case 'attraction':
@@ -124,7 +124,7 @@ const SlideBar = ({ type }) => {
                         <p className="card-facilities">
                             {service.amenities?.join(' • ')}
                         </p>
-                        <p className="card-price">{service.price.toLocaleString()}đ / người</p>
+                        <p className="card-price">{service.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} / người</p>
                     </>
                 );
             default:

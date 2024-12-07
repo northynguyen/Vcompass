@@ -172,6 +172,25 @@ i.fa-regular.fa-circle-xmark:hover{
   margin-bottom: 20px;
 }
 
+.form-group .address-input-group {
+  display: flex;
+  gap: 10px;
+}
+.form-group .address-input-group input {
+  flex: 8;
+}
+.form-group .address-input-group .search-btn{
+  align-self: center;
+  height: 50px;
+  flex: 1;
+  background-color: #0071c2;
+  font-size: 1.2em;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .form-group label {
   display: block;
   font-weight: bold;
@@ -240,6 +259,7 @@ i.fa-regular.fa-circle-xmark:hover{
 }
 
 .search-results {
+  width: 60%;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -254,5 +274,5 @@ i.fa-regular.fa-circle-xmark:hover{
 }
 
 .search-results li:hover {
-  background-color: #f0f0f0;
+  background-color: #71b3d2;
 }

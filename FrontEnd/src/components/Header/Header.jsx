@@ -177,7 +177,7 @@ const Header = ({ setShowLogin }) => {
   
   return (
     <div className={isHomePage ? 'home-header' : 'header'}>
-      <div className="logo">
+      <div className="logo" onClick={() => window.location.replace('/')}>
         <h1>VCompass</h1>
       </div>
 
