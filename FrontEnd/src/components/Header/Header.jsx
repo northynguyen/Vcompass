@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import { FaBell } from "react-icons/fa";
 import axios from 'axios';
 import {io} from 'socket.io-client'
+import logo from '../../assets/logo.png';
 
 const Header = ({ setShowLogin }) => {
   const { token, setToken, user,url } = useContext(StoreContext);
@@ -177,7 +178,7 @@ const Header = ({ setShowLogin }) => {
   return (
     <div className={isHomePage ? 'home-header' : 'header'}>
       <div className="logo" onClick={() => window.location.replace('/')}>
-        <h1>VCompass</h1>
+        <img src={logo} className="logo-image"></img>
       </div>
 
       <div className="header-right">

@@ -9,9 +9,6 @@
     z-index: 999;
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
 }
-.logo {
-  margin-left: 1%;
-}
 .logo:hover {
   cursor: pointer;
 }
@@ -26,7 +23,10 @@
     border-radius: 50%;
     margin-right: 10px;
 }
-
+img.logo-image {
+  width: 200px;
+  height: 40px;
+}
 .header hr {
     width: 1px;
     height: 40px;
@@ -45,8 +45,7 @@
   color: rgb(104, 113, 118);
     text-decoration: none;
     font-weight: bold;
-
-    font-size: medium;
+    font-size: 15px;
     transition: color 0.3s;
     padding: 10px 20px;
     /* Add transition for hover effect */
