@@ -10,7 +10,10 @@
   padding-top: 10px;
 
 }
-
+img.logo-image {
+  width: 200px;
+  height: 40px;
+}
 .header-left {
   display: flex;
   align-items: center;

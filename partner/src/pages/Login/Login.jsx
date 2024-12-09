@@ -36,7 +36,7 @@ const Login = () => {
     return (
         <div className='login-container'>
             <form onSubmit={onLogin} className="login-form ">
-                <h2>Login Partner</h2>
+                <h2>Đăng nhập</h2>
                 <input
                     type="email"
                     placeholder="Email"
@@ -51,13 +51,19 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
+                <div className="forgot-pass-container">
+                    Bạn quên mật khẩu?
+                <a href="/register" className="forgot-password-link">
+                       Lấy lại ngay
+                    </a>
+                </div>
                 <button type="submit" disabled={isLoading}>
                     {isLoading ? 'Loading...' : 'Login'}
                 </button>
                 <p className="text-center">
-                    Don't have an account? 
+                    Bạn chưa có tài khoản? 
                     <a href="/register" className="register-link">
-                        Sign Up here
+                        Đăng ký ngay
                     </a>
                 </p>
             </form>

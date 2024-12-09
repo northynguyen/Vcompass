@@ -1,13 +1,14 @@
-import { useState, useRef, useEffect, useContext } from 'react';
-import './Header.css';
-import { CiSettings, CiLogout } from "react-icons/ci";
-import { MdManageAccounts } from "react-icons/md";
+import axios from 'axios';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { CiLogout, CiSettings } from "react-icons/ci";
 import { FaBell } from "react-icons/fa"; // Importing Bell icon from react-icons
-import { StoreContext } from '../../Context/StoreContext';
+import { MdManageAccounts } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import axios from 'axios';
-import {io} from 'socket.io-client'
+import { io } from 'socket.io-client';
+import { StoreContext } from '../../Context/StoreContext';
+import './Header.css';
+import logo from '../../assets/logo.png'
 
 const Header = () => {
   // State to handle the visibility of the profile popup
@@ -16,7 +17,7 @@ const Header = () => {
   const menuRef = useRef(null);
   const notificationRef = useRef(null); // Reference for the notifications dropdown
 
-  const { token, setToken, user ,url} = useContext(StoreContext);
+  const { token, setToken, user, url } = useContext(StoreContext);
 
   const navigate = useNavigate();
 
@@ -27,15 +28,15 @@ const Header = () => {
 
   const handleNotificationClick = async (id) => {
     try {
-      const response = await axios.put(`${url}/api/notifications/${id}`, 
-        { status: "read" }, 
+      const response = await axios.put(`${url}/api/notifications/${id}`,
+        { status: "read" },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      
+
       if (response.status === 200) {
         toast.success("Thành công!");
         setNotifications((prevNotifications) =>
@@ -48,7 +49,7 @@ const Header = () => {
       else {
         toast.error("Không thể cập nhật trạng thái thông báo!");
       }
-     
+
     } catch (error) {
       console.error("Error updating notification status:", error);
       toast.error("Không thể cập nhật trạng thái thông báo!");
@@ -63,8 +64,8 @@ const Header = () => {
           Authorization: `Bearer ${token}`, // Gửi token để xác thực nếu cần
         },
       });
-      setNotifications(response.data.notifications); 
-      setUnreadCount(response.data.notifications.filter(notification => notification.status === "unread").length); 
+      setNotifications(response.data.notifications);
+      setUnreadCount(response.data.notifications.filter(notification => notification.status === "unread").length);
     } catch (error) {
       console.error("Error fetching notifications:", error);
       toast.error("Không thể tải thông báo!");
@@ -81,14 +82,14 @@ const Header = () => {
 
   useEffect(() => {
     if (!user?._id) return;
-  
+
     console.log("Connecting to socket...");
     const socket = io("http://localhost:4000");
-  
+
     socket.on(`${user._id}`, (notification) => {
       console.log("Received notification:", notification);
       fetchNotifications();
-      setUnreadCount((prev) => prev + 1); 
+      setUnreadCount((prev) => prev + 1);
       toast.info(
         <div className="custom-toast">
           <h4>🔔 {notification.nameSender} </h4>
@@ -104,9 +105,9 @@ const Header = () => {
     });
 
     socket.on(`${user._id}status`, (updateUser) => {
-    
+
       let countdown = 10;
-    
+
       // Gọi toast.error lần đầu tiên
       const toastId = toast.error(
         <div className="custom-toast">
@@ -120,10 +121,10 @@ const Header = () => {
           position: "top-right",
         }
       );
-    
+
       const countdownInterval = setInterval(() => {
         countdown--;
-    
+
         // Cập nhật thông báo với toast.update()
         toast.update(toastId, {
           render: (
@@ -134,16 +135,16 @@ const Header = () => {
           ),
           autoClose: false, // Đảm bảo toast vẫn hiển thị
         });
-    
+
         if (countdown === 0) {
           clearInterval(countdownInterval);
           localStorage.removeItem('token');
           localStorage.removeItem('user');
-          window.location.href = '/login';  
+          window.location.href = '/login';
         }
       }, 1000); // Đếm ngược mỗi giây
     });
-  
+
     // Ngắt kết nối khi component unmounts
     return () => {
       socket.disconnect();
@@ -197,46 +198,48 @@ const Header = () => {
     <header className="header-container">
       {/* Left section (Logo and Title) */}
       <div className="header-left">
-        <h1>VComppass</h1>
+        <div className="logo" onClick={() => window.location.replace('/')}>
+          <img src={logo} className="logo-image"></img>
+        </div>
       </div>
 
       {/* Right section (Icons and User Profile) */}
       <div className="header-right">
-      <div className="notification-container">
-              <button className="icon-button" onClick={toggleNotifications}>
-                <FaBell className="bell-icon" />
-                {unreadCount > 0 && 
-                <span className="notification-badge">
-                  {<span className="unread-count">{unreadCount}</span>}
-                </span>
-                } 
+        <div className="notification-container">
+          <button className="icon-button" onClick={toggleNotifications}>
+            <FaBell className="bell-icon" />
+            {unreadCount > 0 &&
+              <span className="notification-badge">
+                {<span className="unread-count">{unreadCount}</span>}
+              </span>
+            }
 
-              </button>
+          </button>
 
-              {/* Notifications Dropdown */}
-              {isNotificationsVisible && (
-                <div className="notifications-dropdown" ref={notificationRef}>
-                  <ul className="notifications-list">
-                    {loading && <p>Loading notifications...</p>}
-                    {!loading && notifications.length === 0 && <p>No notifications</p>}
-                    {notifications.map((notification, index) => (
-                      <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}` } onClick={() =>{ notification.status === 'unread' && handleNotificationClick(notification._id)}}>
-                        <div className="notification-avatar"> 
-                          <img src={notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
-                          
-                        </div>  
-                        <div className="notification-content">
-                          <p><strong>{notification.idSender ? notification.idSender.name : "Admin" }</strong></p>
-                          <p className="notification-text"> {notification.content}</p>
-                          <span className="notification-time">{new Date(notification.createdAt).toLocaleString()}</span>
-                        </div>
-                        {notification.status === 'unread' && <span className="unread-dot"></span>}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+          {/* Notifications Dropdown */}
+          {isNotificationsVisible && (
+            <div className="notifications-dropdown" ref={notificationRef}>
+              <ul className="notifications-list">
+                {loading && <p>Loading notifications...</p>}
+                {!loading && notifications.length === 0 && <p>No notifications</p>}
+                {notifications.map((notification, index) => (
+                  <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}`} onClick={() => { notification.status === 'unread' && handleNotificationClick(notification._id) }}>
+                    <div className="notification-avatar">
+                      <img src={notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
+
+                    </div>
+                    <div className="notification-content">
+                      <p><strong>{notification.idSender ? notification.idSender.name : "Admin"}</strong></p>
+                      <p className="notification-text"> {notification.content}</p>
+                      <span className="notification-time">{new Date(notification.createdAt).toLocaleString()}</span>
+                    </div>
+                    {notification.status === 'unread' && <span className="unread-dot"></span>}
+                  </li>
+                ))}
+              </ul>
             </div>
+          )}
+        </div>
 
         {/* Settings Icon */}
         <button className="icon-button">
@@ -247,17 +250,17 @@ const Header = () => {
         {
           user &&
           <div className="user-profile">
-          <img
-            src={`${url}/images/${user.avatar}`}
-            alt="User Avatar"
-            className="user-avatar"
-            onClick={toggleProfilePopup} // Toggle profile popup on click
-          />
-          <div className="user-info">
-            <p>{user.name}</p>
-            <span>Partner</span>
+            <img
+              src={`${url}/images/${user.avatar}`}
+              alt="User Avatar"
+              className="user-avatar"
+              onClick={toggleProfilePopup} // Toggle profile popup on click
+            />
+            <div className="user-info">
+              <p>{user.name}</p>
+              <span>Partner</span>
+            </div>
           </div>
-        </div>
         }
 
         {/* Profile Popup Menu */}
