@@ -87,7 +87,7 @@ const Header = () => {
   
     socket.on(`admin`, (notification) => {
       console.log("Received notification:", notification);
-      setNotifications((prev) => [notification, ...prev]); // Cập nhật danh sách thông báo
+      fetchNotifications();
       setUnreadCount((prev) => prev + 1); 
       toast.info(
         <div className="custom-toast">
@@ -182,11 +182,12 @@ const Header = () => {
                     {notifications.map((notification, index) => (
                       <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}` } onClick={() =>{ notification.status === 'unread' && handleNotificationClick(notification._id)}}>
                         <div className="notification-avatar"> 
-                          <img src={notification.imgSender ? notification.imgSender : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
-                          <p><strong>{notification.nameSender ? notification.nameSender : "Admin" }</strong></p>
+                          <img src={notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
+                         
                         </div>
                         <div className="notification-content">
-                          <p> {notification.content}</p>
+                           <p><strong>{notification.idSender ? notification.idSender.name : "Admin" }</strong></p>
+                          <p className="notification-text"> {notification.content}</p>
                           <span className="notification-time">{new Date(notification.createdAt).toLocaleString()}</span>
                         </div>
                         {notification.status === 'unread' && <span className="unread-dot"></span>}

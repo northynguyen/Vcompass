@@ -151,7 +151,6 @@
   }
   .notifications-dropdown .notification-avatar {
     margin-right: 10px;
-    width: 80px;
   }
   .notifications-list {
     list-style: none;
@@ -203,8 +202,8 @@
   }
   
   .notification-image {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     margin-right: 10px;
   }
@@ -213,6 +212,11 @@
     flex: 1;
   }
   
+  .notification-content .notification-text {
+    margin: 5px 0 5px 0;
+    font-weight: 300;
+    font-size: 13px;
+  }
   .notification-time {
     color: #888;
     font-size: 12px;

@@ -214,15 +214,17 @@ const Hotels = () => {
                         </button>
                       )}
                     </p>
-                    <p>
+                    <p className="hotel-status">
                       <strong>Trạng Thái:</strong>
-                      {hotel.status === "active"
-                        ? "Đang hoạt động"
-                        : hotel.status === "pending"
-                        ? "Đang chờ duyệt"
-                        : hotel.status === "unActive"
-                        ? "Dừng hoạt động"
-                        : "Đã bị khóa"}
+                      <span className={`status-badge ${hotel.status}`}> 
+                        {hotel.status === "active"
+                          ? "Đang hoạt động"
+                          : hotel.status === "pending"
+                          ? "Đang chờ duyệt"
+                          : hotel.status === "unActive"
+                          ? "Dừng hoạt động"
+                          : "Đã bị khóa"}
+                        </span>
                     </p>
                   </div>
                   <div className="hotel-actions">

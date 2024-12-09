@@ -17,7 +17,7 @@ import Accommodation from '../models/accommodation.js'; // Import Accommodation
 import FoodService from '../models/foodService.js'; // Import FoodService
 
 export const getUserFavoritesWithDetails = async (req, res) => {
-  const { userId, type } = req.query;
+  const { userId, type,city  } = req.query;
 
   try {
     // Kiểm tra loại hợp lệ
@@ -30,8 +30,8 @@ export const getUserFavoritesWithDetails = async (req, res) => {
     const user = await userModel
       .findById(userId)
       .populate({
-        path: `favorites.${type}`, // Populate theo type
-        model: getModelByType(type), // Xác định model dựa trên type
+        path: `favorites.${type}`, 
+        model: getModelByType(type), 
       });
 
     if (!user) {
@@ -112,7 +112,13 @@ const handleLogin = async (req, res, model, requiredRole = null) => {
       return res.json({ success: false, message: "Mật khẩu không chính xác." });
     }
 
-    // Create JWT token
+    if (user.status === "blocked") {
+      return res.json({
+        success: false,
+        message: "Tài khoản đã bị khóa , liên hệ admin để giải quyết.",
+      });
+    }
+  
     const token = createToken(user._id);
 
     res.json({ success: true, token, message: "Đăng nhập thành công.", user });
@@ -341,6 +347,7 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
   const { type, name, password, address, date_of_birth, gender, phone_number, status } = req.body;
   const { id } = req.params;
   const updates = {};
+  const isUpdateStatus = status !== undefined;
   try {
     // Lấy thông tin người dùng hiện tại để kiểm tra ảnh cũ
     const currentUser = await (
@@ -394,6 +401,10 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
     );
     if (!updatedUser) {
       return res.status(404).json({ success: false, message: `${type} not found.` });
+    }
+
+    if (isUpdateStatus && updatedUser.status === 'blocked') {
+      global.io.emit(`${updatedUser._id}status`, updatedUser);
     }
 
     res.json({

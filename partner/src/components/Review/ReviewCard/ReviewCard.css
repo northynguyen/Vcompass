@@ -21,10 +21,75 @@
 }
 
 .review-card .star-icon {
-    font-size: 1.2em;
+    font-size: 1em;
     transition: color 0.3s ease;
 }
 
+.review-card {
+
+.review-stars {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .review-stars p {
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 10px;
+    color: #333;
+  }
+  
+  .review-stars .star-rating {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .review-comment {
+    font-size: 14px;
+    color: #555;
+    margin-top: 15px;
+    line-height: 1.5;
+  }
+  
+  /* Star Rating Styles (Optional) */
+  .star {
+    width: 20px;
+    height: 20px;
+    background-color: #f0f0f0;
+    mask: url('star-icon.svg') no-repeat center;
+    -webkit-mask: url('star-icon.svg') no-repeat center;
+    mask-size: cover;
+    -webkit-mask-size: cover;
+  }
+  
+  .star.filled {
+    background-color: #FFD700; /* Gold color for filled stars */
+  }
+  
+  /* General Container Styling */
+  .review-container {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .review-stars p {
+      font-size: 14px;
+    }
+  
+    .review-comment {
+      font-size: 13px;
+    }
+  }
+}
+  
 .review-content {
     flex: 1;
     margin-left: 15px;

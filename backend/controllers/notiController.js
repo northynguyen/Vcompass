@@ -1,4 +1,6 @@
 import { Notification } from "../models/notification.js";
+import partnerModel from "../models/partner.js";
+import userModel from "../models/user.js";
 
 
 // Controller to create a new notification
@@ -61,15 +63,31 @@ const getNotifications = async (req, res) => {
   try {
     const { idReceiver } = req.params;
     if(idReceiver == null) return res.status(400).json({ success: false, message: "Missing required fields" });
+    const populatedNotifications = async (notifications) => {
+      return await Promise.all(
+        notifications.map(async (notification) => {
+          let sender = await userModel.findById(notification.idSender);
+          if (!sender) {
+            sender = await partnerModel.findById(notification.idSender);
+          }
+          return {
+            ...notification._doc,
+            idSender: sender,
+          };
+        })
+      );
+    };
+    
     if(idReceiver == "admin") 
     {
       const notifications = await Notification.find({ type: 'admin' }).sort({ createdAt: -1 });
-      return res.json({ success: true, notifications });
+      const populatedNoti = await populatedNotifications(notifications);
+      return res.json({ success: true, notifications: populatedNoti });
     }
     else {
-    const notifications = await Notification.find({ idReceiver }).sort({ createdAt: -1 });
-
-    res.json({ success: true, notifications });
+      const notifications = await Notification.find({ idReceiver  }).sort({ createdAt: -1 });
+      const populatedNoti = await populatedNotifications(notifications);
+    res.json({ success: true, notifications: populatedNoti });
     }
     
   } catch (error) {

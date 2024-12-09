@@ -290,7 +290,7 @@ const MySchedule = ({setShowLogin}) => {
                 <div className="schedule-user"> 
                   <img
                     className="avatar"
-                    src={ schedule.idUser.avatar ? `${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                    src={ schedule.idUser.avatar ? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                     alt={schedule.userName}
                   />
                   <p>{schedule.idUser.name || "Unknown User"}</p>

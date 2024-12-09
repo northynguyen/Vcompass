@@ -19,6 +19,7 @@
     border: 1px solid #e0e4e8;
     border-radius: 8px;
     margin-top: 5px;
+    margin-left: 10px;
   }
   
   .add-edit-form select[multiple] {
@@ -90,3 +91,43 @@
     background-color: #5a6268;
   }
   
+  .remove-roombed-btn {
+    background-color: #ff5252;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 1em;
+    margin-left: 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .remove-roombed-btn:hover {
+    background-color: #e60000;
+  }
+
+  .add-roombed-btn {
+    margin:10px 0 10px 10px;
+    background-color: #2ecc71;
+    color: #fff;
+    border: none;
+    border-radius:5px;
+    width: 50%;
+    height: 25px;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+  }
+  
+  .add-roombed-btn:hover {
+    background-color: #27ae60;
+  }
+
+  .add-edit-form textarea {
+    padding: 10px;
+    border: 1px solid #e0e4e8;
+    border-radius: 8px;
+    margin-top: 5px;
+    margin-left: 10px;
+    max-width: 450px;
+  }
