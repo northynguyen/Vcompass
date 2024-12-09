@@ -31,7 +31,14 @@ const ReviewCard = ({ service, rating, handleResponse, url }) => {
     return (
         <div className="review-card">
             <div className="review-avatar">
-                <img src={`${url}/images/avatars/${rating.userImage}`} alt={`avatar`} />
+            <img 
+                src={
+                    rating.userImage && rating.userImage.includes('http')
+                    ? rating.userImage 
+                    : `${url}/images/${rating.userImage || 'default-avatar.png'}`
+                }
+                alt="User avatar"
+                />
             </div>
             <div className="review-content">
                 <div className="review-header">
@@ -39,7 +46,16 @@ const ReviewCard = ({ service, rating, handleResponse, url }) => {
                     <p><FaRegCalendarAlt /> {new Date(rating.createdAt).toLocaleString('vi-VN')}</p>
                 </div>
                 <div className="review-stars">
+                    <p>Tổng quan </p>
                     {renderStarRating(rating.rate)}
+                </div>
+                <div className="review-stars">
+                    <p>Dịch vụ</p>
+                    {renderStarRating(rating.serviceRate)}
+                </div>
+                <div className="review-stars">
+                    <p>{!service.name   ? "Thức ăn"   :"Phòng" }</p>
+                    {renderStarRating(rating.foodRate ? rating.foodRate : rating.roomRate  )}
                 </div>
                 <p className="review-comment">{rating.content}</p>
 
@@ -63,7 +79,7 @@ const ReviewCard = ({ service, rating, handleResponse, url }) => {
 
                 {rating.response && !showResponseInput && (
                     <div className="existing-response">
-                        <p><strong>{`${service.name === "" ? service.foodServiceName : service.name}: `} </strong> {rating.response}</p>
+                        <p><strong>{`${!service.name   ? service.foodServiceName : service.name}: `} </strong> {rating.response}</p>
                         <p className='response-time'>Đã phản hồi lúc: {new Date(rating.responseTime).toLocaleString()}</p>
                     </div>
                 )}

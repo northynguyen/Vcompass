@@ -1,11 +1,12 @@
 import React from 'react';
 import './ProfileCards.css';
 import { useNavigate } from 'react-router-dom';
+import {StoreContext} from '../../Context/StoreContext'
 
 
 const ProfileCards = ({ profile, type }) => {
     const navigate = useNavigate();
-
+    const { url } = React.useContext(StoreContext);
     const handleNavigate = () => {
         // Navigate to the appropriate profile details page based on the type
         const baseUrl = type === 'user' ? `/users/user/` : `/partners/partner/`;
@@ -15,7 +16,7 @@ const ProfileCards = ({ profile, type }) => {
     return (
         <div className="profile-card">
             <div className="profile-avatar" onClick={handleNavigate}>
-                <img src={profile.avatar} alt={profile.name} />
+                <img src={profile.avatar && profile.avatar.includes('http') ?profile.avatar : `${url}/images/${profile.avatar}` } alt={profile.name} />
             </div>
             <div className="profile-info">
                 <h2 onClick={handleNavigate}>{profile.name}</h2>

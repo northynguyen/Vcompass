@@ -138,193 +138,195 @@ const AddEditRoomForm = ({ room = {}, onSave, onCancel }) => {
   
     return (
       <form className="add-edit-form" onSubmit={handleSubmit}>
-        {/* Room Type Name */}
-        <label>
-          Room Type Name:
+  {/* Tên loại phòng */}
+  <label>
+    Tên loại phòng:
+    <input
+      type="text"
+      name="nameRoomType"
+      value={formData.nameRoomType}
+      onChange={handleChange}
+      required
+    />
+  </label>
+
+  {/* Số lượng giường */}
+  <label>
+    Số lượng giường:
+    {formData.numBed.map((bed, index) => (
+      <div key={index} className="bed-entry">
+        <input
+          type="text"
+          value={bed.nameBed}
+          onChange={(e) => handleNumBedChange(index, 'nameBed', e.target.value)}
+          placeholder="Loại giường"
+          required
+        />
+        <input
+          type="number"
+          value={bed.number}
+          onChange={(e) => handleNumBedChange(index, 'number', e.target.value)}
+          placeholder="Số lượng"
+          min="1"
+          required
+        />
+        <button type="button" className="remove-roombed-btn" onClick={() => handleNumBedRemove(index)}>x</button>
+      </div>
+    ))}
+    <button type="button" className="add-roombed-btn" onClick={handleNumBedAdd}>+</button>
+  </label>
+
+  {/* Số người */}
+  <label>
+    Số người (Người lớn & Trẻ em):
+    <div>
+      <input
+        type="number"
+        name="adult"
+        value={formData.numPeople.adult}
+        onChange={handlePeopleChange}
+        placeholder="Người lớn"
+        min="1"
+        required
+      />
+      <input
+        type="number"
+        name="child"
+        value={formData.numPeople.child}
+        onChange={handlePeopleChange}
+        placeholder="Trẻ em"
+        min="0"
+      />
+    </div>
+  </label>
+
+  {/* Diện tích phòng */}
+  <label>
+    Diện tích phòng (m²):
+    <input
+      type="number"
+      name="roomSize"
+      value={formData.roomSize}
+      onChange={handleChange}
+      min="1"
+      required
+    />
+  </label>
+
+  {/* Giá mỗi đêm */}
+  <label>
+    Giá mỗi đêm:
+    <div className="price-control">
+      <input
+        type="number"
+        name="pricePerNight"
+        value={formData.pricePerNight}
+        onChange={handleChange}
+        min="0"
+        step="1"
+        required
+      />
+      $/Đêm
+    </div>
+  </label>
+
+  {/* Trạng thái */}
+  <label>
+    Trạng thái:
+    <select name="status" value={formData.status} onChange={handleChange} required>
+      <option value="Available">Còn trống</option>
+      <option value="Occupied">Đã đặt</option>
+    </select>
+  </label>
+
+  {/* Mô tả */}
+  <label>
+    Mô tả:
+    <textarea
+      className="des-textarea"
+      name="description"
+      value={formData.description}
+      onChange={handleChange}
+      required
+    />
+  </label>
+
+  {/* Tiện nghi */}
+  <label>
+    Tiện nghi:
+    <div className="amenities-list">
+      {[
+        'Wi-Fi',
+        'Bao gồm bữa sáng',
+        'Phòng tập gym',
+        'Hồ bơi',
+        'Spa',
+        'Điều hòa',
+        'Tủ lạnh mini',
+        'Ban công',
+      ].map((amenity) => (
+        <label key={amenity}>
           <input
-            type="text"
-            name="nameRoomType"
-            value={formData.nameRoomType}
-            onChange={handleChange}
-            required
+            type="checkbox"
+            value={amenity}
+            checked={formData.amenities.includes(amenity)}
+            onChange={handleAmenitiesChange}
           />
+          {amenity}
         </label>
-  
-        {/* Number of Beds */}
-        <label>
-          Number of Beds:
-          {formData.numBed.map((bed, index) => (
-            <div key={index} className="bed-entry">
-              <input
-                type="text"
-                value={bed.nameBed}
-                onChange={(e) => handleNumBedChange(index, 'nameBed', e.target.value)}
-                placeholder="Bed Type"
-                required
-              />
-              <input
-                type="number"
-                value={bed.number}
-                onChange={(e) => handleNumBedChange(index, 'number', e.target.value)}
-                placeholder="Quantity"
-                min="1"
-                required
-              />
-              <button type="button" onClick={() => handleNumBedRemove(index)}>x</button>
-            </div>
-          ))}
-          <button type="button" onClick={handleNumBedAdd}>+</button>
-        </label>
-  
-        {/* Number of People */}
-        <label>
-          Number of People (Adults & Children):
-          <div>
-            <input
-              type="number"
-              name="adult"
-              value={formData.numPeople.adult}
-              onChange={handlePeopleChange}
-              placeholder="Adults"
-              min="1"
-              required
-            />
-            <input
-              type="number"
-              name="child"
-              value={formData.numPeople.child}
-              onChange={handlePeopleChange}
-              placeholder="Children"
-              min="0"
-            />
+      ))}
+    </div>
+  </label>
+
+  {/* Hình ảnh hiện tại */}
+  {existingImages.length > 0 && (
+    <div className="existing-images">
+      <h4>Hình ảnh hiện tại:</h4>
+      <div className="image-previews">
+        {existingImages.map((img, idx) => (
+          <div key={idx} className="image-preview">
+            <img src={`${url}/images/${img}`} alt={`Hình phòng ${idx + 1}`} />
+            <button type="button" onClick={() => handleExistingImageRemove(idx)}>x</button>
           </div>
-        </label>
-  
-        {/* Room Size */}
-        <label>
-          Room Size (sqm):
-          <input
-            type="number"
-            name="roomSize"
-            value={formData.roomSize}
-            onChange={handleChange}
-            min="1"
-            required
-          />
-        </label>
-  
-        {/* Price Per Night */}
-        <label>
-          Price Per Night:
-          <div className="price-control">
-            <input
-              type="number"
-              name="pricePerNight"
-              value={formData.pricePerNight}
-              onChange={handleChange}
-              min="0"
-              step="1"
-              required
-            />
-            $/Night
+        ))}
+      </div>
+    </div>
+  )}
+
+  {/* Tải hình ảnh mới */}
+  <label>
+    Tải hình ảnh mới:
+    <input
+      type="file"
+      name="newImages"
+      accept="image/*"
+      multiple
+      onChange={handleNewImageChange}
+    />
+  </label>
+
+  {/* Xem trước hình ảnh mới */}
+  {newImagePreviews.length > 0 && (
+    <div className="new-image-previews">
+      <h4>Hình ảnh mới:</h4>
+      <div className="image-previews">
+        {newImagePreviews.map((img, idx) => (
+          <div key={idx} className="image-preview">
+            <img src={img} alt={`Hình mới ${idx + 1}`} />
+            <button type="button" onClick={() => handleNewImageRemove(idx)}>x</button>
           </div>
-        </label>
-  
-        {/* Status */}
-        <label>
-          Status:
-          <select name="status" value={formData.status} onChange={handleChange} required>
-            <option value="Available">Available</option>
-            <option value="Occupied">Occupied</option>
-          </select>
-        </label>
-  
-        {/* Description */}
-        <label>
-          Description:
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
-        </label>
-  
-        {/* Amenities */}
-        <label>
-          Amenities:
-          <div className="amenities-list">
-            {[
-              'Wi-Fi',
-              'Breakfast Included',
-              'Gym Access',
-              'Swimming Pool',
-              'Spa',
-              'Air Conditioning',
-              'Mini Bar',
-              'Balcony',
-            ].map((amenity) => (
-              <label key={amenity}>
-                <input
-                  type="checkbox"
-                  value={amenity}
-                  checked={formData.amenities.includes(amenity)}
-                  onChange={handleAmenitiesChange}
-                />
-                {amenity}
-              </label>
-            ))}
-          </div>
-        </label>
-  
-        {/* Existing Images */}
-        {existingImages.length > 0 && (
-          <div className="existing-images">
-            <h4>Existing Images:</h4>
-            <div className="image-previews">
-              {existingImages.map((img, idx) => (
-                <div key={idx} className="image-preview">
-                  <img src={`${url}/images/${img}`} alt={`Existing Room ${idx + 1}`} />
-                  <button type="button" onClick={() => handleExistingImageRemove(idx)}>x</button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-  
-        {/* New Image Upload */}
-        <label>
-          Upload New Images:
-          <input
-            type="file"
-            name="newImages"
-            accept="image/*"
-            multiple
-            onChange={handleNewImageChange}
-          />
-        </label>
-  
-        {/* New Image Previews */}
-        {newImagePreviews.length > 0 && (
-          <div className="new-image-previews">
-            <h4>New Images:</h4>
-            <div className="image-previews">
-              {newImagePreviews.map((img, idx) => (
-                <div key={idx} className="image-preview">
-                  <img src={img} alt={`New Room ${idx + 1}`} />
-                  <button type="button" onClick={() => handleNewImageRemove(idx)}>x</button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-  
-        {/* Form Buttons */}
-        <div className="form-buttons">
-          <button type="submit" className="save-button">Save</button>
-          <button type="button" onClick={onCancel} className="cancel-button">Cancel</button>
-        </div>
-      </form>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {/* Nút lưu và hủy */}
+  <div className="form-buttons">
+    <button type="submit" className="save-button">Lưu</button>
+    <button type="button" onClick={onCancel} className="cancel-button">Hủy</button>
+  </div>
+</form>
+
     );
   };
   

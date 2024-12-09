@@ -87,7 +87,7 @@ const Header = () => {
   
     socket.on(`${user._id}`, (notification) => {
       console.log("Received notification:", notification);
-      setNotifications((prev) => [notification, ...prev]); // Cập nhật danh sách thông báo
+      fetchNotifications();
       setUnreadCount((prev) => prev + 1); 
       toast.info(
         <div className="custom-toast">
@@ -101,6 +101,47 @@ const Header = () => {
           theme: "light",
           position: "top-right",
         });
+    });
+
+    socket.on(`${user._id}status`, (updateUser) => {
+    
+      let countdown = 10;
+    
+      // Gọi toast.error lần đầu tiên
+      const toastId = toast.error(
+        <div className="custom-toast">
+          <h4>🔔</h4>
+          <p>Tài khoản của bạn sẽ bị khóa trong {countdown}s nữa</p>
+        </div>,
+        {
+          autoClose: false,  // Giữ thông báo trên màn hình
+          pauseOnHover: true,
+          theme: "light",
+          position: "top-right",
+        }
+      );
+    
+      const countdownInterval = setInterval(() => {
+        countdown--;
+    
+        // Cập nhật thông báo với toast.update()
+        toast.update(toastId, {
+          render: (
+            <div className="custom-toast">
+              <h4>🔔</h4>
+              <p>Tài khoản của bạn sẽ bị khóa trong {countdown}s nữa</p>
+            </div>
+          ),
+          autoClose: false, // Đảm bảo toast vẫn hiển thị
+        });
+    
+        if (countdown === 0) {
+          clearInterval(countdownInterval);
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = '/login';  
+        }
+      }, 1000); // Đếm ngược mỗi giây
     });
   
     // Ngắt kết nối khi component unmounts
@@ -181,11 +222,12 @@ const Header = () => {
                     {notifications.map((notification, index) => (
                       <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}` } onClick={() =>{ notification.status === 'unread' && handleNotificationClick(notification._id)}}>
                         <div className="notification-avatar"> 
-                          <img src={notification.imgSender ? notification.imgSender : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
-                          <p><strong>{notification.nameSender ? notification.nameSender : "Admin" }</strong></p>
-                        </div>
+                          <img src={notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
+                          
+                        </div>  
                         <div className="notification-content">
-                          <p> {notification.content}</p>
+                          <p><strong>{notification.idSender ? notification.idSender.name : "Admin" }</strong></p>
+                          <p className="notification-text"> {notification.content}</p>
                           <span className="notification-time">{new Date(notification.createdAt).toLocaleString()}</span>
                         </div>
                         {notification.status === 'unread' && <span className="unread-dot"></span>}

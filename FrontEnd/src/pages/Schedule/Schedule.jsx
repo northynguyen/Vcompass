@@ -1085,7 +1085,7 @@ const Schedule = ({ mode }) => {
       if( mode==="edit" && ( !user || inforSchedule.idUser._id !== user._id ))
         {      
           setLoading(false);    
-          window.location.href = "/404";
+          window.location.href = '/404';
         }
       setLoading(false);
     }
@@ -1152,7 +1152,7 @@ const Schedule = ({ mode }) => {
     );
     if (response.data.success) {
       const scheduleId = response.data.schedule._id;
-      navigate(`/schedule-edit/${scheduleId}`);
+      window.location.href= `/schedule-edit/${scheduleId}`;
       toast.success("Lấy thành công");
     } else {
       toast.error(response.data.message);
