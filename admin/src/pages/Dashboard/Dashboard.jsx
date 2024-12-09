@@ -129,7 +129,7 @@ const DashBoard = () => {
     const labels = [];
     const counts = [];
     let currentDate = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
-  
+
     while (currentDate <= maxDate) {
       labels.push(
         `${currentDate.toLocaleString("default", { month: "long" })} ${currentDate.getFullYear()}`
@@ -137,7 +137,7 @@ const DashBoard = () => {
       counts.push(0);
       currentDate.setMonth(currentDate.getMonth() + 1);
     }
-  
+
     // Đếm số lượng theo tháng
     data.forEach((item) => {
       const itemDate = new Date(item.createdAt);
@@ -147,7 +147,7 @@ const DashBoard = () => {
         minDate.getMonth();
       counts[monthIndex]++;
     });
-  
+
     return {
       labels,
       datasets: [
@@ -162,7 +162,7 @@ const DashBoard = () => {
     };
   };
   useEffect(() => {
-    if (!isPartnerLoading || !isUserLoading){
+    if (!isPartnerLoading || !isUserLoading) {
       setChartData({
         labels: calculateMonthlyRegistrations(users, "Người dùng").labels,
         datasets: [
@@ -252,7 +252,7 @@ const DashBoard = () => {
         <div className="card">
           <FaHotel className="card-red-icon" />
           <div className="card-details">
-            <p className="red-card-content">{accommodations ? calculateUnAccept(): "Đang tải" }</p>
+            <p className="red-card-content">{accommodations ? calculateUnAccept() : "Đang tải"}</p>
             <h3 className="red-card-title">Chưa xét duyệt</h3>
           </div>
         </div>
@@ -274,10 +274,12 @@ const DashBoard = () => {
       </div>
 
       {/* Revenue Chart */}
-      <div className="chart-section">
-        <h3>Biểu đồ thống kê người dùng theo tháng</h3>
-        <Line data={chartData} options={options} />
-      </div>
+      {chartData &&
+        <div className="chart-section">
+          <h3>Biểu đồ thống kê người dùng theo tháng</h3>
+          <Line data={chartData} options={options} />
+        </div>
+      }
     </div>
   );
 };

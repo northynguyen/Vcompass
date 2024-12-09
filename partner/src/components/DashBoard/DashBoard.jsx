@@ -135,7 +135,7 @@ const DashBoard = () => {
     setChartData(data)
   };
   useEffect(() => {
-    if (!isBookingLoading || !isAccomLoading)
+    if (!isBookingLoading && !isAccomLoading)
       calculateMonthlyRevenue(bookings);
   }, [isBookingLoading, isAccomLoading])
 
@@ -222,10 +222,12 @@ const DashBoard = () => {
         </div>
 
         {/* Revenue Chart */}
-        <div className="chart-section">
+        {chartData &&
+          <div className="chart-section">
           <h3>Biểu đồ doanh thu theo tháng</h3>
           <Line data={chartData} options={options} />
         </div>
+        }
 
         {/* Recent Activities */}
         <div className="recent-activities">

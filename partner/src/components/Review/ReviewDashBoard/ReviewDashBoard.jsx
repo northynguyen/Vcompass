@@ -3,9 +3,9 @@ import React, { useContext, useEffect, useState } from 'react';
 import { FaHotel } from "react-icons/fa";
 import { IoMdRestaurant } from "react-icons/io";
 import ReactLoading from 'react-loading';
+import { toast } from 'react-toastify';
 import { StoreContext } from "../../../Context/StoreContext";
 import ReviewCard from '../ReviewCard/ReviewCard';
-import { toast } from 'react-toastify';
 import StatisticsPanel from '../StatisticsPanel/StatisticsPanel';
 import './ReviewDashBoard.css';
 
@@ -17,6 +17,7 @@ const ReviewDashboard = () => {
     const [isAccomLoading, setIsAccomLoading] = useState(true);
     const [isFoodServiceLoading, setIsBookingLoading] = useState(true);
     const { token, url, user } = useContext(StoreContext);
+    const [ratings, setRatings] = useState();
     let selectedIndex = 0;
 
     useEffect(() => {
@@ -58,22 +59,26 @@ const ReviewDashboard = () => {
     useEffect(() => {
         if (currentType === 'accommodation' && accommodations) {
             setCurrentService(accommodations[0])
+            setRatings(accommodations[0].ratings)
         } else if (currentType === 'foodService' && foodServices) {
             setCurrentService(foodServices[0])
+            setRatings(foodServices[0].ratings)
         }
     }, [currentType]);
     useEffect(() => {
         if (!isAccomLoading) {
             setCurrentService(accommodations[0])
+            setRatings(accommodations[0].ratings)
         }
     }, [isAccomLoading]);
     useEffect(() => {
         if (currentType === 'accommodation' && !isAccomLoading) {
             setCurrentService(accommodations[selectedIndex])
-        } else if (currentType === 'foodService' && !isFoodServiceLoading){
+            setRatings(accommodations[selectedIndex].ratings)
+        } else if (currentType === 'foodService' && !isFoodServiceLoading) {
             console.log('foodService', foodServices[selectedIndex])
-            setCurrentService(foodServices[selectedIndex])
-        }
+            setRatings(foodServices[selectedIndex].ratings)
+        }   
     }, [accommodations, foodServices]);
     const handleResponse = (ratingId, responseText) => {
         if (currentType === "accommodation") {
@@ -99,7 +104,7 @@ const ReviewDashboard = () => {
                     return accommodation;
                 });
             })
-        }else if (currentType === 'foodService'){
+        } else if (currentType === 'foodService') {
             updateResponse(ratingId, responseText)
             setFoodService((prevFoodService) => {
                 return prevFoodService.map((foodService) => {
@@ -124,12 +129,34 @@ const ReviewDashboard = () => {
             })
         }
     }
-    const handleFilterChange = (index) => {
+    const handleFilterChange = (value) => {
+        let sortedRatings = [...ratings];
+        switch (value) {
+            case 'oldest':
+                sortedRatings.sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt));
+                break;
+            case 'newest':
+                sortedRatings.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+                break;
+            case 'notResponse':
+                sortedRatings.sort((a, b) => (!a.response ? -1 : 1));
+                break;
+            case 'responsed':
+                sortedRatings.sort((a, b) => (a.response ? -1 : 1));
+                break;
+            default:
+                break;
+        }
+        setRatings(sortedRatings);
+    }
+    const handleServiceChange = (index) => {
         selectedIndex = index
         if (currentType === 'accommodation') {
             setCurrentService(accommodations[selectedIndex]);
+            setRatings(accommodations[selectedIndex].ratings)
         } else if (currentType === 'foodService') {
             setCurrentService(foodServices[selectedIndex]);
+            setRatings(foodServices[selectedIndex].ratings)
         }
     }
     const updateResponse = (ratingId, responseText) => {
@@ -139,28 +166,28 @@ const ReviewDashboard = () => {
         };
         if (currentType === 'accommodation') {
             axios.put(`${url}/api/accommodations/updateRating/${currentService._id}/ratings/${ratingId}`, responseData)
-            .then((response) => {
-                if (response.data.message) {
-                    toast.success(response.data.message);
-                }
-            })
-            .catch((error) => {
-                console.error('Error updating rating:', error);
-                toast.error('Phản hồi không thành công');
-            });
+                .then((response) => {
+                    if (response.data.message) {
+                        toast.success(response.data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error updating rating:', error);
+                    toast.error('Phản hồi không thành công');
+                });
         } else if (currentType === 'foodService') {
             axios.put(`${url}/api/foodServices/updateRating/${currentService._id}/ratings/${ratingId}`, responseData)
-            .then((response) => {
-                if (response.data.message) {
-                    toast.success(response.data.message);
-                }
-            })
-            .catch((error) => {
-                console.error('Error updating rating:', error);
-                toast.error('Phản hồi không thành công');
-            });
+                .then((response) => {
+                    if (response.data.message) {
+                        toast.success(response.data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error updating rating:', error);
+                    toast.error('Phản hồi không thành công');
+                });
         }
-        
+
     }
     if (isFoodServiceLoading || isAccomLoading) {
         return (
@@ -189,7 +216,7 @@ const ReviewDashboard = () => {
                 </div>
                 {currentType === "accommodation" &&
                     <select name="responseStatus" onChange={(event) => {
-                        handleFilterChange(event.target.selectedIndex);
+                        handleServiceChange(event.target.selectedIndex);
                     }}>
                         {accommodations
                             .map((accom, index) => (
@@ -201,7 +228,7 @@ const ReviewDashboard = () => {
                 }
                 {currentType === "foodService" &&
                     <select name="responseStatus" onChange={(event) => {
-                        handleFilterChange(event.target.selectedIndex);
+                        handleServiceChange(event.target.selectedIndex);
                     }}>
                         {foodServices.map((foodService, index) => {
                             return (
@@ -214,7 +241,7 @@ const ReviewDashboard = () => {
                 }
 
             </div>
-            {currentService && <StatisticsPanel ratings={currentService.ratings} />}
+            {ratings && <StatisticsPanel ratings={ratings} />}
             <div className="filter-bar">
                 <h5>Sắp xếp theo: </h5>
                 <select name="responseStatus" onChange={(event) => { handleFilterChange(event.target.value) }}>
@@ -224,9 +251,9 @@ const ReviewDashboard = () => {
                     <option value="responsed">Đã phản hồi</option>
                 </select>
             </div>
-            {currentService &&
+            {ratings &&
                 <div className="review-list">
-                    {currentService.ratings.map((rating) => (
+                    {ratings.map((rating) => (
                         <ReviewCard
                             key={rating._id}
                             service={currentService}

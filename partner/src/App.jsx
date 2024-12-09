@@ -56,7 +56,7 @@ function App() {
                       <Route path="messages" element={<Message />} />
                       <Route path="concierge" element={<Restaurent />} />
                       <Route path="review" element={<ReviewDashboard />} />
-                      <Route index element={<ReviewDashboard />} />
+                      <Route index element={<Dashboard />} />
                       <Route path="/myprofile" element={<MyProfileContainer />} />
                     </Routes>
                   </div>
