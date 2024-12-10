@@ -151,10 +151,10 @@ const ReservationList = ({ onReservationSelect }) => {
               <span className={`status-label ${reservation.status}`}>
                 {
                   reservation.status === 'confirmed' ? 'Đã duyệt' :
-                  reservation.status === 'pending' ? 'Chờ duyệt' :
-                  reservation.status === 'cancelled' ? 'Đã hủy' :
-                  reservation.status === 'expired' ? 'hoàn thành' :
-                  'Không xác định'
+                    reservation.status === 'pending' ? 'Chờ duyệt' :
+                      reservation.status === 'cancelled' ? 'Đã hủy' :
+                        reservation.status === 'expired' ? 'hoàn thành' :
+                          'Không xác định'
                 }
               </span>
 

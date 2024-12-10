@@ -151,7 +151,7 @@ const Comment = ({ schedule }) => {
 
     // Check if the current user has liked the post
     const isLike = () => {
-        if(!user) return false;
+        if (!user) return false;
         return likes.some(like => like.idUser === user._id);
     };
 
@@ -221,7 +221,7 @@ const CommentContent = ({ comment, scheduleId, token, updateComments, url, user 
     return (
         <div className="comment-container">
             <div className="user-avatar">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDLxQhCB-aYA9ieFW-Rkd0TMKzG6FNflehVA&s" alt="avatar" className="avatar-image" />
+                <img src={comment.avatar && comment.avatar.includes('http') ? comment.avatar : `${url}/images/${comment.avatar}` || "https://cdn-icons-png.flaticon.com/512/149/149071.png  "} alt="avatar" className="avatar-image" />
             </div>
             <div className="comment-content">
                 <div className="comment-text">
@@ -244,7 +244,7 @@ const CommentContent = ({ comment, scheduleId, token, updateComments, url, user 
                 {showReplies && comment.replies.map((reply) => (
                     <div key={reply._id} className="reply-container">
                         <div className="user-avatar">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDLxQhCB-aYA9ieFW-Rkd0TMKzG6FNflehVA&s" alt="avatar" className="avatar-image" />
+                            <img src={reply.avatar && reply.avatar.includes('https') ? reply.avatar : `${url}/images/${reply.avatar}` || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDLxQhCB-aYA9ieFW-Rkd0TMKzG6FNflehVA&s"} alt="avatar" className="avatar-image" />
                         </div>
                         <div>
                             <div className="reply-content">

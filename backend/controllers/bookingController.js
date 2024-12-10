@@ -2,9 +2,9 @@
 import Booking from '../models/booking.js';
 import Accommodation from '../models/accommodation.js';
 import userModel from "../models/user.js";
-import  partnerModel from "../models/partner.js";
-import {sendBookingEmails,sendCancelBookingEmails} from './emailController.js';
-import {createNotification} from './notiController.js';
+import partnerModel from "../models/partner.js";
+import { sendBookingEmails, sendCancelBookingEmails } from './emailController.js';
+import { createNotification } from './notiController.js';
 
 export const getBookingsByUser = async (req, res) => {
   const { userId } = req.body;
@@ -103,79 +103,79 @@ export const getAvailableRooms = async (req, res) => {
 
 export const createBooking = async (req, res) => {
   try {
-      const { 
-          userId, 
-          partnerId, 
-          accommodationId, 
-          roomId, 
-          checkInDate, 
-          checkOutDate, 
-          numberOfGuests, 
-          totalAmount, 
-          specialRequest, 
-          guestInfo 
-      } = req.body;
+    const {
+      userId,
+      partnerId,
+      accommodationId,
+      roomId,
+      checkInDate,
+      checkOutDate,
+      numberOfGuests,
+      totalAmount,
+      specialRequest,
+      guestInfo
+    } = req.body;
 
-      // Tính toán thời gian lưu trú
-      const checkIn = new Date(checkInDate);
-      const checkOut = new Date(checkOutDate);
-      const duration = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+    // Tính toán thời gian lưu trú
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+    const duration = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
 
-      // Lấy thông tin khách sạn và người dùng
-      const accommodation = await Accommodation.findById(accommodationId);
-      const user = await userModel.findById(userId);
-      const partner = await partnerModel.findById(partnerId);
+    // Lấy thông tin khách sạn và người dùng
+    const accommodation = await Accommodation.findById(accommodationId);
+    const user = await userModel.findById(userId);
+    const partner = await partnerModel.findById(partnerId);
 
-      if (!accommodation || !user || !partner) {
-          return res.status(404).json({ success: false, message: 'Không tìm thấy thông tin liên quan.' });
-      }
+    if (!accommodation || !user || !partner) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy thông tin liên quan.' });
+    }
 
-      const bookingDetails = {
-          accommodationName: accommodation.name,
-          roomName: accommodation.roomTypes.find(room => room._id.toString() === roomId)?.nameRoomType,
-          checkInDate: checkInDate,
-          checkOutDate: checkOutDate,
-          numberOfGuests: numberOfGuests,
-          duration: duration,
-          totalAmount: totalAmount,
-          specialRequest: specialRequest,
-      };
+    const bookingDetails = {
+      accommodationName: accommodation.name,
+      roomName: accommodation.roomTypes.find(room => room._id.toString() === roomId)?.nameRoomType,
+      checkInDate: checkInDate,
+      checkOutDate: checkOutDate,
+      numberOfGuests: numberOfGuests,
+      duration: duration,
+      totalAmount: totalAmount,
+      specialRequest: specialRequest,
+    };
 
-      // Tạo booking mới
-      const newBooking = new Booking({
-          userId,
-          partnerId,
-          accommodationId,
-          roomId,
-          checkInDate,
-          checkOutDate,
-          numberOfGuests,
-          duration,
-          totalAmount,
-          specialRequest,
-          guestInfo,
-          createdAt: new Date(),
-      });
+    // Tạo booking mới
+    const newBooking = new Booking({
+      userId,
+      partnerId,
+      accommodationId,
+      roomId,
+      checkInDate,
+      checkOutDate,
+      numberOfGuests,
+      duration,
+      totalAmount,
+      specialRequest,
+      guestInfo,
+      createdAt: new Date(),
+    });
 
-      await newBooking.save();
-      const notificationData = {
-        idSender: userId,
-        idReceiver: partnerId,
-        content: `Khách hàng ${user.name} đa dat phong`,
-        type: 'partner',
-        nameSender: user.name ||"User",
-        imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-      };
+    await newBooking.save();
+    const notificationData = {
+      idSender: userId,
+      idReceiver: partnerId,
+      content: `Khách hàng ${user.name} đa dat phong`,
+      type: 'partner',
+      nameSender: user.name || "User",
+      imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    };
 
-        
-    
-      await createNotification(global.io, notificationData);
-      await sendBookingEmails(user, partner, accommodation, bookingDetails);
 
-      res.status(201).json({ success: true, message: 'Booking created successfully', booking: newBooking });
+
+    await createNotification(global.io, notificationData);
+    await sendBookingEmails(user, partner, accommodation, bookingDetails);
+
+    res.status(201).json({ success: true, message: 'Booking created successfully', booking: newBooking });
   } catch (error) {
-      console.error('Lỗi tạo booking:', error);
-      res.status(500).json({ success: false, message: 'Error creating booking' });
+    console.error('Lỗi tạo booking:', error);
+    res.status(500).json({ success: false, message: 'Error creating booking' });
   }
 };
 
@@ -184,58 +184,58 @@ export const cancelBooking = async (req, res) => {
   const { reason, additionalComments, otherReasons } = req.body;
 
   try {
-      // Tìm booking
-      const booking = await Booking.findById(bookingId);
-      if (!booking) {
-          return res.status(404).json({ success: false, message: 'Booking not found' });
-      }
+    // Tìm booking
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found' });
+    }
 
-      // Lấy thông tin khách sạn, user, partner
-      const accommodation = await Accommodation.findById(booking.accommodationId);
-      const user = await userModel.findById(booking.userId);
-      const partner = await partnerModel.findById(booking.partnerId);
+    // Lấy thông tin khách sạn, user, partner
+    const accommodation = await Accommodation.findById(booking.accommodationId);
+    const user = await userModel.findById(booking.userId);
+    const partner = await partnerModel.findById(booking.partnerId);
 
-      if (!accommodation || !user || !partner) {
-          return res.status(404).json({ success: false, message: 'Không tìm thấy thông tin liên quan.' });
-      }
+    if (!accommodation || !user || !partner) {
+      return res.status(404).json({ success: false, message: 'Không tìm thấy thông tin liên quan.' });
+    }
 
-      // Cập nhật trạng thái booking và lý do hủy
-      booking.status = 'cancelled';
-      booking.cancellationReason = reason === 'Other' ? otherReasons : reason;
-      booking.additionalComments = additionalComments;
+    // Cập nhật trạng thái booking và lý do hủy
+    booking.status = 'cancelled';
+    booking.cancellationReason = reason === 'Other' ? otherReasons : reason;
+    booking.additionalComments = additionalComments;
 
-      await booking.save();
+    await booking.save();
 
-      // Gửi email hủy đặt phòng
-      const lyDoHuy = reason === 'Other' ? otherReasons : reason;
-      const bookingDetails = {
-          accommodationName: accommodation.name,
-          roomName: accommodation.roomTypes.find(room => room._id.toString() === booking.roomId).nameRoomType,
-          checkInDate: booking.checkInDate,
-          checkOutDate: booking.checkOutDate,
-          numberOfGuests: booking.numberOfGuests,
-          totalAmount: booking.totalAmount,
-      };
+    // Gửi email hủy đặt phòng
+    const lyDoHuy = reason === 'Other' ? otherReasons : reason;
+    const bookingDetails = {
+      accommodationName: accommodation.name,
+      roomName: accommodation.roomTypes.find(room => room._id.toString() === booking.roomId).nameRoomType,
+      checkInDate: booking.checkInDate,
+      checkOutDate: booking.checkOutDate,
+      numberOfGuests: booking.numberOfGuests,
+      totalAmount: booking.totalAmount,
+    };
 
-      // Tạo notification
-      const notificationData = {
-          idSender: user._id,
-          idReceiver: partner._id,
-          content: `Khách hàng ${user.name} đã hủy đặt phòng.`,
-          type: 'partner',
-          createdAt: new Date(),
-          nameSender: user.name || "User",
-          imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-      };
-      await createNotification(global.io, notificationData);
+    // Tạo notification
+    const notificationData = {
+      idSender: user._id,
+      idReceiver: partner._id,
+      content: `Khách hàng ${user.name} đã hủy đặt phòng.`,
+      type: 'partner',
+      createdAt: new Date(),
+      nameSender: user.name || "User",
+      imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    };
+    await createNotification(global.io, notificationData);
 
-      // Gửi email
-      await sendCancelBookingEmails(user, partner,accommodation, bookingDetails, lyDoHuy);
+    // Gửi email
+    await sendCancelBookingEmails(user, partner, accommodation, bookingDetails, lyDoHuy);
 
-      res.json({ success: true, message: 'Booking cancelled successfully', booking });
+    res.json({ success: true, message: 'Booking cancelled successfully', booking });
   } catch (error) {
-      console.error('Lỗi khi hủy booking:', error);
-      res.status(500).json({ success: false, message: 'Error cancelling booking' });
+    console.error('Lỗi khi hủy booking:', error);
+    res.status(500).json({ success: false, message: 'Error cancelling booking' });
   }
 };
 
@@ -251,20 +251,20 @@ export const updateBookingStatus = async (req, res) => {
 
     const partner = await partnerModel.findById(booking.partnerId);
     const notificationData = {
-      idSender: booking.partnerId, 
+      idSender: booking.partnerId,
       idReceiver: booking.userId,
       content: `Trạng thái đặt phòng đã được thay đổi thành ${status === 'confirmed' ? 'Đa dat phong' : status === 'expired' ? 'đã ở' : 'hủy'}`,
       type: 'partner',
       createdAt: new Date(),
-      nameSender: partner.name ||"Partner",
+      nameSender: partner.name || "Partner",
       imgSender: partner.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     };
-       
+
     await createNotification(global.io, notificationData);
     booking.status = status;
     await booking.save();
 
-    
+
     res.json({ success: true, message: 'Booking status updated successfully', booking });
   } catch (error) {
     console.error(error);
@@ -273,7 +273,7 @@ export const updateBookingStatus = async (req, res) => {
 };
 
 export const getAllBookings = async (req, res) => {
-  const { page = 1, limit = 5, startDate, endDate, status, accommodationId } = req.query;
+  const { page = 1, limit = 5, startDate, endDate, status, accommodationId, partnerId } = req.query;
 
   // Convert `page` and `limit` to integers
   const pageNumber = parseInt(page, 10);
@@ -298,6 +298,10 @@ export const getAllBookings = async (req, res) => {
   // Accommodation ID filter
   if (accommodationId) {
     filter.accommodationId = accommodationId;
+  }
+
+  if (partnerId) {
+    filter.partnerId = partnerId;
   }
 
   try {

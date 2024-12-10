@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 import Schedule from "../models/schedule.js";
 import User from "../models/user.js";
-import {upload} from '../middleware/upload.js'
+import { upload } from '../middleware/upload.js'
 import multer from 'multer';
 import { createNotification } from "./notiController.js";
+import { ObjectId } from "mongodb";
 
 export const addSchedule = async (req, res) => {
   try {
@@ -124,7 +125,7 @@ export const getSchedulesByIdUser = async (req, res) => {
 
       const schedules = await Schedule.find({ _id: { $in: user.favorites.schedule } }).populate("idUser");
       if (!schedules.length) {
-        return res.json({ success: true, message: "No schedules found in wishlist" , schedules: []});
+        return res.json({ success: true, message: "No schedules found in wishlist", schedules: [] });
       }
 
       return res.json({
@@ -293,41 +294,45 @@ export const updateLikeComment = async (req, res) => {
         schedule.likes.push({ idUser: userId });
       }
 
-      const notificationData = {
-        idSender: userId,
-        idReceiver: schedule.idUser,
-        type: "user",
-        content: `${user.name} thích lịch trình: ${schedule.scheduleName}`,
-        createdAt: new Date(),
-        nameSender: user.name || "Unknown",
-        imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      if (!schedule.idUser.equals(new ObjectId(userId))) {
+        console.log("schedule.idUser", schedule.idUser);
+        console.log("userId", userId);
+        const notificationData = {
+          idSender: userId,
+          idReceiver: schedule.idUser,
+          type: "user",
+          content: `${user.name} thích lịch trình: ${schedule.scheduleName}`,
+          createdAt: new Date(),
+          nameSender: user.name || "Unknown",
+          imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        }
+        await createNotification(global.io, notificationData);
       }
-
-      await createNotification(global.io, notificationData);
 
     } else if (action === "comment") {
       // Add a comment
       const newComment = {
         idUser: userId,
         userName: user.name,
-        avatar: user.avatar,
+        avatar: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
         content,
         createdAt: new Date(),
-        replies: [],
+        replies: []
       };
       schedule.comments.push(newComment);
-      const notificationData = {
-        idSender: userId,
-        idReceiver: schedule.idUser,
-        type: "user",
-        content: `${user.name} đã bình luận lịch trình: ${schedule.scheduleName}`,
-        createdAt: new Date(),
-        nameSender: user.name || "Unknown",
-        imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      if (!schedule.idUser.equals(new ObjectId(userId))) {
+        const notificationData = {
+          idSender: userId,
+          idReceiver: schedule.idUser,
+          type: "user",
+          content: `${user.name} đã bình luận lịch trình: ${schedule.scheduleName}`,
+          createdAt: new Date(),
+          nameSender: user.name || "Unknown",
+          imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        }
+
+        await createNotification(global.io, notificationData);
       }
-
-      await createNotification(global.io, notificationData);
-
     } else if (action === "reply") {
       // Find the comment to add a reply to
       const comment = schedule.comments.id(commentId);
@@ -344,27 +349,34 @@ export const updateLikeComment = async (req, res) => {
         createdAt: new Date(),
       });
 
-      const notificationData = {
-        idSender: userId,
-        idReceiver: schedule.idUser,
-        type: "user",
-        content: `${user.name} trả lời lịch trình: ${schedule.scheduleName}`,
-        createdAt: new Date(),
-        nameSender: user.name || "Unknown",
-        imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      if (!schedule.idUser.equals(new ObjectId(userId))) {
+        const notificationData = {
+          idSender: userId,
+          idReceiver: schedule.idUser,
+          type: "user",
+          content: `${user.name} đã bình luận lịch trình: ${schedule.scheduleName}`,
+          createdAt: new Date(),
+          nameSender: user.name || "Unknown",
+          imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        }
+        await createNotification(global.io, notificationData);
       }
 
-      const notificationData2 = {
-        idSender: userId,
-        idReceiver: comment.idUser,
-        type: "user",
-        content: `${user.name} đã trả lời bình luận của bạn: ${schedule.title}`,
-        createdAt: new Date(),
-        nameSender: user.name || "Unknown",
-        imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      if (comment.idUser !== userId) {
+
+        const notificationData2 = {
+          idSender: userId,
+          idReceiver: comment.idUser,
+          type: "user",
+          content: `${user.name} đã trả lời bình luận của bạn: ${schedule.scheduleName}`,
+          createdAt: new Date(),
+          nameSender: user.name || "Unknown",
+          imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        }
+
+
+        await createNotification(global.io, notificationData2);
       }
-      await createNotification(global.io, notificationData);
-      await createNotification(global.io, notificationData2);
     }
 
 
@@ -408,7 +420,7 @@ export const deleteActivity = async (req, res) => {
     // Lưu lại lịch trình đã chỉnh sửa
     await schedule.save();
 
-    res.status(200).json({ success: true, message: "Activity deleted successfully" , schedule});
+    res.status(200).json({ success: true, message: "Activity deleted successfully", schedule });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Failed to delete activity", error: error.message });
@@ -453,7 +465,7 @@ export const deleteSchedule = async (req, res) => {
 
     if (!schedule) {
       return res.status(404).json({ success: false, message: "Schedule not found" });
-    } 
+    }
 
     res.status(200).json({ success: true, message: "Schedule deleted successfully" });
   } catch (error) {

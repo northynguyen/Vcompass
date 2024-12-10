@@ -116,6 +116,18 @@
 /* Room Cards Section */
 .rooms-section {
   margin-top: 30px;
+  padding-top: 20px;
+}
+
+.rooms-section h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.rooms-section p {
+  font-size: 14px;
+  color: #777;
 }
 
 .room-card {
@@ -137,7 +149,11 @@
   margin-bottom: 12px;
 }
 
-.room-size, .room-beds-guests, .room-amenities, .room-price, .room-status {
+.room-size,
+.room-beds-guests,
+.room-amenities,
+.room-price,
+.room-status {
   margin-bottom: 10px;
 }
 
@@ -163,9 +179,9 @@
   transform: scale(1.05);
 }
 
-.room-image  {
+.room-image {
   display: flex;
-  flex:1;
+  flex: 1;
   flex-direction: column;
   margin-top: 15px;
 }
@@ -194,9 +210,9 @@
   width: 250px;
 }
 
-.guest-dropdown .ok-btn{
+.guest-dropdown .ok-btn {
   width: 100%;
-  border: none ;
+  border: none;
   background-color: #007bff;
   color: white;
   padding: 10px 10px;
@@ -222,7 +238,7 @@
   width: 80px;
 }
 
-.guest-option  .num {
+.guest-option .num {
   font-size: 16px;
   font-weight: 500;
   text-align: center;
@@ -290,6 +306,7 @@
   padding: 5px 10px;
   border-radius: 5px;
 }
+
 /* Responsive Styles */
 @media (max-width: 768px) {
   .hotel-details-info .search-form-hotel {
@@ -304,7 +321,7 @@
 
   .room-images img {
     width: 100%;
-   
+
   }
 
   .main-img {
@@ -354,7 +371,7 @@
 .book-room-btn {
   max-width: 200px;
   width: 120px;
-  align-self: end  ;
+  align-self: end;
   background-color: #1e81d2;
   color: white;
   border: none;
@@ -380,7 +397,7 @@
   text-decoration: underline;
   margin-top: 10px;
   margin-left: 15px;
- 
+
 }
 
 .details-btn:hover {

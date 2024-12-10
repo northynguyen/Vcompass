@@ -38,7 +38,6 @@ const Header = () => {
       );
 
       if (response.status === 200) {
-        toast.success("Thành công!");
         setNotifications((prevNotifications) =>
           prevNotifications.map((notification) =>
             notification._id === id ? { ...notification, status: "read" } : notification
@@ -88,8 +87,8 @@ const Header = () => {
 
     socket.on(`${user._id}`, (notification) => {
       console.log("Received notification:", notification);
-      fetchNotifications();
-      setUnreadCount((prev) => prev + 1);
+      fetchNotifications(); // Cập nhật danh sách thông báo
+      setUnreadCount((prev) => prev + 1); // Tăng số lượng chưa đọc
       toast.info(
         <div className="custom-toast">
           <h4>🔔 {notification.nameSender} </h4>
@@ -101,8 +100,10 @@ const Header = () => {
           pauseOnHover: true,
           theme: "light",
           position: "top-right",
-        });
+        }
+      );
     });
+
 
     socket.on(`${user._id}status`, (updateUser) => {
 
