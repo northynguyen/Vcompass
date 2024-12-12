@@ -23,14 +23,14 @@ const server = http.createServer(app);
 
 // Enable CORS for all routes
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:5174" , "http://localhost:5175", "https://vcompass-partner.onrender.com"], // Update with your frontend URL
+    origin: ["http://localhost:5173", "http://localhost:5174" , "http://localhost:5175", "https://vcompass-partner.onrender.com","https://vcompass.onrender.com"], // Update with your frontend URL
     credentials: true
 }));
 
 
 global.io = new Server(server, {
     cors: {
-        origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175",, "https://vcompass-partner.onrender.com"], // Update with your frontend URL
+        origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175",, "https://vcompass-partner.onrender.com","https://vcompass.onrender.com"], // Update with your frontend URL
         methods: ["GET", "POST"],
         credentials: true
     }
@@ -57,7 +57,7 @@ global.io = new Server(server, {
 
 
 
-app.use(cors({ origin: ["http://localhost:5173", "http://localhost:5174" , "http://localhost:5175", "https://vcompass-partner.onrender.com"] }));
+app.use(cors({ origin: ["http://localhost:5173", "http://localhost:5174" , "http://localhost:5175", "https://vcompass-partner.onrender.com","https://vcompass.onrender.com"] }));
 app.use(express.json());
 
 
