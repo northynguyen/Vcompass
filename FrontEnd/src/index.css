@@ -38,6 +38,48 @@ body::-webkit-scrollbar-thumb:hover {
   background-color: #555;
 }
 
+.mobile-notification {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Gradient màu sắc đẹp */
+  font-family: 'Roboto', sans-serif;
+  color: #fff;
+  padding: 20px;
+
+
+.notification-content {
+  max-width: 600px;
+  background-color: rgba(0, 0, 0, 0.6); /* Nền trong suốt */
+  padding: 20px 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.notification-content h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.notification-content p {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.notification-content p strong {
+  color: #ffdd57; /* Làm nổi bật một vài từ */
+}
+
+.notification-content p:last-child {
+  margin-top: 15px;
+  font-style: italic;
+}
+}
+
 @keyframes fadeIn {
   0%{
     opacity: 0;
