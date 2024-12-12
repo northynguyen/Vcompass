@@ -44,7 +44,7 @@ const SearchSchedule = () => {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const response = await axios.get(url + "/api/schedule/getAllSchedule");
+        const response = await axios.get(url + "/api/schedule/getAllSchedule?limit=100");
         if (response.data.success) {
           setSchedules(response.data.schedules); // Ensure correct response property
           setFilteredSchedules(response.data.schedules);
