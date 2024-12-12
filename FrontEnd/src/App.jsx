@@ -29,13 +29,18 @@ function App() {
   const [showLogin, setShowLogin] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+ const isMobileDevice = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  };
+
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); 
+      setIsMobile(isMobileDevice() || window.innerWidth <= 768);
     };
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    handleResize(); // Kiểm tra ngay khi load
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   if (isMobile) {
