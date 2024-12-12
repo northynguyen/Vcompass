@@ -88,7 +88,7 @@ const Header = ({ setShowLogin }) => {
     if (!user?._id) return;
 
     console.log("Connecting to socket...");
-    const socket = io("http://localhost:4000");
+    const socket = io(url);
 
     socket.on(`${user._id}`, (notification) => {
       console.log("Received notification:", notification);
