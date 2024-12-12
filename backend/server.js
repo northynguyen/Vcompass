@@ -16,7 +16,7 @@ import http from 'http';
 import emailRouter from "./routes/emailRoutes.js";
 
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
 
 // Create HTTP server from the Express app
 const server = http.createServer(app);
