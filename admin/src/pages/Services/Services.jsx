@@ -29,29 +29,26 @@ const Services = () => {
     };
 
     const handleAccommodationNotification = (data) => {
+        console.log(data)
         const enrichedData = {
             ...data,
-            partnerId: partner._id,
-            partnerName: partner.name,
+            partnerId: data.idPartner,
         };
         setAccommodationData(enrichedData);
         setIsModalOpen(true); // Open modal
     };
 
     const handleFoodserviceNotification = (data) => {
+        console.log(data)
         const enrichedData = {
             ...data,
-            partnerId: partner._id,
-            partnerName: partner.name,
+            partnerId: data.idPartner,
         };
         setFoodserviceData(enrichedData);
         setIsModalOpen(true); // Open modal
     };
 
     const closeModal = (isConfirmed) => {
-        if (!isConfirmed) {
-            setStatus(partner.status);
-        }
         setIsModalOpen(false);
         setNotificationData(null);
         setAccommodationData(null);
@@ -145,6 +142,7 @@ const Services = () => {
                         userData={notificationData}
                         accommodationData={accommodationData}
                         foodserviceData={foodserviceData}
+                        hideName = {true}
                         onClose={closeModal}
                     />
                 </Modal>

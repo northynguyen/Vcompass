@@ -19,7 +19,6 @@ const AccomodationCards = ({ partnerId, onStatusChange, accomList }) => {
 
     const handleCardClick = (accommodation) => {
         setSelectedAccommodation(accommodation);
-
     };
 
     const handleClosePopup = () => {
