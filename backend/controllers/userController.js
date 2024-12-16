@@ -9,6 +9,7 @@ import adminModel from "../models/admin.js";
 import userModel from "../models/user.js";
 import mongoose, { model } from 'mongoose';
 
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
 import fs from 'fs';
 import path from 'path';
@@ -199,33 +200,70 @@ const loginWithGoogle = async (req, res) => {
   passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
 };
 
-// Google callback route (Redirect-based)
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL:`https://vcompass-backend.onrender.com/auth/google/callback`,
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        // Lấy thông tin người dùng từ profile mà Google trả về
+        const { email, name } = profile._json;
+
+        // Tìm người dùng trong database dựa trên email
+        let user = await userModel.findOne({ email });
+
+        if (!user) {
+          // Nếu người dùng chưa tồn tại, tạo người dùng mới
+          user = await userModel.create({
+            name: name || "Người dùng Google",
+            email: email,
+            password: "", // Không cần mật khẩu khi dùng Google OAuth
+            roles: ["user"], // Đặt vai trò mặc định
+            avatar: profile.photos?.[0]?.value || "default_avatar.png",
+            status: "active",
+          });
+        }
+
+        // Gọi `done` để chuyển tiếp người dùng
+        return done(null, user);
+      } catch (error) {
+        console.error("Google Strategy Error:", error);
+        return done(error, null);
+      }
+    }
+  )
+);
+
+// Cấu hình lưu trữ người dùng vào session
+passport.serializeUser((user, done) => {
+  done(null, user.id); // Chỉ lưu user ID vào session
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await userModel.findById(id);
+    done(null, user); // Gắn lại user vào req.user
+  } catch (error) {
+    done(error, null);
+  }
+});
+
 const googleCallback = async (req, res) => {
   passport.authenticate(
     "google",
-    { failureRedirect: "/login" },
+    { failureRedirect: "https://vcompass.onrender.com/" },
     async (err, user, info) => {
       if (err || !user) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Đăng nhập không thành công." });
+        return res.redirect(`https://vcompass.onrender.com/`)
       }
-
-      // Kiểm tra vai trò của người dùng
-      if (!user.roles.includes("user")) {
-        return res
-          .status(403)
-          .json({
-            success: false,
-            message: "Chỉ người dùng mới có thể đăng nhập.",
-          });
-      }
-
       // Create JWT token
       const token = createToken(user._id);
 
       // Redirect hoặc gửi token về frontend
-      res.redirect(`/auth/success?token=${token}`);
+      res.redirect(`https://vcompass.onrender.com/auth/success?token=${token}`);
     }
   )(req, res);
 };

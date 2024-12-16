@@ -15,7 +15,7 @@ import videoRouter from "./routes/videoRoutes.js";
 import { Server } from 'socket.io'; // Import Socket.IO
 import http from 'http';
 import emailRouter from "./routes/emailRoutes.js";
-
+import {googleCallback} from "./controllers/userController.js"
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -63,7 +63,7 @@ app.use(express.json());
 
 
 connectDB();
-
+app.use("/auth/google/callback", googleCallback);
 app.use("/images", express.static("uploads"));
 app.use("/api/user", userRoutes);
 app.use("/api/notifications", notificationRoutes); 

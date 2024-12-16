@@ -8,6 +8,7 @@ import { SlNotebook } from "react-icons/sl";
 import { StoreContext } from "../../../Context/StoreContext";
 import "./ActivityTime.css";
 import ImagesModal from "../../../components/ImagesModal/ImagesModal";
+import { use } from "react";
 const ActivityTime = ({ activity, setInforSchedule, mode }) => {
   const timeStart = activity.timeStart;
   const timeEnd = activity.timeEnd;
@@ -111,13 +112,16 @@ export const AccomActivity = ({
   setIsOpenModal,
   mode,
 }) => {
-  const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
+
+  
+  const [isSaved, setIsSaved] = useState(false); 
   const { url, user, token } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
-      const newStatus = !isSaved; // Determine the new state
-
-      const action = newStatus ? "add" : "remove"; // Define the action
+      const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại
+      const action = newStatus ? "add" : "remove"; // Chọn hành động dựa trên trạng thái mới
+  
+      // Gửi yêu cầu tới API
       const response = await fetch(
         `${url}/api/user/user/${user._id}/addtoWishlist?type=accommodation&itemId=${data._id}&action=${action}`,
         {
@@ -125,21 +129,50 @@ export const AccomActivity = ({
           headers: { token: token },
         }
       );
-
+  
       const result = await response.json();
-      if (!result.success) {
-        toast.error(result.message);
-        setIsSaved((prevState) => !prevState);
-      } else {
+  
+      if (result.success) {
+        // Nếu API trả về thành công, cập nhật danh sách `favorites.accommodation`
+        const updatedFavorites = newStatus
+          ? [...user.favorites.accommodation, data._id] // Thêm item vào danh sách
+          : user.favorites.accommodation.filter((id) => id !== data._id); // Xóa item khỏi danh sách
+  
+        const updatedUserData = {
+          ...user,
+          favorites: { ...user.favorites, accommodation: updatedFavorites },
+        };
+  
+        // Lưu dữ liệu đã cập nhật vào localStorage
+        localStorage.setItem("user", JSON.stringify(updatedUserData));
+  
+        // Cập nhật trạng thái `isSaved`
+        setIsSaved(newStatus);
+  
+        // Hiển thị thông báo thành công
         toast.success(result.message);
-        setIsSaved((prevState) => !prevState);
-      } // Optionally display a success message
+        console.log(result.message);
+      } else {
+        // Nếu thất bại, hiển thị lỗi
+        toast.error(result.message);
+      }
     } catch (error) {
+      // Xử lý lỗi khi gửi yêu cầu
       console.error("Failed to update wishlist:", error.message);
-      // Optionally revert the `isSaved` state if the request fails
+  
+      // Đảo lại trạng thái `isSaved` nếu có lỗi
       setIsSaved((prevState) => !prevState);
     }
   };
+  
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    console.log("user",userData);
+     if( userData.favorites.accommodation && userData.favorites.accommodation.includes(data._id)) {
+       setIsSaved(true)
+     }
+  } , [user ,data])
 
   const onNavigateToDetails = () => {
     const encryptedServiceId = CryptoJS.AES.encrypt(
@@ -259,9 +292,10 @@ export const FoodServiceActivity = ({
   const { url, user, token } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
-      const newStatus = !isSaved; // Determine the new state
-
-      const action = newStatus ? "add" : "remove"; // Define the action
+      const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại
+      const action = newStatus ? "add" : "remove"; // Chọn hành động dựa trên trạng thái mới
+  
+      // Gửi yêu cầu tới API
       const response = await fetch(
         `${url}/api/user/user/${user._id}/addtoWishlist?type=foodService&itemId=${data._id}&action=${action}`,
         {
@@ -269,21 +303,50 @@ export const FoodServiceActivity = ({
           headers: { token: token },
         }
       );
-
+  
       const result = await response.json();
-      if (!result.success) {
-        toast.error(result.message);
-      } else {
+  
+      if (result.success) {
+        // Nếu API trả về thành công, cập nhật favorites.foodService
+        const updatedFavorites = newStatus
+          ? [...user.favorites.foodService, data._id] // Thêm item vào danh sách
+          : user.favorites.foodService.filter((id) => id !== data._id); // Xóa item khỏi danh sách
+  
+        const updatedUserData = {
+          ...user,
+          favorites: { ...user.favorites, foodService: updatedFavorites },
+        };
+  
+        // Lưu dữ liệu đã cập nhật vào localStorage
+        localStorage.setItem("user", JSON.stringify(updatedUserData));
+  
+        // Hiển thị thông báo thành công
         toast.success(result.message);
-        setIsSaved(newStatus);
         console.log(result.message);
-      } // Optionally display a success message
+  
+        // Cập nhật trạng thái `isSaved`
+        setIsSaved(newStatus);
+      } else {
+        // Nếu thất bại, hiển thị lỗi
+        toast.error(result.message);
+      }
     } catch (error) {
+      // Xử lý lỗi khi gửi yêu cầu
       console.error("Failed to update wishlist:", error.message);
-      // Optionally revert the `isSaved` state if the request fails
+  
+      // Đảo lại trạng thái `isSaved` nếu có lỗi
       setIsSaved((prevState) => !prevState);
     }
   };
+  
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+     if(userData.favorites.foodService &&userData.favorites.foodService.includes(data._id)){
+       setIsSaved(true)     
+     }
+  } , [data._id])
+
   const onNavigateToDetails = () => {
     const encryptedServiceId = CryptoJS.AES.encrypt(
       data._id,
@@ -401,9 +464,10 @@ export const AttractionActivity = ({
   const { url, user, token } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
-      const newStatus = !isSaved;
-
-      const action = newStatus ? "add" : "remove"; // Define the action
+      const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại
+      const action = newStatus ? "add" : "remove"; // Chọn hành động dựa trên trạng thái mới
+  
+      // Gửi yêu cầu tới API
       const response = await fetch(
         `${url}/api/user/user/${user._id}/addtoWishlist?type=attraction&itemId=${data._id}&action=${action}`,
         {
@@ -411,22 +475,51 @@ export const AttractionActivity = ({
           headers: { token: token },
         }
       );
-
+  
       const result = await response.json();
-      if (!result.success) {
-        toast.error(result.message);
-      } else {
+  
+      // Xử lý kết quả từ API
+      if (result.success) {
+        // Nếu thành công, cập nhật trạng thái `isSaved` và thêm/xóa item vào/from `favorites.attraction`
+        const updatedFavorites = newStatus
+          ? [...user.favorites.attraction, data._id] // Thêm item vào danh sách
+          : user.favorites.attraction.filter((id) => id !== data._id); // Xóa item khỏi danh sách
+  
+        const updatedUserData = {
+          ...user,
+          favorites: { ...user.favorites, attraction: updatedFavorites },
+        };
+  
+        // Lưu dữ liệu đã cập nhật vào localStorage
+        localStorage.setItem("user", JSON.stringify(updatedUserData));
+  
+        // Hiển thị thông báo thành công
         toast.success(result.message);
         console.log(result.message);
-        setIsSaved(newStatus);
+      } else {
+        // Nếu thất bại, hiển thị lỗi
+        toast.error(result.message);
       }
-      // Optionally display a success message
+  
+      // Cập nhật trạng thái isSaved
+      setIsSaved(newStatus);
     } catch (error) {
+      // Xử lý lỗi khi gửi yêu cầu
       console.error("Failed to update wishlist:", error.message);
-      // Optionally revert the `isSaved` state if the request fails
+  
+      // Đảo lại trạng thái `isSaved` nếu có lỗi
       setIsSaved((prevState) => !prevState);
     }
   };
+  
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if(userData.favorites.attraction && userData.favorites.attraction.includes(data._id)){
+      setIsSaved(true)  
+    }
+ } , [data._id])
+
   const onNavigateToDetails = () => {
     const encryptedServiceId = CryptoJS.AES.encrypt(
       data._id,
