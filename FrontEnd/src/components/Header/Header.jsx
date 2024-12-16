@@ -237,7 +237,11 @@ const Header = ({ setShowLogin }) => {
         {token === null ? <button className="header-login" onClick={() => setShowLogin(true)}>Đăng nhập</button> :
           <div className="header-profile" ref={menuRef}>
             <div className="profile-section" onClick={toggleMenu}>
-              <img src={`${url}/images/${user.avatar}`} alt="Profile" className="user-avatar" />
+            <img
+                src={user && user.avatar && user.avatar.includes('http') ? `${user.avatar}` :  user && user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                alt="Profile"
+                className="user-avatar"
+              />
             </div>
 
 
@@ -245,7 +249,11 @@ const Header = ({ setShowLogin }) => {
             {menuVisible && (
               <div className="profile-menu" >
                 <div className="profile-name">
-                  <img src={user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt="Profile" className="user-avatar" />
+                <img
+                src={user && user.avatar && user.avatar.includes('http') ? `${user.avatar}` :  user && user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                alt="Profile"
+                  className="user-avatar"
+                />
                   <h3>{user.name} </h3>
                 </div>
 
@@ -297,7 +305,6 @@ const Header = ({ setShowLogin }) => {
                     <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}`} onClick={() => { notification.status === 'unread' && handleNotificationClick(notification._id) }}>
                       <div className="notification-avatar">
                         <img src={notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
-
                       </div>
                       <div className="notification-content">
                         <p><strong>{notification.idSender ? notification.idSender.name : "Admin"}</strong></p>

@@ -286,8 +286,8 @@ const ActivityItem = ({
           response = await fetch(`${url}/api/attractions/${id}`);
           break;
         case "Other":
-          console.log(`${url}/api/schedule/${inforSchedule._id}?activityId=${activity._id}`);
-          response = await fetch(`${url}/api/schedule/${inforSchedule._id}?activityId=${activity._id}`);
+          console.log("id 1111", id);
+          response = await fetch(`${url}/api/schedule/${inforSchedule._id}?activityId=${id}`);
           break;
         default:
           throw new Error("Unknown type");
@@ -310,7 +310,7 @@ const ActivityItem = ({
     if (activity?.idDestination && activity?.activityType) {
       fetchData(activity.idDestination, activity.activityType);
     }
-    if (activity?.activityType === "Other") {
+    if (  activity?.activityType === "Other" && activity?._id !== "default-id" && activity?._id !== undefined) {
       fetchData(activity._id, "Other"); 
     }
   }, [activity]);

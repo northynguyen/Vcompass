@@ -15,10 +15,9 @@ import {
     googleCallback,
     getAllUsers,
     getAllPartners,
-
     updateUserOrPartnerOrAdmin,
     getAdminById, addtoWishlist, getUserFavoritesWithDetails, checkPassword,
-    getPartnerById, getUserById,
+    getPartnerById, getUserById,googleSignIn
 
 } from "../controllers/userController.js";
 
@@ -33,8 +32,11 @@ userRoutes.post("/login/admin", loginAdmin);
 userRoutes.post("/register/admin", registerAdmin);
 
 // Routes cho đăng nhập bằng Google
+userRoutes.get("/login/google", googleSignIn); // Redirect đầu Google
+
+// Routes cho đăng nhập bằng Google
 userRoutes.get("/google", loginWithGoogle); // Redirect đến Google
-userRoutes.get("/google/callback", googleCallback); // Google callback
+userRoutes.get("/auth/google/callback", googleCallback); // Google callback
 
 //Get all users
 userRoutes.get('/users/', getAllUsers);

@@ -131,7 +131,7 @@ const OtherItem = ({ setCurDes, curDes }) => {
         <label htmlFor="activity-images">Thêm ảnh (tối đa 3 ảnh):</label>
         <input
           type="file"
-          id="activity-images"
+          id="activity-images"  
           className="input-field"
           multiple
           accept="image/*"

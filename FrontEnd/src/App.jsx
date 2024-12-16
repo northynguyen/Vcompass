@@ -19,7 +19,7 @@ import Page404 from '../src/components/Page404/Page404';
 import HomeBooking from './pages/HomeBooking/HomeBooking';
 import HomeAttractions from './pages/HomeAttractions/HomeAttractions';
 import HomeFoodService from './pages/HomeFoodService/HomeFoodService';
-
+import AuthRedirect from './pages/AuthRedirect/AuthRedirect';
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 
@@ -78,6 +78,7 @@ function App() {
           <Route path="/booking-process/finalstep" element={<BookingProcess />} />
           <Route path="*" element={<Page404 />} />
           <Route path="/404" element={<Page404 />} />
+          <Route path="/auth/success" element={<AuthRedirect />} />  
         </Routes>
         <Footer />
       </div>
