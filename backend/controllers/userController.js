@@ -205,7 +205,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL:`http://localhost:${process.env.PORT || 4000}/auth/google/callback`,
+      callbackURL:`https://vcompass-backend.onrender.com/auth/google/callback`,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -254,16 +254,16 @@ passport.deserializeUser(async (id, done) => {
 const googleCallback = async (req, res) => {
   passport.authenticate(
     "google",
-    { failureRedirect: "https://vcompass-partner.onrender.com/" },
+    { failureRedirect: "https://vcompass.onrender.com/" },
     async (err, user, info) => {
       if (err || !user) {
-        return res.redirect(`https://vcompass-partner.onrender.com/`)
+        return res.redirect(`https://vcompass.onrender.com/`)
       }
       // Create JWT token
       const token = createToken(user._id);
 
       // Redirect hoặc gửi token về frontend
-      res.redirect(`https://vcompass-partner.onrender.com/auth/success?token=${token}`);
+      res.redirect(`https://vcompass.onrender.com/auth/success?token=${token}`);
     }
   )(req, res);
 };
