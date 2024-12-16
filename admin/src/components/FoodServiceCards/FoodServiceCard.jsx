@@ -3,7 +3,7 @@ import './FoodServiceCard.css';
 import { StoreContext } from '../../Context/StoreContext';
 import FoodServiceDetailsPopup from '../FoodServiceDetails/FoodServiceDetailsPopup';
 
-const FoodServiceCard = ({ partnerId, onStatusChange }) => {
+const FoodServiceCard = ({ partnerId, onStatusChange, foodServiceList }) => {
     const [foodServices, setFoodServices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -26,6 +26,10 @@ const FoodServiceCard = ({ partnerId, onStatusChange }) => {
     };
 
     useEffect(() => {
+        if (foodServiceList){
+            setFoodServices(foodServiceList)
+            setLoading(false);
+        }
         const fetchFoodServices = async () => {
             try {
                 const response = await fetch(`${url}/api/foodservices/partner/${partnerId}`);
@@ -50,9 +54,9 @@ const FoodServiceCard = ({ partnerId, onStatusChange }) => {
         }
     }, [partnerId, url]);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <p>Đang lấy dữ liệu...</p>;
     if (error) return <p>Error: {error}</p>;
-    if (foodServices.length === 0) return <p>No food services available.</p>;
+    if (foodServices.length === 0) return <p>Chưa có dịch vụ ăn uống nào</p>;
 
     return (
         <div className="food-services">

@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from 'chart.js'; // Import necessary chart components
 import { useContext, useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import { FaHotel, FaUmbrellaBeach, FaUsers } from 'react-icons/fa';
 import { FaBuildingUser } from "react-icons/fa6";
@@ -39,6 +40,12 @@ const DashBoard = () => {
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [isPartnerLoading, setIsPartnerLoading] = useState(true);
   const [chartData, setChartData] = useState();
+  const navigate = useNavigate();
+  const handleNavigation = (path) => {
+    if (location.pathname !== path) {
+        navigate(path);
+    }
+};
   useEffect(() => {
     const fetchAccommodations = async () => {
       try {
@@ -251,9 +258,9 @@ const DashBoard = () => {
         </div>
         <div className="card">
           <FaHotel className="card-red-icon" />
-          <div className="card-details">
+          <div className="card-details" >
             <p className="red-card-content">{accommodations ? calculateUnAccept() : "Đang tải"}</p>
-            <h3 className="red-card-title">Chưa xét duyệt</h3>
+            <h3 className="red-card-title" onClick={() => handleNavigation('/services')}>Chưa xét duyệt</h3>
           </div>
         </div>
         <div className="card">

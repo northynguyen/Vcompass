@@ -9,6 +9,7 @@ import foodServiceRoutes from "./routes/foodServiceRoutes.js";
 import scheduleRouter from "./routes/scheduleRoutes.js";
 import userRoutes from "./routes/userRoute.js";
 import bookingRouter from "./routes/bookingRoutes.js";
+import aiRoute from "./routes/aiRoutes.js";
 import deleteRouter from "./middleware/removeImage.js";
 import videoRouter from "./routes/videoRoutes.js";
 import { Server } from 'socket.io'; // Import Socket.IO
@@ -74,6 +75,7 @@ app.use("/api/attractions", Attractionrouter);
 app.use("/api/bookings", bookingRouter);
 app.use("/api/videos", videoRouter);
 app.use("/api/email", emailRouter);
+app.use("/api/ai", aiRoute);
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ success: false, message: "Internal Server Error." });
