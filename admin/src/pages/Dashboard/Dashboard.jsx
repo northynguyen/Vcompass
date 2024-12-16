@@ -17,7 +17,7 @@ import { FaBuildingUser } from "react-icons/fa6";
 import { MdNoFood } from "react-icons/md";
 import ReactLoading from 'react-loading';
 import { StoreContext } from "../../Context/StoreContext";
-import './DashBoard.css';
+import './Dashboard.css';
 
 // Register the components
 ChartJS.register(
