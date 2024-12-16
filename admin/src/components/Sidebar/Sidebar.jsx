@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Sidebar.css';
-import { FaThLarge, FaUsers, FaUmbrellaBeach, FaLocationArrow, FaBell, FaEnvelope, FaServicestack, FaUserFriends } from 'react-icons/fa'; // Import icons
+import { FaThLarge, FaUsers, FaUmbrellaBeach, FaHotel, FaBell, FaEnvelope, FaServicestack, FaUserFriends } from 'react-icons/fa'; // Import icons
 import { FaBuildingUser } from "react-icons/fa6";
 const Sidebar = () => {
     const navigate = useNavigate();
@@ -63,12 +63,19 @@ const Sidebar = () => {
                         <FaServicestack />
                         Services
                     </li> */}
-                    <li
+                    {/* <li
                         className={isActive('/notification') ? 'active' : ''}
                         onClick={() => handleNavigation('/notification')}
                     >
                         <FaBell />
                         Gửi thông báo
+                    </li> */}
+                    <li
+                        className={isActive('/services') ? 'active' : ''}
+                        onClick={() => handleNavigation('/services')}
+                    >
+                        <FaHotel />
+                        Quản lý dịch vụ
                     </li>
                     {/* <li
                         className={isActive('/message') ? 'active' : ''}

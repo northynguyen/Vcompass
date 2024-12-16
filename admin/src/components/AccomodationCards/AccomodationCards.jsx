@@ -3,7 +3,7 @@ import './AccomodationCards.css';
 import { StoreContext } from '../../Context/StoreContext';
 import AccomodationDetailsPopup from '../AccomodationDetails/AccomodationDetailsPopup';
 
-const AccomodationCards = ({ partnerId, onStatusChange }) => {
+const AccomodationCards = ({ partnerId, onStatusChange, accomList }) => {
     const [accommodations, setAccommodations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -27,6 +27,10 @@ const AccomodationCards = ({ partnerId, onStatusChange }) => {
     };
 
     useEffect(() => {
+        if (accomList){
+            setAccommodations(accomList);
+            setLoading(false);
+        }
         const fetchAccommodations = async () => {
             try {
                 const response = await fetch(`${url}/api/accommodations/${partnerId}`);
@@ -51,9 +55,9 @@ const AccomodationCards = ({ partnerId, onStatusChange }) => {
         }
     }, [partnerId, url]);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <p>Đang lấy dữ liệu...</p>;
     if (error) return <p>Error: {error}</p>;
-    if (accommodations.length === 0) return <p>No accommodations available.</p>;
+    if (accommodations.length === 0) return <p>Chưa có chỗ ở nào.</p>;
 
     return (
         <div className="accommodations">
