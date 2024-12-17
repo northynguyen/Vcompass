@@ -3,7 +3,7 @@ import { StoreContext } from "../../Context/StoreContext";
 import PlaceReview from "../PlaceReview/PlaceReview";
 import "./Review.css";
 
-const Review = ({ type, id, booking }) => {
+const Review = ({ type, id, booking, onClose  }) => {
     const [rating, setRating] = useState({
         overall: 0,
         room: 0,
@@ -90,6 +90,7 @@ const Review = ({ type, id, booking }) => {
             value: 0,
         });
         setComments("");
+        onClose();
     };
 
 

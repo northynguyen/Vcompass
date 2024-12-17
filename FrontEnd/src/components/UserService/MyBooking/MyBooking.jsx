@@ -147,7 +147,7 @@ const MyBooking = ({ send }) => {
                             </div>
                             <div className="booking-actions">
                                 {booking.status === "expired" && (
-                                    <button className="review-btn" onClick={() => handleReviewClick(booking)}>Viết đánh giá</button>
+                                    <button className="review-btn" onClick={() => { handleReviewClick(booking)}}>Viết đánh giá</button>
                                 )}
                                 {(booking.status === "confirmed" || booking.status === "pending") && (
                                     <button className="cancel-btn" onClick={() => handleCancelClick(booking)}>Hủy đặt phòng</button>
@@ -177,6 +177,24 @@ const MyBooking = ({ send }) => {
                     Tiếp
                 </button>
             </div>
+
+            {showReviewPopup && selectedBooking && (
+                <div className="popup">
+                    <div className="popup-content" ref={reviewPopupRef}>
+                        <button className="close-popup" onClick={handleCloseReviewPopup}>×</button>
+                        <Review type="accommodation" booking={selectedBooking} onClose={handleCloseReviewPopup}  id={selectedBooking.accommodationId}  />
+                    </div>
+                </div>
+            )}
+
+            {showCancelPopup && selectedBooking && (
+                <div className="popup">
+                    <div className="popup-content" ref={cancelPopupRef}>
+                        <button className="close-popup" onClick={handleCloseCancelPopup}>×</button>
+                        <CancelBooking booking={selectedBooking} onClose={handleCloseCancelPopup}/>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

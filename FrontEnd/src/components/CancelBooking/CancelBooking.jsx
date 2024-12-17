@@ -43,7 +43,7 @@ const CancelBooking = ({ booking, onClose }) => {
                 toast.success('Booking canceled successfully!');
                 setTimeout(() => {
                     onClose();
-                }, 2000);
+                }, 1000);
             } else {
                 setIsLoading(false);
                 console.error('Cancellation failed:', data.message);
