@@ -1195,7 +1195,7 @@ const Schedule = ({ mode }) => {
     const startDate = new Date(`${yearStart}-${monthStart}-${dayStart}`);
     const endDate = new Date(`${yearEnd}-${monthEnd}-${dayEnd}`);
     const timeDifference = endDate - startDate;
-    const daysDifference = timeDifference / (1000 * 3600 * 24);
+    const daysDifference = timeDifference / (1000 * 3600 * 24) + 1;
     const nights = daysDifference - 1;
     return `${daysDifference} ngày ${nights} đêm`;
   };

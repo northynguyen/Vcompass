@@ -156,7 +156,7 @@ const calculateDaysAndNights = (dateStart, dateEnd) => {
   const endDate = new Date(`${yearEnd}-${monthEnd}-${dayEnd}`);
 
   const timeDifference = endDate - startDate; // kết quả là số mili giây
-  const daysDifference = timeDifference / (1000 * 3600 * 24); // chuyển mili giây thành số ngày
+  const daysDifference = timeDifference / (1000 * 3600 * 24) + 1; // chuyển mili giây thành số ngày
 
   // Tính số đêm (số đêm = số ngày - 1)
   const nights = daysDifference - 1;
