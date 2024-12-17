@@ -36,7 +36,7 @@ const CreateSchedule = () => {
       description: `Tour ${destination} ${days.stringDay}`,
       scheduleName: `Tour ${destination} ${days.stringDay}`,
       address: destination,
-      imgSrc: null,
+      imgSrc: [],
       numDays: days.numDays,
       dateStart: convertDateFormat(departureDate),
       dateEnd: convertDateFormat(returnDate),
