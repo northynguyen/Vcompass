@@ -5,6 +5,8 @@ import ListAccommodation, { AccomItem } from "../../ListAccommodation/ListAccomm
 import ListAttractions, { AttractionItem } from "../../ListAttractions/ListAttractions";
 import ListFoodServices, { FoodServiceItem } from "../../ListFoodServices/ListFoodServices";
 import "./AddActivity.css";
+import { v4 as uuidv4 } from 'uuid';
+
 import axios from "axios";
 // Thiết lập root element cho modal
 Modal.setAppElement("#root");
@@ -248,9 +250,10 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
       }
 
       // Chuẩn bị dữ liệu activity mới
+
       const newActivity = {
         activityType: curDes?.activityType || "Other",
-        idDestination: curDes?._id || "default-id",
+        idDestination: curDes?._id || uuidv4(),
         address: curDes.address || "default-address",
         imgSrc: curDes.imgSrc || ["default-image"],
         name: curDes.name || "default-name",

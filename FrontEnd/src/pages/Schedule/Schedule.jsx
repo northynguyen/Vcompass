@@ -6,6 +6,7 @@ import Modal from "react-modal";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { StoreContext } from "../../Context/StoreContext";
+
 import ActivityTime, {
   AccomActivity,
   AttractionActivity,
@@ -307,10 +308,10 @@ const ActivityItem = ({
   };
 
   useEffect(() => {
-    if (activity?.idDestination && activity?.activityType) {
+    if (activity?.idDestination && activity?.activityType  && activity?.activityType!== "Other") {
       fetchData(activity.idDestination, activity.activityType);
     }
-    if (  activity?.activityType === "Other" && activity?._id !== "default-id" && activity?._id !== undefined) {
+    if ( activity?.activityType === "Other" && activity?._id !== "default-id" && activity?._id !== undefined) {
       fetchData(activity._id, "Other"); 
     }
   }, [activity]);
@@ -1055,19 +1056,22 @@ const Schedule = ({ mode }) => {
       setIsSaved((prevState) => !prevState);
     }
   };
+
+  const fetchSchedule = async () => {
+    try {
+      const response = await axios.get(`${url}/api/schedule/${id}`);
+      setInforSchedule(response.data.schedule);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching schedule:", error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchSchedule = async () => {
-      try {
-        const response = await axios.get(`${url}/api/schedule/${id}`);
-        setInforSchedule(response.data.schedule);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching schedule:", error);
-        setLoading(false);
-      }
-    };
+    
     fetchSchedule();
-  }, [id]);
+  }, [id ]);
 
   useEffect(() => {
     if (inforSchedule) {
@@ -1103,7 +1107,10 @@ const Schedule = ({ mode }) => {
             }
           );
           if (response.data.success) {
+
             console.log("Cập nhật lịch trình thành công:", response.data);
+            
+
           } else {
             console.error(
               "Lỗi khi cập nhật lịch trình:",
@@ -1115,6 +1122,7 @@ const Schedule = ({ mode }) => {
         }
       };
       updateSchedule();
+
     }
   }, [inforSchedule]);
 
