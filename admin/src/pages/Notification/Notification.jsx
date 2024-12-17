@@ -169,12 +169,12 @@ const Notification = ({ userData, accommodationData, foodserviceData, hideName, 
     return (
         <form onSubmit={handleSubmit} className="block-user-form">
             <div className="form-group">
-                <label>Admin Name:</label>
+                <label>Tên Admin:</label>
                 <input type="text" value={admin.name} disabled className="form-control" />
             </div>
             {!hideName &&
                 <div className="form-group">
-                    <label>{accommodationData || foodserviceData ? "Partner Name" : "User Name"}:</label>
+                    <label>{accommodationData || foodserviceData ? "Tên Partner " : "Tên người dùng "}:</label>
                     <input
                         type="text"
                         value={
@@ -192,7 +192,7 @@ const Notification = ({ userData, accommodationData, foodserviceData, hideName, 
                 </div>
             }
             <div className="form-group">
-                <label>Content:</label>
+                <label>Nội dung :</label>
                 <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
@@ -201,7 +201,7 @@ const Notification = ({ userData, accommodationData, foodserviceData, hideName, 
                 />
             </div>
             <div className="form-buttons">
-                <button type="submit" className="btn btn-primary">Send</button>
+                <button type="submit" className="btn btn-primary">Gửi </button>
             </div>
         </form>
     );

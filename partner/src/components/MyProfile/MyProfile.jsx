@@ -22,13 +22,13 @@ export const MyProfileContainer = () => {
                         className={activeTab === 'profile' ? 'sidebar-button active' : 'sidebar-button'}
                         onClick={() => handleTabClick('profile')}
                     >
-                        My Profile
+                        Thông tin cá nhân 
                     </button>
                     <button
                         className={activeTab === 'update-password' ? 'sidebar-button active' : 'sidebar-button'}
                         onClick={() => handleTabClick('update-password')}
                     >
-                        Update Password
+                        Đổi mật khẩu 
                     </button>
                 </div>
             </div>
@@ -80,11 +80,10 @@ const MyProfile = ({ user, setuser }) => {
             });
 
             if (response.data.success) {
-                toast.success(response.data.message);
                 localStorage.setItem('user', JSON.stringify(response.data.user));
                 setuser(response.data.user);
                 setIsEditing(false);
-                toast.success('Profile updated successfully.');
+                toast.success('Cập nhật thành công.');
             } else {
                 toast.error(response.data.message);
             }
@@ -126,121 +125,121 @@ const MyProfile = ({ user, setuser }) => {
 
     return (
         <div className="profile-section-wrapper">
-            <div className="profile-header">
-                <h2 className="profile-title">My Profile</h2>
-                <img
-                    src={edit_icon}
-                    alt="Edit"
-                    className="profile-edit-icon"
-                    onClick={handleEditClick}
-                />
-            </div>
-            <div className="avatar-section">
-                <img
-                    src={selectedAvatar ? URL.createObjectURL(selectedAvatar) : `${url}/images/${user.avatar}`}
-                    alt="Avatar"
-                    className="avatar-image"
-                />
-                {isEditing && (
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleAvatarChange}
-                        className="avatar-input"
-                    />
-                )}
-            </div>
-            <div className="details-section">
-                <p>
-                    <strong>Name:</strong>{' '}
-                    {isEditing ? (
-                        <input
-                            type="text"
-                            name="name"
-                            value={editedInfo.name || ''}
-                            onChange={handleChange}
-                            className="details-input"
+                    <div className="profile-header">
+                        <h2 className="profile-title">Hồ Sơ Của Tôi</h2>
+                        <img
+                            src={edit_icon}
+                            alt="Chỉnh sửa"
+                            className="profile-edit-icon"
+                            onClick={handleEditClick}
                         />
-                    ) : (
-                        user.name
-                    )}
-                </p>
-                <p>
-                    <strong>Email:</strong>{' '}
-                    <input
-                        type="email"
-                        name="email"
-                        value={user.email || ''}
-                        readOnly
-                        className="readonly-input"
-                    />
-                </p>
-                <p>
-                    <strong>Phone:</strong>{' '}
-                    {isEditing ? (
-                        <input
-                            type="text"
-                            name="phone_number"
-                            value={editedInfo.phone_number || ''}
-                            onChange={handleChange}
-                            className="details-input"
+                    </div>
+                    <div className="avatar-section">
+                        <img
+                            src={selectedAvatar ? URL.createObjectURL(selectedAvatar) : `${url}/images/${user.avatar}`}
+                            alt="Ảnh đại diện"
+                            className="avatar-image"
                         />
-                    ) : (
-                        user.phone_number
+                        {isEditing && (
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleAvatarChange}
+                                className="avatar-input"
+                            />
+                        )}
+                    </div>
+                    <div className="details-section">
+                        <p>
+                            <strong>Tên:</strong>{' '}
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={editedInfo.name || ''}
+                                    onChange={handleChange}
+                                    className="details-input"
+                                />
+                            ) : (
+                                user.name
+                            )}
+                        </p>
+                        <p>
+                            <strong>Email:</strong>{' '}
+                            <input
+                                type="email"
+                                name="email"
+                                value={user.email || ''}
+                                readOnly
+                                className="readonly-input"
+                            />
+                        </p>
+                        <p>
+                            <strong>Số Điện Thoại:</strong>{' '}
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="phone_number"
+                                    value={editedInfo.phone_number || ''}
+                                    onChange={handleChange}
+                                    className="details-input"
+                                />
+                            ) : (
+                                user.phone_number
+                            )}
+                        </p>
+                        <p>
+                            <strong>Địa Chỉ:</strong>{' '}
+                            {isEditing ? (
+                                <input
+                                    type="text"
+                                    name="address"
+                                    value={editedInfo.address || ''}
+                                    onChange={handleChange}
+                                    className="details-input"
+                                />
+                            ) : (
+                                user.address
+                            )}
+                        </p>
+                        <p>
+                            <strong>Giới Tính:</strong>{' '}
+                            {isEditing ? (
+                                <select
+                                    name="gender"
+                                    value={editedInfo.gender || ''}
+                                    onChange={handleChange}
+                                    className="gender-select"
+                                >
+                                    <option value="male">Nam</option>
+                                    <option value="female">Nữ</option>
+                                    <option value="">Khác</option>
+                                </select>
+                            ) : (
+                                user.gender
+                            )}
+                        </p>
+                        <p>
+                            <strong>Ngày Sinh:</strong>
+                            {isEditing ? (
+                                <input
+                                    type="date"
+                                    name="date_of_birth"
+                                    value={editedInfo.date_of_birth || ''}
+                                    onChange={handleDateChange}
+                                    className="details-input"
+                                />
+                            ) : (
+                                formatDateForDisplay(user.date_of_birth)
+                            )}
+                        </p>
+                    </div>
+                    {isEditing && (
+                        <button className="save-button" onClick={handleSaveClick}>
+                            Lưu
+                        </button>
                     )}
-                </p>
-                <p>
-                    <strong>Address:</strong>{' '}
-                    {isEditing ? (
-                        <input
-                            type="text"
-                            name="address"
-                            value={editedInfo.address || ''}
-                            onChange={handleChange}
-                            className="details-input"
-                        />
-                    ) : (
-                        user.address
-                    )}
-                </p>
-                <p>
-                    <strong>Gender:</strong>{' '}
-                    {isEditing ? (
-                        <select
-                            name="gender"
-                            value={editedInfo.gender || ''}
-                            onChange={handleChange}
-                            className="gender-select"
-                        >
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="">Other</option>
-                        </select>
-                    ) : (
-                        user.gender
-                    )}
-                </p>
-                <p>
-                    <strong>Date of Birth:</strong>
-                    {isEditing ? (
-                        <input
-                            type="date"
-                            name="date_of_birth"
-                            value={editedInfo.date_of_birth || ''}
-                            onChange={handleDateChange}
-                            className="details-input"
-                        />
-                    ) : (
-                        formatDateForDisplay(user.date_of_birth)
-                    )}
-                </p>
-            </div>
-            {isEditing && (
-                <button className="save-button" onClick={handleSaveClick}>
-                    Save
-                </button>
-            )}
-        </div>
+                </div>
     );
 };
 
@@ -255,7 +254,7 @@ const UpdatePassword = () => {
         e.preventDefault();
         // Kiểm tra nếu mật khẩu mới và xác nhận mật khẩu không trùng khớp
         if (newPassword !== confirmPassword) {
-            toast.error('Passwords do not match.');
+            toast.error('Mật khẩu xác nhận không trùng khớp.');
             return;
         }
         checkPassword(currentPassword);
@@ -278,18 +277,18 @@ const UpdatePassword = () => {
             const data = await response.json();
 
             if (!data.success) {
-                toast.error("Current password is incorrect.");
+                toast.error("Mật khẩu hiện tại không chính xác.");
 
                 return;
             }
             else {
                 UpdatePassword();
-                toast.success("Password updated successfully.");
+                toast.success("Mật khẩu đã được cập nhật.");
                 handleLogout();
             }
         } catch (error) {
             // Xử lý lỗi và thông báo người dùng
-            toast.error("There was an error while verifying the password.");
+            toast.error("Lỗi khi cập nhật mật khẩu.");
             console.error(error);
         }
     };
@@ -316,10 +315,10 @@ const UpdatePassword = () => {
     };
     return (
         <div className="password-section">
-            <h2>Update Password</h2>
+            <h2>Cập Nhật Mật Khẩu</h2>
             <form onSubmit={handlePasswordUpdate}>
                 <div className="password-field">
-                    <label className="password-label">Current Password</label>
+                    <label className="password-label">Mật Khẩu Hiện Tại</label>
                     <input
                         type="password"
                         value={currentPassword}
@@ -329,7 +328,7 @@ const UpdatePassword = () => {
                     />
                 </div>
                 <div className="password-field">
-                    <label className="password-label">New Password</label>
+                    <label className="password-label">Mật Khẩu Mới</label>
                     <input
                         type="password"
                         value={newPassword}
@@ -339,7 +338,7 @@ const UpdatePassword = () => {
                     />
                 </div>
                 <div className="password-field">
-                    <label className="password-label">Confirm New Password</label>
+                    <label className="password-label">Xác Nhận Mật Khẩu Mới</label>
                     <input
                         type="password"
                         value={confirmPassword}
@@ -348,7 +347,9 @@ const UpdatePassword = () => {
                         className="password-input"
                     />
                 </div>
-                <button type="submit" className="update-password-button">Update Password</button>
+                <button type="submit" className="update-password-button">
+                    Cập Nhật Mật Khẩu
+                </button>
             </form>
         </div>
     );

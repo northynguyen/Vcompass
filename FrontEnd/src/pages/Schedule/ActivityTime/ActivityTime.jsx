@@ -118,6 +118,10 @@ export const AccomActivity = ({
   const { url, user, token } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
+      if(!user){
+        toast.error("Vui lòng đăng nhập !");
+        return;
+      }
       const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại
       const action = newStatus ? "add" : "remove"; // Chọn hành động dựa trên trạng thái mới
   
@@ -169,7 +173,7 @@ export const AccomActivity = ({
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     console.log("user",userData);
-     if( userData.favorites.accommodation && userData.favorites.accommodation.includes(data._id)) {
+     if(userData && userData.favorites.accommodation && userData.favorites.accommodation.includes(data._id)) {
        setIsSaved(true)
      }
   } , [user ,data])
@@ -292,6 +296,10 @@ export const FoodServiceActivity = ({
   const { url, user, token } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
+      if(!user){
+        toast.error("Vui lòng đăng nhập !");
+        return;
+      }
       const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại
       const action = newStatus ? "add" : "remove"; // Chọn hành động dựa trên trạng thái mới
   
@@ -342,10 +350,10 @@ export const FoodServiceActivity = ({
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
-     if(userData.favorites.foodService &&userData.favorites.foodService.includes(data._id)){
+     if( userData && userData.favorites.foodService &&userData.favorites.foodService.includes(data._id)){
        setIsSaved(true)     
      }
-  } , [data._id])
+  } , [user, data._id])
 
   const onNavigateToDetails = () => {
     const encryptedServiceId = CryptoJS.AES.encrypt(
@@ -464,6 +472,10 @@ export const AttractionActivity = ({
   const { url, user, token } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
+      if(!user){
+        toast.error("Vui lòng đăng nhập !");
+        return;
+      }
       const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại
       const action = newStatus ? "add" : "remove"; // Chọn hành động dựa trên trạng thái mới
   
@@ -515,7 +527,7 @@ export const AttractionActivity = ({
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
-    if(userData.favorites.attraction && userData.favorites.attraction.includes(data._id)){
+    if(userData && userData.favorites.attraction && userData.favorites.attraction.includes(data._id)){
       setIsSaved(true)  
     }
  } , [data._id])

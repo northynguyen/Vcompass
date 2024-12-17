@@ -20,6 +20,7 @@ const Home = () => {
   const [scheduleName, setScheduleName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const [suggestions, setSuggestions] = useState([]);
 
   // Fetching all necessary data (Top Cities, Schedules, User Schedules) in a single useEffect
   useEffect(() => {
@@ -27,7 +28,9 @@ const Home = () => {
       try {
         const cities = [];
         // Fetch top cities
-        const cityResponse = await axios.get(`${url}/api/schedule/getByCity/Top`);
+        const cityResponse = await axios.get(
+          `${url}/api/schedule/getByCity/Top`
+        );
         if (cityResponse.data.success) {
           setTopCity(cityResponse.data.addresses);
         }
@@ -38,24 +41,36 @@ const Home = () => {
           { headers: { token } }
         );
         if (userScheduleResponse.data.success) {
-          cities.push(userScheduleResponse.data.schedules.map((schedule) => schedule.address));
+          cities.push(
+            userScheduleResponse.data.schedules.map(
+              (schedule) => schedule.address
+            )
+          );
         }
         if (cities.length > 0) {
-        const scheduleResponse = await axios.get(
-          `${url}/api/schedule/getAllSchedule?cities=${cities.join(",")}&sortBy=likes&page=1&limit=6`
-        );
-        if (scheduleResponse.data.success) {
-          console.log(scheduleResponse.data);
-          const publicSchedules = scheduleResponse.data.schedules.filter((schedule) => schedule.isPublic === true && schedule.idUser !== user._id);
-          setSchedules(publicSchedules);
+          const scheduleResponse = await axios.get(
+            `${url}/api/schedule/getAllSchedule?cities=${cities.join(
+              ","
+            )}&sortBy=likes&page=1&limit=6`
+          );
+          if (scheduleResponse.data.success) {
+            console.log(scheduleResponse.data);
+            const publicSchedules = scheduleResponse.data.schedules.filter(
+              (schedule) =>
+                schedule.isPublic === true && schedule.idUser !== user._id
+            );
+            setSchedules(publicSchedules);
+          }
         }
-      }
 
         const scheduleResponse2 = await axios.get(
           `${url}/api/schedule/getAllSchedule?sortBy=likes&page=1&limit=6`
         );
         if (scheduleResponse2.data.success) {
-          const publicSchedules = scheduleResponse2.data.schedules.filter((schedule) => schedule.isPublic === true && schedule.idUser !== user._id);
+          const publicSchedules = scheduleResponse2.data.schedules.filter(
+            (schedule) =>
+              schedule.isPublic === true && schedule.idUser !== user._id
+          );
           setFilteredSchedules(publicSchedules);
         }
       } catch (error) {
@@ -65,10 +80,10 @@ const Home = () => {
       }
     };
 
-    if(user){
-    fetchData();
+    if (user) {
+      fetchData();
     }
-  }, [url, token ]); 
+  }, [url, token]);
 
   const handleScheduleClick = (id) => {
     navigate(`/schedule-view/${id}`);
@@ -83,14 +98,99 @@ const Home = () => {
     });
     setFilteredSchedules(filtered);
   };
+
+  // Xử lý sự kiện nhập liệu
   const handleAddressChange = (e) => {
-    setAddress(e.target.value);
+    const value = e.target.value;
+    setAddress(value);
+
+    // Lọc danh sách gợi ý dựa trên dữ liệu nhập vào
+    if (value) {
+      const filtered = cities.filter((city) =>
+        city.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filtered);
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  // Xử lý khi chọn một gợi ý
+  const handleSuggestionClick = (city) => {
+    setAddress(city);
+    setSuggestions([]); // Xóa gợi ý sau khi chọn
   };
 
   // Xử lý sự thay đổi cho tên lịch trình
   const handleScheduleChange = (e) => {
     setScheduleName(e.target.value);
   };
+
+  const cities = [
+    "Hà Nội",
+    "TP Hồ Chí Minh",
+    "Đà Nẵng",
+    "Hải Phòng",
+    "Cần Thơ",
+    "An Giang",
+    "Bà Rịa - Vũng Tàu",
+    "Bắc Giang",
+    "Bắc Kạn",
+    "Bạc Liêu",
+    "Bắc Ninh",
+    "Bến Tre",
+    "Bình Dương",
+    "Bình Định",
+    "Bình Phước",
+    "Bình Thuận",
+    "Cà Mau",
+    "Cao Bằng",
+    "Đắk Lắk",
+    "Đắk Nông",
+    "Điện Biên",
+    "Đồng Nai",
+    "Đồng Tháp",
+    "Gia Lai",
+    "Hà Giang",
+    "Hà Nam",
+    "Hà Tĩnh",
+    "Hải Dương",
+    "Hậu Giang",
+    "Hòa Bình",
+    "Hưng Yên",
+    "Khánh Hòa",
+    "Kiên Giang",
+    "Kon Tum",
+    "Lai Châu",
+    "Lâm Đồng",
+    "Lạng Sơn",
+    "Lào Cai",
+    "Long An",
+    "Nam Định",
+    "Nghệ An",
+    "Ninh Bình",
+    "Ninh Thuận",
+    "Phú Thọ",
+    "Phú Yên",
+    "Quảng Bình",
+    "Quảng Nam",
+    "Quảng Ngãi",
+    "Quảng Ninh",
+    "Quảng Trị",
+    "Sóc Trăng",
+    "Sơn La",
+    "Tây Ninh",
+    "Thái Bình",
+    "Thái Nguyên",
+    "Thanh Hóa",
+    "Thừa Thiên Huế",
+    "Tiền Giang",
+    "Trà Vinh",
+    "Tuyên Quang",
+    "Vĩnh Long",
+    "Vĩnh Phúc",
+    "Yên Bái",
+  ];
 
   return (
     <div className="home-container">
@@ -119,14 +219,56 @@ const Home = () => {
                     Địa điểm
                   </label>
                 </div>
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm theo địa điểm"
-                  className="search-input"
-                  id="destination"
-                  value={address}
-                  onChange={(e) => handleAddressChange(e)}
-                />
+                <div style={{ position: "relative", width: "300px" }}>
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm theo địa điểm"
+                    className="search-input"
+                    id="destination"
+                    value={address}
+                    onChange={handleAddressChange}
+                    autoComplete="off"
+                  />
+                  {/* Hiển thị gợi ý */}
+                  {suggestions.length > 0 && (
+                    <ul
+                      style={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        right: 0,
+                        listStyleType: "none",
+                        margin: 0,
+                        padding: "5px",
+                        background: "white",
+                        border: "1px solid #ddd",
+                        zIndex: 10,
+                        maxHeight: "200px",
+                        overflowY: "auto",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {suggestions.map((city, index) => (
+                        <li
+                          key={index}
+                          onClick={() => handleSuggestionClick(city)}
+                          style={{
+                            padding: "8px",
+                            borderBottom: "1px solid #f1f1f1",
+                          }}
+                          onMouseEnter={(e) =>
+                            (e.target.style.background = "#f0f0f0")
+                          }
+                          onMouseLeave={(e) =>
+                            (e.target.style.background = "white")
+                          }
+                        >
+                          {city}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
 
               <div className="search-title">
@@ -148,14 +290,12 @@ const Home = () => {
               <button
                 className="search-button"
                 onClick={() =>
-                  navigate(
-                    `/searchSchedule`, {
-                      state: {
-                        city: address,
-                        name : scheduleName
-                      }
-                    }
-                  )
+                  navigate(`/searchSchedule`, {
+                    state: {
+                      city: address,
+                      name: scheduleName,
+                    },
+                  })
                 }
               >
                 Tìm kiếm
@@ -208,44 +348,47 @@ const Home = () => {
         </Swiper>
       </div>
 
-        {schedules && (
-          console.log(schedules),
-           <div className="post-card-recommendations">
-           <div className="post-card-header">
-             <h3>Lịch trình dành cho bạn </h3>
-           </div>
-           <div className="post-card-recommendations__container">
-             <Swiper
-               modules={[Navigation, Pagination, Autoplay]}
-               spaceBetween={30}
-               slidesPerView={schedules.length < 2 ? schedules.length : 2}
-               navigation
-               pagination={{ clickable: true }}
-               autoplay={{ delay: 4000 ,
-                 pauseOnMouseEnter: true, 
-                 disableOnInteraction: true, 
-               }}
-             >
-               {!isLoading &&
-                 schedules
-                   ?.map((schedule, index) => (
-                     <SwiperSlide key={index}>  
-                       <PostCard
-                         key={schedule._id}
-                         schedule={schedule}
-                         handleScheduleClick={handleScheduleClick}
-                       />
-                   </SwiperSlide>              
-                   ))}
-                 {isLoading && <div className="spinner"> </div>}
-               {schedules?.length === 0 && !isLoading && (
-                <p className="post-card-recommendations__message"> Không có lịch trình phù hợp.</p>
-               )}
-             </Swiper>
-           </div>
-         </div>
-        )}
-     
+      {schedules &&
+        (console.log(schedules),
+        (
+          <div className="post-card-recommendations">
+            <div className="post-card-header">
+              <h3>Lịch trình dành cho bạn </h3>
+            </div>
+            <div className="post-card-recommendations__container">
+              <Swiper
+                modules={[Navigation, Pagination, Autoplay]}
+                spaceBetween={30}
+                slidesPerView={schedules.length < 2 ? schedules.length : 2}
+                navigation
+                pagination={{ clickable: true }}
+                autoplay={{
+                  delay: 4000,
+                  pauseOnMouseEnter: true,
+                  disableOnInteraction: true,
+                }}
+              >
+                {!isLoading &&
+                  schedules?.map((schedule, index) => (
+                    <SwiperSlide key={index}>
+                      <PostCard
+                        key={schedule._id}
+                        schedule={schedule}
+                        handleScheduleClick={handleScheduleClick}
+                      />
+                    </SwiperSlide>
+                  ))}
+                {isLoading && <div className="spinner"> </div>}
+                {schedules?.length === 0 && !isLoading && (
+                  <p className="post-card-recommendations__message">
+                    {" "}
+                    Không có lịch trình phù hợp.
+                  </p>
+                )}
+              </Swiper>
+            </div>
+          </div>
+        ))}
 
       <div className="post-card-recommendations">
         <div className="post-card-header">
@@ -258,24 +401,28 @@ const Home = () => {
             slidesPerView={2}
             navigation
             pagination={{ clickable: true }}
-            autoplay={{ delay: 3000 ,
-              pauseOnMouseEnter: true, 
-              disableOnInteraction: true, 
+            autoplay={{
+              delay: 3000,
+              pauseOnMouseEnter: true,
+              disableOnInteraction: true,
             }}
           >
             {!isLoading &&
               filteredSchedules?.map((schedule, index) => (
-                  <SwiperSlide key={index}>  
-                    <PostCard
-                      key={schedule._id}
-                      schedule={schedule}
-                      handleScheduleClick={handleScheduleClick}
-                    />
-                </SwiperSlide>              
-                ))}
-              {isLoading && <div className="spinner"> </div>}
+                <SwiperSlide key={index}>
+                  <PostCard
+                    key={schedule._id}
+                    schedule={schedule}
+                    handleScheduleClick={handleScheduleClick}
+                  />
+                </SwiperSlide>
+              ))}
+            {isLoading && <div className="spinner"> </div>}
             {filteredSchedules?.length === 0 && !isLoading && (
-             <p className="post-card-recommendations__message"> Không có lịch trình phù hợp.</p>
+              <p className="post-card-recommendations__message">
+                {" "}
+                Không có lịch trình phù hợp.
+              </p>
             )}
           </Swiper>
         </div>

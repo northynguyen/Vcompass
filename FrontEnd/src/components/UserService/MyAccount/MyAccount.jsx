@@ -25,16 +25,15 @@ const MyAccount = () => {
 
     const handlePasswordUpdate = (e) => {
         e.preventDefault();
-        // Kiểm tra nếu mật khẩu mới và xác nhận mật khẩu không trùng khớp
         if (newPassword !== confirmPassword) {
-            toast.error('Mật khẩu xac nhận không trùng khớp.');
+            toast.error('Mật khẩu xác nhận không trùng khớp.');
             return;
         }
         checkPassword(currentPassword);
     };
+
     const checkPassword = async (currentPassword) => {
         try {
-            // Gửi yêu cầu kiểm tra mật khẩu hiện tại
             const response = await fetch(`${url}/api/user/check-password`, {
                 method: "POST",
                 headers: {
@@ -50,21 +49,17 @@ const MyAccount = () => {
             const data = await response.json();
 
             if (!data.success) {
-                toast.error("Mật khẩu hiện tại không chính xác.");
-
+                toast.error("Mật khẩu hiện tại không chính xác.");
                 return;
-            }
-            else {
+            } else {
                 UpdatePassword();
-                toast.success("Câp nhật mật khẩu thành công.");
-                setCurrentPassword(''); 
-                setNewPassword(''); 
-                setConfirmPassword(''); 
-                               
+                toast.success("Cập nhật mật khẩu thành công.");
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
             }
         } catch (error) {
-            // Xử lý lỗi và thông báo người dùng
-            toast.error("There was an error while verifying the password.");
+            toast.error("Đã có lỗi khi xác minh mật khẩu.");
             console.error(error);
         }
     };
@@ -72,39 +67,35 @@ const MyAccount = () => {
     const UpdatePassword = async () => {
         const response = axios.put(`${url}/api/user/users/${user._id}`, { password: newPassword, type: "user" });
         try {
-
             if (response.success) {
-                toast.success("Password updated successfully.");
-               
-
+                toast.success("Cập nhật mật khẩu thành công.");
             } else {
                 toast.error(response.message);
             }
         } catch (error) {
-            toast.error(error.response.message.message || 'There was an error');
+            toast.error(error.response.message.message || 'Có lỗi xảy ra.');
         }
     };
-    // Initialize formData with the user data from context
+
     const [formData, setFormData] = useState({
         name: user.name || '',
         gender: user.gender || '',
         date_of_birth: user.date_of_birth || '',
         address: user.address || '',
-        phoneNumber: user.phoneNumber || '' // Single phone number as a string
+        phoneNumber: user.phoneNumber || ''
     });
 
     const [activeTab, setActiveTab] = useState('personal');
     const [isEditing, setIsEditing] = useState(false);
+
     useEffect(() => {
-        // Ensure formData updates if user data changes
         setFormData({
             name: user.name || '',
             gender: user.gender || '',
             date_of_birth: user.date_of_birth || '',
             address: user.address || '',
-            phone_number: user.phone_number || '' // Single phone number as a string
+            phone_number: user.phone_number || ''
         });
-
     }, [user]);
 
     const handleInputChange = (e) => {
@@ -121,7 +112,6 @@ const MyAccount = () => {
 
     const handleCancel = () => {
         setIsEditing(false);
-        // Optionally reset formData to original user data if needed
         setFormData({
             name: user.name || '',
             gender: user.gender || '',
@@ -130,6 +120,7 @@ const MyAccount = () => {
             phone_number: user.phone_number || ''
         });
     };
+
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         const formDataUser = new FormData();
@@ -152,68 +143,74 @@ const MyAccount = () => {
             });
             console.log(response.data);
             if (response.data.success) {
-                
                 localStorage.setItem("user", JSON.stringify(response.data.user));
                 setUser(response.data.user);
                 setIsEditing(false);
-                toast.success('Profile updated successfully.');
+                toast.success('Cập nhật hồ sơ thành công.');
                 window.location.reload();
             } else {
                 toast.error(response.data.message);
             }
         } catch (error) {
-            toast.error('Failed to update profile.');
+            toast.error('Cập nhật hồ sơ thất bại.');
             console.error(error);
         }
         setIsEditing(false);
     };
-    
+
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setSelectedAvatar(file); // Lưu trực tiếp File vào state thay vì base64
+            setSelectedAvatar(file);
         }
     };
 
     return (
         <div className="my-account">
-            <h2>Account Information</h2>
-            <div >
-                <img
-                    src={selectedAvatar ? URL.createObjectURL(selectedAvatar) : `${url}/images/${user.avatar}`}
-                    alt="Avatar"
-                    className="profile-pic"
-                />
-                {isEditing && (
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleAvatarChange}
-                        className="avatar-input"
-                    />
-                )}
-            </div>
-            <div className="tab-navigation">
+            <h2>Thông Tin Tài Khoản</h2>
 
+            <div className="tab-navigation">
                 <button
                     className={activeTab === 'personal' ? 'active-tab' : ''}
                     onClick={() => setActiveTab('personal')}
                 >
-                    Personal Data
+                    Dữ Liệu Cá Nhân
                 </button>
                 <button
                     className={activeTab === 'password' ? 'active-tab' : ''}
                     onClick={() => setActiveTab('password')}
                 >
-                    Reset Password
+                    Đổi Mật Khẩu
                 </button>
             </div>
 
             {activeTab === 'personal' && (
                 <form onSubmit={handleFormSubmit}>
                     <div className="personal-data">
-                        <h3>Personal Data</h3>
-                        <label>Name</label>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <h3>Thông Tin Cá Nhân</h3>
+                            <button type="button" onClick={toggleEdit} className="edit-btn">
+                                Chỉnh Sửa
+                            </button>
+                        </div>
+
+                        <div>
+                            <img
+                                src={selectedAvatar ? URL.createObjectURL(selectedAvatar) : user.avatar && user.avatar.includes('http') ? user.avatar : user.avatar && `${url}/images/${user.avatar}`}
+                                alt="Avatar"
+                                className="profile-pic"
+                                style={{ width: '150px', height: '150px', borderRadius: '50%' }}
+                            />
+                            {isEditing && (
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleAvatarChange}
+                                    className="avatar-input"
+                                />
+                            )}
+                        </div>
+                        <label>Họ Tên</label>
                         <input
                             type="text"
                             name="name"
@@ -222,29 +219,28 @@ const MyAccount = () => {
                             disabled={!isEditing}
                         />
 
-                        <label>Gender</label>
+                        <label>Giới Tính</label>
                         <select
                             name="gender"
                             value={formData.gender}
                             onChange={handleInputChange}
                             disabled={!isEditing}
                         >
-                            <option value="">Select Gender</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
+                            <option value="">Chọn Giới Tính</option>
+                            <option value="male">Nam</option>
+                            <option value="female">Nữ</option>
                         </select>
 
-                        <label>Date of Birth</label>
+                        <label>Ngày Sinh</label>
                         <input
-                            type="text"
+                            type="date"
                             name="date_of_birth"
                             value={formData.date_of_birth ? new Date(formData.date_of_birth).toISOString().split('T')[0] : ''}
                             onChange={handleInputChange}
                             disabled={!isEditing}
-
                         />
 
-                        <label>Address</label>
+                        <label>Địa Chỉ</label>
                         <input
                             type="text"
                             name="address"
@@ -253,27 +249,23 @@ const MyAccount = () => {
                             disabled={!isEditing}
                         />
 
-                        <label>Phone Number</label>
+                        <label>Số Điện Thoại</label>
                         <input
                             type="text"
                             name="phone_number"
                             value={formData.phone_number}
                             onChange={handleInputChange}
-                            placeholder="Enter phone number"
+                            placeholder="Nhập số điện thoại"
                             disabled={!isEditing}
                         />
 
-                        {!isEditing ? (
-                            <button type="button" onClick={toggleEdit} className="edit-btn">
-                                Edit
-                            </button>
-                        ) : (
+                        {isEditing && (
                             <>
                                 <button type="button" onClick={handleCancel} className="cancel-btn">
-                                    Cancel
+                                    Hủy
                                 </button>
                                 <button type="submit" className="save-btn">
-                                    Save
+                                    Lưu
                                 </button>
                             </>
                         )}
@@ -293,64 +285,65 @@ const MyAccount = () => {
 
             {activeTab === 'password' && (
                 <form className="reset-password" onSubmit={handlePasswordUpdate}>
-                    <h3>Reset Password</h3>
+                    <h3>Đổi Mật Khẩu</h3>
 
                     <label>Mật khẩu hiện tại</label>
-            <div className="password-input">
-                <input
-                    type={showPassword.current ? "text" : "password"}
-                    name="currentPassword"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    required
-                />
-                <button
-                    type="button"
-                    className="toggle-password"
-                    onClick={() => togglePasswordVisibility("current")}
-                >
-                    {showPassword.current ? "Hide" : "Show"}
-                </button>
-            </div>
+                    <div className="password-input">
+                        <input
+                            type={showPassword.current ? "text" : "password"}
+                            name="currentPassword"
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                            required
+                        />
+                        <button
+                            type="button"
+                            className="toggle-password"
+                            onClick={() => togglePasswordVisibility("current")}
+                        >
+                            {!showPassword.current ? "Hiện" : "Ẩn"}
+                        </button>
+                    </div>
 
-            <label>Mật khẩu mới</label>
-            <div className="password-input">
-                <input
-                    type={showPassword.new ? "text" : "password"}
-                    name="newPassword"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    required
-                />
-                <button
-                    type="button"
-                    className="toggle-password"
-                    onClick={() => togglePasswordVisibility("new")}
-                >
-                    {showPassword.new ? "Hide" : "Show"}
-                </button>
-            </div>
+                    <label>Mật khẩu mới</label>
+                    <div className="password-input">
+                        <input
+                            type={showPassword.new ? "text" : "password"}
+                            name="newPassword"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            required
+                        />
+                        <button
+                            type="button"
+                            className="toggle-password"
+                            onClick={() => togglePasswordVisibility("new")}
+                        >
+                            {!showPassword.new ? "Hiện" : "Ẩn"}
+                        </button>
+                    </div>
 
-            <label>Xác nhận mật khẩu</label>
-            <div className="password-input">
-                <input
-                    type={showPassword.confirm ? "text" : "password"}
-                    name="confirmPassword"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                />
-                <button
-                    type="button"
-                    className="toggle-password"
-                    onClick={() => togglePasswordVisibility("confirm")}
-                >
-                    {showPassword.confirm ? "Hide" : "Show"}
-                </button>
-            </div>
+                    <label>Xác nhận mật khẩu</label>
+                    <div className="password-input">
+                        <input
+                            type={showPassword.confirm ? "text" : "password"}
+                            name="confirmPassword"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                        />
+                        <button
+                            type="button"
+                            className="toggle-password"
+                            onClick={() => togglePasswordVisibility("confirm")}
+                        >
+                           {!showPassword.confirm ? "Hiện" : "Ẩn"}
+                        </button>
+                    </div>
 
-                    <button type="button" className="cancel-btn">Cancel</button>
-                    <button type="submit" className="save-btn">Update Password</button>
+                    <button type="submit" className="update-password-btn">
+                        Đổi Mật Khẩu
+                    </button>
                 </form>
             )}
         </div>

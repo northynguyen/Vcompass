@@ -191,7 +191,7 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
         <div className="user-info">
           <img
             className="user-avatar"
-            src={schedule.idUser.avatar ? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+            src={schedule.idUser.avatar && schedule.idUser.avatar.includes("http") ? schedule.idUser.avatar : schedule.idUser.avatar ? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
             alt="user avatar"
           />
           <div>

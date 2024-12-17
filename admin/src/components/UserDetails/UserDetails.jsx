@@ -17,7 +17,7 @@ const UserDetails = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     if (!user) {
-        return <div>Error: No user data available</div>;
+        return <div>Lỗi truy cập nguồn dữ liệu</div>;
     }
 
     const handleStatusChange = (event) => {

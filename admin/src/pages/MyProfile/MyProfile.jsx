@@ -22,13 +22,13 @@ export const MyProfileContainer = () => {
                         className={activeTab === 'profile' ? 'sidebar-button active' : 'sidebar-button'}
                         onClick={() => handleTabClick('profile')}
                     >
-                        My Profile
+                        Thông tin cá nhân
                     </button>
                     <button
                         className={activeTab === 'update-password' ? 'sidebar-button active' : 'sidebar-button'}
                         onClick={() => handleTabClick('update-password')}
                     >
-                        Update Password
+                        Đổi mật khẩu
                     </button>
                 </div>
             </div>
@@ -81,19 +81,17 @@ const MyProfile = ({ admin, setAdmin }) => {
             });
 
             if (response.data.success) {
-
                 setAdmin(response.data.user);
                 localStorage.setItem('user', JSON.stringify(response.data.user));
                 setIsEditing(false);
-                toast.success('Profile updated successfully.');
+                toast.success('Cập nhật hồ sơ thành công.');
             } else {
                 toast.error(response.data.message);
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || 'There was an error');
+            toast.error(error.response?.data?.message || 'Đã xảy ra lỗi.');
         }
     };
-
 
     const handleChange = (e) => {
         setEditedInfo({
@@ -105,9 +103,10 @@ const MyProfile = ({ admin, setAdmin }) => {
     const handleAvatarChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setSelectedAvatar(file); // Lưu trực tiếp File vào state thay vì base64
+            setSelectedAvatar(file);
         }
     };
+
     const formatDateForDisplay = (isoDate) => {
         if (!isoDate) return '';
         const date = new Date(isoDate);
@@ -128,10 +127,10 @@ const MyProfile = ({ admin, setAdmin }) => {
     return (
         <div className="profile-section-wrapper">
             <div className="profile-header">
-                <h2 className="profile-title">My Profile</h2>
+                <h2 className="profile-title">Hồ Sơ Của Tôi</h2>
                 <img
                     src={edit_icon}
-                    alt="Edit"
+                    alt="Chỉnh sửa"
                     className="profile-edit-icon"
                     onClick={handleEditClick}
                 />
@@ -139,7 +138,7 @@ const MyProfile = ({ admin, setAdmin }) => {
             <div className="avatar-section">
                 <img
                     src={selectedAvatar ? URL.createObjectURL(selectedAvatar) : `${url}/images/${admin.avatar}`}
-                    alt="Avatar"
+                    alt="Ảnh đại diện"
                     className="avatar-image"
                 />
                 {isEditing && (
@@ -153,7 +152,7 @@ const MyProfile = ({ admin, setAdmin }) => {
             </div>
             <div className="details-section">
                 <p>
-                    <strong>Name:</strong>{' '}
+                    <strong>Tên:</strong>{' '}
                     {isEditing ? (
                         <input
                             type="text"
@@ -177,7 +176,7 @@ const MyProfile = ({ admin, setAdmin }) => {
                     />
                 </p>
                 <p>
-                    <strong>Phone:</strong>{' '}
+                    <strong>Số Điện Thoại:</strong>{' '}
                     {isEditing ? (
                         <input
                             type="text"
@@ -191,7 +190,7 @@ const MyProfile = ({ admin, setAdmin }) => {
                     )}
                 </p>
                 <p>
-                    <strong>Address:</strong>{' '}
+                    <strong>Địa Chỉ:</strong>{' '}
                     {isEditing ? (
                         <input
                             type="text"
@@ -205,7 +204,7 @@ const MyProfile = ({ admin, setAdmin }) => {
                     )}
                 </p>
                 <p>
-                    <strong>Gender:</strong>{' '}
+                    <strong>Giới Tính:</strong>{' '}
                     {isEditing ? (
                         <select
                             name="gender"
@@ -213,16 +212,16 @@ const MyProfile = ({ admin, setAdmin }) => {
                             onChange={handleChange}
                             className="gender-select"
                         >
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="">Other</option>
+                            <option value="male">Nam</option>
+                            <option value="female">Nữ</option>
+                            <option value="">Khác</option>
                         </select>
                     ) : (
                         admin.gender
                     )}
                 </p>
                 <p>
-                    <strong>Date of Birth:</strong>
+                    <strong>Ngày Sinh:</strong>
                     {isEditing ? (
                         <input
                             type="date"
@@ -238,12 +237,13 @@ const MyProfile = ({ admin, setAdmin }) => {
             </div>
             {isEditing && (
                 <button className="save-button" onClick={handleSaveClick}>
-                    Save
+                    Lưu
                 </button>
             )}
         </div>
     );
 };
+
 
 const UpdatePassword = () => {
     const [currentPassword, setCurrentPassword] = useState('');
@@ -256,11 +256,12 @@ const UpdatePassword = () => {
         e.preventDefault();
         // Kiểm tra nếu mật khẩu mới và xác nhận mật khẩu không trùng khớp
         if (newPassword !== confirmPassword) {
-            toast.error('Passwords do not match.');
+            toast.error('Mật khẩu mới và xác nhận mật khẩu không khớp.');
             return;
         }
         checkPassword(currentPassword);
     };
+
     const checkPassword = async (currentPassword) => {
         try {
             // Gửi yêu cầu kiểm tra mật khẩu hiện tại
@@ -279,48 +280,48 @@ const UpdatePassword = () => {
             const data = await response.json();
 
             if (!data.success) {
-                toast.error("Current password is incorrect.");
-
+                toast.error("Mật khẩu hiện tại không chính xác.");
                 return;
-            }
-            else {
-                UpdatePassword();
-                toast.success("Password updated successfully.");
-                handleLogout();
+            } else {
+                updateNewPassword(); // Đổi tên hàm gọi ở đây
             }
         } catch (error) {
-            // Xử lý lỗi và thông báo người dùng
-            toast.error("There was an error while verifying the password.");
+            toast.error("Có lỗi xảy ra khi xác minh mật khẩu.");
             console.error(error);
         }
     };
 
-    const UpdatePassword = async () => {
-        const response = axios.put(`${url}/api/user/admin/${admin._id}`, { password: newPassword, type: "admin" });
+    const updateNewPassword = async () => { // Đổi tên hàm
         try {
+            const response = await axios.put(`${url}/api/user/admin/${admin._id}`, {
+                password: newPassword,
+                type: "admin",
+            });
 
-            if (response.success) {
-                toast.success(response.message);
-
+            if (response.data.success) {
+                toast.success("Cập nhật mật khẩu thành công.");
+                handleLogout();
             } else {
-                toast.error(response.message);
+                toast.error(response.data.message || "Cập nhật mật khẩu thất bại.");
             }
         } catch (error) {
-            toast.error(error.response.message.message || 'There was an error');
+            toast.error(error.response?.data?.message || 'Có lỗi xảy ra.');
         }
     };
+
     const handleLogout = () => {
         localStorage.removeItem('token');
         navigate('/login');
-        toast.success('Đăng xuất thành công');
+        toast.success('Đăng xuất thành công.');
         setToken(null);
     };
+
     return (
         <div className="password-section">
-            <h2>Update Password</h2>
+            <h2>Cập Nhật Mật Khẩu</h2>
             <form onSubmit={handlePasswordUpdate}>
                 <div className="password-field">
-                    <label className="password-label">Current Password</label>
+                    <label className="password-label">Mật Khẩu Hiện Tại</label>
                     <input
                         type="password"
                         value={currentPassword}
@@ -330,7 +331,7 @@ const UpdatePassword = () => {
                     />
                 </div>
                 <div className="password-field">
-                    <label className="password-label">New Password</label>
+                    <label className="password-label">Mật Khẩu Mới</label>
                     <input
                         type="password"
                         value={newPassword}
@@ -340,7 +341,7 @@ const UpdatePassword = () => {
                     />
                 </div>
                 <div className="password-field">
-                    <label className="password-label">Confirm New Password</label>
+                    <label className="password-label">Xác Nhận Mật Khẩu Mới</label>
                     <input
                         type="password"
                         value={confirmPassword}
@@ -349,10 +350,13 @@ const UpdatePassword = () => {
                         className="password-input"
                     />
                 </div>
-                <button type="submit" className="update-password-button">Update Password</button>
+                <button type="submit" className="update-password-button">
+                    Cập Nhật Mật Khẩu
+                </button>
             </form>
         </div>
     );
 };
+
 
 export default MyProfileContainer;

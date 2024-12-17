@@ -17,11 +17,12 @@ const MyBooking = ({ send }) => {
     const [showCancelPopup, setShowCancelPopup] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [highlightFirstBooking, setHighlightFirstBooking] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1); // Trạng thái phân trang
-    const bookingsPerPage = 2; // Số booking mỗi trang
+    const [currentPage, setCurrentPage] = useState(1);
+    const bookingsPerPage = 2;
     const { token, url } = useContext(StoreContext);
     const reviewPopupRef = useRef(null);
     const cancelPopupRef = useRef(null);
+
     useEffect(() => {
         const fetchBookings = async () => {
             try {
@@ -36,7 +37,7 @@ const MyBooking = ({ send }) => {
                                 const response = await axios.get(`${url}/api/accommodations/getAccomm/${booking.accommodationId}`);
                                 return response.data.success ? response.data.accommodation : null;
                             } catch (error) {
-                                console.error("Failed to fetch accommodation", error);
+                                console.error("Lỗi khi lấy dữ liệu chỗ ở", error);
                                 return null;
                             }
                         }
@@ -44,10 +45,10 @@ const MyBooking = ({ send }) => {
                     }));
                     setAccommodations(accommodationsData.filter(Boolean));
                 } else {
-                    console.error("Failed to fetch bookings", response.data.message);
+                    console.error("Lỗi khi lấy danh sách đặt phòng", response.data.message);
                 }
             } catch (error) {
-                console.error("Failed to fetch bookings", error);
+                console.error("Lỗi khi lấy danh sách đặt phòng", error);
             }
         };
 
@@ -71,12 +72,10 @@ const MyBooking = ({ send }) => {
         setFilteredBookings(filtered);
     }, [bookings, filterStatus]);
 
-    // Tính toán các dữ liệu của trang hiện tại
     const indexOfLastBooking = currentPage * bookingsPerPage;
     const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
     const currentBookings = filteredBookings.slice(indexOfFirstBooking, indexOfLastBooking);
 
-    // Thay đổi trang khi người dùng bấm nút
     const handlePageClick = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
@@ -105,24 +104,24 @@ const MyBooking = ({ send }) => {
 
     return (
         <div className="my-booking">
-            <h2>My Booking</h2>
+            <h2>Lịch Sử Đặt Phòng</h2>
             <input
                 type="text"
-                placeholder="Search hotel..."
+                placeholder="Tìm kiếm khách sạn..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
                 className="search-input"
             />
             <div className="filter-buttons">
-                <button onClick={() => setFilterStatus('all')} className={filterStatus === 'all' ? 'active-filter' : ''}>All</button>
-                <button onClick={() => setFilterStatus('expired')} className={filterStatus === 'expired' ? 'active-filter' : ''}>Used</button>
-                <button onClick={() => setFilterStatus('pending')} className={filterStatus === 'pending' ? 'active-filter' : ''}>Pending</button>
-                <button onClick={() => setFilterStatus('confirmed')} className={filterStatus === 'confirmed' ? 'active-filter' : ''}>Confirmed</button>
-                <button onClick={() => setFilterStatus('cancelled')} className={filterStatus === 'cancelled' ? 'active-filter' : ''}>Cancelled</button>
+                <button onClick={() => setFilterStatus('all')} className={filterStatus === 'all' ? 'active-filter' : ''}>Tất cả</button>
+                <button onClick={() => setFilterStatus('expired')} className={filterStatus === 'expired' ? 'active-filter' : ''}>Đã sử dụng</button>
+                <button onClick={() => setFilterStatus('pending')} className={filterStatus === 'pending' ? 'active-filter' : ''}>Chờ xác nhận</button>
+                <button onClick={() => setFilterStatus('confirmed')} className={filterStatus === 'confirmed' ? 'active-filter' : ''}>Đã xác nhận</button>
+                <button onClick={() => setFilterStatus('cancelled')} className={filterStatus === 'cancelled' ? 'active-filter' : ''}>Đã hủy</button>
             </div>
 
             {currentBookings.length === 0 ? (
-                <p>No bookings found matching your search criteria.</p>
+                <p>Không tìm thấy lịch sử đặt phòng phù hợp.</p>
             ) : (
                 currentBookings.map((booking, index) => {
                     const accommodationData = accommodations.find(accommodation => accommodation._id === booking.accommodationId);
@@ -135,24 +134,23 @@ const MyBooking = ({ send }) => {
                             {roomInfo && <img src={`${url}/images/${roomInfo.images[0]}`} alt={`${roomInfo.nameRoomType}`} className="hotel-img" />}
                             <div className="booking-info">
                                 {accommodationData ? <h3>{accommodationData.name}</h3> : null}
-                                <p><strong>Room Name:</strong> {roomInfo ? roomInfo.nameRoomType : "N/A"}</p>
-                                <p><strong>Booking Date:</strong> {new Date(booking.createdAt).toLocaleDateString()}</p>
-                                <p><strong>Start Date:</strong> {new Date(booking.checkInDate).toLocaleDateString()}</p>
-                                <p><strong>End Date:</strong>{new Date(booking.checkOutDate).toLocaleDateString()}</p>
-                                <p><strong>Nights:</strong> {booking.duration}</p>
-                                <p><strong>Price per Night:</strong> {roomInfo ? roomInfo.pricePerNight : "N/A"} VND</p>
-                                <p><strong>Taxes: </strong> Include VAT 8% - {booking.totalAmount * 0.08} VND</p>
-                                <p><strong>Total Price:</strong> {booking.totalAmount + booking.totalAmount * 0.08} VND</p>
-                                <p><strong>Services:</strong> {roomInfo ? roomInfo.amenities.join(", ") : "N/A"}</p>
-                                <p><strong>Status:</strong> {booking.status === "expired" ? "Expired" : booking.status === "pending" ? "Pending" : booking.status === "cancelled" ? "Cancelled" : "Confirmed"}</p>
-                                {booking.status === "cancelled" && <p style={{ color: "red" }}><strong>Reason:</strong> {booking.cancellationReason}</p>}
+                                <p><strong>Tên phòng:</strong> {roomInfo ? roomInfo.nameRoomType : "N/A"}</p>
+                                <p><strong>Ngày đặt:</strong> {new Date(booking.createdAt).toLocaleDateString()}</p>
+                                <p><strong>Ngày nhận phòng:</strong> {new Date(booking.checkInDate).toLocaleDateString()}</p>
+                                <p><strong>Ngày trả phòng:</strong> {new Date(booking.checkOutDate).toLocaleDateString()}</p>
+                                <p><strong>Số đêm:</strong> {booking.duration}</p>
+                                <p><strong>Giá mỗi đêm:</strong> {roomInfo ? roomInfo.pricePerNight : "N/A"} VND</p>
+                                <p><strong>Thuế VAT 8%:</strong> {booking.totalAmount * 0.08} VND</p>
+                                <p><strong>Tổng giá:</strong> {booking.totalAmount + booking.totalAmount * 0.08} VND</p>
+                                <p><strong>Dịch vụ:</strong> {roomInfo ? roomInfo.amenities.join(", ") : "N/A"}</p>
+                                <p><strong>Trạng thái:</strong> {booking.status === "expired" ? "Đã hết hạn" : booking.status === "pending" ? "Chờ xác nhận" : booking.status === "cancelled" ? "Đã hủy" : "Đã xác nhận"}</p>
                             </div>
                             <div className="booking-actions">
                                 {booking.status === "expired" && (
-                                    <button className="review-btn" onClick={() => handleReviewClick(booking)}>Review</button>
+                                    <button className="review-btn" onClick={() => handleReviewClick(booking)}>Viết đánh giá</button>
                                 )}
                                 {(booking.status === "confirmed" || booking.status === "pending") && (
-                                    <button className="cancel-btn" onClick={() => handleCancelClick(booking)}>Cancel</button>
+                                    <button className="cancel-btn" onClick={() => handleCancelClick(booking)}>Hủy đặt phòng</button>
                                 )}
                             </div>
                         </div>
@@ -160,44 +158,25 @@ const MyBooking = ({ send }) => {
                 })
             )}
 
-            {/* Phân trang */}
             <div className="pagination">
                 <button
                     className="pagination-btn"
                     onClick={() => handlePageClick(currentPage - 1)}
                     disabled={currentPage === 1}
                 >
-                    Previous
+                    Trước
                 </button>
                 <span className="pagination-info">
-                    Page {currentPage} of {totalPages}
+                    Trang {currentPage} / {totalPages}
                 </span>
                 <button
                     className="pagination-btn"
                     onClick={() => handlePageClick(currentPage + 1)}
                     disabled={currentPage === totalPages || totalPages === 0}
                 >
-                    Next
+                    Tiếp
                 </button>
             </div>
-
-            {showReviewPopup && selectedBooking && (
-                <div className="popup">
-                    <div className="popup-content" ref={reviewPopupRef}>
-                        <button className="close-popup" onClick={handleCloseReviewPopup}>×</button>
-                        <Review type="accommodation" booking={selectedBooking} onClose={handleCloseReviewPopup}  id={selectedBooking.accommodationId} />
-                    </div>
-                </div>
-            )}
-
-            {showCancelPopup && selectedBooking && (
-                <div className="popup">
-                    <div className="popup-content" ref={cancelPopupRef}>
-                        <button className="close-popup" onClick={handleCloseCancelPopup}>×</button>
-                        <CancelBooking booking={selectedBooking} onClose={handleCloseCancelPopup}/>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
