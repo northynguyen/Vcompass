@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 const SearchSchedule = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { url } = useContext(StoreContext);
+  const { url, user } = useContext(StoreContext);
   const hasSearchedRef = useRef(false);
   const [schedules, setSchedules] = useState([]);
   const [addressFilter, setAddressFilter] = useState("");
@@ -48,8 +48,30 @@ const SearchSchedule = () => {
           url + "/api/schedule/getAllSchedule?limit=100"
         );
         if (response.data.success) {
-          setSchedules(response.data.schedules); // Ensure correct response property
-          setFilteredSchedules(response.data.schedules);
+          if (user) {
+            setSchedules(
+                response.data.schedules.filter(
+                    (schedule) => schedule.isPublic === true && schedule.idUser !== user._id
+                )
+            );
+            setFilteredSchedules(
+                response.data.schedules.filter(
+                    (schedule) => schedule.isPublic === true && schedule.idUser !== user._id
+                )
+            )
+        } else {
+            setSchedules(
+                response.data.schedules.filter(
+                    (schedule) => schedule.isPublic === true
+                )
+            );
+            setFilteredSchedules(
+                response.data.schedules.filter(
+                    (schedule) => schedule.isPublic === true
+                )
+            )
+        }
+        
         } else {
           console.error("Failed to fetch schedules:", response.data.message);
         }
