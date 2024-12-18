@@ -126,7 +126,7 @@ const DashBoard = () => {
   }, [token, url]);
 
   const calculateUnAccept = () => {
-    return accommodations.filter(accommodation => accommodation.status === 'unActive').length;
+    return accommodations.filter(accommodation => accommodation.status === 'pending').length + foodServices.filter(foodService => foodService.status === 'pending').length;
   }
   const calculateMonthlyRegistrations = (data, labelName) => {
     if (!data || data.length === 0) return { labels: [], datasets: [] };
