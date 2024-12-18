@@ -8,14 +8,21 @@ import partnerModel from "../models/partner.js";
 import adminModel from "../models/admin.js";
 import userModel from "../models/user.js";
 import mongoose, { model } from 'mongoose';
-
+import {uploadToCloudinaryV2} from '../controllers/videoController.js';
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import cloudinary from 'cloudinary';
 
 import fs from 'fs';
 import path from 'path';
 import Attraction from '../models/attraction.js'; // Import Attraction
 import Accommodation from '../models/accommodation.js'; // Import Accommodation
 import FoodService from '../models/foodService.js'; // Import FoodService
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
 
 export const getUserFavoritesWithDetails = async (req, res) => {
   const { userId, type,city  } = req.query;
@@ -386,13 +393,14 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
   const { id } = req.params;
   const updates = {};
   const isUpdateStatus = status !== undefined;
+
   try {
     // Lấy thông tin người dùng hiện tại để kiểm tra ảnh cũ
     const currentUser = await (
       type === 'user' ? userModel.findById(id) :
-        type === 'partner' ? partnerModel.findById(id) :
-          type === 'admin' ? adminModel.findById(id) :
-            null
+      type === 'partner' ? partnerModel.findById(id) :
+      type === 'admin' ? adminModel.findById(id) :
+      null
     );
 
     if (!currentUser) {
@@ -400,18 +408,26 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
     }
 
     if (req.files && req.files.image && req.files.image.length > 0) {
-      const avatarFile = req.files.image[0].filename;
-      if (avatarFile) {
-        const oldAvatarPath = `uploads/${currentUser.avatar}`;
+      const avatarBuffer = req.files.image[0].buffer;
 
-        fs.unlink(oldAvatarPath, (err) => {
-          if (err) {
-            console.error(`Failed to delete old avatar: ${err}`);
-            // Tiếp tục cập nhật dù không xóa được ảnh cũ
-          }
-        });
-        console.log("avatarFile", avatarFile);
-        updates.avatar = avatarFile;
+      if (currentUser.avatar) {
+        try {
+          await cloudinary.v2.uploader.destroy(currentUser.avatar, { resource_type: 'image' });
+        } catch (error) {
+          console.error('Error deleting old avatar:', error);
+        }
+      }
+
+      try {
+        const result = await uploadToCloudinaryV2(avatarBuffer, 'avatars', [
+          { width: 800, crop: 'scale' },
+          { quality: 'auto' },
+        ]);
+        console.log(result);
+        updates.avatar = result.secure_url;
+      } catch (error) {
+        console.error('Error uploading new avatar:', error);
+        return res.status(500).json({ success: false, message: 'Error uploading avatar', error: error.message });
       }
     }
 
@@ -433,10 +449,11 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
     // Cập nhật thông tin người dùng
     const updatedUser = await (
       type === 'user' ? userModel.findByIdAndUpdate(id, updates, { new: true }) :
-        type === 'partner' ? partnerModel.findByIdAndUpdate(id, updates, { new: true }) :
-          type === 'admin' ? adminModel.findByIdAndUpdate(id, updates, { new: true }) :
-            null
+      type === 'partner' ? partnerModel.findByIdAndUpdate(id, updates, { new: true }) :
+      type === 'admin' ? adminModel.findByIdAndUpdate(id, updates, { new: true }) :
+      null
     );
+
     if (!updatedUser) {
       return res.status(404).json({ success: false, message: `${type} not found.` });
     }
@@ -447,14 +464,15 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Update successful.",
+      message: 'Update successful.',
       user: updatedUser,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "Server error occurred." });
+    res.status(500).json({ success: false, message: 'Server error occurred.' });
   }
 };
+
 
 const addtoWishlist = async (req, res) => {
   const { userId } = req.params; // Lấy userId từ params

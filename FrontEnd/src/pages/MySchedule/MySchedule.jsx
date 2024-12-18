@@ -270,7 +270,7 @@ const MySchedule = ({setShowLogin}) => {
               >
                 <div className="schedule-header">
                   <img
-                    src={schedule.image ? `${url}/${schedule.image}` : "https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"}
+                    src={schedule.imgSrc[0] && schedule.imgSrc[0].includes("http") ? schedule.imgSrc[0] : schedule.imgSrc[0] ? `${url}/images/${schedule.imgSrc[0]}` : "https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"}
                     alt={schedule.scheduleName}
                   />
                   <div className="schedule-date">

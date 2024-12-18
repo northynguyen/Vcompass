@@ -1,13 +1,14 @@
 import express from "express";
-import { uploadVideo, upload , deleteVideo} from "../controllers/videoController.js";
+import { uploadVideo, upload, deleteVideo, uploadImage, deleteImage } from "../controllers/videoController.js";
 
 const videoRouter = express.Router();
 
-// Route upload video
 videoRouter.post("/upload", upload.single("video"), uploadVideo);
 
-// Route delete video
 videoRouter.delete("/", deleteVideo);
 
+videoRouter.post("/upload-image", upload.single("image"), uploadImage);
+
+videoRouter.delete("/delete-image", deleteImage);
 
 export default videoRouter;

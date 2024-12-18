@@ -185,8 +185,7 @@ const Header = () => {
                 {notifications.map((notification, index) => (
                   <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}`} onClick={() => { notification.status === 'unread' && handleNotificationClick(notification._id) }}>
                     <div className="notification-avatar">
-                      <img src={notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
-
+                      <img src={notification.idSender && notification.idSender.avatar ? notification.idSender.avatar : notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
                     </div>
                     <div className="notification-content">
                       <p><strong>{notification.idSender ? notification.idSender.name : "Admin"}</strong></p>
@@ -211,7 +210,7 @@ const Header = () => {
 
         <div className="user-profile">
           <img
-            src={admin.avatar ? `${url}/images/${admin.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+            src={admin.avatar && admin.avatar.includes('http') ? admin.avatar : admin.avatar? `${url}/images/${admin.avatar}`  : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
             alt="User Avatar"
             className="user-avatar"
             onClick={toggleProfilePopup} // Toggle profile popup on click
@@ -222,22 +221,6 @@ const Header = () => {
           </div>
         </div>
 
-        {/* //         {admin &&
-//           <div className="user-profile">
-//             <img
-//               src={admin.avatar}
-//               alt="User Avatar"
-//               className="user-avatar"
-//               onClick={toggleProfilePopup} // Toggle profile popup on click
-//             />
-//             <div className="user-info">
-//               <p>{admin.name}</p>
-//               <span>Admin</span>
-//             </div>
-//           </div>} */}
-
-
-        {/* Profile Popup Menu */}
         {isProfilePopupVisible && (
           <div className="profile-popup" ref={menuRef}>
             <ul className="menu">

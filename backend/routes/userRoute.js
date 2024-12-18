@@ -1,7 +1,7 @@
 // routes/authRoutes.js
 
 import express from "express";
-import { upload } from "../middleware/upload.js";
+import { upload ,uploadAvatar} from "../middleware/upload.js";
 import authMiddleware from './../middleware/auth.js';
 
 import {
@@ -43,9 +43,9 @@ userRoutes.get('/users/', getAllUsers);
 userRoutes.get('/partners/', getAllPartners);
 
 //update user
-userRoutes.put('/partners/:id', upload.fields([{ name: "image", maxCount: 1 }]), updateUserOrPartnerOrAdmin);
-userRoutes.put('/users/:id', upload.fields([{ name: "image", maxCount: 1 }]), updateUserOrPartnerOrAdmin);
-userRoutes.put('/admin/:id', upload.fields([{ name: "image", maxCount: 1 }]), updateUserOrPartnerOrAdmin);
+userRoutes.put('/partners/:id',uploadAvatar, updateUserOrPartnerOrAdmin);
+userRoutes.put('/users/:id',uploadAvatar, updateUserOrPartnerOrAdmin);
+userRoutes.put('/admin/:id',uploadAvatar, updateUserOrPartnerOrAdmin);
 
 userRoutes.post('/admin/getbyid', authMiddleware, getAdminById);
 userRoutes.post('/partner/getbyid', authMiddleware, getPartnerById);

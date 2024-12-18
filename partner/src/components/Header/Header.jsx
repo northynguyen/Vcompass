@@ -226,7 +226,7 @@ const Header = () => {
                 {notifications.map((notification, index) => (
                   <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}`} onClick={() => { notification.status === 'unread' && handleNotificationClick(notification._id) }}>
                     <div className="notification-avatar">
-                      <img src={notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
+                      <img src={notification.idSender && notification.idSender.avatar.includes("http") ? notification.idSender.avatar : notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
 
                     </div>
                     <div className="notification-content">
@@ -252,7 +252,7 @@ const Header = () => {
           user &&
           <div className="user-profile">
             <img
-              src={`${url}/images/${user.avatar}`}
+              src={` ${user.avatar && user.avatar.includes('http') ? user.avatar : user.avatar? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}` }
               alt="User Avatar"
               className="user-avatar"
               onClick={toggleProfilePopup} // Toggle profile popup on click

@@ -171,7 +171,7 @@ const MyWishList = () => {
                                         // Hiển thị ảnh nếu có imgSrc
                                         <img
                                             className="content-image"
-                                            src={`${url}/images/${schedule.imgSrc[0]}`}
+                                            src={ schedule.imgSrc[0].includes("http") ? schedule.imgSrc[0] : `${url}/images/${schedule.imgSrc[0]}`}
                                             alt="Schedule Image"
                                         />
                                         ) : schedule.videoSrc ? (

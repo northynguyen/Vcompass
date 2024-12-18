@@ -44,7 +44,6 @@ const StoreContextProvider = (props) => {
     url,
     token,
     setToken,
-        // Log error if request fails
     user,
     setUser,
     accommodations

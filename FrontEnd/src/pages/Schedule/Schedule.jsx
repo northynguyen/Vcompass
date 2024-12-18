@@ -565,15 +565,15 @@ const InforScheduleMedal = ({
   // Hàm upload ảnh lên server
   const uploadImages = async (imgFiles) => {
     const formData = new FormData();
-    formData.append('images', imgFiles);
+    formData.append('image', imgFiles);
   
     try {
-      const response = await axios.post(`${url}/api/schedule/upload`, formData, {
+      const response = await axios.post(`${url}/api/videos/upload-image`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
   
       if (response.data.success) {
-        return response.data.files.map((file) => file.filename); 
+        return response.data.url;
       } else {
         throw new Error(response.data.message);
       }
@@ -587,7 +587,7 @@ const InforScheduleMedal = ({
   const deleteOldMedia = async (media) => {
     if (media && media.length > 0) {
       try {
-        const response = await axios.delete(`${url}/api/deleteImage`, {
+        const response = await axios.delete(`${url}/api/videos/delete-image`, {
           data: { imagePath: media },
         });
 
@@ -1284,10 +1284,10 @@ const Schedule = ({ mode }) => {
         <div className="schedule-container">
         <div className="schedule-image">
           {inforSchedule.imgSrc && inforSchedule.imgSrc[0] ? (
-            // Nếu có ảnh trong imgSrc, hiển thị ảnh
+            
             <img
               className="custom-schedule-image"
-              src={`${url}/images/${inforSchedule.imgSrc[0]}`}
+              src={ inforSchedule.imgSrc[0] && inforSchedule.imgSrc[0].includes("http") ? inforSchedule.imgSrc[0] : `${url}/images/${inforSchedule.imgSrc[0]}`}
               alt="Schedule Image"
             />
           ) : inforSchedule.videoSrc ? (

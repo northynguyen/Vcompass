@@ -137,7 +137,7 @@ const MyProfile = ({ admin, setAdmin }) => {
             </div>
             <div className="avatar-section">
                 <img
-                    src={selectedAvatar ? URL.createObjectURL(selectedAvatar) : `${url}/images/${admin.avatar}`}
+                    src={selectedAvatar ? URL.createObjectURL(selectedAvatar) : admin.avatar &&  admin.avatar.includes("http") ? admin.avatar : `${url}/images/${admin.avatar}`}
                     alt="Ảnh đại diện"
                     className="avatar-image"
                 />
