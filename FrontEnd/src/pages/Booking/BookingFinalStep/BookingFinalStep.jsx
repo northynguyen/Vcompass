@@ -103,7 +103,7 @@ const BookingFinalStep = ({bookingDetails}) => {
                         child: bookingDetails.bookingInfo.children
                     },
                     totalAmount: bookingDetails.bookingInfo.totalPrice,
-                    specialRequest: "Nhận phòng muộn", // You can change this based on user input if needed
+                    specialRequest: bookingDetails.bookingInfo.specialRequest,
                     guestInfo: {
                         name: bookingDetails.bookingInfo.firstName + " " + bookingDetails.bookingInfo.lastName, // Replace with actual guest name
                         email: bookingDetails.bookingInfo.email, // Replace with actual guest email

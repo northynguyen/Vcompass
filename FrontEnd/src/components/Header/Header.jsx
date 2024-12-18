@@ -304,7 +304,7 @@ const Header = ({ setShowLogin }) => {
                   {notifications.map((notification, index) => (
                     <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}`} onClick={() => { notification.status === 'unread' && handleNotificationClick(notification._id) }}>
                       <div className="notification-avatar">
-                        <img src={notification.idSender && notification.idSender.avatar && notification.idSender.avatar.includes('http') ? notification.idSender.avatar :  notification.idSender.avatar ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
+                        <img src={notification.idSender && notification.idSender.avatar ? notification.idSender.avatar : notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
                       </div>
                       <div className="notification-content">
                         <p><strong>{notification.idSender ? notification.idSender.name : "Admin"}</strong></p>

@@ -259,7 +259,7 @@ const DashBoard = () => {
         <div className="card">
           <FaHotel className="card-red-icon" />
           <div className="card-details" >
-            <p className="red-card-content">{accommodations ? calculateUnAccept() : "Đang tải"}</p>
+            <p className="red-card-content">{accommodations && foodServices ? calculateUnAccept() : "Đang tải"}</p>
             <h3 className="red-card-title" onClick={() => handleNavigation('/services')}>Chưa xét duyệt</h3>
           </div>
         </div>
