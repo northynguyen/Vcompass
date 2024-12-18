@@ -3,7 +3,7 @@ import { StoreContext } from "../../Context/StoreContext";
 import PlaceReview from "../PlaceReview/PlaceReview";
 import "./Review.css";
 
-const Review = ({ type, id, booking, onClose  }) => {
+const Review = ({ type, id, booking, onClose }) => {
     const [rating, setRating] = useState({
         overall: 0,
         room: 0,
@@ -15,11 +15,9 @@ const Review = ({ type, id, booking, onClose  }) => {
     const { url, user } = useContext(StoreContext);
     const [comments, setComments] = useState("");
 
-    // Tạo ref cho phần reviews
     const reviewsRef = useRef(null);
 
     useEffect(() => {
-        // Cuộn đến phần reviews khi component được mount
         if (reviewsRef.current) {
             reviewsRef.current.scrollIntoView({ behavior: "smooth" });
         }
@@ -40,47 +38,50 @@ const Review = ({ type, id, booking, onClose  }) => {
         e.preventDefault();
         console.log("Rating:", rating);
         console.log("Comments:", comments);
-        const href = type === "accommodation" ? `${url}/api/accommodations/addReview/${id}` : type === "food" ? `${url}/api/foodservices/addReview/${id}` : `${url}/api/attractions/addReview/${id}`;
+        const href =
+            type === "accommodation"
+                ? `${url}/api/accommodations/addReview/${id}`
+                : type === "food"
+                ? `${url}/api/foodservices/addReview/${id}`
+                : `${url}/api/attractions/addReview/${id}`;
 
         try {
-            const response = await fetch(
-                href,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        idUser: user._id,
-                        userName: user?.name || user.email,
-                        userImage: user.image || "https://via.placeholder.com/150",
-                        rate: rating.overall,
-                        content: comments,
-                        serviceRate: rating.service,
-                        roomRate: rating?.room || 0,
-                        foodRate: rating?.food || 0,
-                        attractionRate: rating?.location || 0,
-                        duration: booking?.duration || null,
-                        roomType: booking?.roomType || null,
-                        numPeople: booking ? `${booking.numberOfGuests.adult} adults - ${booking.numberOfGuests.child} children` : null,
-                    }),
-                }
-            );
+            const response = await fetch(href, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    idUser: user._id,
+                    userName: user?.name || user.email,
+                    userImage: user.image || "https://via.placeholder.com/150",
+                    rate: rating.overall,
+                    content: comments,
+                    serviceRate: rating.service,
+                    roomRate: rating?.room || 0,
+                    foodRate: rating?.food || 0,
+                    attractionRate: rating?.location || 0,
+                    duration: booking?.duration || null,
+                    roomType: booking?.roomType || null,
+                    numPeople: booking
+                        ? `${booking.numberOfGuests.adult} người lớn - ${booking.numberOfGuests.child} trẻ em`
+                        : null,
+                }),
+            });
 
             const responseData = await response.json();
 
             if (response.ok) {
-                console.log("Review added successfully");
+                console.log("Đánh giá đã được gửi thành công");
                 alert(responseData.message);
             } else {
                 alert(responseData.message);
             }
         } catch (error) {
-            console.error("Error adding review:", error);
-            alert("An error occurred while submitting the review.");
+            console.error("Lỗi khi gửi đánh giá:", error);
+            alert("Đã xảy ra lỗi khi gửi đánh giá.");
         }
 
-        // Reset form after submission
         setRating({
             overall: 0,
             room: 0,
@@ -93,17 +94,15 @@ const Review = ({ type, id, booking, onClose  }) => {
         onClose();
     };
 
-
     return (
         <div className="review-container">
-            {/* Gán ref vào PlaceReview hoặc một div bao quanh */}
             <div>
                 <PlaceReview id={id} type={type} />
             </div>
-            <h3>Review Your Stay</h3>
+            <h3>Đánh giá của bạn</h3>
             <form onSubmit={handleSubmit} ref={reviewsRef}>
                 <div className="rating-group">
-                    <label>Overall Rating:</label>
+                    <label>Đánh giá tổng quan:</label>
                     {[1, 2, 3, 4, 5].map((star) => (
                         <span
                             key={star}
@@ -120,7 +119,7 @@ const Review = ({ type, id, booking, onClose  }) => {
                 </div>
                 {type === "accommodation" && (
                     <div className="rating-group">
-                        <label>Room Rating:</label>
+                        <label>Đánh giá phòng:</label>
                         {[1, 2, 3, 4, 5].map((star) => (
                             <span
                                 key={star}
@@ -139,7 +138,7 @@ const Review = ({ type, id, booking, onClose  }) => {
 
                 {type === "food" && (
                     <div className="rating-group">
-                        <label>Food Rating:</label>
+                        <label>Đánh giá món ăn:</label>
                         {[1, 2, 3, 4, 5].map((star) => (
                             <span
                                 key={star}
@@ -158,7 +157,7 @@ const Review = ({ type, id, booking, onClose  }) => {
 
                 {type === "attraction" && (
                     <div className="rating-group">
-                        <label>Location Rating:</label>
+                        <label>Đánh giá địa điểm:</label>
                         {[1, 2, 3, 4, 5].map((star) => (
                             <span
                                 key={star}
@@ -176,7 +175,7 @@ const Review = ({ type, id, booking, onClose  }) => {
                 )}
 
                 <div className="rating-group">
-                    <label>Service Rating:</label>
+                    <label>Đánh giá dịch vụ:</label>
                     {[1, 2, 3, 4, 5].map((star) => (
                         <span
                             key={star}
@@ -193,11 +192,11 @@ const Review = ({ type, id, booking, onClose  }) => {
                 </div>
 
                 <div className="comment-section">
-                    <label>Comments:</label>
+                    <label>Bình luận:</label>
                     <textarea
                         value={comments}
                         onChange={handleCommentsChange}
-                        placeholder="Write your review here..."
+                        placeholder="Viết đánh giá của bạn tại đây..."
                         required
                         style={{
                             width: "100%",
@@ -209,7 +208,7 @@ const Review = ({ type, id, booking, onClose  }) => {
                 </div>
 
                 <button type="submit" className="submit-btn">
-                    Submit Review
+                    Gửi đánh giá
                 </button>
             </form>
         </div>

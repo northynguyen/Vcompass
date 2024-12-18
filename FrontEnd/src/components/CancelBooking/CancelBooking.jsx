@@ -1,6 +1,4 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-// src/components/CancelBooking/CancelBooking.js
+
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { StoreContext } from '../../Context/StoreContext';
 import './CancelBooking.css';
@@ -22,7 +20,7 @@ const CancelBooking = ({ booking, onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         try {
             setIsLoading(true);
             const response = await fetch(`${url}/api/bookings/${booking._id}/cancel`, {
@@ -36,66 +34,65 @@ const CancelBooking = ({ booking, onClose }) => {
                     otherReasons
                 }),
             });
-    
+
             const data = await response.json();
             if (data.success) {
                 setIsLoading(false);
-                toast.success('Booking canceled successfully!');
+                toast.success('Hủy đặt phòng thành công!');
                 setTimeout(() => {
                     onClose();
                 }, 1000);
             } else {
                 setIsLoading(false);
-                console.error('Cancellation failed:', data.message);
+                console.error('Hủy không thành công:', data.message);
             }
         } catch (error) {
             setIsLoading(false);
-            console.error('Error canceling booking:', error);
+            console.error('Lỗi khi hủy đặt phòng:', error);
         }
     };
 
     return (
-       
         <div className="cancel-booking">
-            <h3>Cancel Your Booking at {booking.hotel}</h3>
+            <h3>Hủy đặt phòng tại {booking.hotel}</h3>
             <form onSubmit={handleSubmit} ref={formRef}>
                 <div className="confirmation">
-                    <p>Are you sure you want to cancel this booking?</p>
+                    <p>Bạn có chắc chắn muốn hủy đặt phòng này không?</p>
                 </div>
 
                 <div className="rating-group">
-                    <label>Reason for Cancellation:</label>
+                    <label>Lý do hủy:</label>
                     <select value={reason} onChange={(e) => setReason(e.target.value)} required>
-                        <option value="">Select a reason</option>
-                        <option value="Change of plans">Change of plans</option>
-                        <option value="Found a better price">Found a better price</option>
-                        <option value="Unsatisfied with the service">Unsatisfied with the service</option>
-                        <option value="Other">Other</option>
+                        <option value="">Chọn lý do</option>
+                        <option value="Change of plans">Thay đổi kế hoạch</option>
+                        <option value="Found a better price">Tìm được giá tốt hơn</option>
+                        <option value="Unsatisfied with the service">Không hài lòng với dịch vụ</option>
+                        <option value="Other">Khác</option>
                     </select>
                 </div>
 
                 {reason === 'Other' && (
                     <div className="rating-group">
-                        <label>Please specify:</label>
-                        <input 
-                            type="text" 
-                            value={otherReasons} 
-                            onChange={(e) => setOtherReasons(e.target.value)} 
-                            placeholder="Your reason here..."
+                        <label>Vui lòng mô tả chi tiết:</label>
+                        <input
+                            type="text"
+                            value={otherReasons}
+                            onChange={(e) => setOtherReasons(e.target.value)}
+                            placeholder="Lý do của bạn..."
                         />
                     </div>
                 )}
 
                 <div className="comment-section">
-                    <label>Additional Comments:</label>
-                    <textarea 
-                        value={additionalComments} 
-                        onChange={(e) => setAdditionalComments(e.target.value)} 
-                        placeholder="Any additional feedback..."
+                    <label>Bình luận bổ sung:</label>
+                    <textarea
+                        value={additionalComments}
+                        onChange={(e) => setAdditionalComments(e.target.value)}
+                        placeholder="Nhập ý kiến bổ sung của bạn..."
                     />
                 </div>
 
-                <button type="submit" className="submit-btn">Confirm Cancellation</button>
+                <button type="submit" className="submit-btn">Xác nhận hủy</button>
             </form>
 
             {isLoading && (
