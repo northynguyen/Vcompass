@@ -6,6 +6,30 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+.user-review-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+.existing-response {
+  padding: 10px;
+  background-color: #f0f8ff;
+  border-left: 3px solid #007bff;
+  border-radius: 5px;
+  font-size: 0.95em;
+}
+.response-time {
+  font-size: 13px;
+  margin-top: 5px !important;
+  color: gray;
+}
+
+.existing-response p {
+  margin: 0;
+}
 
 .average-rating {
   display: flex;
@@ -40,13 +64,13 @@
 .review-card {
   display: flex;
   align-items: flex-start;
-  gap: 20px;
   padding: 20px;
   border-radius: 8px;
   background-color: #f9f9f9;
   border: 1px solid #e0e0e0;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   transition: box-shadow 0.3s ease;
+  flex-direction: column;
 }
 
 .review-card:hover {

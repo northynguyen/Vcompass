@@ -10,13 +10,14 @@ import {
   Tooltip,
 } from 'chart.js'; // Import necessary chart components
 import { useContext, useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import { FaHotel, FaUmbrellaBeach, FaUsers } from 'react-icons/fa';
 import { FaBuildingUser } from "react-icons/fa6";
 import { MdNoFood } from "react-icons/md";
 import ReactLoading from 'react-loading';
 import { StoreContext } from "../../Context/StoreContext";
-import './DashBoard.css';
+import './Dashboard.css';
 
 // Register the components
 ChartJS.register(
@@ -39,6 +40,12 @@ const DashBoard = () => {
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [isPartnerLoading, setIsPartnerLoading] = useState(true);
   const [chartData, setChartData] = useState();
+  const navigate = useNavigate();
+  const handleNavigation = (path) => {
+    if (location.pathname !== path) {
+        navigate(path);
+    }
+};
   useEffect(() => {
     const fetchAccommodations = async () => {
       try {
@@ -119,7 +126,7 @@ const DashBoard = () => {
   }, [token, url]);
 
   const calculateUnAccept = () => {
-    return accommodations.filter(accommodation => accommodation.status === 'unActive').length;
+    return accommodations.filter(accommodation => accommodation.status === 'pending').length + foodServices.filter(foodService => foodService.status === 'pending').length;
   }
   const calculateMonthlyRegistrations = (data, labelName) => {
     if (!data || data.length === 0) return { labels: [], datasets: [] };
@@ -129,7 +136,7 @@ const DashBoard = () => {
     const labels = [];
     const counts = [];
     let currentDate = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
-  
+
     while (currentDate <= maxDate) {
       labels.push(
         `${currentDate.toLocaleString("default", { month: "long" })} ${currentDate.getFullYear()}`
@@ -137,7 +144,7 @@ const DashBoard = () => {
       counts.push(0);
       currentDate.setMonth(currentDate.getMonth() + 1);
     }
-  
+
     // Đếm số lượng theo tháng
     data.forEach((item) => {
       const itemDate = new Date(item.createdAt);
@@ -147,7 +154,7 @@ const DashBoard = () => {
         minDate.getMonth();
       counts[monthIndex]++;
     });
-  
+
     return {
       labels,
       datasets: [
@@ -162,7 +169,7 @@ const DashBoard = () => {
     };
   };
   useEffect(() => {
-    if (!isPartnerLoading || !isUserLoading){
+    if (!isPartnerLoading || !isUserLoading) {
       setChartData({
         labels: calculateMonthlyRegistrations(users, "Người dùng").labels,
         datasets: [
@@ -251,9 +258,9 @@ const DashBoard = () => {
         </div>
         <div className="card">
           <FaHotel className="card-red-icon" />
-          <div className="card-details">
-            <p className="red-card-content">{accommodations ? calculateUnAccept(): "Đang tải" }</p>
-            <h3 className="red-card-title">Chưa xét duyệt</h3>
+          <div className="card-details" >
+            <p className="red-card-content">{accommodations && foodServices ? calculateUnAccept() : "Đang tải"}</p>
+            <h3 className="red-card-title" onClick={() => handleNavigation('/services')}>Chưa xét duyệt</h3>
           </div>
         </div>
         <div className="card">
@@ -274,10 +281,12 @@ const DashBoard = () => {
       </div>
 
       {/* Revenue Chart */}
-      <div className="chart-section">
-        <h3>Biểu đồ thống kê người dùng theo tháng</h3>
-        <Line data={chartData} options={options} />
-      </div>
+      {chartData &&
+        <div className="chart-section">
+          <h3>Biểu đồ thống kê người dùng theo tháng</h3>
+          <Line data={chartData} options={options} />
+        </div>
+      }
     </div>
   );
 };

@@ -1,7 +1,7 @@
 // routes/authRoutes.js
 
 import express from "express";
-import { upload } from "../middleware/upload.js";
+import { upload ,uploadAvatar} from "../middleware/upload.js";
 import authMiddleware from './../middleware/auth.js';
 
 import {
@@ -15,10 +15,9 @@ import {
     googleCallback,
     getAllUsers,
     getAllPartners,
-
     updateUserOrPartnerOrAdmin,
     getAdminById, addtoWishlist, getUserFavoritesWithDetails, checkPassword,
-    getPartnerById, getUserById,
+    getPartnerById, getUserById,googleSignIn
 
 } from "../controllers/userController.js";
 
@@ -33,17 +32,20 @@ userRoutes.post("/login/admin", loginAdmin);
 userRoutes.post("/register/admin", registerAdmin);
 
 // Routes cho đăng nhập bằng Google
+userRoutes.get("/login/google", googleSignIn); // Redirect đầu Google
+
+// Routes cho đăng nhập bằng Google
 userRoutes.get("/google", loginWithGoogle); // Redirect đến Google
-userRoutes.get("/google/callback", googleCallback); // Google callback
+userRoutes.get("/auth/google/callback", googleCallback); // Google callback
 
 //Get all users
 userRoutes.get('/users/', getAllUsers);
 userRoutes.get('/partners/', getAllPartners);
 
 //update user
-userRoutes.put('/partners/:id', upload.fields([{ name: "image", maxCount: 1 }]), updateUserOrPartnerOrAdmin);
-userRoutes.put('/users/:id', upload.fields([{ name: "image", maxCount: 1 }]), updateUserOrPartnerOrAdmin);
-userRoutes.put('/admin/:id', upload.fields([{ name: "image", maxCount: 1 }]), updateUserOrPartnerOrAdmin);
+userRoutes.put('/partners/:id',uploadAvatar, updateUserOrPartnerOrAdmin);
+userRoutes.put('/users/:id',uploadAvatar, updateUserOrPartnerOrAdmin);
+userRoutes.put('/admin/:id',uploadAvatar, updateUserOrPartnerOrAdmin);
 
 userRoutes.post('/admin/getbyid', authMiddleware, getAdminById);
 userRoutes.post('/partner/getbyid', authMiddleware, getPartnerById);

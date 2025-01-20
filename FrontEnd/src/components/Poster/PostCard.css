@@ -66,6 +66,7 @@
 }
 
 .content-image {
+  min-height: 280px;
   width: 100%;
   max-height: 300px;
   object-fit: cover;
@@ -510,12 +511,25 @@ label.action-text {
 }
 
 .attractions-list {
-  display: flex;
-  flex-direction: row;
-  gap: 10px; 
-  overflow-x: auto; /* Khoảng cách giữa các thẻ */
+  display: flex; /* Sử dụng flexbox để sắp xếp các phần tử theo hàng ngang */
+  flex-wrap: nowrap; /* Ngăn không cho phần tử bị gãy dòng */
+  gap: 10px; /* Khoảng cách giữa các phần tử */
+  overflow-x: auto; /* Kích hoạt cuộn ngang */
+  -webkit-overflow-scrolling: touch; /* Tăng trải nghiệm cuộn mượt mà trên thiết bị di động */
+  padding: 10px 0; /* Thêm padding để khoảng cách giữa các phần tử tốt hơn */
 }
 
+.attractions-list::-webkit-scrollbar {
+  display: none; 
+
+}
+
+.attractions-list:hover {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 0;
+  cursor: grab;
+}
 .attraction-item {
   display: flex;
   align-items: center;
@@ -527,7 +541,9 @@ label.action-text {
   border-radius: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  min-width: 150px; /* Đảm bảo mỗi item có độ rộng tối thiểu */
 }
+
 
 .attraction-item:hover {
   background-color: #f0f0f0;
@@ -536,8 +552,8 @@ label.action-text {
 }
 
 .attraction-item img {
-  width: 30px; /* Đường kính ảnh */
-  height: 30px;
+  width: 35px; /* Đường kính ảnh */
+  height: 35px;
   object-fit: cover;
   border-radius: 50%; /* Làm tròn ảnh */
   border: 2px solid #ddd;

@@ -6,6 +6,7 @@ import Modal from "react-modal";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { StoreContext } from "../../Context/StoreContext";
+
 import ActivityTime, {
   AccomActivity,
   AttractionActivity,
@@ -286,8 +287,8 @@ const ActivityItem = ({
           response = await fetch(`${url}/api/attractions/${id}`);
           break;
         case "Other":
-          console.log(`${url}/api/schedule/${inforSchedule._id}?activityId=${activity._id}`);
-          response = await fetch(`${url}/api/schedule/${inforSchedule._id}?activityId=${activity._id}`);
+          console.log("id 1111", id);
+          response = await fetch(`${url}/api/schedule/${inforSchedule._id}?activityId=${id}`);
           break;
         default:
           throw new Error("Unknown type");
@@ -307,10 +308,10 @@ const ActivityItem = ({
   };
 
   useEffect(() => {
-    if (activity?.idDestination && activity?.activityType) {
+    if (activity?.idDestination && activity?.activityType  && activity?.activityType!== "Other") {
       fetchData(activity.idDestination, activity.activityType);
     }
-    if (activity?.activityType === "Other") {
+    if ( activity?.activityType === "Other" && activity?._id !== "default-id" && activity?._id !== undefined) {
       fetchData(activity._id, "Other"); 
     }
   }, [activity]);
@@ -564,15 +565,15 @@ const InforScheduleMedal = ({
   // Hàm upload ảnh lên server
   const uploadImages = async (imgFiles) => {
     const formData = new FormData();
-    formData.append('images', imgFiles);
+    formData.append('image', imgFiles);
   
     try {
-      const response = await axios.post(`${url}/api/schedule/upload`, formData, {
+      const response = await axios.post(`${url}/api/videos/upload-image`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
   
       if (response.data.success) {
-        return response.data.files.map((file) => file.filename); 
+        return response.data.url;
       } else {
         throw new Error(response.data.message);
       }
@@ -586,7 +587,7 @@ const InforScheduleMedal = ({
   const deleteOldMedia = async (media) => {
     if (media && media.length > 0) {
       try {
-        const response = await axios.delete(`${url}/api/deleteImage`, {
+        const response = await axios.delete(`${url}/api/videos/delete-image`, {
           data: { imagePath: media },
         });
 
@@ -1055,19 +1056,22 @@ const Schedule = ({ mode }) => {
       setIsSaved((prevState) => !prevState);
     }
   };
+
+  const fetchSchedule = async () => {
+    try {
+      const response = await axios.get(`${url}/api/schedule/${id}`);
+      setInforSchedule(response.data.schedule);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching schedule:", error);
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchSchedule = async () => {
-      try {
-        const response = await axios.get(`${url}/api/schedule/${id}`);
-        setInforSchedule(response.data.schedule);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching schedule:", error);
-        setLoading(false);
-      }
-    };
+    
     fetchSchedule();
-  }, [id]);
+  }, [id ]);
 
   useEffect(() => {
     if (inforSchedule) {
@@ -1085,7 +1089,7 @@ const Schedule = ({ mode }) => {
       if( mode==="edit" && ( !user || inforSchedule.idUser._id !== user._id ))
         {      
           setLoading(false);    
-          window.location.href = "/404";
+          window.location.href = '/404';
         }
       setLoading(false);
     }
@@ -1103,7 +1107,10 @@ const Schedule = ({ mode }) => {
             }
           );
           if (response.data.success) {
+
             console.log("Cập nhật lịch trình thành công:", response.data);
+            
+
           } else {
             console.error(
               "Lỗi khi cập nhật lịch trình:",
@@ -1115,6 +1122,7 @@ const Schedule = ({ mode }) => {
         }
       };
       updateSchedule();
+
     }
   }, [inforSchedule]);
 
@@ -1152,7 +1160,7 @@ const Schedule = ({ mode }) => {
     );
     if (response.data.success) {
       const scheduleId = response.data.schedule._id;
-      navigate(`/schedule-edit/${scheduleId}`);
+      window.location.href= `/schedule-edit/${scheduleId}`;
       toast.success("Lấy thành công");
     } else {
       toast.error(response.data.message);
@@ -1195,7 +1203,7 @@ const Schedule = ({ mode }) => {
     const startDate = new Date(`${yearStart}-${monthStart}-${dayStart}`);
     const endDate = new Date(`${yearEnd}-${monthEnd}-${dayEnd}`);
     const timeDifference = endDate - startDate;
-    const daysDifference = timeDifference / (1000 * 3600 * 24);
+    const daysDifference = timeDifference / (1000 * 3600 * 24) + 1;
     const nights = daysDifference - 1;
     return `${daysDifference} ngày ${nights} đêm`;
   };
@@ -1276,10 +1284,10 @@ const Schedule = ({ mode }) => {
         <div className="schedule-container">
         <div className="schedule-image">
           {inforSchedule.imgSrc && inforSchedule.imgSrc[0] ? (
-            // Nếu có ảnh trong imgSrc, hiển thị ảnh
+            
             <img
               className="custom-schedule-image"
-              src={`${url}/images/${inforSchedule.imgSrc[0]}`}
+              src={ inforSchedule.imgSrc[0] && inforSchedule.imgSrc[0].includes("http") ? inforSchedule.imgSrc[0] : `${url}/images/${inforSchedule.imgSrc[0]}`}
               alt="Schedule Image"
             />
           ) : inforSchedule.videoSrc ? (

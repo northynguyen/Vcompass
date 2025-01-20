@@ -8,7 +8,9 @@ import partnerModel from "../models/partner.js";
 import adminModel from "../models/admin.js";
 import userModel from "../models/user.js";
 import mongoose, { model } from 'mongoose';
-
+import {uploadToCloudinaryV2} from '../controllers/videoController.js';
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import cloudinary from 'cloudinary';
 
 import fs from 'fs';
 import path from 'path';
@@ -16,8 +18,14 @@ import Attraction from '../models/attraction.js'; // Import Attraction
 import Accommodation from '../models/accommodation.js'; // Import Accommodation
 import FoodService from '../models/foodService.js'; // Import FoodService
 
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
+
 export const getUserFavoritesWithDetails = async (req, res) => {
-  const { userId, type } = req.query;
+  const { userId, type,city  } = req.query;
 
   try {
     // Kiểm tra loại hợp lệ
@@ -30,8 +38,8 @@ export const getUserFavoritesWithDetails = async (req, res) => {
     const user = await userModel
       .findById(userId)
       .populate({
-        path: `favorites.${type}`, // Populate theo type
-        model: getModelByType(type), // Xác định model dựa trên type
+        path: `favorites.${type}`, 
+        model: getModelByType(type), 
       });
 
     if (!user) {
@@ -64,7 +72,7 @@ const getModelByType = (type) => {
 
 // Import passport
 const handlegetInfoById = async (req, res, model) => {
-  const id = req.params.id;
+  const id = req.params.id? req.params.id : req.body.userId;
   try {
     const user = await model.findById(id);
     if (!user) {
@@ -112,7 +120,13 @@ const handleLogin = async (req, res, model, requiredRole = null) => {
       return res.json({ success: false, message: "Mật khẩu không chính xác." });
     }
 
-    // Create JWT token
+    if (user.status === "blocked") {
+      return res.json({
+        success: false,
+        message: "Tài khoản đã bị khóa , liên hệ admin để giải quyết.",
+      });
+    }
+  
     const token = createToken(user._id);
 
     res.json({ success: true, token, message: "Đăng nhập thành công.", user });
@@ -193,33 +207,70 @@ const loginWithGoogle = async (req, res) => {
   passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
 };
 
-// Google callback route (Redirect-based)
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL:`https://vcompass-backend.onrender.com/auth/google/callback`,
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        // Lấy thông tin người dùng từ profile mà Google trả về
+        const { email, name } = profile._json;
+
+        // Tìm người dùng trong database dựa trên email
+        let user = await userModel.findOne({ email });
+
+        if (!user) {
+          // Nếu người dùng chưa tồn tại, tạo người dùng mới
+          user = await userModel.create({
+            name: name || "Người dùng Google",
+            email: email,
+            password: "", // Không cần mật khẩu khi dùng Google OAuth
+            roles: ["user"], // Đặt vai trò mặc định
+            avatar: profile.photos?.[0]?.value || "default_avatar.png",
+            status: "active",
+          });
+        }
+
+        // Gọi `done` để chuyển tiếp người dùng
+        return done(null, user);
+      } catch (error) {
+        console.error("Google Strategy Error:", error);
+        return done(error, null);
+      }
+    }
+  )
+);
+
+// Cấu hình lưu trữ người dùng vào session
+passport.serializeUser((user, done) => {
+  done(null, user.id); // Chỉ lưu user ID vào session
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await userModel.findById(id);
+    done(null, user); // Gắn lại user vào req.user
+  } catch (error) {
+    done(error, null);
+  }
+});
+
 const googleCallback = async (req, res) => {
   passport.authenticate(
     "google",
-    { failureRedirect: "/login" },
+    { failureRedirect: "https://vcompass.onrender.com/" },
     async (err, user, info) => {
       if (err || !user) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Đăng nhập không thành công." });
+        return res.redirect(`https://vcompass.onrender.com/`)
       }
-
-      // Kiểm tra vai trò của người dùng
-      if (!user.roles.includes("user")) {
-        return res
-          .status(403)
-          .json({
-            success: false,
-            message: "Chỉ người dùng mới có thể đăng nhập.",
-          });
-      }
-
       // Create JWT token
       const token = createToken(user._id);
 
       // Redirect hoặc gửi token về frontend
-      res.redirect(`/auth/success?token=${token}`);
+      res.redirect(`https://vcompass.onrender.com/auth/success?token=${token}`);
     }
   )(req, res);
 };
@@ -341,32 +392,42 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
   const { type, name, password, address, date_of_birth, gender, phone_number, status } = req.body;
   const { id } = req.params;
   const updates = {};
+  const isUpdateStatus = status !== undefined;
+
   try {
     // Lấy thông tin người dùng hiện tại để kiểm tra ảnh cũ
     const currentUser = await (
       type === 'user' ? userModel.findById(id) :
-        type === 'partner' ? partnerModel.findById(id) :
-          type === 'admin' ? adminModel.findById(id) :
-            null
+      type === 'partner' ? partnerModel.findById(id) :
+      type === 'admin' ? adminModel.findById(id) :
+      null
     );
 
     if (!currentUser) {
       return res.status(404).json({ success: false, message: `${type} not found.` });
     }
 
-    if (req.files.image && req.files.image.length > 0) {
-      const avatarFile = req.files.image[0].filename;
-      if (avatarFile) {
-        const oldAvatarPath = `uploads/${currentUser.avatar}`;
+    if (req.files && req.files.image && req.files.image.length > 0) {
+      const avatarBuffer = req.files.image[0].buffer;
 
-        fs.unlink(oldAvatarPath, (err) => {
-          if (err) {
-            console.error(`Failed to delete old avatar: ${err}`);
-            // Tiếp tục cập nhật dù không xóa được ảnh cũ
-          }
-        });
-        console.log("avatarFile", avatarFile);
-        updates.avatar = avatarFile;
+      if (currentUser.avatar) {
+        try {
+          await cloudinary.v2.uploader.destroy(currentUser.avatar, { resource_type: 'image' });
+        } catch (error) {
+          console.error('Error deleting old avatar:', error);
+        }
+      }
+
+      try {
+        const result = await uploadToCloudinaryV2(avatarBuffer, 'avatars', [
+          { width: 800, crop: 'scale' },
+          { quality: 'auto' },
+        ]);
+        console.log(result);
+        updates.avatar = result.secure_url;
+      } catch (error) {
+        console.error('Error uploading new avatar:', error);
+        return res.status(500).json({ success: false, message: 'Error uploading avatar', error: error.message });
       }
     }
 
@@ -388,24 +449,30 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
     // Cập nhật thông tin người dùng
     const updatedUser = await (
       type === 'user' ? userModel.findByIdAndUpdate(id, updates, { new: true }) :
-        type === 'partner' ? partnerModel.findByIdAndUpdate(id, updates, { new: true }) :
-          type === 'admin' ? adminModel.findByIdAndUpdate(id, updates, { new: true }) :
-            null
+      type === 'partner' ? partnerModel.findByIdAndUpdate(id, updates, { new: true }) :
+      type === 'admin' ? adminModel.findByIdAndUpdate(id, updates, { new: true }) :
+      null
     );
+
     if (!updatedUser) {
       return res.status(404).json({ success: false, message: `${type} not found.` });
     }
 
+    if (isUpdateStatus && updatedUser.status === 'blocked') {
+      global.io.emit(`${updatedUser._id}status`, updatedUser);
+    }
+
     res.json({
       success: true,
-      message: "Update successful.",
+      message: 'Update successful.',
       user: updatedUser,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "Server error occurred." });
+    res.status(500).json({ success: false, message: 'Server error occurred.' });
   }
 };
+
 
 const addtoWishlist = async (req, res) => {
   const { userId } = req.params; // Lấy userId từ params

@@ -9,11 +9,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 const SearchSchedule = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { url } = useContext(StoreContext);
+  const { url, user } = useContext(StoreContext);
   const hasSearchedRef = useRef(false);
   const [schedules, setSchedules] = useState([]);
   const [addressFilter, setAddressFilter] = useState("");
-  const [scheduleNameFilter, setScheduleNameFilter] = useState ("");
+  const [scheduleNameFilter, setScheduleNameFilter] = useState("");
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 10000000]);
   const [filters, setFilters] = useState({
@@ -44,10 +44,34 @@ const SearchSchedule = () => {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const response = await axios.get(url + "/api/schedule/getAllSchedule");
+        const response = await axios.get(
+          url + "/api/schedule/getAllSchedule?limit=100"
+        );
         if (response.data.success) {
-          setSchedules(response.data.schedules); // Ensure correct response property
-          setFilteredSchedules(response.data.schedules);
+          if (user) {
+            setSchedules(
+                response.data.schedules.filter(
+                    (schedule) => schedule.isPublic === true && schedule.idUser !== user._id
+                )
+            );
+            setFilteredSchedules(
+                response.data.schedules.filter(
+                    (schedule) => schedule.isPublic === true && schedule.idUser !== user._id
+                )
+            )
+        } else {
+            setSchedules(
+                response.data.schedules.filter(
+                    (schedule) => schedule.isPublic === true
+                )
+            );
+            setFilteredSchedules(
+                response.data.schedules.filter(
+                    (schedule) => schedule.isPublic === true
+                )
+            )
+        }
+        
         } else {
           console.error("Failed to fetch schedules:", response.data.message);
         }
@@ -63,9 +87,13 @@ const SearchSchedule = () => {
     const filtered = schedules.filter((schedule) => {
       const matchesSearch =
         (addressFilter === "" ||
-          schedule.address.toLowerCase().includes(addressFilter.toLowerCase())) &&
+          schedule.address
+            .toLowerCase()
+            .includes(addressFilter.toLowerCase())) &&
         (scheduleNameFilter === "" ||
-          schedule.scheduleName.toLowerCase().includes(scheduleNameFilter.toLowerCase()));
+          schedule.scheduleName
+            .toLowerCase()
+            .includes(scheduleNameFilter.toLowerCase()));
 
       const matchesPrice =
         calculateTotalCost(schedule.activities) >= priceRange[0] &&
@@ -76,12 +104,15 @@ const SearchSchedule = () => {
         schedule.activities.some((day) =>
           day.activity.some(
             (act) =>
-              act.activityType.toLowerCase() === filters.activityType.toLowerCase()
+              act.activityType.toLowerCase() ===
+              filters.activityType.toLowerCase()
           )
         );
 
       const matchesDuration =
-        !filters.days || filters.days === 0 || schedule.numDays === filters.days; // Directly compare as numbers
+        !filters.days ||
+        filters.days === 0 ||
+        schedule.numDays === filters.days; // Directly compare as numbers
 
       const matchesMedia =
         (!filters.hasVideo || schedule.videoSrc) &&
@@ -134,13 +165,12 @@ const SearchSchedule = () => {
       setScheduleNameFilter(name);
       hasSearchedRef.current = true; // Only set this flag once
     }
-  }, [city, name]);  // Trigger only when city or name changes
-  
-  
+  }, [city, name]); // Trigger only when city or name changes
+
   // Re-run search whenever filters change
   useEffect(() => {
     handleSearch();
-  }, [ priceRange, filters]);
+  }, [priceRange, filters]);
 
   return (
     <div className="search-schedule">
@@ -211,8 +241,12 @@ const SearchSchedule = () => {
               <span>Số ngày </span>
               <select
                 value={filters.days}
-                onChange={(e) =>
-                  setFilters({ ...filters, days: parseInt(e.target.value, 10) }) // Convert to number
+                onChange={
+                  (e) =>
+                    setFilters({
+                      ...filters,
+                      days: parseInt(e.target.value, 10),
+                    }) // Convert to number
                 }
               >
                 <option value="0">Tất cả</option>
@@ -317,36 +351,57 @@ const SearchSchedule = () => {
 
         {/* Schedule List */}
         <div>
-        <div className="schedule-list">
-          {currentSchedules.map((schedule, index) => (
-            <PostCard key={index} schedule={schedule} handleScheduleClick={handleScheduleClick} />
-          ))}
-        </div>
+          <div className="schedule-list">
+            {currentSchedules.map((schedule, index) => (
+              <PostCard
+                key={index}
+                schedule={schedule}
+                handleScheduleClick={handleScheduleClick}
+              />
+            ))}
+          </div>
 
-        {currentSchedules.length === 0 && 
-          <div className="no-schedule">
-             <h3>Không tìm thấy lịch trình</h3>
-          </div>}
-        { currentSchedules.length > 0 &&
-        <div className="pagination-container">
-          <button
-            className="prev-button"
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Prev
-          </button>
-          <span>{currentPage}</span>
-          <button
-            className="next-button"
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage * schedulesPerPage >= filteredSchedules.length}
-          >
-            Next
-          </button>
-        </div>}
+          {currentSchedules.length === 0 && (
+            <div className="no-schedule">
+              <h3>Không tìm thấy lịch trình</h3>
+            </div>
+          )}
+          {currentSchedules.length > 0 && (
+            <div className="pagination-container">
+              <button
+                className="prev-button"
+                onClick={() => {
+                  paginate(currentPage - 1), // Cuộn đến vị trí (30px, 30px) với hiệu ứng mượt
+                    window.scrollTo({
+                      top: 10,
+                      left: 10,
+                      behavior: "smooth",
+                    });
+                }}
+                disabled={currentPage === 1}
+              >
+                Trước
+              </button>
+              <span>{currentPage}</span>
+              <button
+                className="next-button"
+                onClick={() => {
+                  paginate(currentPage + 1),
+                    window.scrollTo({
+                      top: 10,
+                      left: 10,
+                      behavior: "smooth",
+                    });
+                }}
+                disabled={
+                  currentPage * schedulesPerPage >= filteredSchedules.length
+                }
+              >
+                Sau
+              </button>
+            </div>
+          )}
         </div>
-        
       </div>
     </div>
   );

@@ -21,6 +21,14 @@ const AccomodationCards = ({ accommodationsFound, startDay, endDay, adults, chil
         window.scrollTo(0, 0);
     };
 
+    const getRatingInfo = (ratings) => {
+        const totalReviews = ratings.length;
+        const averageRating = totalReviews > 0
+            ? (ratings.reduce((sum, r) => sum + (Number(r.rate) || 0), 0) / totalReviews).toFixed(1)
+            : 'Chưa có đánh giá';
+        return { totalReviews, averageRating };
+    };
+
     return (
         <div className="accomodation-cards">
             <h2>Danh sách khách sạn</h2>
@@ -30,7 +38,7 @@ const AccomodationCards = ({ accommodationsFound, startDay, endDay, adults, chil
                     const prices = item.roomTypes.map(room => room.pricePerNight);
                     const minPrice = Math.min(...prices);
                     const maxPrice = Math.max(...prices);
-
+                    const { totalReviews, averageRating } = getRatingInfo(item.ratings);
                     return (
                         <div key={item._id} className="accomodation-card-home">
                             <div className='card-content-container'>
@@ -41,9 +49,14 @@ const AccomodationCards = ({ accommodationsFound, startDay, endDay, adults, chil
                                     <h3 onClick={() => onClick(item._id)}>{item.name}</h3>
                                     <a href={`https://www.google.com/maps/?q=${item.location.latitude},${item.location.longitude}`}>{item.location.address}</a>
                                     <p>{item.description}</p>
+                                    <p className="card-reviews">
+                                        ⭐ {averageRating} ({totalReviews} đánh giá)
+                                    </p>
                                 </div>
-                                <div className='card-content-price'>
-                                    <p>{minPrice} - {maxPrice}</p>
+                                <div className='card-content-price'>    
+                                    <p className="card-range-price">{minPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
+                                    <p className="card-range-price">đến</p>
+                                    <p className="card-range-price">{maxPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                                 </div>
                             </div>
                         </div>

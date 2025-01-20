@@ -72,7 +72,7 @@ const BookingProcess = () => {
 
   return (
     <div className="booking-process-container">
-      {/* Step Status Bar */}
+      {/* Thanh trạng thái bước */}
       <div className="status-bar">
         <div className={`status-item ${currentStep >= 1 ? 'active' : ''}`}>
           <span>1</span>
@@ -88,46 +88,46 @@ const BookingProcess = () => {
         </div>
       </div>
 
-      {/* Booking Step Content */}
+      {/* Nội dung các bước đặt phòng */}
       <div className="step-content">
         <div className="left-panel">
-          {/* Hotel Information Section */}
+          {/* Thông tin khách sạn */}
           <div className="section-box hotel-info">
             <h2>Chỗ ở</h2>
             <p><strong>{hotelInfo?.name || 'Joi Hospitality - Hoang Anh'}</strong></p>
-            <p>{hotelInfo?.location.address || 'I43, Phan Huy Ich Street, Ward 2, Vung Tau, Vietnam'}</p>
-            <p className="rating">Rating — {averageRating || '8.4'}</p>
-            <p className="review"> Đánh giá {hotelInfo?.ratings?.length || '0'}</p>
-            <p className="amenities">{hotelInfo?.amenities.join(' · ') || 'Free WiFi • Parking'}</p>
+            <p>{hotelInfo?.location.address || 'I43, Phan Huy Ích, Phường 2, Vũng Tàu, Việt Nam'}</p>
+            <p className="rating">Đánh giá — {averageRating || '8.4'}</p>
+            <p className="review"> {hotelInfo?.ratings?.length || '0'} nhận xét</p>
+            <p className="amenities">{hotelInfo?.amenities.join(' · ') || 'WiFi miễn phí • Bãi đậu xe'}</p>
           </div>
 
-          {/* Booking Details Section */}
+          {/* Chi tiết đặt phòng */}
 
           <div className="section-box bookingdetail">
             <h2>Chi tiết đặt phòng</h2>
             
             <div className="check-in-out">
               <div>
-                <p><strong>Check-in</strong></p>
-                <p><strong>{bookingInfo?.startDate || 'Thu 31 Oct 2024'}</strong></p>
+                <p><strong>Nhận phòng</strong></p>
+                <p><strong>{bookingInfo?.startDate || 'Thứ Năm, 31 Tháng 10, 2024'}</strong></p>
                 <p className="time-info">Từ 14:00</p>
               </div>
               <div className="divider"></div>
               <div>
-                <p><strong>Check-out</strong></p>
-                <p><strong>{bookingInfo?.endDate || 'Fri 1 Nov 2024'}</strong></p>
+                <p><strong>Trả phòng</strong></p>
+                <p><strong>{bookingInfo?.endDate || 'Thứ Sáu, 1 Tháng 11, 2024'}</strong></p>
                 <p className="time-info">Đến 12:00</p>
               </div>
             </div>
             
             <p className="important-info"><span className="icon">⚠️</span> Chỉ {bookingInfo?.diffDays + 1 || '2'} ngày!</p>
             
-            <p>Tổng số ngày ở: <strong>{bookingInfo?.diffDays ? `${bookingInfo.diffDays} nights` : '1 night'}</strong></p>
+            <p>Tổng số ngày ở: <strong>{bookingInfo?.diffDays ? `${bookingInfo.diffDays} đêm` : '1 đêm'}</strong></p>
             
             <hr />
             
             <p>Bạn đã chọn</p>
-            <p><strong>{`1 phòng for ${bookingInfo?.adults || '2'} người lớn`}</strong>
+            <p><strong>{`1 phòng cho ${bookingInfo?.adults || '2'} người lớn`}</strong>
               {bookingInfo?.children > 0 && <span> và <strong>{bookingInfo.children} trẻ em</strong></span>}
             </p>
             
@@ -136,42 +136,42 @@ const BookingProcess = () => {
 
 
           <div className="section-box price-summary">
-            <h2>Your price summary</h2>
+            <h2>Chi tiết giá</h2>
             
             <div className="price-row">
-              <span>Original price</span>
+              <span>Giá gốc</span>
               <span><strong>{priceSummary?.toLocaleString() || '23.55 '} VND</strong></span>
             </div>
             <div className="price-row">
-              <span>Tax price</span>
+              <span>Thuế</span>
               <span><strong>{taxes?.toLocaleString() || '23.55 '} VND</strong></span>
             </div>
 
             <div className="price-row">
-              <span>Late Escape Deal</span>
+              <span>Giảm giá phút cuối</span>
               <span className="discount">− {roomInfo?.dealDiscount || '0 VND'}</span>
             </div>
             
             <div className="price-row">
-              <span>Genius discount</span>
+              <span>Giảm giá Genius</span>
               <span className="discount">− {roomInfo?.geniusDiscount || '0 VND'}</span>
             </div>
             
             <div className="total-section">
-              <p className="total-label">Total</p>
-              <p className="total-price">{totalPrice?.toLocaleString() || 'US$7.84'} VND</p>
-              <p className="total-subtext">Includes taxes and charges</p>
+              <p className="total-label">Tổng cộng</p>
+              <p className="total-price">{totalPrice?.toLocaleString() || '7.84'} VND</p>
+              <p className="total-subtext">Đã bao gồm thuế và phí</p>
             </div>
             
-            <h3>Price information</h3>
+            <h3>Thông tin giá</h3>
             <ul className="price-info-list">
-              <li>Includes {taxes?.toLocaleString()} VND in taxes and charges</li>
-              <li>8 % VAT <span>(estimated)</span></li>
-              <li>This price is converted to show you the approximate cost in VND. You'll pay in VND or USD.</li>
-              <li>Bear in mind that your card issuer may charge you a foreign transaction fee.</li>
+              <li>Đã bao gồm {taxes?.toLocaleString()} VND thuế và phí</li>
+              <li>VAT 8% <span>(ước tính)</span></li>
+              <li>Giá này được quy đổi để hiển thị chi phí gần đúng bằng VND. Bạn sẽ thanh toán bằng VND hoặc USD.</li>
+              <li>Lưu ý rằng tổ chức phát hành thẻ của bạn có thể tính phí giao dịch ngoại tệ.</li>
             </ul>
             
-            <a href="#" className="hide-details">Hide details</a>
+            <a href="#" className="hide-details">Ẩn chi tiết</a>
           </div>
 
         </div>

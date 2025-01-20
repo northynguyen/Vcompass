@@ -12,10 +12,11 @@ import { StoreContext } from '../../Context/StoreContext'
 import { toast } from 'react-toastify';
 import { FaBell } from "react-icons/fa";
 import axios from 'axios';
-import {io} from 'socket.io-client'
+import { io } from 'socket.io-client'
+import logo from '../../assets/logo.png';
 
 const Header = ({ setShowLogin }) => {
-  const { token, setToken, user,url } = useContext(StoreContext);
+  const { token, setToken, user, url } = useContext(StoreContext);
   const [activeTab, setActiveTab] = useState('');
   const [menuVisible, setMenuVisible] = useState(false); // State for menu visibility
   const menuRef = useRef(null); // Reference for the menu
@@ -30,17 +31,16 @@ const Header = ({ setShowLogin }) => {
 
   const handleNotificationClick = async (id) => {
     try {
-      const response = await axios.put(`${url}/api/notifications/${id}`, 
-        { status: "read" }, 
+      const response = await axios.put(`${url}/api/notifications/${id}`,
+        { status: "read" },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      
+
       if (response.status === 200) {
-        toast.success("Thành công!");
         setNotifications((prevNotifications) =>
           prevNotifications.map((notification) =>
             notification._id === id ? { ...notification, status: "read" } : notification
@@ -51,13 +51,13 @@ const Header = ({ setShowLogin }) => {
       else {
         toast.error("Không thể cập nhật trạng thái thông báo!");
       }
-     
+
     } catch (error) {
       console.error("Error updating notification status:", error);
       toast.error("Không thể cập nhật trạng thái thông báo!");
     }
   };
-  
+
 
   const fetchNotifications = async () => {
     try {
@@ -67,8 +67,8 @@ const Header = ({ setShowLogin }) => {
           Authorization: `Bearer ${token}`, // Gửi token để xác thực nếu cần
         },
       });
-      setNotifications(response.data.notifications); 
-      setUnreadCount(response.data.notifications.filter(notification => notification.status === "unread").length); 
+      setNotifications(response.data.notifications);
+      setUnreadCount(response.data.notifications.filter(notification => notification.status === "unread").length);
     } catch (error) {
       console.error("Error fetching notifications:", error);
       toast.error("Không thể tải thông báo!");
@@ -82,17 +82,17 @@ const Header = ({ setShowLogin }) => {
     if (token) {
       fetchNotifications();
     }
-  }, [token]);
+  }, [token, notificationsVisible]);
 
   useEffect(() => {
     if (!user?._id) return;
-  
+
     console.log("Connecting to socket...");
-    const socket = io("http://localhost:4000");
-  
+    const socket = io(url);
+
     socket.on(`${user._id}`, (notification) => {
       console.log("Received notification:", notification);
-      setNotifications((prev) => [notification, ...prev]); // Cập nhật danh sách thông báo
+      fetchNotifications(); // Cập nhật danh sách thông báo
       setUnreadCount((prev) => prev + 1); // Tăng số lượng chưa đọc
       toast.info(
         <div className="custom-toast">
@@ -107,17 +107,59 @@ const Header = ({ setShowLogin }) => {
           position: "top-right",
         }
       );
-      
-      
     });
-  
+
+    // Lắng nghe sự kiện updateUser
+    socket.on(`${user._id}status`, (updateUser) => {
+
+      let countdown = 10;
+
+      // Gọi toast.error lần đầu tiên
+      const toastId = toast.error(
+        <div className="custom-toast">
+          <h4>🔔</h4>
+          <p>Tài khoản của bạn sẽ bị khóa trong {countdown}s nữa</p>
+        </div>,
+        {
+          autoClose: false,  // Giữ thông báo trên màn hình
+          pauseOnHover: true,
+          theme: "light",
+          position: "top-right",
+        }
+      );
+
+      const countdownInterval = setInterval(() => {
+        countdown--;
+
+        // Cập nhật thông báo với toast.update()
+        toast.update(toastId, {
+          render: (
+            <div className="custom-toast">
+              <h4>🔔</h4>
+              <p>Tài khoản của bạn sẽ bị khóa trong {countdown}s nữa</p>
+            </div>
+          ),
+          autoClose: false, // Đảm bảo toast vẫn hiển thị
+        });
+
+        if (countdown === 0) {
+          clearInterval(countdownInterval);
+
+          // Xóa thông tin người dùng và điều hướng đến trang login
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = '/';
+        }
+      }, 1000); // Đếm ngược mỗi giây
+    });
+
     // Ngắt kết nối khi component unmounts
     return () => {
       socket.disconnect();
       console.log("Disconnected from socket");
     };
   }, [url, user?._id]);
-  
+
 
 
   const toggleNotifications = () => {
@@ -173,16 +215,16 @@ const Header = ({ setShowLogin }) => {
 
   const isHomePage = location.pathname === '/';
 
-  
+
   return (
     <div className={isHomePage ? 'home-header' : 'header'}>
       <div className="logo" onClick={() => window.location.replace('/')}>
-        <h1>VCompass</h1>
+        <img src={logo} className="logo-image"></img>
       </div>
 
       <div className="header-right">
         <ul className="header-menu">
-          <Link to="/" className="header-menu-page">Trang chủ</Link>
+          <Link to="/" className="header-menu-page" onClick={() => window.location.replace('/')}>Trang chủ</Link>
           <Link to="/booking" className="header-menu-page">Đặt phòng</Link>
           <Link to="/attractions" className="header-menu-page">Tham quan</Link>
           <Link to="/foodservices" className="header-menu-page">Nhà hàng</Link>
@@ -195,15 +237,23 @@ const Header = ({ setShowLogin }) => {
         {token === null ? <button className="header-login" onClick={() => setShowLogin(true)}>Đăng nhập</button> :
           <div className="header-profile" ref={menuRef}>
             <div className="profile-section" onClick={toggleMenu}>
-              <img src={`${url}/images/${user.avatar}`} alt="Profile" className="user-avatar" />
+            <img
+                src={user && user.avatar && user.avatar.includes('http') ? `${user.avatar}` :  user && user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                alt="Profile"
+                className="user-avatar"
+              />
             </div>
 
-            
+
 
             {menuVisible && (
               <div className="profile-menu" >
                 <div className="profile-name">
-                  <img src={`${url}/images/${user.avatar}`} alt="Profile" className="user-avatar" />
+                <img
+                src={user && user.avatar && user.avatar.includes('http') ? `${user.avatar}` :  user && user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                alt="Profile"
+                  className="user-avatar"
+                />
                   <h3>{user.name} </h3>
                 </div>
 
@@ -233,42 +283,42 @@ const Header = ({ setShowLogin }) => {
         }
 
 
-       {token !== null && 
-        <div className="notification-container">
-              <button className="icon-button" onClick={toggleNotifications}>
-                <FaBell className="bell-icon" />
-                {unreadCount > 0 && 
+        {token !== null &&
+          <div className="notification-container">
+            <button className="icon-button" onClick={toggleNotifications}>
+              <FaBell className="bell-icon" />
+              {unreadCount > 0 &&
                 <span className="notification-badge">
                   {<span className="unread-count">{unreadCount}</span>}
                 </span>
-                } 
+              }
 
-              </button>
+            </button>
 
-              {/* Notifications Dropdown */}
-              {notificationsVisible && (
-                <div className="notifications-dropdown" ref={notificationRef}>
-                  <ul className="notifications-list">
-                    {loading && <p>Loading notifications...</p>}
-                    {!loading && notifications.length === 0 && <p>No notifications</p>}
-                    {notifications.map((notification, index) => (
-                      <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}` } onClick={() =>{ notification.status === 'unread' && handleNotificationClick(notification._id)}}>
-                        <div className="notification-avatar"> 
-                          <img src={notification.imgSender ? notification.imgSender : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
-                          <p><strong>{notification.nameSender ? notification.nameSender : "Admin" }</strong></p>
-                        </div>
-                        <div className="notification-content">
-                          <p> {notification.content}</p>
-                          <span className="notification-time">{new Date(notification.createdAt).toLocaleString()}</span>
-                        </div>
-                        {notification.status === 'unread' && <span className="unread-dot"></span>}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-       }
+            {/* Notifications Dropdown */}
+            {notificationsVisible && (
+              <div className="notifications-dropdown" ref={notificationRef}>
+                <ul className="notifications-list">
+                  {loading && <p>Loading notifications...</p>}
+                  {!loading && notifications.length === 0 && <p>No notifications</p>}
+                  {notifications.map((notification, index) => (
+                    <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}`} onClick={() => { notification.status === 'unread' && handleNotificationClick(notification._id) }}>
+                      <div className="notification-avatar">
+                        <img src={notification.idSender && notification.idSender.avatar ? notification.idSender.avatar : notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
+                      </div>
+                      <div className="notification-content">
+                        <p><strong>{notification.idSender ? notification.idSender.name : "Admin"}</strong></p>
+                        <p> {notification.content}</p>
+                        <span className="notification-time">{new Date(notification.createdAt).toLocaleString()}</span>
+                      </div>
+                      {notification.status === 'unread' && <span className="unread-dot"></span>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        }
       </div>
     </div>
   );

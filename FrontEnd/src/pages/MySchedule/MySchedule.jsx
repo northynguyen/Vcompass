@@ -270,7 +270,7 @@ const MySchedule = ({setShowLogin}) => {
               >
                 <div className="schedule-header">
                   <img
-                    src={schedule.image ? `${url}/${schedule.image}` : "https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"}
+                    src={schedule.imgSrc[0] && schedule.imgSrc[0].includes("http") ? schedule.imgSrc[0] : schedule.imgSrc[0] ? `${url}/images/${schedule.imgSrc[0]}` : "https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"}
                     alt={schedule.scheduleName}
                   />
                   <div className="schedule-date">
@@ -290,7 +290,7 @@ const MySchedule = ({setShowLogin}) => {
                 <div className="schedule-user"> 
                   <img
                     className="avatar"
-                    src={ schedule.idUser.avatar ? `${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                    src={ schedule.idUser.avatar ? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                     alt={schedule.userName}
                   />
                   <p>{schedule.idUser.name || "Unknown User"}</p>

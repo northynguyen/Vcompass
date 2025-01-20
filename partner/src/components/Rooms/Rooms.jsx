@@ -135,99 +135,100 @@ const Rooms = ({ onBack, hotel }) => {
 
   return (
     <div className="rooms-container">
-      <div className="rooms-list">
-        <button className="back-button" onClick={handleBackClick}>
-          <FaArrowLeft /> Back to Hotels
-        </button>
-        <div className="rooms-header">
-          <h2>Rooms</h2>
-          <button className="add-room-button" onClick={handleAddClick}>
-            <FaPlus /> Thêm Phòng Mới
-          </button>
-        </div>
-        <div className="rooms-cards">
-          {currentRooms.map((room) => (
-            <div
-              key={room.idRoomType}
-              className={`room-card ${room.status === 'Occupied' ? 'occupied' : 'available'}`}
-              onClick={() => handleRoomSelect(room)}
-            >
-              <img
-                src={`${url}/images/` + room.images[0]}
-                alt={room.nameRoomType}
-                className="room-image"
-              />
-              <h3 className="room-type">{room.nameRoomType}</h3>
-              <p className="room-details">
-                {room.roomSize} m² •{' '}
-                {room.numBed
-                  .map((bed) => `${bed.number} ${bed.nameBed}`)
-                  .join(', ')}
-              </p>
-              <p className="room-guests">
-                Guests: {room.numPeople.adult} Adults, {room.numPeople.child} Children
-              </p>
-              <p className="room-amenities">Amenities: {room.amenities.join(', ')}</p>
-              <p className="price">{room.pricePerNight} $/night</p>
-              <p className={`status ${room.status.toLowerCase()}`}>{room.status}</p>
-            </div>
-          ))}
-        </div>
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="pagination">
-            {[...Array(totalPages)].map((_, index) => (
-              <button
-                key={index + 1}
-                className={`page-button ${currentPage === index + 1 ? 'active' : ''}`}
-                onClick={() => paginate(index + 1)}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="room-detail">
-        {isAdding ? (
-          <AddEditRoomForm onSave={handleAddSave} onCancel={handleCancel} />
-        ) : selectedRoom ? (
-          <div className="room-detail-content">
-            <div className="room-detail-header">
-              <h2>{selectedRoom.nameRoomType} Room</h2>
-              <div className="room-detail-actions">
-                <button onClick={handleEditClick} className="edit-button">
-                  <FaEdit /> Chỉnh Sửa
-                </button>
-                <button onClick={() => handleDeleteClick(selectedRoom._id)} className="delete-button">
-                  <FaTrash /> Xóa
-                </button>
-              </div>
-            </div>
-            {isEditing ? (
-              <AddEditRoomForm room={selectedRoom} onSave={handleSave} onCancel={handleCancel} />
-            ) : (
-              <div className="room-detail-info">
-                <div className="room-images">
-                  {selectedRoom.images.map((img, idx) => (
-                    <img key={idx} src={`${url}/images/${img}`} alt={`${selectedRoom.nameRoomType} ${idx + 1}`} className="detail-image" />
-                  ))}
-                </div>
-                <p><strong>Size:</strong> {selectedRoom.roomSize} m²</p>
-                <p><strong>Beds:</strong> {selectedRoom.numBed.map(bed => `${bed.number} ${bed.nameBed}`).join(', ')}</p>
-                <p><strong>Guests:</strong> {selectedRoom.numPeople.adult} Adults, {selectedRoom.numPeople.child} Children</p>
-                <p><strong>Price:</strong> {selectedRoom.pricePerNight} $/night</p>
-                <p><strong>Status:</strong> {selectedRoom.status}</p>
-                <p><strong>Amenities:</strong> {selectedRoom.amenities.join(', ')}</p>
-              </div>
-            )}
-          </div>
-        ) : (
-          <p className="select-room-message">Select a room to see details.</p>
-        )}
-      </div>
+  <div className="rooms-list">
+    <button className="back-button" onClick={handleBackClick}>
+      <FaArrowLeft /> Trở về khách sạn
+    </button>
+    <div className="rooms-header">
+      <h2>Danh sách phòng</h2>
+      <button className="add-room-button" onClick={handleAddClick}>
+        <FaPlus /> Thêm Phòng Mới
+      </button>
     </div>
+    <div className="rooms-cards">
+      {currentRooms.map((room) => (
+        <div
+          key={room.idRoomType}
+          className={`room-card ${room.status === 'Occupied' ? 'occupied' : 'available'}`}
+          onClick={() => handleRoomSelect(room)}
+        >
+          <img
+            src={`${url}/images/` + room.images[0]}
+            alt={room.nameRoomType}
+            className="room-image"
+          />
+          <h3 className="room-type">{room.nameRoomType}</h3>
+          <p className="room-details">
+            {room.roomSize} m² •{' '}
+            {room.numBed
+              .map((bed) => `${bed.number} ${bed.nameBed}`)
+              .join(', ')}
+          </p>
+          <p className="room-guests">
+            Số khách: {room.numPeople.adult} người lớn, {room.numPeople.child} trẻ em
+          </p>
+          <p className="room-amenities">Tiện nghi: {room.amenities.join(', ')}</p>
+          <p className="price">{room.pricePerNight.toLocaleString('vi-VN', { style: 'currency', currency: 'VND'})} /đêm</p>
+          <p className={`status ${room.status.toLowerCase()}`}>{room.status === 'Occupied' ? 'Đã đặt' : 'Còn trống'}</p>
+        </div>
+      ))}
+    </div>
+    {/* Phân trang */}
+    {totalPages > 1 && (
+      <div className="pagination">
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index + 1}
+            className={`page-button ${currentPage === index + 1 ? 'active' : ''}`}
+            onClick={() => paginate(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+
+  <div className="room-detail">
+    {isAdding ? (
+      <AddEditRoomForm onSave={handleAddSave} onCancel={handleCancel} />
+    ) : selectedRoom ? (
+      <div className="room-detail-content">
+        <div className="room-detail-header">
+          <h2> {selectedRoom.nameRoomType}</h2>
+          <div className="room-detail-actions">
+            <button onClick={handleEditClick} className="edit-button">
+              <FaEdit /> Chỉnh sửa
+            </button>
+            <button onClick={() => handleDeleteClick(selectedRoom._id)} className="delete-button">
+              <FaTrash /> Xóa
+            </button>
+          </div>
+        </div>
+        {isEditing ? (
+          <AddEditRoomForm room={selectedRoom} onSave={handleSave} onCancel={handleCancel} />
+        ) : (
+          <div className="room-detail-info">
+            <div className="room-images">
+              {selectedRoom.images.map((img, idx) => (
+                <img key={idx} src={`${url}/images/${img}`} alt={`${selectedRoom.nameRoomType} ${idx + 1}`} className="detail-image" />
+              ))}
+            </div>
+            <p><strong>Kích thước:</strong> {selectedRoom.roomSize} m²</p>
+            <p><strong>Giường:</strong> {selectedRoom.numBed.map(bed => `${bed.number} ${bed.nameBed}`).join(', ')}</p>
+            <p><strong>Số khách:</strong> {selectedRoom.numPeople.adult} người lớn, {selectedRoom.numPeople.child} trẻ em</p>
+            <p><strong>Giá:</strong> {selectedRoom.pricePerNight.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} /đêm</p>
+            <p><strong>Trạng thái:</strong> {selectedRoom.status === 'Occupied' ? 'Đã đặt' : 'Còn trống'}</p>
+            <p><strong>Tiện nghi:</strong> {selectedRoom.amenities.join(', ')}</p>
+          </div>
+        )}
+      </div>
+    ) : (
+      <p className="select-room-message">Chọn một phòng để xem chi tiết.</p>
+    )}
+  </div>
+</div>
+
   );
 };
 

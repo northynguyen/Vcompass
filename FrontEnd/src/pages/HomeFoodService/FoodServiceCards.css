@@ -79,9 +79,18 @@
     color: #333;
     width: 20%;
     align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
 }
 
 .card-content-price p {
     margin: 0;
 }
+}
+p.card-range-price {
+    color: #038819;
+    font-size: 20px;
+    font-weight: 500;
 }

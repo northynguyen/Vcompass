@@ -9,6 +9,7 @@ import ImagesModal from '../ImagesModal/ImagesModal';
 import './HotelDetailsInfo.css';
 import RoomCard from './RoomCard'; // Nhập RoomCard từ file mới
 import RoomDetail from './RoomDetail/RoomDetail';
+import { StarRating } from '../PlaceReview/PlaceReview';
 
 const HotelDetailsInfo = ({ serviceId }) => {
   const [dateRange, setDateRange] = useState([null, null]);
@@ -161,6 +162,17 @@ const HotelDetailsInfo = ({ serviceId }) => {
       console.error("Error fetching available rooms:", error);
       alert("Unable to find available rooms for the selected dates.");
     }
+
+    const element = document.getElementById('rooms-section');
+    const offset = 60;
+
+    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+
+    window.scrollTo({
+      top: elementPosition - offset,
+      behavior: 'smooth'
+    });
+
   };
 
 
@@ -205,7 +217,9 @@ const HotelDetailsInfo = ({ serviceId }) => {
     // Scroll to the top of the page
     window.scrollTo(0, 0);
   };
-
+  const totalRating = accommodation.ratings.length
+    ? accommodation.ratings.reduce((acc, review) => acc + review.rate, 0) / accommodation.ratings.length
+    : 0;
 
   return (
     <div className="hotel-details-info">
@@ -276,8 +290,10 @@ const HotelDetailsInfo = ({ serviceId }) => {
 
       {/* Left Column: Hotel Details */}
       <div className="tour-details">
-        <h1>{accommodation.name}</h1>
-        <p>{accommodation.city} ★★★★☆ (348 reviews)</p>
+        <div className="place-header">
+          <h1>{accommodation.name}</h1>
+          <p className="place-header-rating"><StarRating rating={Math.round(totalRating)} />  {totalRating.toFixed(1)} / 5.0 ( {accommodation.ratings.length} đánh giá)</p>
+        </div>
 
         {/* Image Gallery */}
         <div className="gallery">
@@ -349,8 +365,9 @@ const HotelDetailsInfo = ({ serviceId }) => {
       </div>
 
       {/* Rooms Section */}
-      <div className="rooms-section">
+      <div className="rooms-section" id="rooms-section">
         <h2>Những phòng hiện có</h2>
+        {accommodation.roomTypes.length === 0 && <p>Không có phòng nào phù hợp.</p>}
         {accommodation.roomTypes?.map((room, index) => (
           <RoomCard key={index} room={room} handleRoomClick={handleRoomClick} url={url} handleRoomSelect={handleRoomSelect} />
         ))}

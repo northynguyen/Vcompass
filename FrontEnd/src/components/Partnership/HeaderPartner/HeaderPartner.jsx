@@ -24,7 +24,10 @@ const HeaderPartner = () => {
 
         {/* Registration Section */}
             <h1>Đã là đối tác với VCompass</h1>
-            <button>Đăng nhập</button>
+            <button onClick={() => window.location.href = 'https://vcompass-partner.onrender.com/login'}>
+                Đăng nhập
+            </button>
+
         </div>
         
         <div className="registration-section">
@@ -45,10 +48,10 @@ const HeaderPartner = () => {
                 <li>Chọn một trong hai cách nhận đơn đặt: xác nhận tức thì và xem trước để duyệt</li>
                 <li>Chúng tôi xử lý thanh toán thay Quý vị</li>
             </ul>
-            <button className="cta-button">Bắt đầu ngay</button>
+            <button className="cta-button" onClick={() => window.location.href = 'https://vcompass-partner.onrender.com/register'} >Bắt đầu ngay</button>
             <div className="already-registered">
                 <p>Quý vị đã bắt đầu quá trình đăng ký?</p>
-                <a href="#continue-registration">Tiếp tục các bước đăng ký</a>
+                <a href='https://vcompass-partner.onrender.com/register'>Tiếp tục các bước đăng ký</a>
             </div>
             </div>
         </div>

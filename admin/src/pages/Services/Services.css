@@ -1,0 +1,203 @@
+.partner-details {
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 10px;
+    min-height: 80vh;
+}
+
+.partner-info-container {
+    padding: 20px;
+    width: 1000px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    /* Font cơ bản và dễ nhìn */
+    color: #333;
+    line-height: 1.6;
+    min-height: 80vh;
+}
+
+/* Tiêu đề chính */
+.partner-details h1 {
+    font-size: 1.8rem;
+    text-align: center;
+    color: #444;
+    font-weight: bold;
+}
+
+/* Phần ảnh đại diện */
+.partner-avatar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.partner-avatar img {
+    margin-top: 10px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    /* Bo tròn */
+    object-fit: cover;
+    border: 2px solid #ddd;
+    /* Viền nhã nhặn */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Phần thông tin đối tác */
+.partner-info .info-container {
+    
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    padding: 10px;
+    
+}
+
+.partner-info p {
+    margin: 0;
+    padding: 8px;
+    font-size: 14px;
+    background-color: #ffffff;
+    /* Nền trắng nhấn nội dung */
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.partner-info p strong {
+    font-weight: bold;
+    color: #333;
+}
+
+.partner-info strong {
+    font-weight: bold;
+    color: #555;
+}
+
+/* Dropdown cho trạng thái */
+.partner-info select {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #333;
+    transition: all 0.2s ease;
+}
+
+.partner-info select:focus {
+    border-color: #888;
+    outline: none;
+}
+
+/* Tabs Container Styling */
+.partner-details .react-tabs {
+    width: 100%;
+    margin-top: 20px;
+    font-size: 16px;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+/* Tab List Styling */
+.partner-details .react-tabs__tab-list {
+    display: flex;
+    justify-content: flex-start;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    gap: 0;
+}
+
+.partner-details .react-tabs__tab {
+    padding: 12px 20px;
+    /* Khoảng cách lớn hơn cho cảm giác thoải mái */
+    cursor: pointer;
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+    background-color: transparent;
+    /* Nền trong suốt ban đầu */
+    border: none;
+    transition: color 0.3s, border-bottom-color 0.3s;
+}
+
+.partner-details .react-tabs__tab:hover {
+    color: #007bff;
+    /* Đổi màu chữ khi hover */
+    border-bottom-color: #007bff;
+    /* Hiển thị viền khi hover */
+}
+
+.partner-details .react-tabs__tab--selected {
+    font-weight: bold;
+    color: #333;
+    /* Màu chữ chính */
+    border-bottom-color: #007bff;
+    /* Viền dưới màu xanh dương */
+}
+
+/* Tab Panels */
+.partner-details .react-tabs__tab-panel {
+    margin-top: 10px;
+    
+    /* Viền bao quanh */
+    border-radius: 4px;
+    /* Góc bo nhẹ */
+    animation: fadeEffect 0.2s ease;
+}
+
+/* Hiệu ứng mượt mà khi chuyển panel */
+@keyframes fadeEffect {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Phần tiêu đề tab */
+.partner-details h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #333;
+    text-align: left;
+}
+
+.modal-overlay {
+    background: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.notification-modal {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}

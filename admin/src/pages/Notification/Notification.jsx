@@ -1,10 +1,11 @@
-import React, { useState, useContext, useEffect } from 'react';
-import './Notification.css';
 import axios from 'axios';
-import { StoreContext } from '../../Context/StoreContext';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { StoreContext } from '../../Context/StoreContext';
+import './Notification.css';
 
-const Notification = ({ userData, accommodationData, foodserviceData }) => {
+const Notification = ({ userData, accommodationData, foodserviceData, hideName, onClose }) => {
     const { admin, url } = useContext(StoreContext);
     const [userName, setUserName] = useState(userData?.name || "");
     const [content, setContent] = useState("");
@@ -91,18 +92,24 @@ const Notification = ({ userData, accommodationData, foodserviceData }) => {
                     idReceiver: accommodationData.partnerId,
                     content,
                     typeNo: "partner",
-                    nameSender: admin.name,
+                    nameSender: "Admin",
                     imgSender: admin.img || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
                 });
 
                 // Cập nhật trạng thái của chỗ ở
-                await axios.put(`${url}/api/accommodations/${accommodationData._id}`, {
+                const response = await axios.put(`${url}/api/accommodations/${accommodationData._id}`, {
                     status: accommodationData.status,
                     adminId: admin._id,
                 });
 
-                setContent("");
-                navigate("/partners");
+                if (response.status === 200) {
+                    setContent("");
+                    toast.success("Cập nhật trang thái thành công!");
+                    onClose();
+
+                }
+
+
             } else if (foodserviceData) {
                 // Gửi thông báo liên quan đến dịch vụ ăn uống
                 await axios.post(`${url}/api/notifications/notifications/`, {
@@ -110,37 +117,49 @@ const Notification = ({ userData, accommodationData, foodserviceData }) => {
                     idReceiver: foodserviceData.partnerId,
                     content,
                     typeNo: "partner",
-                    nameSender: admin.name || "Admin",
+                    nameSender: "Admin",
                     imgSender: admin.img || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
                 });
 
                 // Cập nhật trạng thái của dịch vụ ăn uống
-                await axios.put(`${url}/api/foodservices/${foodserviceData._id}`, {
+                const response = await axios.put(`${url}/api/foodservices/${foodserviceData._id}`, {
                     status: foodserviceData.status,
                     adminId: admin._id,
                 });
 
-                setContent("");
-                navigate("/partners");
+                if (response.status === 200) {
+                    setContent("");
+                    toast.success("Cập nhật trang thái thành công!");
+                    onClose();
+                }
+
+
             } else if (userData) {
                 // Gửi thông báo liên quan đến người dùng hoặc đối tác
                 await axios.post(`${url}/api/notifications/notifications/`, {
                     idSender: admin._id,
                     idReceiver: userData._id,
                     content,
-                    typeNo: userData.type === "user" ? "user" : "partner",  
+                    typeNo: userData.type === "user" ? "user" : "partner",
                     nameSender: admin.name || "Admin",
                     imgSender: admin.img || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
 
                 });
 
                 // Cập nhật trạng thái người dùng/đối tác
-                await axios.put(`${url}/api/user/${userData.type === "user" ? "users" : "partners"}/${userData._id}`, {
+                const response = await axios.put(`${url}/api/user/${userData.type === "user" ? "users" : "partners"}/${userData._id}`, {
                     type: userData.type,
                     status: userData.status,
                 });
 
-                navigate(userData.type === "user" ? "/users" : "/partners");
+                if (response.status === 200) {
+                    setContent("");
+                    toast.success("Cập nhật trang thái thành công!");
+                    userData.type === "user" ? onClose(true) : onClose();
+
+                }
+
+
             }
         } catch (error) {
             console.error("Error adding notification:", error);
@@ -150,28 +169,30 @@ const Notification = ({ userData, accommodationData, foodserviceData }) => {
     return (
         <form onSubmit={handleSubmit} className="block-user-form">
             <div className="form-group">
-                <label>Admin Name:</label>
+                <label>Tên Admin:</label>
                 <input type="text" value={admin.name} disabled className="form-control" />
             </div>
+            {!hideName &&
+                <div className="form-group">
+                    <label>{accommodationData || foodserviceData ? "Tên Partner " : "Tên người dùng "}:</label>
+                    <input
+                        type="text"
+                        value={
+                            accommodationData
+                                ? accommodationData.partnerName
+                                : foodserviceData
+                                    ? foodserviceData.partnerName
+                                    : userName
+                        }
+                        onChange={(e) => setUserName(e.target.value)}
+                        disabled={!!accommodationData || !!foodserviceData || !!userData?.name}
+                        required
+                        className="form-control"
+                    />
+                </div>
+            }
             <div className="form-group">
-                <label>{accommodationData || foodserviceData ? "Partner Name" : "User Name"}:</label>
-                <input
-                    type="text"
-                    value={
-                        accommodationData
-                            ? accommodationData.partnerName
-                            : foodserviceData
-                                ? foodserviceData.partnerName
-                                : userName
-                    }
-                    onChange={(e) => setUserName(e.target.value)}
-                    disabled={!!accommodationData || !!foodserviceData || !!userData?.name}
-                    required
-                    className="form-control"
-                />
-            </div>
-            <div className="form-group">
-                <label>Content:</label>
+                <label>Nội dung :</label>
                 <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
@@ -180,7 +201,7 @@ const Notification = ({ userData, accommodationData, foodserviceData }) => {
                 />
             </div>
             <div className="form-buttons">
-                <button type="submit" className="btn btn-primary">Send</button>
+                <button type="submit" className="btn btn-primary">Gửi </button>
             </div>
         </form>
     );

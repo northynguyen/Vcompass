@@ -191,7 +191,7 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
         <div className="user-info">
           <img
             className="user-avatar"
-            src="https://randomuser.me/api/portraits/women/44.jpg"
+            src={schedule.idUser.avatar && schedule.idUser.avatar.includes("http") ? schedule.idUser.avatar : schedule.idUser.avatar ? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
             alt="user avatar"
           />
           <div>
@@ -223,7 +223,7 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
             // Hiển thị ảnh nếu có imgSrc
             <img
               className="content-image"
-              src={`${url}/images/${schedule.imgSrc[0]}`}
+              src={ schedule.imgSrc[0].includes("http") ? schedule.imgSrc[0] : `${url}/images/${schedule.imgSrc[0]}`}
               alt="Schedule Image"
             />
           ) : schedule.videoSrc ? (

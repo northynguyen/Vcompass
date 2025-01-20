@@ -1,13 +1,14 @@
+import axios from 'axios';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { CiLogout, CiSettings } from "react-icons/ci";
 import { FaBell } from "react-icons/fa"; // Importing Bell icon from react-icons
 import { MdManageAccounts } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import axios from 'axios';
-import {io} from 'socket.io-client'
+import { io } from 'socket.io-client';
 import { StoreContext } from '../../Context/StoreContext';
 import './Header.css';
+import logo from '../../assets/logo.png'
 const Header = () => {
   // State to handle the visibility of the profile popup
   const [isProfilePopupVisible, setProfilePopupVisible] = useState(false);
@@ -23,19 +24,19 @@ const Header = () => {
 
   const navigate = useNavigate();
   // Sample notifications array
-  
+
 
   const handleNotificationClick = async (id) => {
     try {
-      const response = await axios.put(`${url}/api/notifications/${id}`, 
-        { status: "read" }, 
+      const response = await axios.put(`${url}/api/notifications/${id}`,
+        { status: "read" },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      
+
       if (response.status === 200) {
         toast.success("Thành công!");
         setNotifications((prevNotifications) =>
@@ -48,7 +49,7 @@ const Header = () => {
       else {
         toast.error("Không thể cập nhật trạng thái thông báo!");
       }
-     
+
     } catch (error) {
       console.error("Error updating notification status:", error);
       toast.error("Không thể cập nhật trạng thái thông báo!");
@@ -63,8 +64,8 @@ const Header = () => {
           Authorization: `Bearer ${token}`, // Gửi token để xác thực nếu cần
         },
       });
-      setNotifications(response.data.notifications); 
-      setUnreadCount(response.data.notifications.filter(notification => notification.status === "unread").length); 
+      setNotifications(response.data.notifications);
+      setUnreadCount(response.data.notifications.filter(notification => notification.status === "unread").length);
     } catch (error) {
       console.error("Error fetching notifications:", error);
       toast.error("Không thể tải thông báo!");
@@ -81,14 +82,14 @@ const Header = () => {
 
   useEffect(() => {
     if (!admin?._id) return;
-  
+
     console.log("Connecting to socket...");
     const socket = io("http://localhost:4000");
-  
+
     socket.on(`admin`, (notification) => {
       console.log("Received notification:", notification);
-      setNotifications((prev) => [notification, ...prev]); // Cập nhật danh sách thông báo
-      setUnreadCount((prev) => prev + 1); 
+      fetchNotifications();
+      setUnreadCount((prev) => prev + 1);
       toast.info(
         <div className="custom-toast">
           <h4>🔔 {notification.nameSender} </h4>
@@ -102,7 +103,7 @@ const Header = () => {
           position: "top-right",
         });
     });
-  
+
     // Ngắt kết nối khi component unmounts
     return () => {
       socket.disconnect();
@@ -157,45 +158,47 @@ const Header = () => {
     <header className="header-container">
       {/* Left section (Logo and Title) */}
       <div className="header-left">
-        <h1>VComppass</h1>
+        <div className="logo" onClick={() => window.location.replace('/')}>
+          <img src={logo} className="logo-image"></img>
+        </div>
       </div>
 
       {/* Right section (Icons and User Profile) */}
       <div className="header-right">
-         <div className="notification-container">
-              <button className="icon-button" onClick={toggleNotifications}>
-                <FaBell className="bell-icon" />
-                {unreadCount > 0 && 
-                <span className="notification-badge">
-                  {<span className="unread-count">{unreadCount}</span>}
-                </span>
-                } 
+        <div className="notification-container">
+          <button className="icon-button" onClick={toggleNotifications}>
+            <FaBell className="bell-icon" />
+            {unreadCount > 0 &&
+              <span className="notification-badge">
+                {<span className="unread-count">{unreadCount}</span>}
+              </span>
+            }
 
-              </button>
+          </button>
 
-              {/* Notifications Dropdown */}
-              {isNotificationsVisible && (
-                <div className="notifications-dropdown" ref={notificationRef}>
-                  <ul className="notifications-list">
-                    {loading && <p>Loading notifications...</p>}
-                    {!loading && notifications.length === 0 && <p>No notifications</p>}
-                    {notifications.map((notification, index) => (
-                      <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}` } onClick={() =>{ notification.status === 'unread' && handleNotificationClick(notification._id)}}>
-                        <div className="notification-avatar"> 
-                          <img src={notification.imgSender ? notification.imgSender : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
-                          <p><strong>{notification.nameSender ? notification.nameSender : "Admin" }</strong></p>
-                        </div>
-                        <div className="notification-content">
-                          <p> {notification.content}</p>
-                          <span className="notification-time">{new Date(notification.createdAt).toLocaleString()}</span>
-                        </div>
-                        {notification.status === 'unread' && <span className="unread-dot"></span>}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+          {/* Notifications Dropdown */}
+          {isNotificationsVisible && (
+            <div className="notifications-dropdown" ref={notificationRef}>
+              <ul className="notifications-list">
+                {loading && <p>Loading notifications...</p>}
+                {!loading && notifications.length === 0 && <p>No notifications</p>}
+                {notifications.map((notification, index) => (
+                  <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}`} onClick={() => { notification.status === 'unread' && handleNotificationClick(notification._id) }}>
+                    <div className="notification-avatar">
+                      <img src={notification.idSender && notification.idSender.avatar ? notification.idSender.avatar : notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
+                    </div>
+                    <div className="notification-content">
+                      <p><strong>{notification.idSender ? notification.idSender.name : "Admin"}</strong></p>
+                      <p className="notification-text"> {notification.content}</p>
+                      <span className="notification-time">{new Date(notification.createdAt).toLocaleString()}</span>
+                    </div>
+                    {notification.status === 'unread' && <span className="unread-dot"></span>}
+                  </li>
+                ))}
+              </ul>
             </div>
+          )}
+        </div>
 
 
         {/* Settings Icon */}
@@ -207,7 +210,7 @@ const Header = () => {
 
         <div className="user-profile">
           <img
-            src={`${url}/images/${admin.avatar}`}
+            src={admin.avatar && admin.avatar.includes('http') ? admin.avatar : admin.avatar? `${url}/images/${admin.avatar}`  : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
             alt="User Avatar"
             className="user-avatar"
             onClick={toggleProfilePopup} // Toggle profile popup on click
@@ -218,22 +221,6 @@ const Header = () => {
           </div>
         </div>
 
-//         {admin &&
-//           <div className="user-profile">
-//             <img
-//               src={admin.avatar}
-//               alt="User Avatar"
-//               className="user-avatar"
-//               onClick={toggleProfilePopup} // Toggle profile popup on click
-//             />
-//             <div className="user-info">
-//               <p>{admin.name}</p>
-//               <span>Admin</span>
-//             </div>
-//           </div>}
-
-
-        {/* Profile Popup Menu */}
         {isProfilePopupVisible && (
           <div className="profile-popup" ref={menuRef}>
             <ul className="menu">

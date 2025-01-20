@@ -3,13 +3,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px;
+    padding: 10px;
     position: sticky;
     top: 0;
     z-index: 999;
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
 }
-
+.logo:hover {
+  cursor: pointer;
+}
 .header .logo {
     width: 150px;
     cursor: pointer;
@@ -21,7 +23,10 @@
     border-radius: 50%;
     margin-right: 10px;
 }
-
+img.logo-image {
+  width: 200px;
+  height: 40px;
+}
 .header hr {
     width: 1px;
     height: 40px;
@@ -32,21 +37,26 @@
 .header-menu {
     display: flex;
     list-style: none;
-    gap: 40px;
     font-size: 18px;
+    gap:5px;
 }
 
 .header-menu a {
-    color: rgb(0, 0, 0);
+  color: rgb(104, 113, 118);
     text-decoration: none;
-    font-size: medium;
+    font-weight: bold;
+    font-size: 15px;
     transition: color 0.3s;
+    padding: 10px 20px;
     /* Add transition for hover effect */
 }
 
 .header-menu a:hover {
-    color: tomato;
-    /* Change color on hover */
+  text-decoration: none;
+  background-color: #b5eaf9;
+  border-radius: 10px;
+  transform: scale(1.1);
+  transition: transform 0.5s ease-in-out;
 }
 
 .header-right {
@@ -255,14 +265,14 @@
   }
   
   .notification-image {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     margin-right: 10px;
   }
   
   .notification-content {
-    flex: 1;
+    flex: 3;
   }
 
   .notification-content p{
@@ -306,7 +316,6 @@
   }
 
   .notification-avatar {
-    padding: 8px;
     margin-right: 10px;
   }
 

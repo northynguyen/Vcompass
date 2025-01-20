@@ -1,64 +1,23 @@
 .place-details-info {
-    display: grid;
+    display: flex;
     gap: 20px;
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-
-.addition-infor-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0px;
-    font-size: 22px;
-    color: gray;
-
 }
-.title-button {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 13px 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    border: solid 2px #7BBCB0 !important;
-    cursor: pointer;
-  }
   .infor-form-wrapper {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap: 40px;
 }
-  .title-button:hover {
-    background-color: #7BBCB0;
-  }
-  
-  .title-button.saved {
-    background-color: #a5f97b;
-    border-color: #13d102;
-  }
 .schedule-icon {
     margin-right: 10px;
     color: #000;
   }
-  
-.save-and-share-btn {
-    color: #000;
-    background-color: transparent;
-    cursor: pointer;
-    font-size: 1.2rem;
-  }
-p.addition-infor-content {
-    color: #000;
-}
 .tour-details {
     padding: 20px;
-}
-
-h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
+    flex:2;
 }
 
 .gallery {
@@ -105,25 +64,6 @@ h1 {
     margin-bottom: 10px;
 }
 
-.booking-form {
-    margin-top: 35px;
-    max-height: 350px;
-    background-color: #FFF;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
-}
-
-.booking-form form {
-    display: flex;
-    flex-direction: column;
-}
-
-.booking-form label {
-    margin: 10px 0 5px 0;
-    text-align: left;
-}
 button {
     padding: 5px 10px;
     font-size: 14px;
@@ -132,23 +72,6 @@ button {
     cursor: pointer;
     transition: background-color 0.3s;
   }
-
-.booking-form .book-btn {
-    background-color: #00bfa5;
-    height: 50px;
-    font-size: 16px;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.booking-form .wishlist-btn,
-.booking-form .share-btn {
-    border: solid 1px #778088;
-    transition: background-color 0.3s ease;
-    height: 50px;
-}
 
 .total-price h3 {
     margin-bottom: 20px;
@@ -199,4 +122,135 @@ button {
     cursor: pointer;
     color: #333;
 }
+.addition-infor-header {
+    background: #6db4fc;
+    margin: -20px -20px 20px -20px;
+    padding: 15px;
+    border-radius: 10px 10px 0px 0px;
+}
+.booking-form {
+    background-color: #f9f9f9; /* Màu nền nhẹ nhàng */
+    border: 1px solid #ddd; /* Đường viền mảnh */
+    border-radius: 10px; /* Góc bo tròn */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng nổi */
+    padding: 20px;
+    margin: 20px 0;
+    max-width: 500px;
+    max-height: fit-content;
+}
+
+.addition-infor-header h3 {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.infor-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+p.place-header-rating {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.addition-infor-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #c8c3c3;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    justify-content: space-between;
+}
+
+.addition-infor-item p {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.addition-infor-item .addition-infor-content {
+    font-weight: bold;
+    color: #333;
+}
+
+.title-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    padding: 10px 15px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    border: 1px solid transparent;
+}
+
+.title-button:hover {
+    background-color: #ececec;
+    border-color: #ccc;
+    transform: scale(1.03);
+}
+
+.title-button.saved {
+    background-color: #dff7df;
+    border-color: #9cd89c;
+}
+
+.title-button i {
+    color: #555;
+    font-size: 1.2rem;
+}
+
+.favourite-btn {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.favourite-btn:focus {
+    outline: none;
+}
+
+@media (max-width: 768px) {
+    .booking-form {
+        padding: 15px;
+        margin: 15px 0;
+    }
+
+    .addition-infor-header h3 {
+        font-size: 1.25rem;
+    }
+
+    .addition-infor-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .title-button {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+p.addition-infor-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }

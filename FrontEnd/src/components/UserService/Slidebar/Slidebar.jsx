@@ -18,7 +18,7 @@ const Sidebar = ({ activeTab, onTabChange, img }) => {
     return (
         <div className="my-account-sidebar">
             <div className="profile-section">
-                <img src={`${url}/images/${user.avatar}`} alt="Profile" className="profile-pic" />
+                <img src={  user.avatar && user.avatar.includes('http') ? user.avatar : user.avatar? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt="Profile" className="profile-pic" />
                 <div className="profile-name">{user.name}</div>
                 <div className="priority-status">Bronze Priority</div>
             </div>

@@ -23,10 +23,18 @@ const fileFilter = (req, file, cb) => {
   cb(new Error('Only image files are allowed!'));
 };
 
-// Initialize multer
 export const upload = multer({
   storage: storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit per file
   fileFilter: fileFilter,
 });
+
+const uploadImage = multer({
+  storage: multer.memoryStorage(),
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // Giới hạn kích thước file 5MB
+});
+
+export  const uploadAvatar = uploadImage.fields([{ name: 'image', maxCount: 1 }]);
+ 
 

@@ -124,7 +124,7 @@ const HomeAttractions = () => {
 
             <div className="attractions-content-container">
                 <LeftSideBar onFilterChange={handleFilterChange} />
-                {attractionsFound.length > 0 && <AttractionsCards attractionsFound={attractionsFound} />}
+                 <AttractionsCards attractionsFound={attractionsFound} />
             </div>
         </div>
 

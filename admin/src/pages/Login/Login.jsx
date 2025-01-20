@@ -35,7 +35,7 @@ const Login = () => {
     return (
         <div className='login-container'>
             <form onSubmit={onLogin} className="login-form ">
-                <h2>Login Admin</h2>
+                <h2>Đăng nhập</h2>
                 <input
                     type="email"
                     placeholder="Email"
@@ -53,12 +53,6 @@ const Login = () => {
                 <button type="submit" disabled={isLoading}>
                     {isLoading ? 'Loading...' : 'Login'}
                 </button>
-                <p className="text-center">
-                    Don't have an account?
-                    <a href="/register" className="register-link">
-                        Sign Up here
-                    </a>
-                </p>
             </form>
         </div>
     );
