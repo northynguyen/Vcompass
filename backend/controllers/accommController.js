@@ -8,22 +8,16 @@ export const getListAccomm = async (req, res) => {
   try {
 
     const { name, minPrice, maxPrice, city, status, filterData } = req.query;
-
-//     const { name, minPrice, maxPrice, city, status , rating} = req.query;
-
-
     const query = {};
 
     if (name) {
-      const regex = new RegExp(name.split('').join('.*'), 'i'); // Biểu thức chính quy có dạng: "t.*a.*u"
-
+      const regex = new RegExp(name.split('').join('.*'), 'i'); 
       query.$or = [
         { name: { $regex: regex } },
         { city: { $regex: regex } }
       ];
     }
 
-    // Filter by city if provided
     if (city) {
       query.city = { $regex: city, $options: 'i' };
     }

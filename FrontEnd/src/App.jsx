@@ -29,30 +29,30 @@ function App() {
   const [showLogin, setShowLogin] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
- const isMobileDevice = () => {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  };
+//  const isMobileDevice = () => {
+//     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+//   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(isMobileDevice() || window.innerWidth <= 768);
-    };
+//   useEffect(() => {
+//     const handleResize = () => {
+//       setIsMobile(isMobileDevice() || window.innerWidth <= 768);
+//     };
 
-    handleResize(); // Kiểm tra ngay khi load
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+//     handleResize(); // Kiểm tra ngay khi load
+//     window.addEventListener("resize", handleResize);
+//     return () => window.removeEventListener("resize", handleResize);
+//   }, []);
 
-  if (isMobile) {
-    return (
-     <div className="mobile-notification">
-      <div className="notification-content">
-        <h1>Vui lòng sử dụng laptop để mở trình duyệt</h1>
-        <p>Xin lỗi vì sự bất tiện này. Chúng tôi đang trong quá trình điều chỉnh và cải thiện trang web để mang đến trải nghiệm tốt nhất. Quý khách vui lòng sử dụng máy tính để tiếp tục truy cập. Xin chân thành cảm ơn!</p>
-      </div>
-    </div>
-    );
-  }
+//   if (isMobile) {
+//     return (
+//      <div className="mobile-notification">
+//       <div className="notification-content">
+//         <h1>Vui lòng sử dụng laptop để mở trình duyệt</h1>
+//         <p>Xin lỗi vì sự bất tiện này. Chúng tôi đang trong quá trình điều chỉnh và cải thiện trang web để mang đến trải nghiệm tốt nhất. Quý khách vui lòng sử dụng máy tính để tiếp tục truy cập. Xin chân thành cảm ơn!</p>
+//       </div>
+//     </div>
+//     );
+//   }
 
   return (
     <>
