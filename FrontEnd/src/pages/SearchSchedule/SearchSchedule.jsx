@@ -179,9 +179,9 @@ const SearchSchedule = () => {
         <div className="search-group">
           <div className="search-header">
             <i className="fa fa-map-marker" aria-hidden="true"></i>
-            <label className="search-label" htmlFor="destination">
+            <p className="search-label" htmlFor="destination">
               Địa điểm
-            </label>
+            </p>
           </div>
           <input
             type="text"
@@ -196,9 +196,9 @@ const SearchSchedule = () => {
         <div className="search-group">
           <div className="search-header">
             <i className="fa-solid fa-calendar-days"></i>
-            <label className="search-label" htmlFor="schedule">
+            <p className="search-label" htmlFor="schedule">
               Tên lịch trình
-            </label>
+            </p>
           </div>
           <input
             type="text"

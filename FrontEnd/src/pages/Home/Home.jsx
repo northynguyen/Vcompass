@@ -1,15 +1,15 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper-bundle.css";
 import background from "../../assets/home_bg.jpg";
 import AccommodationBanner from "../../components/Poster/AccommodationBanner ";
 import PostCard from "../../components/Poster/PostCard";
 import SlideBar from "../../components/SlideBar/SlideBar";
 import { StoreContext } from "../../Context/StoreContext";
 import "./Home.css";
-import "swiper/swiper-bundle.css";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
 const Home = () => {
   const { url, token, user } = useContext(StoreContext);
@@ -350,45 +350,47 @@ const Home = () => {
 
       {schedules &&
         (console.log(schedules),
-        (
-          <div className="post-card-recommendations">
-            <div className="post-card-header">
-              <h3>Lịch trình dành cho bạn </h3>
+          (
+            <div className="post-card-recommendations">
+              <div className="post-card-header">
+                <h3>Lịch trình dành cho bạn </h3>
+              </div>
+              <div className="post-card-recommendations__container">
+                <Swiper
+                  modules={[Navigation, Pagination, Autoplay]}
+                  spaceBetween={30}
+                  slidesPerView={1} // Mặc định hiển thị 1 slide
+                  navigation
+                  pagination={{ clickable: true }}
+                  autoplay={{
+                    delay: 4000,
+                    pauseOnMouseEnter: true,
+                    disableOnInteraction: true,
+                  }}
+                  breakpoints={{
+                    768: { slidesPerView: 2 }, // Khi màn hình >= 768px, hiển thị 2 slide
+                  }}
+                >
+                  {!isLoading &&
+                    schedules?.map((schedule, index) => (
+                      <SwiperSlide key={index}>
+                        <PostCard
+                          key={schedule._id}
+                          schedule={schedule}
+                          handleScheduleClick={handleScheduleClick}
+                        />
+                      </SwiperSlide>
+                    ))}
+                  {isLoading && <div className="spinner"> </div>}
+                  {schedules?.length === 0 && !isLoading && (
+                    <p className="post-card-recommendations__message">
+                      Không có lịch trình phù hợp.
+                    </p>
+                  )}
+                </Swiper>
+              </div>
             </div>
-            <div className="post-card-recommendations__container">
-              <Swiper
-                modules={[Navigation, Pagination, Autoplay]}
-                spaceBetween={30}
-                slidesPerView={schedules.length < 2 ? schedules.length : 2}
-                navigation
-                pagination={{ clickable: true }}
-                autoplay={{
-                  delay: 4000,
-                  pauseOnMouseEnter: true,
-                  disableOnInteraction: true,
-                }}
-              >
-                {!isLoading &&
-                  schedules?.map((schedule, index) => (
-                    <SwiperSlide key={index}>
-                      <PostCard
-                        key={schedule._id}
-                        schedule={schedule}
-                        handleScheduleClick={handleScheduleClick}
-                      />
-                    </SwiperSlide>
-                  ))}
-                {isLoading && <div className="spinner"> </div>}
-                {schedules?.length === 0 && !isLoading && (
-                  <p className="post-card-recommendations__message">
-                    {" "}
-                    Không có lịch trình phù hợp.
-                  </p>
-                )}
-              </Swiper>
-            </div>
-          </div>
-        ))}
+          ))}
 
       <div className="post-card-recommendations">
         <div className="post-card-header">
@@ -398,8 +400,11 @@ const Home = () => {
           <Swiper
             modules={[Navigation, Pagination, Autoplay]}
             spaceBetween={30}
-            slidesPerView={2}
+            slidesPerView={1}
             navigation
+            breakpoints={{
+              768: { slidesPerView: 2 },
+            }}
             pagination={{ clickable: true }}
             autoplay={{
               delay: 3000,

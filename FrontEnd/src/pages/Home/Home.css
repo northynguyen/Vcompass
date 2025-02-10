@@ -328,3 +328,159 @@
   color: #777;
   font-size: 1.2rem;
 }
+@media (max-width: 768px) {
+  .hero-title {
+    margin-top: 40px;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.home-background {
+  height: 55vh;
+}
+.hero-subtitle {
+  font-size: 0.7em;
+  padding: 5px;
+}
+.hero-section{
+  padding: 80px 20px 30px 20px;
+}
+.search-container {
+  width: 90%;
+  left: 5%;
+  margin: 0;
+  padding: 15px 20px;
+  flex-direction: column;
+}
+.search-title {
+  width: unset;
+  text-align: left;
+}
+.search-icon {
+  margin: 0;
+  margin-left: 10px;
+}
+.search-input {
+  padding: 5px;
+  margin: 0px 0px 10px 3px;
+}
+.popular-cities {
+  margin: 0px 10px ;
+}
+.cities-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.cities-description {
+  font-size: 0.8rem;
+}
+.city-slider {
+  width: 100%;
+  margin: 0 auto;
+}
+.accommodation-banner {
+  flex-direction: column;
+  padding: 10px;
+  justify-content: unset;
+  height: fit-content;
+}
+.banner-image {
+  width: unset;
+  height: 185px;
+  margin: 0;
+  border-radius: 9999px;
+}
+.image-container {
+  width: unset;
+  height: unset;
+  margin: 0;
+}
+.banner-content {
+  position: relative;
+  z-index: 3;
+  color: #fff;
+  width: unset;
+  margin: 0;
+}
+.banner-city-name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+.title {
+  font-size: 1.3rem;
+}
+.description {
+  padding-bottom: 5px;
+  font-size: 14px;
+  margin: 10px 0px;
+}
+.location {
+  font-size: 12px;
+  margin: 5px 0;
+  justify-content: center;
+}
+.post-card-header h3 {
+  font-size: 1.3rem;
+}
+.post-card-recommendations {
+  padding: 10px;
+  width: 100%;
+}
+.user-info {
+  padding: 0;
+  padding-left: 3px;
+  padding-bottom: 3px;
+}
+.post-location {
+  padding: 0;
+  padding-right: 3px;
+  
+}
+.card-content h2 {
+  font-size: 18px;
+}
+.card-content {
+  padding: 10px;
+}
+.slidebar-container .custom-slide {
+  padding: 5px;
+}
+p.card-facilities {
+  font-size: 0.7rem !important;
+}
+.slidebar-container .card {
+  min-height: 360px;
+}
+.slidebar-container {
+  width: 100%;
+  min-width: unset;
+}
+.slidebar-container .card-image {
+  min-height: 130px;
+  height: 130px;
+}
+p.card-price, p.card-reviews {
+  font-size: 0.8rem !important;
+}
+p.card-duration {
+  font-size: 0.7rem !important;
+  margin: 0;
+}
+h3.title {
+  font-size: 1.3rem !important;
+  margin: 0px 10px;
+}
+.city-button {
+  padding: 10px 12px;
+}
+.city-buttons {
+  gap: 5px;
+  margin-top: 10px;
+}
+.tour-search-container {
+  margin-bottom: 10px;
+}
+}

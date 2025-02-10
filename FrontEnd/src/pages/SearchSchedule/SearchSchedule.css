@@ -100,6 +100,7 @@
     width: 300px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 20px;
   }
   
@@ -108,6 +109,7 @@
     background-color: #ffffff;
     border: 1px solid #ddd;
     border-radius: 10px;
+    width: 100%;
     padding: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
@@ -118,7 +120,9 @@
     font-size: 18px;
     color: #333;
   }
-  
+  .video-option-label{
+    display: inline-block !important;
+  }
   .filters label {
     display: block;
     margin-bottom: 15px;
@@ -127,16 +131,19 @@
   }
   
   .filters label span {
-    display: block;
     margin-bottom: 5px;
+    display: inline-block;
   }
-  
+  .filters {
+    margin: 0px 15px;
+  }
   .filters select,
   .filters input[type="checkbox"] {
     font-size: 14px;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    margin-right: 5px;
   }
   
   /* Danh sách PostCard */
@@ -229,6 +236,7 @@
     background-color: #007bff;
     color: white;
     border: none;
+    width: 100px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
@@ -257,6 +265,7 @@
   
     .schedule-list {
       grid-template-columns: 1fr;
+      margin: 0px 5px;
     }
 
     
@@ -269,4 +278,98 @@
     margin: 10px auto;
   }
   
+/* --- Toàn bộ giao diện mặc định (Desktop) đã được định nghĩa --- */
+
+/* --- Điểm dừng cho màn hình Tablet (Từ 768px đến 1024px) --- */
+@media (max-width: 1024px) {
+  .search-schedule {
+    max-width: 90%;
+  }
+
+  .search-bar {
+    flex-direction: column; /* Chuyển sang xếp dọc */
+    gap: 12px;
+  }
+
+  .search-action-btn {
+    align-self: stretch; /* Nút chiếm toàn bộ chiều rộng */
+  }
+
+  .filters-container {
+    width: 100%; /* Chiều rộng toàn bộ trên tablet */
+  }
+
+  .schedule-list {
+    grid-template-columns: repeat(2, 1fr); /* Hiển thị 2 cột */
+    gap: 16px;
+  }
+}
+
+/* --- Điểm dừng cho màn hình Điện thoại (Dưới 768px) --- */
+@media (max-width: 768px) {
+  .search-schedule {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .search-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-group {
+    width: 100%;
+  }
+
+  .search-field {
+    font-size: 12px; /* Giảm kích thước chữ */
+  }
+
+  .search-action-btn {
+    padding: 10px;
+    font-size: 12px; /* Giảm kích thước nút */
+  }
+
+  .main-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .filters {
+    margin: 5px;
+  }
+  .filters-container {
+    width: 100%; /* Bộ lọc chiếm toàn bộ chiều rộng */
+    gap: 5px
+  }
+
+  .schedule-list {
+    grid-template-columns: 1fr; /* Chỉ hiển thị 1 cột */
+  }
+
+
+
+  .no-schedule {
+    width: auto;
+    font-size: 16px; /* Kích thước chữ nhỏ hơn */
+  }
+  .price-slider {
+    margin-top: 0px;
+  }
+  .card-container {
+    margin-left: 0px;
+    gap: 0px;
+    margin-bottom: 5px;
+  }
+  .filters label {
+    margin-bottom: 5px;
+  }
+  .content-image {
+    min-height: 200px;
+    width: 100%;
+    max-height: 220px;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
 

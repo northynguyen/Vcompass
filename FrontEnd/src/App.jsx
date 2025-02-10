@@ -43,7 +43,7 @@ function App() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  if (isMobile) {
+  if (false) {
     return (
      <div className="mobile-notification">
       <div className="notification-content">

@@ -338,6 +338,7 @@ label.action-text {
   color: #000;
   border-radius: 12px;
   font-weight: 550;
+  height: fit-content;
 }
 
 .title {

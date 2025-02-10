@@ -49,15 +49,16 @@
   }
   
   .custom-confirm-btn {
-    background-color: #e63946; /* Màu đỏ nhạt đẹp */
+    background-color: #e63946;
+    min-width: 140px;
+  }
+  .custom-cancel-btn {
+    background-color: #6c757d;
+    min-width: 140px;
   }
   
   .custom-confirm-btn:hover {
     background-color: #d62839; /* Màu đậm hơn khi hover */
-  }
-  
-  .custom-cancel-btn {
-    background-color: #6c757d; /* Màu xám xanh tinh tế */
   }
   
   .custom-cancel-btn:hover {

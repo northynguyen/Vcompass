@@ -315,13 +315,10 @@ p.des-schedule {
   gap: 30px;
 }
 
-.date-section {
-  /* Căn chỉnh ngày và các nút trong một hàng */
 .date-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
 }
 
 .date-actions {
@@ -362,7 +359,6 @@ p.des-schedule {
   color: white;
 
 }
-}
 
 .add-new button {
   width: 250px;
@@ -400,8 +396,13 @@ i.fa-solid.fa-plus.add-icon {
 }
 
 .time-schedule-location a {
-  margin-left: 10px;
   font-size: 14px;
+}
+.time-schedule-location {
+  margin-top: 10px;
+  text-align: left;
+  display: flex;
+  gap: 5px;
 }
 
 .time-schedule-image {
@@ -448,7 +449,7 @@ i.fa-solid.fa-plus.add-icon {
 
 .time-schedule-info {
   display: flex;
-  margin-top: 15px;
+  margin-top: 10px;
   margin-right: 10px;
   color: #666666;
   font-size: 16px;
@@ -626,10 +627,11 @@ i.fa-solid.fa-plus.add-icon {
 
 /* Cột Mô tả */
 .activity-description {
-  font-size: 1rem;
+  font-size: 0.8rem;
   color: #666;
   padding: 0 10px;
-  word-wrap: break-word; /* Đảm bảo mô tả không bị tràn */
+  font-weight: 400;
+  word-wrap: break-word;
 }
 
 /* Cột Chi phí */
@@ -919,4 +921,363 @@ i.fa-solid.fa-plus.add-icon {
   right: 10px;
   font-size: 24px;
   cursor: pointer;
+}
+/* Định dạng chung cho màn hình nhỏ */
+@media (max-width: 768px) {
+  .schedule-container {
+    padding: 10px 5%;
+  }
+  .date-section {
+    gap: 0px;
+  }
+  .activity-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .activity-details {
+    flex-direction: column;
+    gap: 15px;
+    margin: 0px;
+  }
+
+  .time-selection {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .confirm-booking {
+    width: 100%;
+    align-items: center;
+    flex-direction: row;
+    display: flex;
+  }
+
+  .title-button {
+    width: 100%;
+    flex-direction: row;
+    padding: 8px;
+  }
+
+  .save-schedule {
+    justify-content: center;
+    margin-right: 0;
+  }
+
+  .header-container {
+    margin: 15px 0px;
+  }
+
+  .detail-container {
+    padding: 10px;
+    max-width: 100%;
+  }
+
+  .time-container {
+    flex-direction: row;
+    font-size: 24px;
+    padding: 0px;
+  }
+
+  .date-schedule {
+    gap: 5px;
+  }
+
+  .date-schedule input {
+    width: 100%;
+  }
+  .title-des {
+    flex: none;
+    width: 100%;
+  }
+  .activity-header h2 {
+    font-size: 1.3em;
+    margin-bottom: 10px;
+}
+  .numday-title {
+    width: auto;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .date-actions {
+    flex-direction: column;
+  }
+
+  .date-actions button {
+    width: 100%;
+  }
+
+  .add-new button {
+    width: 100%;
+  }
+
+  .time-schedule-list {
+    gap: 20px;
+  }
+
+  .time-schedule-item {
+    flex-direction: column;
+    gap: 0px;
+    margin-bottom: 10px;
+  }
+
+  .time-schedule-left {
+    width: 100%;
+    align-items: center;
+  }
+
+  .time-schedule-right {
+    align-items: center;
+  }
+
+  .time-schedule-image {
+    height: 150px;
+  }
+
+  .time-schedule-details {
+    padding-left: 0;
+    text-align: center;
+    padding-top: 5px;
+    margin-left: 0px;
+  }
+
+  .time-schedule-info {
+    text-align: left;
+    gap: 5px;
+  }
+
+  .time-schedule-price {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+  }
+
+  .custom-schedule-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .custom-schedule-btn {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .time-schedule-list-container {
+    width: 100%;
+  }
+
+  .type-activity {
+    width: auto;
+    padding: 5px 10px;
+  }
+
+  .expense-actions {
+    align-self: center;
+    margin: 10px 0;
+  }
+
+  .time-schedule-usernote {
+    text-align: center;
+    padding: 10px 5px;
+  }
+  .activity-overview-container {
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 5px;
+    .activity-overview-list li {
+      grid-template-columns: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+  }
+  .date-header h2 {
+    font-size: 1.3em;
+  }
+  .custom-schedule-header h1 {
+    font-size: 1.5em;
+  }
+  p.des-schedule {
+    margin: 8px 0px;
+    text-align: left;
+    font-size: small;
+  }
+  .activity-infor {
+    flex-direction: column;
+    margin-top: 10px;
+    gap: 5px;
+    box-shadow: unset;
+  }
+  .activity-content-card {
+    flex-direction: column;
+  }
+  .expense-container h1 {
+    font-size: 1.3em;
+    margin-bottom: 0px;
+  }
+  .expense-container {
+    width: 90%;
+    padding: 10px;
+  }
+  .expense-item {
+    height: 70px;
+  }
+  .comment-large-container {
+    padding: 0;
+  }
+  .commentitem-container {
+    padding:0;
+  }
+  .post-actions-container {
+    margin-bottom: 0px;
+  }
+  .comment-container {
+    padding: 10px 0 15px 5px;
+  }
+  .user-avatar {
+    margin-right: 8px;
+  }
+  .comment-text {
+    border-radius: 8px;
+    padding: 5px 10px;
+    min-width: 80%;
+  }
+  .reply-content {
+    border-radius: 8px;
+    padding: 5px 10px;
+  }
+  .reply-container {
+    margin-top: 0px;
+  }
+  .add-expense-modal {
+    width: 90%;
+    padding: 10px;
+  }
+  .modal-overlay {
+    width: 100vw;
+  }
+  .add-activity-modal {
+    padding: 10px 0px 10px 10px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0px 10px;
+  }
+  .list-accom__container {
+    flex-direction: column;
+    margin-top: 10px;
+  }
+  .list-accom__tour-item {
+    flex-direction: column;
+    margin-top: 10px;
+  }
+  .modal-header h2 {
+    font-size: 1.3em;
+  }
+  .header-accom {
+    flex-direction: column;
+    padding: 0px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+  }
+  .header-left{
+    width: 100%;
+    margin: 0;
+  }
+  .header-right{
+    width: 100%;
+    margin: 0;
+    gap: 0px;
+  }
+  .header-right label {
+    min-width: 120px;
+    margin-bottom: 0;
+  }
+  .header-left h1 {
+    font-size: 1.3em;
+  }
+  .list-accom__filters {
+    width: 100%;
+    margin: 0;
+    padding: 10px 15px;
+    input[type="text"] {
+      margin-bottom: 0px;
+  }
+  }
+  .list-accom__filters h4 {
+    margin: 0;
+    margin-bottom: 5px;
+  }
+  .list-accom__tour-item-image {
+    width: 100%;
+    max-width: none;
+    height: 130px;
+  }
+  .list-accom__tour-details h3 {
+    margin: 5px 0px;
+  }
+  .list-accom__tour-details span {
+    font-size: 14px;
+  }
+  .list-accom__tour-price {
+    margin-top: 10px;
+  }
+  .name-price-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .add-schedule-img {
+    width: 85%;
+    height: 150px;
+  }
+  .expense-summary {
+    margin-top: 10px;
+}
+  label.expense-sub-title {
+    margin: 0;
+  }
+  .input-field {
+    margin: 0;
+    margin-bottom: 10px;
+    margin-top: 4px;
+  }
+  .modal-header {
+    display: flex;
+  }
+  .other-item-container {
+    .form-group .address-input-group {
+        flex-direction: column;
+        align-items: start;
+        justify-content: start;
+        gap: 0;
+    }
+  }
+  .modal-body {
+    padding: 10px;
+  }
+  .form-group {
+    margin: 0;
+  }
+  .form-group label {
+      margin: 0;
+      font-weight: 400;
+  }
+  .form-group .address-input-group .search-btn {
+      width: 100%;
+      margin-bottom: 10px;
+  }
+  .modal-footer {
+    margin-right: 10px;
+}
+.custom-modal-overlay {
+  bottom: 0;
+  height: unset;
+}
+.custom-modal-container {
+  padding: 15px;
+  margin: 0px 10px;
+}
+
 }

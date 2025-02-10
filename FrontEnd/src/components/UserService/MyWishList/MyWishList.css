@@ -137,7 +137,7 @@ p {
 
 
 /* Responsive Design */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .image-container {
         height: 120px;
     }
@@ -162,4 +162,4 @@ p {
     .image-container {
         height: 100px;
     }
-}
+} */

@@ -156,9 +156,11 @@ const SlideBar = ({ type }) => {
             {popularServices.length === 0 && <p>No {type} services found.</p>}
             <Swiper
                 modules={[Navigation]}
-                spaceBetween={20}
-                slidesPerView={4}
-                
+                spaceBetween={0}
+                slidesPerView={2}
+                breakpoints={{
+                    768: { slidesPerView: 4, spaceBetween: 20 }
+                }}
                 navigation
                 className="custom-swiper"
             >
