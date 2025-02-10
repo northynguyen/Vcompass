@@ -28,6 +28,9 @@ const Header = ({ setShowLogin }) => {
   const [loading, setLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
   const [newNotification, setNewNotification] = useState(null);
+  const [sidebarVisible, setSidebarVisible] = useState(false);
+
+  const toggleSidebar = () => setSidebarVisible(!sidebarVisible);
 
   const handleNotificationClick = async (id) => {
     try {
@@ -223,15 +226,68 @@ const Header = ({ setShowLogin }) => {
       </div>
 
       <div className="header-right">
+
+        <button className="menu-toggle" onClick={toggleSidebar}>
+          ☰
+        </button>
+
+        {/* Menu chính khi màn hình lớn */}
         <ul className="header-menu">
-          <Link to="/" className="header-menu-page" onClick={() => window.location.replace('/')}>Trang chủ</Link>
-          <Link to="/booking" className="header-menu-page">Đặt phòng</Link>
-          <Link to="/attractions" className="header-menu-page">Tham quan</Link>
-          <Link to="/foodservices" className="header-menu-page">Nhà hàng</Link>
-          <Link to="/my-schedule" className="header-menu-page">Lịch trình của tôi</Link>
-          <Link to="/partnership" className="header-menu-page">Quan hệ đối tác</Link>
-          <Link to="/help" className="header-menu-page">Trợ giúp</Link>
+          <Link to="/" className="header-menu-page">
+            Trang chủ
+          </Link>
+          <Link to="/booking" className="header-menu-page">
+            Đặt phòng
+          </Link>
+          <Link to="/attractions" className="header-menu-page">
+            Tham quan
+          </Link>
+          <Link to="/foodservices" className="header-menu-page">
+            Nhà hàng
+          </Link>
+          <Link to="/my-schedule" className="header-menu-page">
+            Lịch trình của tôi
+          </Link>
+          <Link to="/partnership" className="header-menu-page">
+            Quan hệ đối tác
+          </Link>
+          <Link to="/help" className="header-menu-page">
+            Trợ giúp
+          </Link>
         </ul>
+
+        
+        {sidebarVisible  && ( console.log(sidebarVisible),
+          <div className="sidebar visible">
+            <button className="close-sidebar" onClick={toggleSidebar}>
+              X
+            </button>
+            <ul className="sidebar-menu">
+              <Link to="/" onClick={toggleSidebar}>
+                Trang chủ
+              </Link>
+              <Link to="/booking" onClick={toggleSidebar}>
+                Đặt phòng
+              </Link>
+              <Link to="/attractions" onClick={toggleSidebar}>
+                Tham quan
+              </Link>
+              <Link to="/foodservices" onClick={toggleSidebar}>
+                Nhà hàng
+              </Link>
+              <Link to="/my-schedule" onClick={toggleSidebar}>
+                Lịch trình của tôi
+              </Link>
+              <Link to="/partnership" onClick={toggleSidebar}>
+                Quan hệ đối tác
+              </Link>
+              <Link to="/help" onClick={toggleSidebar}>
+                Trợ giúp
+              </Link>
+            </ul>
+          </div>
+        )}
+
 
         {/* Chờ chèn token vào  */}
         {token === null ? <button className="header-login" onClick={() => setShowLogin(true)}>Đăng nhập</button> :
