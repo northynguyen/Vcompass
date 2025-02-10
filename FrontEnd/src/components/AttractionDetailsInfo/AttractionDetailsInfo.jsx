@@ -151,11 +151,11 @@ const AttractionDetailsInfo = ({ serviceId }) => {
                         </div>
                     </div>
                     <div className="wrapper">
-                        <div className={`title-button ${isSave ? "saved" : ""} `} onClick={toggleWishlist}>
+                        <div className={`favorite-button ${isSave ? "saved" : ""} `} onClick={toggleWishlist}>
                             <i className="fa-solid fa-bookmark schedule-icon"></i>
-                            <button className="favourite-btn">
-                                Lưu vào danh sách yêu thích
-                            </button>
+                            <p className="favourite-btn">
+                                Lưu địa điểm
+                            </p>
                         </div>
                     </div>
                 </div>

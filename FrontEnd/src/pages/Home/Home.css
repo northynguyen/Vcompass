@@ -330,13 +330,13 @@
 }
 @media (max-width: 768px) {
   .hero-title {
-    margin-top: 40px;
+    margin-top: 0px;
     font-size: 1.2em;
     font-weight: bold;
     margin-bottom: 10px;
 }
 .home-background {
-  height: 55vh;
+  height: 50vh;
 }
 .hero-subtitle {
   font-size: 0.7em;

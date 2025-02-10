@@ -1206,6 +1206,10 @@ i.fa-solid.fa-plus.add-icon {
       margin-bottom: 0px;
   }
   }
+  button.custom-schedule-btn {
+    padding: 10px 20px;
+    margin-top: 10px;
+}
   .list-accom__filters h4 {
     margin: 0;
     margin-bottom: 5px;

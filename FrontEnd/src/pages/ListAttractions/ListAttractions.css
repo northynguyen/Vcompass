@@ -148,7 +148,6 @@ select {
 }
 
 .tour-details {
-  flex-grow: 1;
   padding-left: 15px;
   display: flex;
   justify-content: center;

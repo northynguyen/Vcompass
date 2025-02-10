@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap');
+
 .place-details-info {
     display: flex;
     gap: 20px;
@@ -17,7 +19,7 @@
   }
 .tour-details {
     padding: 20px;
-    flex:2;
+    flex:3;
 }
 
 .gallery {
@@ -122,134 +124,179 @@ button {
     color: #333;
 }
 .addition-infor-header {
-    background: #6db4fc;
     margin: -20px -20px 20px -20px;
     padding: 15px;
     border-radius: 10px 10px 0px 0px;
 }
+/* Phông chữ chung */
+
 .booking-form {
-    background-color: #f9f9f9; /* Màu nền nhẹ nhàng */
-    border: 1px solid #ddd; /* Đường viền mảnh */
-    border-radius: 10px; /* Góc bo tròn */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng nổi */
-    padding: 20px;
-    margin: 20px 0;
-    max-width: 500px;
-    max-height: fit-content;
+    height: fit-content;
+    background: #fffaf0; /* Màu kem tạo cảm giác ấm cúng */
+    border-radius: 12px; /* Bo góc mềm mại */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    width: 90%;
+    max-width: 450px;
+    transition: transform 0.3s ease;
+    flex: 1;
 }
 
+
+/* Tiêu đề */
 .addition-infor-header h3 {
-    font-size: 1.5rem;
-    color: #333;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: #8B4513; /* Màu nâu trầm */
     font-weight: bold;
     text-align: center;
     text-transform: uppercase;
+    border-bottom: 3px solid #d2691e;
+    padding-bottom: 10px;
 }
 
+/* Nội dung */
 .infor-form-wrapper {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
-p.place-header-rating {
-    font-size: 20px;
-    font-weight: 500;
-}
 
 .wrapper {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
+/* Item thông tin */
 .addition-infor-item {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid #c8c3c3;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
     justify-content: space-between;
+    align-items: center;
+    background: #ffefd5;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    color: #333;
 }
 
 .addition-infor-item p {
     margin: 0;
-    font-size: 1.1rem;
-    color: #555;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
 }
-
-.addition-infor-item .addition-infor-content {
-    font-weight: bold;
-    color: #333;
-}
-
-.title-button {
+/* Nút lưu yêu thích */
+.favorite-button {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    padding: 10px 15px;
-    background-color: #f5f5f5;
-    border-radius: 5px;
-    border: 1px solid transparent;
+    padding: 8px 15px;
+    background: #ffdab9;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-align: center;
+    justify-content: center;
+    color: #8B4513;
 }
 
-.title-button:hover {
-    background-color: #ececec;
-    border-color: #ccc;
-    transform: scale(1.03);
+.favorite-button:hover {
+    background: #8B4513;
+    color: #fff;
+    transform: scale(1.05);
+}
+.favorite-button:hover i {
+    color: #fff;
 }
 
-.title-button.saved {
-    background-color: #dff7df;
-    border-color: #9cd89c;
+/* Icon */
+.favorite-button i {
+    color: #8B4513;
+    font-size: 1.4rem;
 }
 
-.title-button i {
-    color: #555;
-    font-size: 1.2rem;
-}
-
-.favourite-btn {
-    background: none;
-    border: none;
-    color: #555;
-    font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    padding: 0;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.favourite-btn:focus {
-    outline: none;
-}
-
+/* Responsive */
 @media (max-width: 768px) {
+    .place-details-info {
+        gap: 10px;
+        padding: 0;
+        padding: 5px;
+        flex-direction: column;
+    }
+    .tour-details {
+        margin: 0;
+        gap: 0px;
+        margin-left: unset !important;
+    }
+    .place-header h1 {
+        font-size: 1.5em;
+    }
+    .gallery {
+        margin: 10px 0px;
+    }
+    .features p {
+        font-size: 15px;
+    }
     .booking-form {
-        padding: 15px;
-        margin: 15px 0;
+        width: unset;
+        margin: 5px 20px;
     }
-
-    .addition-infor-header h3 {
-        font-size: 1.25rem;
-    }
-
-    .addition-infor-item {
+    .average-rating {
         flex-direction: column;
-        align-items: flex-start;
+    }
+    .reviews-container {
+        padding: 20px;
+    }
+    .average-rating h1 {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0;
+    }
+    .overall-rating {
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    .user-review-container {
+        flex-direction: column;
+        padding: 0;
         gap: 5px;
+        margin-bottom: 10px;
     }
-
-    .title-button {
+    .review-card {
+        padding: 10px;
+    }
+    .review-header {
+        margin-bottom: 0;
         flex-direction: column;
-        align-items: center;
+    }
+    .review-header p {
+        font-size: 0.8em;
+        color: #777;
+    }
+    .review-content p {
+        font-size: 0.8em;
+    }
+    .existing-response p {
+        font-size: 0.8em;
+    }
+    .popup {
+        width: 100vw;
+    }
+    .popup-content {
+        margin: 10px;
+        padding: 5px !important;
+    }
+    .review-container {
+        padding: 5px;
     }
 }
-p.addition-infor-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+
