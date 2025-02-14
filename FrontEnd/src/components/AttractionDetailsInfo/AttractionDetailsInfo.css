@@ -222,6 +222,13 @@ button {
     color: #8B4513;
     font-size: 1.4rem;
 }
+.saved {
+    background: #acf599;
+    color: #01621a;
+}
+.saved i {
+    color: #01621a;
+}
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -297,6 +304,11 @@ button {
     }
     .review-container {
         padding: 5px;
+    }
+    .place-header {
+        align-items: start;
+        flex-direction: column;
+        gap: 15px;
     }
 }
 

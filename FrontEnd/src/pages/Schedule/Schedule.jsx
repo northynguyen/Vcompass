@@ -1,12 +1,16 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import axios from "axios";
-import { useContext, useEffect, useState,useCallback, useRef } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { StoreContext } from "../../Context/StoreContext";
 
+import L from "leaflet";
+import "leaflet-routing-machine";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import ConfirmDialog from "../../components/Dialog/ConfirmDialog";
 import ActivityTime, {
   AccomActivity,
   AttractionActivity,
@@ -17,11 +21,6 @@ import AddActivity from "./AddActivity/AddActivity";
 import Comment from "./Comment/Comment";
 import Expense from "./Expense/Expense";
 import "./Schedule.css";
-import ConfirmDialog from "../../components/Dialog/ConfirmDialog";
-import { DragDropContext, Droppable,Draggable } from "react-beautiful-dnd";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import L from "leaflet";
-import "leaflet-routing-machine";
 
 
 const MapViewWithRoute = ({ activities, scheduleID }) => {
@@ -91,25 +90,25 @@ const MapViewWithRoute = ({ activities, scheduleID }) => {
               case "Accommodation":
                 coordinates = locationData?.accommodation?.location
                   ? [
-                      locationData.accommodation.location.latitude,
-                      locationData.accommodation.location.longitude,
-                    ]
+                    locationData.accommodation.location.latitude,
+                    locationData.accommodation.location.longitude,
+                  ]
                   : null;
                 break;
               case "Attraction":
                 coordinates = locationData?.attraction?.location
                   ? [
-                      locationData.attraction.location.latitude,
-                      locationData.attraction.location.longitude,
-                    ]
+                    locationData.attraction.location.latitude,
+                    locationData.attraction.location.longitude,
+                  ]
                   : null;
                 break;
               case "FoodService":
                 coordinates = locationData?.foodService?.location
                   ? [
-                      locationData.foodService.location.latitude,
-                      locationData.foodService.location.longitude,
-                    ]
+                    locationData.foodService.location.latitude,
+                    locationData.foodService.location.longitude,
+                  ]
                   : null;
                 break;
               case "Other":
@@ -207,7 +206,7 @@ const MapViewWithRoute = ({ activities, scheduleID }) => {
     <div>
       {isLoading ? (
         <div style={{ display: "flex", justifyContent: "center", textAlign: "center", padding: "20px" }}>
-          <div className="spinner-map"></div> 
+          <div className="spinner-map"></div>
         </div>
       ) : (
         <div id={mapContainerId} style={{ height: "400px", width: "100%" }}></div>
@@ -225,33 +224,33 @@ const Activity = ({
   mode,
   inforSchedule,
 }) => {
-  console.log("activities", activity);
+  //console.log("activities", activity);
   return (
     <div className="time-schedule-list">
       {activity.length > 0 &&
         activity.map((myactivity, index) => (
           <Draggable key={myactivity._id} draggableId={myactivity._id} index={index} isDragDisabled={mode === "view"}>
-          {(provided) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              className="activity-item"
-            >
-          <ActivityItem
-            key={index}
-            activity={myactivity}
-            index={index}
-            setCurrentDestination={setCurrentDestination}
-            inforSchedule={inforSchedule}
-            setInforSchedule={setInforSchedule}
-            setCurrentActivity={setCurrentActivity}
-            openModal={openModal}
-            mode={mode}
-          />
-           </div>
-          )}
-        </Draggable>
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                className="activity-item"
+              >
+                <ActivityItem
+                  key={index}
+                  activity={myactivity}
+                  index={index}
+                  setCurrentDestination={setCurrentDestination}
+                  inforSchedule={inforSchedule}
+                  setInforSchedule={setInforSchedule}
+                  setCurrentActivity={setCurrentActivity}
+                  openModal={openModal}
+                  mode={mode}
+                />
+              </div>
+            )}
+          </Draggable>
         ))}
     </div>
   );
@@ -272,7 +271,7 @@ const ActivityItem = ({
   const { url } = useContext(StoreContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log("activity", activity.activityType);
+  //console.log("activity", activity.activityType);
   const fetchData = async (id, type) => {
     try {
       let response;
@@ -287,7 +286,7 @@ const ActivityItem = ({
           response = await fetch(`${url}/api/attractions/${id}`);
           break;
         case "Other":
-          console.log("id 1111", id);
+          // console.log("id 1111", id);
           response = await fetch(`${url}/api/schedule/${inforSchedule._id}?activityId=${id}`);
           break;
         default:
@@ -299,7 +298,7 @@ const ActivityItem = ({
         throw new Error(result.message || "Error fetching data");
       }
 
-      console.log('Fetched food service data:', result);
+      // console.log('Fetched food service data:', result);
 
       setData(result);
     } catch (err) {
@@ -308,11 +307,11 @@ const ActivityItem = ({
   };
 
   useEffect(() => {
-    if (activity?.idDestination && activity?.activityType  && activity?.activityType!== "Other") {
+    if (activity?.idDestination && activity?.activityType && activity?.activityType !== "Other") {
       fetchData(activity.idDestination, activity.activityType);
     }
-    if ( activity?.activityType === "Other" && activity?._id !== "default-id" && activity?._id !== undefined) {
-      fetchData(activity._id, "Other"); 
+    if (activity?.activityType === "Other" && activity?._id !== "default-id" && activity?._id !== undefined) {
+      fetchData(activity._id, "Other");
     }
   }, [activity]);
   const handleEdit = () => {
@@ -331,7 +330,7 @@ const ActivityItem = ({
         setCurrentDestination(data.attraction);
         break;
       case "Other":
-        console.log("other data", data.other);
+        //console.log("other data", data.other);
         setCurrentDestination(data.other);
         break;
       default:
@@ -342,9 +341,7 @@ const ActivityItem = ({
 
   const handleConfirmDelete = async () => {
     try {
-      console.log(
-        `${url}/api/schedule/${inforSchedule._id}/activities/${activity._id}`
-      );
+      //console.log(`${url}/api/schedule/${inforSchedule._id}/activities/${activity._id}`);
       const response = await axios.delete(
         `${url}/api/schedule/${inforSchedule._id}/activities/${activity._id}`
       );
@@ -378,18 +375,18 @@ const ActivityItem = ({
       {!isLoading && (
         <>
           {activity.activityType === "Accommodation" &&
-           
-            
-              <AccomActivity
-                data={data.accommodation}
-                activity={activity}
-                handleEdit={handleEdit}
-                setIsOpenModal={setIsModalOpen}
-                mode={mode}
-              />
-            }
+
+
+            <AccomActivity
+              data={data.accommodation}
+              activity={activity}
+              handleEdit={handleEdit}
+              setIsOpenModal={setIsModalOpen}
+              mode={mode}
+            />
+          }
           {activity.activityType === "FoodService" && (
-            console.log("11111111" + data.foodService),
+            //.log("11111111" + data.foodService),
             <FoodServiceActivity
               data={data.foodService}
               activity={activity}
@@ -409,15 +406,15 @@ const ActivityItem = ({
           )}
           {activity.activityType === "Other" &&
             (console.log("other"),
-            (
-              <OtherActivity
-                data={data.other}
-                activity={activity}
-                handleEdit={handleEdit}
-                setIsOpenModal={setIsModalOpen}
-                mode={mode}
-              />
-            ))}
+              (
+                <OtherActivity
+                  data={data.other}
+                  activity={activity}
+                  handleEdit={handleEdit}
+                  setIsOpenModal={setIsModalOpen}
+                  mode={mode}
+                />
+              ))}
         </>
       )}
 
@@ -462,7 +459,7 @@ const InforScheduleMedal = ({
     if (inforSchedule) {
       const startDate = convertDateToJSDateVietnam(inforSchedule.dateStart);
       const endDate = convertDateToJSDateVietnam(inforSchedule.dateEnd);
-      
+
       setScheduleName(inforSchedule.scheduleName || "");
       setStartDay(startDate);
       setEndDate(endDate);
@@ -479,7 +476,7 @@ const InforScheduleMedal = ({
     date.setHours(date.getHours() + 7 - date.getTimezoneOffset() / 60);
     return date;
   };
-  
+
   const convertJSDateToDateString = (jsDate) => {
     const day = String(jsDate.getDate()).padStart(2, "0");
     const month = String(jsDate.getMonth() + 1).padStart(2, "0");
@@ -545,12 +542,12 @@ const InforScheduleMedal = ({
   const uploadVideo = async (videoFile) => {
     const formData = new FormData();
     formData.append('video', videoFile);
-  
+
     try {
       const response = await axios.post(`${url}/api/videos/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-  
+
       if (response.data.success) {
         return response.data.url;  // Trả về URL của video
       } else {
@@ -561,17 +558,17 @@ const InforScheduleMedal = ({
       throw error;
     }
   };
-  
+
   // Hàm upload ảnh lên server
   const uploadImages = async (imgFiles) => {
     const formData = new FormData();
     formData.append('image', imgFiles);
-  
+
     try {
       const response = await axios.post(`${url}/api/videos/upload-image`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-  
+
       if (response.data.success) {
         return response.data.url;
       } else {
@@ -582,7 +579,7 @@ const InforScheduleMedal = ({
       throw error;
     }
   };
-  
+
   // Hàm xóa dữ liệu cũ (video hoặc ảnh)
   const deleteOldMedia = async (media) => {
     if (media && media.length > 0) {
@@ -602,11 +599,11 @@ const InforScheduleMedal = ({
     }
   };
   const extractVideoPath = (videoSrc) => {
-    
+
     try {
       const urlParts = new URL(videoSrc);
       const pathParts = urlParts.pathname.split('/');
-      
+
       // Bỏ đi những phần không cần thiết, giữ lại "videos/apb3yzzgyotcagjxnqbz"
       const videoPath = pathParts.slice(-2).join('/').replace(/\.[^/.]+$/, ""); // Xóa phần đuôi file (.mov, .mp4,...)
       return videoPath;
@@ -624,7 +621,7 @@ const InforScheduleMedal = ({
       const response = await axios.delete(`${url}/api/videos/`, {
         data: { videoPath: videoPath },
       });
-  
+
       if (response.data.success) {
         console.log("Deleted video successfully.");
       } else {
@@ -634,19 +631,19 @@ const InforScheduleMedal = ({
       console.error("Error deleting video:", error);
     }
   };
-  
+
   const handleSubmit = async () => {
     if (isNaN(startDay)) {
       console.error("Invalid start date");
       return;
     }
-    
+
     const startDayString = convertJSDateToDateString(startDay);
     const endDateString = convertJSDateToDateString(endDate);
-  
+
     let uploadedImgSrc = [];
     let videoSrc = null;
-  
+
     try {
       setIsLoading(true);
       // Upload video nếu có
@@ -656,7 +653,7 @@ const InforScheduleMedal = ({
         await deleteOldMedia(inforSchedule.imgSrc[0]);
         await deleteVideo(inforSchedule.videoSrc);
       }
-  
+
       // Upload ảnh nếu có
       else if (mediaType === 'image' && imgSrc.length > 0 && imgSrc[0] instanceof File) {
         const uploadedFiles = await uploadImages(imgSrc[0]);
@@ -664,7 +661,7 @@ const InforScheduleMedal = ({
         await deleteOldMedia(inforSchedule.imgSrc[0]);
         await deleteVideo(inforSchedule.videoSrc);
       }
-  
+
       // Cập nhật thông tin lịch trình
       setInforSchedule((prev) => ({
         ...prev,
@@ -673,16 +670,16 @@ const InforScheduleMedal = ({
         dateStart: startDayString,
         dateEnd: endDateString,
         imgSrc: mediaType === 'image' && imgSrc[0] instanceof File ? uploadedImgSrc : inforSchedule.imgSrc,
-        videoSrc,  
+        videoSrc,
       }));
-  
+
       toast.success("Lịch trình đã được cập nhật thành công!");
       closeModal();
     } catch (error) {
       console.error("Error:", error);
       toast.error("Có lỗi xảy ra trong quá trình upload!");
     }
-  
+
     setIsLoading(false);
   };
 
@@ -692,8 +689,8 @@ const InforScheduleMedal = ({
       onRequestClose={closeModal}
       className="add-expense-modal"
       overlayClassName="modal-overlay"
-    > 
-      {isLoading && 
+    >
+      {isLoading &&
         <div className="loading-overlay">
           <div className="loading-spinner"></div>
         </div>
@@ -756,7 +753,7 @@ const InforScheduleMedal = ({
                   name="mediaType"
                   value="image"
                   checked={mediaType === 'image'}
-                  onChange={() =>{ setMediaType('image') , setImgSrc([])}}
+                  onChange={() => { setMediaType('image'), setImgSrc([]) }}
                 />
                 <label htmlFor="image">Ảnh</label>
               </div>
@@ -787,7 +784,7 @@ const InforScheduleMedal = ({
                   onChange={handleImageChange}
                   multiple
                 />
-                  <img src={imagePreview} alt="Image Preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
+                <img src={imagePreview} alt="Image Preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
               </div>
             )}
 
@@ -804,7 +801,7 @@ const InforScheduleMedal = ({
                   accept="video/*"
                   onChange={handleVideoChange}
                 />
-                  <video width="100%" controls>
+                <video width="100%" controls>
                   <source src={videoPreview} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
@@ -834,7 +831,7 @@ const DateSchedule = ({
   inforSchedule,
   index,
 }) => {
-  console.log("schedule", schedule);
+  //console.log("schedule", schedule);
   const [scheduleDate, setScheduleDate] = useState(schedule);
   const [isOpen, setIsOpen] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -893,9 +890,8 @@ const DateSchedule = ({
                 <h2>
                   Ngày {scheduleDate.day}{" "}
                   <i
-                    className={`fa-solid ${
-                      isOpen ? "fa-chevron-down" : "fa-chevron-left"
-                    }`}
+                    className={`fa-solid ${isOpen ? "fa-chevron-down" : "fa-chevron-left"
+                      }`}
                     style={{ cursor: "pointer" }}
                     onClick={toggleDetails}
                   ></i>
@@ -1027,6 +1023,7 @@ const Schedule = ({ mode }) => {
 
   const openVideoPopup = () => setIsVideoOpen(true);
   const closeVideoPopup = () => setIsVideoOpen(false);
+  const [totalActivities, setTotalActivities] = useState(0)
 
   const toggleWishlist = async () => {
     try {
@@ -1049,7 +1046,7 @@ const Schedule = ({ mode }) => {
       else {
         toast.success(result.message);
       }
-      
+
     } catch (error) {
       console.error("Failed to update wishlist:", error.message);
       // Optionally revert the `isSaved` state if the request fails
@@ -1069,9 +1066,9 @@ const Schedule = ({ mode }) => {
   };
 
   useEffect(() => {
-    
+
     fetchSchedule();
-  }, [id ]);
+  }, [id]);
 
   useEffect(() => {
     if (inforSchedule) {
@@ -1079,50 +1076,59 @@ const Schedule = ({ mode }) => {
       console.log("mode:", mode);
       setDateStart(convertDateFormat(inforSchedule.dateStart));
       setDateEnd(convertDateFormat(inforSchedule.dateEnd));
-      
+
     }
-  }, [loading ]);
+  }, [loading]);
 
   useEffect(() => {
     setLoading(true);
-    if (inforSchedule ) {
-      if( mode==="edit" && ( !user || inforSchedule.idUser._id !== user._id ))
-        {      
-          setLoading(false);    
-          window.location.href = '/404';
-        }
+    if (inforSchedule) {
+      if (mode === "edit" && (!user || inforSchedule.idUser._id !== user._id)) {
+        setLoading(false);
+        window.location.href = '/404';
+      }
       setLoading(false);
     }
 
   }, [inforSchedule, mode]);
-
-  useEffect(() => {
-    if (inforSchedule && mode === "edit") {
-      const updateSchedule = async () => {
-        try {
-          const response = await axios.put(
-            `${url}/api/schedule/update/${inforSchedule._id}`,
-            {
-              ...inforSchedule,
-            }
-          );
-          if (response.data.success) {
-
-            console.log("Cập nhật lịch trình thành công:", response.data);
-            
-
-          } else {
-            console.error(
-              "Lỗi khi cập nhật lịch trình:",
-              response.data.message
-            );
-          }
-        } catch (error) {
-          console.error("Lỗi:", error);
+  const updateSchedule = async () => {
+    try {
+      const response = await axios.put(
+        `${url}/api/schedule/update/${inforSchedule._id}`,
+        {
+          ...inforSchedule,
         }
+      );
+      if (response.data.success) {
+        console.log("Cập nhật lịch trình thành công:", response.data);
+       // setInforSchedule(response.data.schedule)
+      } else {
+        console.error(
+          "Lỗi khi cập nhật lịch trình:",
+          response.data.message
+        );
+      }
+    } catch (error) {
+      console.error("Lỗi:", error);
+    }
+  };
+  useEffect(() => {
+    if (inforSchedule){
+      const newTotalActivities = inforSchedule.activities.reduce(
+        (sum, day) => sum + day.activity.length,
+        0
+      );
+      const updateAndFetch = async () => {
+        await updateSchedule();
+        fetchSchedule(); 
       };
-      updateSchedule();
-
+      if (newTotalActivities > totalActivities){
+        updateAndFetch()
+      }
+      else if (mode === "edit") {
+        updateSchedule();
+      }
+      setTotalActivities(newTotalActivities);
     }
   }, [inforSchedule]);
 
@@ -1160,7 +1166,7 @@ const Schedule = ({ mode }) => {
     );
     if (response.data.success) {
       const scheduleId = response.data.schedule._id;
-      window.location.href= `/schedule-edit/${scheduleId}`;
+      window.location.href = `/schedule-edit/${scheduleId}`;
       toast.success("Lấy thành công");
     } else {
       toast.error(response.data.message);
@@ -1282,37 +1288,37 @@ const Schedule = ({ mode }) => {
       </div>
       <DragDropContext onDragEnd={onDragEnd} >
         <div className="schedule-container">
-        <div className="schedule-image">
-          {inforSchedule.imgSrc && inforSchedule.imgSrc[0] ? (
-            
-            <img
-              className="custom-schedule-image"
-              src={ inforSchedule.imgSrc[0] && inforSchedule.imgSrc[0].includes("http") ? inforSchedule.imgSrc[0] : `${url}/images/${inforSchedule.imgSrc[0]}`}
-              alt="Schedule Image"
-            />
-          ) : inforSchedule.videoSrc ? (
-            <div> 
-              <video
-                className="custom-schedule-video"
-                controls
-                src={inforSchedule.videoSrc}
-                poster="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
-              >
-                Your browser does not support the video tag.
-              </video>
-              <button onClick={openVideoPopup} className="video-button">
-                Xem video
-              </button>
-            </div>
-          ) : (
-            // Nếu không có cả ảnh lẫn video, hiển thị ảnh mặc định
-            <img
-              className="custom-schedule-image"
-              src="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
-              alt="Default Alaska"
-            />
-          )}
-        </div>
+          <div className="schedule-image">
+            {inforSchedule.imgSrc && inforSchedule.imgSrc[0] ? (
+
+              <img
+                className="custom-schedule-image"
+                src={inforSchedule.imgSrc[0] && inforSchedule.imgSrc[0].includes("http") ? inforSchedule.imgSrc[0] : `${url}/images/${inforSchedule.imgSrc[0]}`}
+                alt="Schedule Image"
+              />
+            ) : inforSchedule.videoSrc ? (
+              <div>
+                <video
+                  className="custom-schedule-video"
+                  controls
+                  src={inforSchedule.videoSrc}
+                  poster="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
+                >
+                  Your browser does not support the video tag.
+                </video>
+                <button onClick={openVideoPopup} className="video-button">
+                  Xem video
+                </button>
+              </div>
+            ) : (
+              // Nếu không có cả ảnh lẫn video, hiển thị ảnh mặc định
+              <img
+                className="custom-schedule-image"
+                src="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
+                alt="Default Alaska"
+              />
+            )}
+          </div>
 
           <div className="header-container">
             <div className="activity-header">
@@ -1350,7 +1356,7 @@ const Schedule = ({ mode }) => {
                     <div className={`title-button ${isSaved ? "saved" : ""} `} onClick={toggleWishlist}>
                       <i className="fa-solid fa-bookmark schedule-icon"></i>
                       <button
-                        className="save-and-share-btn"                       
+                        className="save-and-share-btn"
                       >
                         Lưu lịch trình
                       </button>

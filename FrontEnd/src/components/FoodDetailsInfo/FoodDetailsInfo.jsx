@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import axios from 'axios'; // for API calls
 import { useContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { StoreContext } from '../../Context/StoreContext';
 import ImagesModal from '../ImagesModal/ImagesModal';
-import { toast } from 'react-toastify';
-import './FoodDetailsInfo.css';
 import { StarRating } from '../PlaceReview/PlaceReview';
+import './FoodDetailsInfo.css';
 const FoodDetailsInfo = ({ serviceId }) => {
     const { url, token, user } = useContext(StoreContext);
     const [isSave, setIsSave] = useState(false);
@@ -69,14 +69,14 @@ const FoodDetailsInfo = ({ serviceId }) => {
     };
     if (!foodService) return <div>Loading...</div>;
     const totalRating = foodService.ratings.length
-    ? foodService.ratings.reduce((acc, review) => acc + review.rate, 0) / foodService.ratings.length
-    : 0;
+        ? foodService.ratings.reduce((acc, review) => acc + review.rate, 0) / foodService.ratings.length
+        : 0;
     return (
         <div className="food-details-info">
             {/* Left Column: Food Service Details */}
             <div className="food-details">
                 <h1>{foodService.foodServiceName}</h1>
-                <p className="place-header-rating"><StarRating rating={Math.round(totalRating)}  />  {totalRating.toFixed(1)} / 5.0 ( {foodService.ratings.length} đánh giá)</p>
+                <p className="place-header-rating"><StarRating rating={Math.round(totalRating)} />  {totalRating.toFixed(1)} / 5.0 ( {foodService.ratings.length} đánh giá)</p>
 
                 {/* Image Gallery */}
                 <div className='food-gallery-container'>
@@ -124,7 +124,7 @@ const FoodDetailsInfo = ({ serviceId }) => {
 
                     </div>
                 </div>
-               
+
 
                 {/* Location (Google Map) */}
                 <div className="food-map">
@@ -142,8 +142,8 @@ const FoodDetailsInfo = ({ serviceId }) => {
             </div>
             {/* Right Column: Booking Form */}
             <div className="booking-form">
-            <div className="addition-infor-header">
-                <h3>Thông tin thêm</h3>
+                <div className="addition-infor-header">
+                    <h3>Thông tin thêm</h3>
                 </div>
                 <div className="infor-form-wrapper">
                     <div className="wrapper">
@@ -166,7 +166,7 @@ const FoodDetailsInfo = ({ serviceId }) => {
                         <div className={`title-button ${isSave ? "saved" : ""} `} onClick={toggleWishlist}>
                             <i className="fa-solid fa-bookmark schedule-icon"></i>
                             <button className="favourite-btn">
-                                Lưu vào danh sách yêu thích
+                                {!isSave ? "Lưu địa điểm" : "Đã lưu địa điểm"}
                             </button>
                         </div>
                     </div>

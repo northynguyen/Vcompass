@@ -172,7 +172,7 @@ export const AccomActivity = ({
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
-    console.log("user",userData);
+    //console.log("user",userData);
      if(userData && userData.favorites.accommodation && userData.favorites.accommodation.includes(data._id)) {
        setIsSaved(true)
      }
@@ -363,7 +363,7 @@ export const FoodServiceActivity = ({
     const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
     window.open(`/place-details/food/${safeEncryptedServiceId}`, "_blank");
   };
-  console.log("data", data);
+  //console.log("data", data);
   if (!data || data.length === 0) {
     return <div className="div">...</div>;
   }

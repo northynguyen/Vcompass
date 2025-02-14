@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import Modal from "react-modal";
+import { v4 as uuidv4 } from 'uuid';
 import { StoreContext } from "../../../Context/StoreContext";
 import ListAccommodation, { AccomItem } from "../../ListAccommodation/ListAccommodation";
 import ListAttractions, { AttractionItem } from "../../ListAttractions/ListAttractions";
 import ListFoodServices, { FoodServiceItem } from "../../ListFoodServices/ListFoodServices";
 import "./AddActivity.css";
-import { v4 as uuidv4 } from 'uuid';
 
 import axios from "axios";
 // Thiết lập root element cho modal
@@ -58,7 +58,7 @@ const OtherItem = ({ setCurDes, curDes }) => {
     setCurDes((prev) => ({
       ...prev,
       imgSrc: [
-        ...(prev?.imgSrc || []), 
+        ...(prev?.imgSrc || []),
         ...files
       ],
     }));
@@ -133,7 +133,7 @@ const OtherItem = ({ setCurDes, curDes }) => {
         <label htmlFor="activity-images">Thêm ảnh (tối đa 3 ảnh):</label>
         <input
           type="file"
-          id="activity-images"  
+          id="activity-images"
           className="input-field"
           multiple
           accept="image/*"
@@ -258,7 +258,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         imgSrc: curDes.imgSrc || ["default-image"],
         name: curDes.name || "default-name",
         cost: parseInt(cost) || 0,
-        costDescription: costDes? costDes : "",
+        costDescription: costDes ? costDes : "",
         description: description,
         timeStart: activity ? activity.timeStart : "00:00",
         timeEnd: activity ? activity.timeEnd : "00:30",
@@ -275,10 +275,10 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
               const updatedActivitiesList =
                 existingActivityIndex !== -1
                   ? [
-                      ...day.activity.slice(0, existingActivityIndex),
-                      { ...day.activity[existingActivityIndex], ...newActivity },
-                      ...day.activity.slice(existingActivityIndex + 1),
-                    ]
+                    ...day.activity.slice(0, existingActivityIndex),
+                    { ...day.activity[existingActivityIndex], ...newActivity },
+                    ...day.activity.slice(existingActivityIndex + 1),
+                  ]
                   : day.activity;
               return { ...day, activity: updatedActivitiesList };
             } else {
@@ -296,10 +296,10 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
       console.error("Lỗi khi lưu activity:", error);
     }
   };
-  
-  
 
-  
+
+
+
   return (
     <Modal
       isOpen={isOpen}
@@ -317,39 +317,39 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         <div className="modal-body">
           <Header setOption={setOption} setCurDes={setCurDes} />
 
-          {option!=="Other" && (
-             <select
-             id="sort-by"
-             value={choice}
-             onChange={(e) => setChoice(e.target.value)}
-           >
-             <option value="List">Chọn từ danh sách</option>
-             <option value="WishList">Chọn từ WishList</option>
-             
-           </select>
-          )}
-         
-        {choice === "List" &&  (
-          <>
-            {option === "Attraction" && <ListAttractions status="Schedule" setCurDes={setCurDes} city={city} />}
-            {option === "Accommodation" && <ListAccommodation status="Schedule" setCurDes={setCurDes} city={city} />}
-            {option === "FoodService" && <ListFoodServices status="Schedule" setCurDes={setCurDes} city={city} />}
-          </>
-        )}
+          {option !== "Other" && (
+            <select
+              id="sort-by"
+              value={choice}
+              onChange={(e) => setChoice(e.target.value)}
+            >
+              <option value="List">Chọn từ danh sách</option>
+              <option value="WishList">Chọn từ WishList</option>
 
-        {choice === "WishList" && (
-          <>
-            {option === "Attraction" && <ListAttractions status="WishList" setCurDes={setCurDes} city={city} />}
-            {option === "Accommodation" && <ListAccommodation status="WishList" setCurDes={setCurDes} city={city} />}
-            {option === "FoodService" && <ListFoodServices status="WishList" setCurDes={setCurDes} city={city} />}
-          </>
-        )}
+            </select>
+          )}
+
+          {choice === "List" && (
+            <>
+              {option === "Attraction" && <ListAttractions status="Schedule" setCurDes={setCurDes} city={city} />}
+              {option === "Accommodation" && <ListAccommodation status="Schedule" setCurDes={setCurDes} city={city} />}
+              {option === "FoodService" && <ListFoodServices status="Schedule" setCurDes={setCurDes} city={city} />}
+            </>
+          )}
+
+          {choice === "WishList" && (
+            <>
+              {option === "Attraction" && <ListAttractions status="WishList" setCurDes={setCurDes} city={city} />}
+              {option === "Accommodation" && <ListAccommodation status="WishList" setCurDes={setCurDes} city={city} />}
+              {option === "FoodService" && <ListFoodServices status="WishList" setCurDes={setCurDes} city={city} />}
+            </>
+          )}
           {option === "Other" && (
-              <OtherItem
-                setCurDes={setCurDes}
-                curDes={curDes}
-              />
-            )}
+            <OtherItem
+              setCurDes={setCurDes}
+              curDes={curDes}
+            />
+          )}
 
           <div className="activity-infor-container">
             {option === "Accommodation" && curDes && (
@@ -367,9 +367,9 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
                 attraction={curDes}
               />
             )}
-           
+
             {
-              (curDes || option==="Other") && (
+              (curDes || option === "Other") && (
                 <FormAddActivity images={curDes?.images || null} cost={cost} setCost={setCost} costDes={costDes} setCostDes={setCostDes}
                   description={description} setDescription={setDescription} option={option} />
               )
@@ -432,7 +432,7 @@ const FormAddActivity = ({ images, cost, setCost, description, setDescription, o
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
         </div>
-        {option!=="Other" && <div className="img-add-activity-container">
+        {option !== "Other" && <div className="img-add-activity-container">
           <button onClick={handlePrev} className="carousel-button">{"<"}</button>
           <img
             className="add-schedule-img"

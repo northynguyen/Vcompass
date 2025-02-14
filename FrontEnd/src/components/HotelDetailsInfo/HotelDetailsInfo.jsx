@@ -2,14 +2,15 @@
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import DatePicker from 'react-datepicker';
+import { toast as Toast, toast } from 'react-toastify';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
 import { StoreContext } from '../../Context/StoreContext';
 import ImagesModal from '../ImagesModal/ImagesModal';
+import { StarRating } from '../PlaceReview/PlaceReview';
 import './HotelDetailsInfo.css';
 import RoomCard from './RoomCard'; // Nhập RoomCard từ file mới
 import RoomDetail from './RoomDetail/RoomDetail';
-import { StarRating } from '../PlaceReview/PlaceReview';
 
 const HotelDetailsInfo = ({ serviceId }) => {
   const [dateRange, setDateRange] = useState([null, null]);
@@ -18,7 +19,8 @@ const HotelDetailsInfo = ({ serviceId }) => {
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(1);
   const [numRooms, setNumRooms] = useState(1);
-  const { url } = React.useContext(StoreContext);
+  const [isSave, setIsSave] = useState(false);
+  const { url, token, user } = React.useContext(StoreContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -35,7 +37,30 @@ const HotelDetailsInfo = ({ serviceId }) => {
       diffDays: ""
     }
   })
+  const toggleWishlist = async () => {
+    try {
+      const newStatus = !isSave;
+      setIsSave(newStatus);
+      const action = newStatus ? "add" : "remove";
+      const response = await fetch(
+        `${url}/api/user/user/${user._id}/addtoWishlist?type=accommodation&itemId=${serviceId}&action=${action}`,
+        {
+          method: "POST",
+          headers: { token: token },
+        }
+      );
 
+      const result = await response.json();
+      if (!result.success) {
+        toast.error(result.message);
+      }
+      toast.success(result.message);
+      console.log(result.message);
+    } catch (error) {
+      console.error("Failed to update wishlist:", error.message);
+      setIsSave((prevState) => !prevState);
+    }
+  };
   useEffect(() => {
     let isMounted = true; // Track if the component is mounted
     const fetchAccommodation = async () => {
@@ -291,8 +316,20 @@ const HotelDetailsInfo = ({ serviceId }) => {
       {/* Left Column: Hotel Details */}
       <div className="tour-details">
         <div className="place-header">
-          <h1>{accommodation.name}</h1>
-          <p className="place-header-rating"><StarRating rating={Math.round(totalRating)} />  {totalRating.toFixed(1)} / 5.0 ( {accommodation.ratings.length} đánh giá)</p>
+          <div className="place-header-content">
+            <h1>{accommodation.name}</h1>
+            <p className="place-header-rating"><StarRating rating={Math.round(totalRating)} />  {totalRating.toFixed(1)} / 5.0 ( {accommodation.ratings.length} đánh giá)</p>
+          </div>
+          <div className="place-header-favorite">
+            <div className="wrapper">
+              <div className={`favorite-button ${isSave ? "saved" : ""} `} onClick={toggleWishlist}>
+                <i className="fa-solid fa-bookmark schedule-icon"></i>
+                <p className="favourite-btn">
+                    {!isSave ? "Lưu địa điểm": "Đã lưu địa điểm"}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Image Gallery */}
