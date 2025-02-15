@@ -1,13 +1,12 @@
-
-
 .user-service-container {
     display: flex;
     max-width: 70%;
     min-width: 70%;
     margin: 0 auto;
-   
- 
+
+
 }
+
 .content {
     flex-grow: 1;
     padding: 20px;
@@ -21,4 +20,27 @@
     margin-bottom: 50px;
 }
 
+@media (max-width: 768px) {
+    .user-service-container {
+        flex-direction: column;
+        width: 100% !important;
+        align-items: center;
+        justify-content: center;
+        max-width: fit-content !important;
+        min-width: none;
+    }
 
+    .content {
+        width: 100% !important;
+        margin: 0 0;
+        min-width: 100% !important;
+        padding: 10px !important;
+
+    }
+
+    .my-account h2 {
+        margin-bottom: 10px !important;
+    }
+
+
+}

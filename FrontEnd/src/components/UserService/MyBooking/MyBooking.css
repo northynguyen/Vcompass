@@ -1,12 +1,11 @@
-
-.my-booking  h2 {
+.my-booking h2 {
     font-size: 24px;
     margin-bottom: 20px;
     color: #333;
 }
 
 /* Ô tìm kiếm */
-.my-booking  .search-input {
+.my-booking .search-input {
     padding: 8px 12px;
     width: 100%;
     margin-bottom: 15px;
@@ -21,7 +20,7 @@
     margin-bottom: 20px;
 }
 
-.my-booking  .filter-buttons button {
+.my-booking .filter-buttons button {
     padding: 8px 16px;
     border: none;
     border-radius: 5px;
@@ -30,13 +29,13 @@
     transition: background-color 0.2s ease;
 }
 
-.my-booking  .filter-buttons .active-filter {
+.my-booking .filter-buttons .active-filter {
     background-color: #007bff;
     color: white;
 }
 
 /* Danh sách đặt phòng */
-.my-booking  .booking-item {
+.my-booking .booking-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -48,11 +47,11 @@
     transition: box-shadow 0.3s ease;
 }
 
-.my-booking  .booking-item:hover {
+.my-booking .booking-item:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.my-booking  .hotel-img {
+.my-booking .hotel-img {
     width: 200px;
     height: 200px;
     border-radius: 8px;
@@ -60,32 +59,33 @@
     margin-right: 20px;
 }
 
-.my-booking  .booking-info {
+.my-booking .booking-info {
     flex-grow: 1;
 }
 
-.my-booking  .booking-info h3 {
+.my-booking .booking-info h3 {
     font-size: 18px;
     margin: 0 0 5px;
     color: #333;
 }
 
-.my-booking  .booking-info p {
+.my-booking .booking-info p {
     font-size: 14px;
     margin: 5px 0;
     color: #666;
 }
 
-.my-booking  .booking-info p strong {
+.my-booking .booking-info p strong {
     color: #333;
 }
 
-.my-booking  .booking-actions {
+.my-booking .booking-actions {
     display: flex;
     gap: 10px;
 }
 
-.my-booking  .review-btn, .cancel-btn {
+.my-booking .review-btn,
+.cancel-btn {
     padding: 8px 12px;
     border: none;
     border-radius: 5px;
@@ -94,27 +94,27 @@
     transition: background-color 0.2s ease;
 }
 
-.my-booking  .review-btn {
+.my-booking .review-btn {
     background-color: #4caf50;
     color: white;
 }
 
-.my-booking  .review-btn:hover {
+.my-booking .review-btn:hover {
     background-color: #45a049;
 }
 
-.my-booking  .cancel-btn {
+.my-booking .cancel-btn {
     background-color: #f44336;
     color: white;
 }
 
-.my-booking  .cancel-btn:hover {
+.my-booking .cancel-btn:hover {
     background-color: #e53935;
 }
 
 .popup {
     position: fixed;
-    top: 0 ;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
@@ -155,8 +155,10 @@
 }
 
 .highlight {
-    background-color: #fdfdb1 !important; /* Light yellow color for highlighting */
-    transition: background-color 0.3s ease-in-out !important; /* Longer duration for smoother transition */
+    background-color: #fdfdb1 !important;
+    /* Light yellow color for highlighting */
+    transition: background-color 0.3s ease-in-out !important;
+    /* Longer duration for smoother transition */
 }
 
 .pagination {
@@ -165,6 +167,7 @@
     gap: 10px;
     margin-top: 20px;
 }
+
 .my-booking {
     .pagination-btn {
         padding: 8px 16px;
@@ -182,5 +185,30 @@
     .pagination-btn:disabled {
         cursor: not-allowed;
         background-color: #f0f0f0;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-buttons {
+        display: none;
+    }
+
+    .my-booking .booking-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .my-booking .hotel-img {
+        width: 100%;
+        height: auto;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .my-booking .booking-info {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
     }
 }
