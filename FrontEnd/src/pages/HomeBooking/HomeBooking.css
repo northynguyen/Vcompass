@@ -169,3 +169,37 @@
     /* Chiếm ít không gian hơn */
     padding: 20px;
 }
+
+@media (max-width: 768px) {
+    .home-booking-container {
+        width: 95% !important;
+        padding: 0px !important;
+    }
+
+    .home-booking-search-item {
+        width: 100%;
+    }
+
+    .home-booking-search-form {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .react-datepicker {
+        width: 60vw;
+
+    }
+
+    .homeBooking-accomodations-container {
+        flex-direction: column;
+        padding: 0px !important;
+
+    }
+
+    .accomodation-cards {
+        padding: 0px !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+}
