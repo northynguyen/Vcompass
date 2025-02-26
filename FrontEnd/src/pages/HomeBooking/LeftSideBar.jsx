@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './LeftSideBar.css';
 import { Range } from 'react-range';
+import { FaFilter } from "react-icons/fa";
 
 const LeftSideBar = ({ onFilterChange }) => {
+    const [isFilterVisible, setIsFilterVisible] = useState(false);
     const [priceRange, setPriceRange] = useState({ min: 0, max: 70000000 });
     const [sortOrder, setSortOrder] = useState('');
     const [selectedAmenities, setSelectedAmenities] = useState([]);
@@ -123,65 +125,69 @@ const LeftSideBar = ({ onFilterChange }) => {
     };
     return (
         <div className="left-sidebar">
-            <h2>Chọn lọc theo:</h2>
-            <h3>Khoảng giá</h3>
-            <div className="price-range-slider">
-                <Range
-                    values={[priceRange.min, priceRange.max]}
-                    step={100000}
-                    min={0}
-                    max={70000000}
-                    onChange={handlePriceChange}
-                    renderTrack={({ props, children }) => (
-                        <div
-                            {...props}
-                            style={{
-                                ...props.style,
-                                height: '6px',
-                                width: '100%',
-                                backgroundColor: '#ddd',
-                                margin: '15px 0',
-                            }}
-                        >
-                            {children}
-                        </div>
-                    )}
-                    renderThumb={({ props, index }) => (
-                        <div
-                            {...props}
-                            style={{
-                                ...props.style,
-                                height: '20px',
-                                width: '20px',
-                                borderRadius: '50%',
-                                backgroundColor: '#007BFF',
-                                cursor: 'pointer',
-                                boxShadow: '0 0 2px rgba(0, 0, 0, 0.5)',
-                            }}
-                        />
-                    )}
-                />
-                <div className="price-range-inputs">
-                    <input
-                        type="number"
-                        name="min"
-                        value={priceRange.min}
-                        onChange={handleInputChange}
-                        placeholder="Giá thấp nhất"
-                        className="price-input"
-                    />
-                    <input
-                        type="number"
-                        name="max"
-                        value={priceRange.max}
-                        onChange={handleInputChange}
-                        placeholder="Giá cao nhất"
-                        className="price-input"
-                    />
-                </div>
+            <div className="filter-header">
+                <h2>Chọn lọc theo:</h2>
+                <FaFilter className="filter-icon" onClick={() => setIsFilterVisible(!isFilterVisible)} />
             </div>
+            <div className={`filter-content ${isFilterVisible ? "show" : "hide"}`}>
+                <h3 >Khoảng giá</h3>
+                <div className="price-range-slider">
+                    <Range
+                        values={[priceRange.min, priceRange.max]}
+                        step={100000}
+                        min={0}
+                        max={70000000}
+                        onChange={handlePriceChange}
+                        renderTrack={({ props, children }) => (
+                            <div
+                                {...props}
+                                style={{
+                                    ...props.style,
+                                    height: '6px',
+                                    width: '100%',
+                                    backgroundColor: '#ddd',
+                                    margin: '15px 0',
+                                }}
+                            >
+                                {children}
+                            </div>
+                        )}
+                        renderThumb={({ props, index }) => (
+                            <div
+                                {...props}
+                                style={{
+                                    ...props.style,
+                                    height: '20px',
+                                    width: '20px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#007BFF',
+                                    cursor: 'pointer',
+                                    boxShadow: '0 0 2px rgba(0, 0, 0, 0.5)',
+                                }}
+                            />
+                        )}
+                    />
+                    <div className="price-range-inputs">
+                        <input
+                            type="number"
+                            name="min"
+                            value={priceRange.min}
+                            onChange={handleInputChange}
+                            placeholder="Giá thấp nhất"
+                            className="price-input"
+                        />
+                        <input
+                            type="number"
+                            name="max"
+                            value={priceRange.max}
+                            onChange={handleInputChange}
+                            placeholder="Giá cao nhất"
+                            className="price-input"
+                        />
+                    </div>
+                </div>
 
-            {/* <div className="filter-section">
+                {/* <div className="filter-section">
                 <h3>Sắp xếp theo</h3>
                 <label>
                     <input
@@ -205,28 +211,28 @@ const LeftSideBar = ({ onFilterChange }) => {
                 </label>
             </div> */}
 
-            <div className="filter-section">
-                <h3>Tiện nghi</h3>
-                {Object.entries(amenities).map(([category, amenityList]) => (
-                    <div key={category} className="amenity-category">
-                        <h4>{getCategoryName(category)}</h4> {/* Hàm để hiển thị tên danh mục theo ý bạn */}
-                        {amenityList.map((amenity, index) => (
-                            <label key={amenity}>
-                                <input
-                                    type="checkbox"
-                                    value={amenity}
-                                    checked={selectedAmenities.includes(amenity)}
-                                    onChange={(e) => handleCheckboxChange(e, 'amenities')}
-                                />
-                                {amenity}
-                            </label>
-                        ))}
-                    </div>
-                ))}
-            </div>
+                <div className="filter-section">
+                    <h3>Tiện nghi</h3>
+                    {Object.entries(amenities).map(([category, amenityList]) => (
+                        <div key={category} className="amenity-category">
+                            <h4>{getCategoryName(category)}</h4> {/* Hàm để hiển thị tên danh mục theo ý bạn */}
+                            {amenityList.map((amenity, index) => (
+                                <label key={amenity}>
+                                    <input
+                                        type="checkbox"
+                                        value={amenity}
+                                        checked={selectedAmenities.includes(amenity)}
+                                        onChange={(e) => handleCheckboxChange(e, 'amenities')}
+                                    />
+                                    {amenity}
+                                </label>
+                            ))}
+                        </div>
+                    ))}
+                </div>
 
 
-            {/* <div className="filter-section">
+                {/* <div className="filter-section">
                 <h3>Kích thước phòng</h3>
                 <label>
                     <input
@@ -270,29 +276,31 @@ const LeftSideBar = ({ onFilterChange }) => {
                 </label>
             </div> */}
 
-            <div className="filter-section">
-                <h3>Xếp hạng</h3>
-                <label>
-                    <input
-                        type="radio"
-                        name="rating"
-                        value="3"
-                        checked={rating === '3'}
-                        onChange={(e) => handleCheckboxChange(e, 'rating')}
-                    />
-                    Trên 3 sao
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="rating"
-                        value="4"
-                        checked={rating === '4'}
-                        onChange={(e) => handleCheckboxChange(e, 'rating')}
-                    />
-                    Trên 4 sao
-                </label>
+                <div className="filter-section">
+                    <h3>Xếp hạng</h3>
+                    <label>
+                        <input
+                            type="radio"
+                            name="rating"
+                            value="3"
+                            checked={rating === '3'}
+                            onChange={(e) => handleCheckboxChange(e, 'rating')}
+                        />
+                        Trên 3 sao
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="rating"
+                            value="4"
+                            checked={rating === '4'}
+                            onChange={(e) => handleCheckboxChange(e, 'rating')}
+                        />
+                        Trên 4 sao
+                    </label>
+                </div>
             </div>
+
         </div>
     );
 };

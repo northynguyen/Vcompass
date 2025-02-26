@@ -18,7 +18,7 @@ const Sidebar = ({ activeTab, onTabChange, img }) => {
     return (
         <div className="my-account-sidebar">
             <div className="profile-section">
-                <img src={  user.avatar && user.avatar.includes('http') ? user.avatar : user.avatar? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt="Profile" className="profile-pic" />
+                <img src={user.avatar && user.avatar.includes('http') ? user.avatar : user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt="Profile" className="profile-pic" />
                 <div className="profile-name">{user.name}</div>
                 <div className="priority-status">Bronze Priority</div>
             </div>
@@ -36,13 +36,13 @@ const Sidebar = ({ activeTab, onTabChange, img }) => {
                 <li
                     className={activeTab === 'schedule' ? 'active-tab' : ''}
                     onClick={() => onClick('schedule')}>
-                    <AiOutlineSchedule /> Đã lưu 
+                    <AiOutlineSchedule /> Đã lưu
                 </li>
-                <hr />
+                {/* <hr />
                 <li className={activeTab === 'logout' ? 'active-tab' : ''}
                     onClick={() => onClick('logout')}>
                     <CiLogout /> Log Out
-                </li>
+                </li> */}
             </ul>
         </div>
     );

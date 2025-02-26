@@ -74,9 +74,32 @@
     color: #333;
     width: 20%;
     align-self: center;
-    
+
 }
 
 .card-content-price p {
     margin: 0;
+}
+
+@media (max-width: 768px) {
+    .card-content-container {
+        flex-direction: column !important;
+    }
+
+    .card-content-img {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    .card-content {
+        width: 100% !important;
+    }
+
+    .card-content-price {
+        flex-direction: row !important;
+        font-size: 15px !important;
+        align-items: center !important;
+        width: 100% !important;
+        justify-content: center !important;
+    }
 }

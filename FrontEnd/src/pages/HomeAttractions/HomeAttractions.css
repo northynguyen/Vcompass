@@ -87,3 +87,38 @@
     /* Chiếm ít không gian hơn */
     padding: 20px;
 }
+
+@media (max-width: 768px) {
+    .home-attractions-container {
+        width: 95%;
+        padding: 0px;
+    }
+
+    .attractions-search-form {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .attractions-search-item {
+        width: 100%;
+    }
+
+    .attractions-content-container {
+        flex-direction: column;
+    }
+
+    .accomodation-cards {
+        padding: 0px !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .attractions-content-container {
+        padding: 10px 0px !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+}
