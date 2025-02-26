@@ -313,3 +313,67 @@ p.follower-num-follower {
   gap: 8px;
   padding-left: 8px;
 }
+@media (max-width: 768px) {
+  .fanpage-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0px auto;
+    padding: 8px;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    border-radius: 8px;
+}
+.fanpage-header-left {
+  align-items: start;
+  justify-content: center;
+}
+.fanpage-header-container {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+.fanpage-content {
+  flex-direction: column;
+}
+.fanpage-introduce {
+  position: unset;
+}
+.dropdown-menu {
+  right: 10px;
+  z-index: 1;
+}
+.fanpage-header {
+  flex-direction: column;
+  gap: 20px;
+}
+.fanpage-watch-button {
+  border-radius: 8px;
+  width: 100%;
+}
+.fanpage-tabs {
+  gap: 0px;
+  justify-content: space-between;
+}
+.fanpage-tab-button {
+  font-size: 12px;
+  padding: 8px;
+}
+.fanpage-title {
+  font-size: 1.2rem;
+}
+p.profile-detail-infor-text {
+  font-size: 14px;
+}
+.follower-avatar {
+  width: 50px;
+  height: 50px;
+}
+a.follower-name {
+  font-size: 16px;
+}
+p.follower-num-follower {
+  font-size: 12px;
+}
+.dropdown-menu button {
+  font-size: 14px;
+}
+}
