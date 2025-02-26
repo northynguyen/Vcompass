@@ -21,6 +21,7 @@ import Partnership from './pages/Partnership/Partnership';
 import PlaceDetails from './pages/PlaceDetails/PlaceDetails';
 import Schedule from './pages/Schedule/Schedule';
 import UserService from './pages/UserService/UserService';
+import OtherUserProfile from "./pages/OtherUserProfile/OtherUserProfile";
 
 import SearchSchedule from './pages/SearchSchedule/SearchSchedule';
 
@@ -74,6 +75,7 @@ function App() {
           <Route path="/schedule-view/:id" element={<Schedule mode="view" />} />
           <Route path="/booking-process/step2" element={<BookingProcess />} />
           <Route path="/searchSchedule" element={<SearchSchedule />} />
+          <Route path="/otherUserProfile/:id" element={<OtherUserProfile />} />
           <Route path="/booking-process/finalstep" element={<BookingProcess />} />
           <Route path="*" element={<Page404 />} />
           <Route path="/404" element={<Page404 />} />

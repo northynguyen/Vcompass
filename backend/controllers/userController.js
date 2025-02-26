@@ -1,22 +1,20 @@
 // controllers/authController.js
 
 import bcrypt from "bcrypt";
+import cloudinary from "cloudinary";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import validator from "validator";
 import { passport } from "../config/passport.js"; // Import passport
-import partnerModel from "../models/partner.js";
+import { uploadToCloudinaryV2 } from "../controllers/videoController.js";
 import adminModel from "../models/admin.js";
+import partnerModel from "../models/partner.js";
 import userModel from "../models/user.js";
-import mongoose, { model } from 'mongoose';
-import {uploadToCloudinaryV2} from '../controllers/videoController.js';
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import cloudinary from 'cloudinary';
 
-import fs from 'fs';
-import path from 'path';
-import Attraction from '../models/attraction.js'; // Import Attraction
-import Accommodation from '../models/accommodation.js'; // Import Accommodation
-import FoodService from '../models/foodService.js'; // Import FoodService
+import Accommodation from "../models/accommodation.js"; // Import Accommodation
+import Attraction from "../models/attraction.js"; // Import Attraction
+import FoodService from "../models/foodService.js"; // Import FoodService
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -25,25 +23,27 @@ cloudinary.config({
 });
 
 export const getUserFavoritesWithDetails = async (req, res) => {
-  const { userId, type,city  } = req.query;
+  const { userId, type, city } = req.query;
 
   try {
     // Kiểm tra loại hợp lệ
-    const validTypes = ['attraction', 'accommodation', 'foodService'];
+    const validTypes = ["attraction", "accommodation", "foodService"];
     if (!validTypes.includes(type)) {
-      return res.status(400).json({ success: false, message: 'Invalid type parameter' });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid type parameter" });
     }
 
     // Tìm user và populate trường liên quan
-    const user = await userModel
-      .findById(userId)
-      .populate({
-        path: `favorites.${type}`, 
-        model: getModelByType(type), 
-      });
+    const user = await userModel.findById(userId).populate({
+      path: `favorites.${type}`,
+      model: getModelByType(type),
+    });
 
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     // Lấy danh sách yêu thích tuỳ thuộc vào `type`
@@ -51,42 +51,60 @@ export const getUserFavoritesWithDetails = async (req, res) => {
     return res.status(200).json({ success: true, favorites });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ success: false, message: 'Server error' });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
 // Hàm trả về model dựa trên type
 const getModelByType = (type) => {
   switch (type) {
-    case 'attraction':
+    case "attraction":
       return Attraction;
-    case 'accommodation':
+    case "accommodation":
       return Accommodation;
-    case 'foodService':
+    case "foodService":
       return FoodService;
     default:
-      throw new Error('Invalid type for model mapping');
+      throw new Error("Invalid type for model mapping");
   }
 };
 
-
 // Import passport
 const handlegetInfoById = async (req, res, model) => {
-  const id = req.params.id? req.params.id : req.body.userId;
+  const id = req.params.id ? req.params.id : req.body.userId;
   try {
     const user = await model.findById(id);
     if (!user) {
-      return res.json({ success: false, message: "Không tìm thấy người dùng." });
+      return res.json({
+        success: false,
+        message: "Không tìm thấy người dùng.",
+      });
     }
 
     res.json({ success: true, user });
   } catch (error) {
     console.error(error);
   }
-}
+};
+const handlegetInfoByIdHaveFollower = async (req, res, model) => {
+  const id = req.params.id ? req.params.id : req.body.userId;
+  try {
+    const user = await model.findById(id).populate(['follower', 'following']);
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "Không tìm thấy người dùng.",
+      });
+    }
+
+    res.json({ success: true, user });
+  } catch (error) {
+    console.error(error);
+  }
+};
 // Helper function to create JWT
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET,); // Token expires in 1 hour
+  return jwt.sign({ id }, process.env.JWT_SECRET); // Token expires in 1 hour
 };
 
 // Helper function to handle login
@@ -100,7 +118,6 @@ const handleLogin = async (req, res, model, requiredRole = null) => {
 
   try {
     // Construct query based on requiredRole
-
 
     // Find user by email and role (if required)
     const user = await model.findOne({ email });
@@ -126,7 +143,7 @@ const handleLogin = async (req, res, model, requiredRole = null) => {
         message: "Tài khoản đã bị khóa , liên hệ admin để giải quyết.",
       });
     }
-  
+
     const token = createToken(user._id);
 
     res.json({ success: true, token, message: "Đăng nhập thành công.", user });
@@ -183,7 +200,7 @@ const handleRegister = async (req, res, model, userRole = "user") => {
       gender: "",
       phone_number: "",
       avatar: "profile_icon.png",
-      status: "active" // Initialize roles array with the specified role\
+      status: "active", // Initialize roles array with the specified role\
     });
 
     const savedUser = await newUser.save();
@@ -195,7 +212,7 @@ const handleRegister = async (req, res, model, userRole = "user") => {
       success: true,
       token,
       message: "Đăng ký thành công.",
-      user: savedUser
+      user: savedUser,
     });
   } catch (error) {
     console.error(error);
@@ -212,7 +229,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL:`https://vcompass-backend.onrender.com/auth/google/callback`,
+      callbackURL: `https://vcompass-backend.onrender.com/auth/google/callback`,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -264,7 +281,7 @@ const googleCallback = async (req, res) => {
     { failureRedirect: "https://vcompass.onrender.com/" },
     async (err, user, info) => {
       if (err || !user) {
-        return res.redirect(`https://vcompass.onrender.com/`)
+        return res.redirect(`https://vcompass.onrender.com/`);
       }
       // Create JWT token
       const token = createToken(user._id);
@@ -301,7 +318,12 @@ const googleSignIn = async (req, res) => {
     if (user) {
       // If user exists, check if they have 'user' role
       if (!user.roles.includes("user")) {
-        return res.status(403).json({ success: false, message: "Chỉ người dùng mới có thể đăng nhập." });
+        return res
+          .status(403)
+          .json({
+            success: false,
+            message: "Chỉ người dùng mới có thể đăng nhập.",
+          });
       }
     } else {
       // If user does not exist, create a new user with 'user' role
@@ -361,15 +383,18 @@ const registerAdmin = async (req, res) => {
 
 const getUserById = async (req, res) => {
   await handlegetInfoById(req, res, userModel);
-}
+};
+const getUserByIdHaveFollower = async (req, res) => {
+  await handlegetInfoByIdHaveFollower(req, res, userModel);
+};
 
 const getPartnerById = async (req, res) => {
   await handlegetInfoById(req, res, partnerModel);
-}
+};
 
 const getAdminById = async (req, res) => {
   await handlegetInfoById(req, res, adminModel);
-}
+};
 
 const getAllUsers = async (req, res) => {
   try {
@@ -389,22 +414,34 @@ const getAllPartners = async (req, res) => {
 };
 
 const updateUserOrPartnerOrAdmin = async (req, res) => {
-  const { type, name, password, address, date_of_birth, gender, phone_number, status } = req.body;
+  const {
+    type,
+    name,
+    password,
+    address,
+    date_of_birth,
+    gender,
+    phone_number,
+    status,
+  } = req.body;
   const { id } = req.params;
   const updates = {};
   const isUpdateStatus = status !== undefined;
 
   try {
     // Lấy thông tin người dùng hiện tại để kiểm tra ảnh cũ
-    const currentUser = await (
-      type === 'user' ? userModel.findById(id) :
-      type === 'partner' ? partnerModel.findById(id) :
-      type === 'admin' ? adminModel.findById(id) :
-      null
-    );
+    const currentUser = await (type === "user"
+      ? userModel.findById(id)
+      : type === "partner"
+      ? partnerModel.findById(id)
+      : type === "admin"
+      ? adminModel.findById(id)
+      : null);
 
     if (!currentUser) {
-      return res.status(404).json({ success: false, message: `${type} not found.` });
+      return res
+        .status(404)
+        .json({ success: false, message: `${type} not found.` });
     }
 
     if (req.files && req.files.image && req.files.image.length > 0) {
@@ -412,22 +449,30 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
 
       if (currentUser.avatar) {
         try {
-          await cloudinary.v2.uploader.destroy(currentUser.avatar, { resource_type: 'image' });
+          await cloudinary.v2.uploader.destroy(currentUser.avatar, {
+            resource_type: "image",
+          });
         } catch (error) {
-          console.error('Error deleting old avatar:', error);
+          console.error("Error deleting old avatar:", error);
         }
       }
 
       try {
-        const result = await uploadToCloudinaryV2(avatarBuffer, 'avatars', [
-          { width: 800, crop: 'scale' },
-          { quality: 'auto' },
+        const result = await uploadToCloudinaryV2(avatarBuffer, "avatars", [
+          { width: 800, crop: "scale" },
+          { quality: "auto" },
         ]);
         console.log(result);
         updates.avatar = result.secure_url;
       } catch (error) {
-        console.error('Error uploading new avatar:', error);
-        return res.status(500).json({ success: false, message: 'Error uploading avatar', error: error.message });
+        console.error("Error uploading new avatar:", error);
+        return res
+          .status(500)
+          .json({
+            success: false,
+            message: "Error uploading avatar",
+            error: error.message,
+          });
       }
     }
 
@@ -439,7 +484,9 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
     }
     if (address) updates.address = address;
     if (date_of_birth) {
-      updates.date_of_birth = new Date(date_of_birth).toISOString().split('T')[0];
+      updates.date_of_birth = new Date(date_of_birth)
+        .toISOString()
+        .split("T")[0];
     }
     if (gender) updates.gender = gender;
     if (status) updates.status = status;
@@ -447,43 +494,50 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
     updates.updated_at = new Date().toISOString();
 
     // Cập nhật thông tin người dùng
-    const updatedUser = await (
-      type === 'user' ? userModel.findByIdAndUpdate(id, updates, { new: true }) :
-      type === 'partner' ? partnerModel.findByIdAndUpdate(id, updates, { new: true }) :
-      type === 'admin' ? adminModel.findByIdAndUpdate(id, updates, { new: true }) :
-      null
-    );
+    const updatedUser = await (type === "user"
+      ? userModel.findByIdAndUpdate(id, updates, { new: true })
+      : type === "partner"
+      ? partnerModel.findByIdAndUpdate(id, updates, { new: true })
+      : type === "admin"
+      ? adminModel.findByIdAndUpdate(id, updates, { new: true })
+      : null);
 
     if (!updatedUser) {
-      return res.status(404).json({ success: false, message: `${type} not found.` });
+      return res
+        .status(404)
+        .json({ success: false, message: `${type} not found.` });
     }
 
-    if (isUpdateStatus && updatedUser.status === 'blocked') {
+    if (isUpdateStatus && updatedUser.status === "blocked") {
       global.io.emit(`${updatedUser._id}status`, updatedUser);
     }
 
     res.json({
       success: true,
-      message: 'Update successful.',
+      message: "Update successful.",
       user: updatedUser,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: 'Server error occurred.' });
+    res.status(500).json({ success: false, message: "Server error occurred." });
   }
 };
-
 
 const addtoWishlist = async (req, res) => {
   const { userId } = req.params; // Lấy userId từ params
   const { type, itemId, action } = req.query; // Lấy type, itemId, and action từ query
 
   try {
-    const validTypes = ["schedule", "accommodation", "attraction", "foodService"];
+    const validTypes = [
+      "schedule",
+      "accommodation",
+      "attraction",
+      "foodService",
+    ];
     if (!validTypes.includes(type)) {
       return res.status(400).json({
         success: false,
-        message: `Invalid type. Must be one of: ${validTypes.join(", ")}`
+        message: `Invalid type. Must be one of: ${validTypes.join(", ")}`,
       });
     }
 
@@ -491,7 +545,7 @@ const addtoWishlist = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found"
+        message: "User not found",
       });
     }
 
@@ -504,40 +558,40 @@ const addtoWishlist = async (req, res) => {
       if (itemIndex !== -1) {
         return res.status(400).json({
           success: false,
-          message: "Item already exists in the wishlist"
+          message: "Item already exists in the wishlist",
         });
       }
       user.favorites[type].push(new mongoose.Types.ObjectId(itemId));
-
     } else if (action === "remove") {
       if (itemIndex === -1) {
         return res.status(400).json({
           success: false,
-          message: "Item not found in the wishlist"
+          message: "Item not found in the wishlist",
         });
       }
       user.favorites[type].splice(itemIndex, 1); // Remove the item
     } else {
       return res.status(400).json({
         success: false,
-        message: "Invalid action. Must be 'add' or 'remove'"
+        message: "Invalid action. Must be 'add' or 'remove'",
       });
     }
 
     await user.save();
     return res.status(200).json({
       success: true,
-      message: `Item ${action === "add" ? "added to" : "removed from"} wishlist successfully`,
-      favorites: user.favorites
+      message: `Item ${
+        action === "add" ? "added to" : "removed from"
+      } wishlist successfully`,
+      favorites: user.favorites,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
-
 
 const checkPassword = async (req, res) => {
   try {
@@ -546,7 +600,7 @@ const checkPassword = async (req, res) => {
     if (!password) {
       return res.status(400).json({
         success: false,
-        message: "Password is required"
+        message: "Password is required",
       });
     }
 
@@ -562,7 +616,7 @@ const checkPassword = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: `${type.charAt(0).toUpperCase() + type.slice(1)} not found`
+        message: `${type.charAt(0).toUpperCase() + type.slice(1)} not found`,
       });
     }
 
@@ -571,38 +625,93 @@ const checkPassword = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({
         success: false,
-        message: "Incorrect password"
+        message: "Incorrect password",
       });
     }
 
     return res.status(200).json({
       success: true,
-      message: "Password is correct"
+      message: "Password is correct",
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message: 'Server error'
+      message: "Server error",
     });
   }
 };
 
+const followOrUnFollowUser = async (req, res) => {
+  const { userId } = req.body;
+  const { otherUserId, action } = req.query;
 
-export {
-  loginUser,
-  registerUser,
-  loginPartner,
-  loginAdmin,
-  registerPartner,
-  loginWithGoogle,
-  googleCallback,
-  googleSignIn,
-  registerAdmin,
-  getAllUsers,
-  getAllPartners,
-  updateUserOrPartnerOrAdmin, addtoWishlist,
-  getUserById, getPartnerById, getAdminById, checkPassword // Export the new function
+  try {
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    const otherUser = await userModel.findById(otherUserId);
+    if (!otherUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Other user not found",
+      });
+    }
+
+    if (action === "add") {
+      if (!user.following.includes(otherUserId)) {
+        user.following.push(new mongoose.Types.ObjectId(otherUserId));
+        otherUser.follower.push(new mongoose.Types.ObjectId(userId));
+      }
+    } else if (action === "remove") {
+      user.following = user.following.filter(
+        (id) => id.toString() !== otherUserId
+      );
+      otherUser.follower = otherUser.follower.filter(
+        (id) => id.toString() !== userId
+      );
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid action. Must be 'add' or 'remove'",
+      });
+    }
+    await user.save();
+    await otherUser.save();
+    return res.status(200).json({
+      success: true,
+      message: `Đã ${action === "add" ? "theo dõi" : "bỏ theo dõi"} thành công`,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };
 
-
+export {
+  addtoWishlist,
+  checkPassword,
+  followOrUnFollowUser, // Export the new function
+  getAdminById,
+  getAllPartners,
+  getAllUsers,
+  getPartnerById,
+  getUserById,
+  googleCallback,
+  googleSignIn,
+  loginAdmin,
+  loginPartner,
+  loginUser,
+  loginWithGoogle,
+  registerAdmin,
+  registerPartner,
+  registerUser,
+  updateUserOrPartnerOrAdmin,
+  getUserByIdHaveFollower
+};

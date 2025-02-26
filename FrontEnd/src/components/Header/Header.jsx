@@ -1,19 +1,17 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import "./Header.css";
-import profile_icon from "../../assets/profile_icon.png";
-import { Link } from "react-router-dom";
-import { useState, useRef, useEffect, useContext } from "react";
-import { CiViewList, CiSettings, CiLogout } from "react-icons/ci"; // Import icons from react-icons
-import { AiOutlineSchedule } from "react-icons/ai"; // Import icons from react-icons
-import { useNavigate } from 'react-router-dom'
-import { useLocation } from 'react-router-dom';
-import { StoreContext } from '../../Context/StoreContext'
-import { toast } from 'react-toastify';
-import { FaBell } from "react-icons/fa";
 import axios from 'axios';
-import { io } from 'socket.io-client'
+import { useContext, useEffect, useRef, useState } from "react";
+import { AiOutlineSchedule } from "react-icons/ai"; // Import icons from react-icons
+import { CiLogout, CiSettings, CiViewList } from "react-icons/ci"; // Import icons from react-icons
+import { FaBell } from "react-icons/fa";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import { io } from 'socket.io-client';
 import logo from '../../assets/logo.png';
+import { CgProfile } from "react-icons/cg";
+import { StoreContext } from '../../Context/StoreContext';
+import "./Header.css";
 
 const Header = ({ setShowLogin }) => {
   const { token, setToken, user, url } = useContext(StoreContext);
@@ -174,6 +172,10 @@ const Header = ({ setShowLogin }) => {
     navigate(`/user-service/${tab}`, { state: { tab }, replace: true }); // Gửi tab qua state
     setMenuVisible(false);
   };
+  const onMyProfileClick = () => {
+    navigate(`/otherUserProfile/${user._id}`);
+    setMenuVisible(false);
+  };
 
   const handleLogout = () => {
     setShowLogin(false);
@@ -256,8 +258,8 @@ const Header = ({ setShowLogin }) => {
           </Link>
         </ul>
 
-        
-        {sidebarVisible  && ( console.log(sidebarVisible),
+
+        {sidebarVisible && (console.log(sidebarVisible),
           <div className="sidebar visible">
             <button className="close-sidebar" onClick={toggleSidebar}>
               X
@@ -293,8 +295,8 @@ const Header = ({ setShowLogin }) => {
         {token === null ? <button className="header-login" onClick={() => setShowLogin(true)}>Đăng nhập</button> :
           <div className="header-profile" ref={menuRef}>
             <div className="profile-section" onClick={toggleMenu}>
-            <img
-                src={user && user.avatar && user.avatar.includes('http') ? `${user.avatar}` :  user && user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+              <img
+                src={user && user.avatar && user.avatar.includes('http') ? `${user.avatar}` : user && user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                 alt="Profile"
                 className="user-avatar"
               />
@@ -305,16 +307,20 @@ const Header = ({ setShowLogin }) => {
             {menuVisible && (
               <div className="profile-menu" >
                 <div className="profile-name">
-                <img
-                src={user && user.avatar && user.avatar.includes('http') ? `${user.avatar}` :  user && user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-                alt="Profile"
-                  className="user-avatar"
-                />
+                  <img
+                    src={user && user.avatar && user.avatar.includes('http') ? `${user.avatar}` : user && user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                    alt="Profile"
+                    className="user-avatar"
+                  />
                   <h3>{user.name} </h3>
                 </div>
-
+                
                 <hr></hr>
                 <ul className="menu">
+                  <li
+                    onClick={() => onMyProfileClick()}>
+                    <CgProfile /> Trang cá nhân
+                  </li>
                   <li
                     onClick={() => onClick('booking')}>
                     <CiViewList /> Booking của tôi
