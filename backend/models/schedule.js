@@ -49,6 +49,7 @@ const LikeSchema = new Schema({
 const ScheduleSchema = new Schema(
   {
     idUser: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    idInvitee : [{type: mongoose.Schema.Types.ObjectId, ref: "user"}],
     scheduleName: { type: String, required: true },
     description: { type: String },
     address: { type: String, required: true },

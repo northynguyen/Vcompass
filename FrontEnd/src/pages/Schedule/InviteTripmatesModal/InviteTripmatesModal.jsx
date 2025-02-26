@@ -15,7 +15,6 @@ const  InviteTripmatesModal = ({ isOpen, onClose }) => {
     <div className="modal-overlay-invite-tripmates">
       <div className="modal">
         <h2 className="modal-title">Invite tripmates</h2>
-
         <div className="permission-toggle">
           <button
             className={permission === "edit" ? "active" : ""}
@@ -39,13 +38,14 @@ const  InviteTripmatesModal = ({ isOpen, onClose }) => {
 
         <div className=" invite-tripmates">
             <i class="fa fa-envelope-o" aria-hidden="true"></i>
-            <input type="email" placeholder="Enter email address" />
+            <input type="email" required placeholder="Enter email address" />
         </div>
 
         <button className="manage-tripmates">⚙ Manage tripmates</button>
 
         <button className="close-btn" onClick={onClose}>✕</button>
       </div>
+
     </div>
   );
 }

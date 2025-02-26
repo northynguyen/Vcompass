@@ -13,7 +13,7 @@
   .modal {
     background: white;
     padding: 20px 30px;
-    border-radius: 10px;
+    border-radius: 20px;
     width:40vw ;
     min-height: 25vw;
     position: relative;
@@ -39,7 +39,7 @@
   
   .permission-toggle button {
     flex: 1;
-    padding: 8px;
+    padding: 10px;
     border: none;
     background: #ddd;
     cursor: pointer;
@@ -146,13 +146,19 @@
   /* Nút đóng */
   .close-btn {
     position: absolute;
-    top: 10px;
+    top: 15px;
     right: 15px;
-    background: none;
-    border: none;
-    font-size: 18px;
+    background: #f3f2f2;
+    border-radius: 50%;
+    align-items: center;
+    font-size: 16px;
+    padding-bottom: 5px;
     color: gray;
     cursor: pointer;
   }
+
+    .close-btn:hover {
+        background: #dedede;
+    }
   
 }
