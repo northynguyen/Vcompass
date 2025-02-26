@@ -4,7 +4,6 @@
   background-color: white;
   border-radius: 4px;
   box-shadow: 0px 1px 7px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,11 +19,22 @@
   align-items: center;
   width: 100%;
 }
-
+.post-more-infor {
+  margin-right: 8px;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 12px;
+  display: flex;
+  position: relative;
+}
+.post-more-infor:hover{
+  background: #e7e6e6;
+}
 .user-info {
   display: flex;
   align-items: center;
   padding: 10px 20px;
+  cursor: pointer;
 }
 
 .user-info h5 {
@@ -37,7 +47,6 @@
   border-radius: 50%;
   margin-right: 10px;
 }
-
 .verified {
   color: #009688;
 }
@@ -609,4 +618,29 @@ label.action-text {
 .heart-container .heart-icon-empty:hover {
   color: rgb(255, 0, 0); /* Red color on hover */
   background-color: rgba(255, 0, 0, 0.2); /* Slight red background on hover */
+}
+.schedule-dropdown-menu {
+  position: absolute;
+  top: 35px;
+  right: 10px;
+  background: white;
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  padding: 8px;
+  width: 250px;
+  z-index: 1;
+}
+
+.schedule-dropdown-menu button {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.follower-menu-button:hover {
+  background: #f3f3f3;
 }

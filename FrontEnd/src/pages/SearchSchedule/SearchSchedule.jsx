@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
-import { StoreContext } from "../../Context/StoreContext";
 import axios from "axios";
-import PostCard from "../../components/Poster/PostCard";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Range } from "react-range"; // Import react-range
-import "./SearchSchedule.css";
 import { useLocation, useNavigate } from "react-router-dom";
+import PostCard from "../../components/Poster/PostCard";
+import { StoreContext } from "../../Context/StoreContext";
+import "./SearchSchedule.css";
 
 const SearchSchedule = () => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const SearchSchedule = () => {
   const { url, user } = useContext(StoreContext);
   const hasSearchedRef = useRef(false);
   const [schedules, setSchedules] = useState([]);
-  const [addressFilter, setAddressFilter] = useState("");
+  const [addressFilter, setAddressFilter] = useState(location.state?.city || "");
   const [scheduleNameFilter, setScheduleNameFilter] = useState("");
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 10000000]);
@@ -50,28 +50,28 @@ const SearchSchedule = () => {
         if (response.data.success) {
           if (user) {
             setSchedules(
-                response.data.schedules.filter(
-                    (schedule) => schedule.isPublic === true && schedule.idUser !== user._id
-                )
+              response.data.schedules.filter(
+                (schedule) => schedule.isPublic === true && schedule.idUser !== user._id
+              )
             );
             setFilteredSchedules(
-                response.data.schedules.filter(
-                    (schedule) => schedule.isPublic === true && schedule.idUser !== user._id
-                )
+              response.data.schedules.filter(
+                (schedule) => schedule.isPublic === true && schedule.idUser !== user._id
+              )
             )
-        } else {
+          } else {
             setSchedules(
-                response.data.schedules.filter(
-                    (schedule) => schedule.isPublic === true
-                )
+              response.data.schedules.filter(
+                (schedule) => schedule.isPublic === true
+              )
             );
             setFilteredSchedules(
-                response.data.schedules.filter(
-                    (schedule) => schedule.isPublic === true
-                )
+              response.data.schedules.filter(
+                (schedule) => schedule.isPublic === true
+              )
             )
-        }
-        
+          }
+
         } else {
           console.error("Failed to fetch schedules:", response.data.message);
         }
@@ -94,7 +94,6 @@ const SearchSchedule = () => {
           schedule.scheduleName
             .toLowerCase()
             .includes(scheduleNameFilter.toLowerCase()));
-
       const matchesPrice =
         calculateTotalCost(schedule.activities) >= priceRange[0] &&
         calculateTotalCost(schedule.activities) <= priceRange[1];
@@ -126,7 +125,6 @@ const SearchSchedule = () => {
         matchesMedia
       );
     });
-
     // Sort by likes or comments if specified
     if (filters.sortBy === "likes") {
       filtered.sort((a, b) => b.likes.length - a.likes.length);
@@ -160,13 +158,19 @@ const SearchSchedule = () => {
   };
 
   useEffect(() => {
-    if (city && !hasSearchedRef.current) {
-      setAddressFilter(city);
-      setScheduleNameFilter(name);
-      hasSearchedRef.current = true; // Only set this flag once
-    }
-  }, [city, name]); // Trigger only when city or name changes
-
+    const fetchAccommodations = async () => {
+      if (city) {
+        setScheduleNameFilter(name);
+        setAddressFilter(city);
+        hasSearchedRef.current = true;
+        handleSearch(); // Gọi trực tiếp sau khi set
+      }
+    };
+    fetchAccommodations();
+  }, [city, name]);
+  useEffect(() => {
+    handleSearch();
+  }, [schedules]);
   // Re-run search whenever filters change
   useEffect(() => {
     handleSearch();

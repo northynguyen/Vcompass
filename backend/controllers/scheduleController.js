@@ -112,6 +112,37 @@ export const updateSchedule = async (req, res) => {
   }
 };
 
+export const getSchedulesByIdOtherUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+    const schedules = await Schedule.find({ idUser: id }).populate("idUser");
+    if (!schedules.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No schedules found for this user",
+      });
+    }
+    return res.json({
+      success: true,
+      message: "Schedules retrieved successfully",
+      schedules,
+    });
+  } catch (error) {
+    console.error("Error retrieving schedules:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving schedules",
+      error,
+    });
+  }
+};
+
 export const getSchedulesByIdUser = async (req, res) => {
   const { userId } = req.body; // Replace with user ID extraction from token, if needed.
   const { type } = req.query;

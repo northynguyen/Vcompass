@@ -1,0 +1,379 @@
+/* General styles */
+.fanpage-container {
+    width: 70%;
+    max-width: 1200px;
+    margin: 0px auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    border-radius: 8px;
+  }
+  
+  /* Header styles */
+  .fanpage-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .fanpage-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  .fanpage-posts {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    flex: 2;
+}
+.fanpage-header-container {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px 20px
+}
+.fanpage-introduce {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px ;
+  border-radius: 10px;
+  height: 100%;
+  position: sticky;
+  z-index: 10;
+  top: 70px;
+}
+.fanpage-content {
+  display: flex;
+  margin-top: 15px;
+  gap: 10px;
+}
+  .fanpage-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+    margin-bottom: 5px;
+  }
+  .tab-active {
+    background-color: #d7f2f2 !important;
+  }
+  .image-item {
+    width: 100%; /* Để ảnh tự điều chỉnh theo cột */
+    height: 230px;
+    border-radius: 8px; /* Bo góc nếu muốn */
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out; /* Hiệu ứng mượt */
+}
+
+.image-item:hover {
+    transform: scale(1.02);
+    border: 2px solid #333;
+}
+  .image-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 3 cột */
+    gap: 10px; /* Khoảng cách giữa ảnh */
+  }
+  .video-section {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr); /* 3 cột */
+    gap: 10px;
+    
+  }
+  .content-video{
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+  }
+.content-video:hover {
+    transform: scale(1.02);
+    border: 2px solid #333;
+}
+  .fanpage-stats {
+    font-size: 14px;
+    color: #555;
+  }
+  .modal-backdrop {
+    .modal-content {
+        display: flex;
+        flex-direction: column;
+        height: 90%;
+    }
+    .main-image {
+      max-width: 80vh;
+      max-height: 50vh;
+  }
+}
+  .fanpage-watch-button {
+    background-color: #1877f2;
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    min-width: 150px;
+}
+.follower-follow-button{
+  background-color: #1877f2;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  min-width: 100px;
+}
+  
+  .fanpage-watch-button:hover {
+    background-color: #145db2;
+  }
+  
+  /* Tabs */
+  .fanpage-tabs {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    border-top: 1px solid #ddd;
+    padding: 3px 0px;
+    border-bottom: 1px solid #ddd;
+}
+  
+  .fanpage-tab-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px 14px;
+    font-size: 16px;
+    font-weight: 510;
+    color: #555;
+  }
+  .fanpage-tab-button:hover {
+    background: #f3f2f2;
+  }
+  
+  /* About Section */
+  .fanpage-about {
+    margin-top: 20px;
+  }
+  
+  .fanpage-section-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  
+  .fanpage-description {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* Posts */
+  .fanpage-post {
+    background-color: #f9f9f9;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 15px;
+  }
+  
+  .fanpage-post-title {
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .fanpage-post-date {
+    font-size: 12px;
+    color: #777;
+  }
+  
+  .fanpage-post-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .fanpage-like-button,
+  .fanpage-comment-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .fanpage-like-button:hover,
+  .fanpage-comment-button:hover {
+    color: #1877f2;
+  }
+  
+  .fanpage-like-button.liked {
+    color: #e0245e;
+  }
+  .fanpage-header-left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.followed:hover{
+  background: red;
+}
+.profile-detail-infor {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  color: #777;
+  align-items: center;
+  justify-content: left;
+  margin-bottom: 12px;
+}
+p.profile-detail-infor-text {
+  font-size: 16px;
+  font-weight: 400;
+}
+.follower-item {
+  display: flex;
+  align-items: center;
+  margin: 8px;
+  padding: 10px;
+  border: 1px solid #eeeaea;
+  border-radius: 8px;
+  justify-content: space-between;
+}
+.follower-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+.follower-section {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+a.follower-name {
+  font-size: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+}
+.follower-name:hover{
+  text-decoration: underline;
+}
+.follower-info{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+p.follower-num-follower {
+  font-size: 15px;
+  color: #333;
+}
+.follower-more-info {
+  display: flex;
+  font-size: 22px;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 10px;
+  position: relative;
+}
+.follower-more-info:hover{
+  background: #e6e5e5;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 35px;
+  background: white;
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  padding: 8px;
+  width: 180px;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.follower-menu-button:hover {
+  background: #f3f3f3;
+}
+.follower-menu-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 8px;
+}
+@media (max-width: 768px) {
+  .fanpage-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0px auto;
+    padding: 8px;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    border-radius: 8px;
+}
+.fanpage-header-left {
+  align-items: start;
+  justify-content: center;
+}
+.fanpage-header-container {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+.fanpage-content {
+  flex-direction: column;
+}
+.fanpage-introduce {
+  position: unset;
+}
+.dropdown-menu {
+  right: 10px;
+  z-index: 1;
+}
+.fanpage-header {
+  flex-direction: column;
+  gap: 20px;
+}
+.fanpage-watch-button {
+  border-radius: 8px;
+  width: 100%;
+}
+.fanpage-tabs {
+  gap: 0px;
+  justify-content: space-between;
+}
+.fanpage-tab-button {
+  font-size: 12px;
+  padding: 8px;
+}
+.fanpage-title {
+  font-size: 1.2rem;
+}
+p.profile-detail-infor-text {
+  font-size: 14px;
+}
+.follower-avatar {
+  width: 50px;
+  height: 50px;
+}
+a.follower-name {
+  font-size: 16px;
+}
+p.follower-num-follower {
+  font-size: 12px;
+}
+.dropdown-menu button {
+  font-size: 14px;
+}
+}

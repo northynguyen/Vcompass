@@ -1,19 +1,17 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import "./Header.css";
-import profile_icon from "../../assets/profile_icon.png";
-import { Link } from "react-router-dom";
-import { useState, useRef, useEffect, useContext } from "react";
-import { CiViewList, CiSettings, CiLogout } from "react-icons/ci"; // Import icons from react-icons
-import { AiOutlineSchedule } from "react-icons/ai"; // Import icons from react-icons
-import { useNavigate } from 'react-router-dom'
-import { useLocation } from 'react-router-dom';
-import { StoreContext } from '../../Context/StoreContext'
-import { toast } from 'react-toastify';
-import { FaBell } from "react-icons/fa";
 import axios from 'axios';
-import { io } from 'socket.io-client'
+import { useContext, useEffect, useRef, useState } from "react";
+import { AiOutlineSchedule } from "react-icons/ai"; // Import icons from react-icons
+import { CiLogout, CiSettings, CiViewList } from "react-icons/ci"; // Import icons from react-icons
+import { FaBell } from "react-icons/fa";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import { io } from 'socket.io-client';
 import logo from '../../assets/logo.png';
+import { CgProfile } from "react-icons/cg";
+import { StoreContext } from '../../Context/StoreContext';
+import "./Header.css";
 
 const Header = ({ setShowLogin }) => {
   const { token, setToken, user, url } = useContext(StoreContext);
@@ -170,6 +168,10 @@ const Header = ({ setShowLogin }) => {
   const onClick = (tab) => {
     setActiveTab(tab);
     navigate(`/user-service/${tab}`, { state: { tab }, replace: true }); // Gửi tab qua state
+    setMenuVisible(false);
+  };
+  const onMyProfileClick = () => {
+    navigate(`/otherUserProfile/${user._id}`);
     setMenuVisible(false);
   };
 

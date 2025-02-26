@@ -17,7 +17,8 @@ import {
     getAllPartners,
     updateUserOrPartnerOrAdmin,
     getAdminById, addtoWishlist, getUserFavoritesWithDetails, checkPassword,
-    getPartnerById, getUserById,googleSignIn
+    getPartnerById, getUserById,googleSignIn, followOrUnFollowUser,
+    getUserByIdHaveFollower
 
 } from "../controllers/userController.js";
 
@@ -52,6 +53,7 @@ userRoutes.post('/partner/getbyid', authMiddleware, getPartnerById);
 userRoutes.post('/user/getbyid', authMiddleware, getUserById);
 
 userRoutes.post('/user/:userId/addtoWishlist', authMiddleware, addtoWishlist);
+userRoutes.put('/user/follow-or-unfollow',authMiddleware, followOrUnFollowUser);
 userRoutes.get('/user/favorites-with-details', getUserFavoritesWithDetails);
 
 
@@ -59,5 +61,10 @@ userRoutes.post('/check-password', checkPassword);
 
 userRoutes.get('/partner/:id', getPartnerById);
 userRoutes.get('/user/:id', getUserById);
+
+
+
+
+userRoutes.get('/user/:id/followers', getUserByIdHaveFollower);
 
 export default userRoutes;

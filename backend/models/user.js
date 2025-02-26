@@ -67,7 +67,15 @@ const UserSchema = new Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: "foodservice"
         }],
-    }
+    },
+    follower: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user"
+    }],
+    following: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user"
+    }],
 }, { timestamps: true });
 const userModel = mongoose.models.User || model("user", UserSchema);
 

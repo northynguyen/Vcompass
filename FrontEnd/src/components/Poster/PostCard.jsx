@@ -1,16 +1,21 @@
 import axios from "axios";
-import React, { useContext, useState, useEffect } from "react";
-import { BsFillInfoCircleFill } from "react-icons/bs";
-import { StoreContext } from "../../Context/StoreContext";
 import CryptoJS from "crypto-js";
-import "./PostCard.css";
+import React, { useContext, useEffect, useState } from "react";
+import { AiOutlineMore } from "react-icons/ai";
+import { BsFillInfoCircleFill } from "react-icons/bs";
 import { FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { StoreContext } from "../../Context/StoreContext";
+import { FiFlag } from "react-icons/fi";
+import "./PostCard.css";
 
 
 const PostCard = ({ schedule, handleScheduleClick }) => {
   const { url, user, token } = useContext(StoreContext);
   const [likes, setLikes] = useState(schedule?.likes || []);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [openScheduleMenu, setOpenScheduleMenu] = useState(null);
+  const navigate = useNavigate();
   const activityCosts = {
     Accommodation: 0,
     FoodService: 0,
@@ -21,6 +26,9 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
   const [attractions, setAttractions] = useState(null);
   const isLike = () => {
     return likes.some((like) => like.idUser === user?._id);
+  };
+  const toggleScheduleMenu = (id) => {
+    setOpenScheduleMenu(openScheduleMenu === id ? null : id); // Nếu bấm lại sẽ ẩn menu
   };
   const handleComment = () => {
     handleScheduleClick(schedule._id);
@@ -111,11 +119,11 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
       }
     };
 
-    if(user){
-       fetchUser();
+    if (user) {
+      fetchUser();
     }
     fetchAttractions();
-  }, [  schedule, user, url]);
+  }, [schedule, user, url]);
 
   schedule.activities.forEach((day) => {
     day.activity.forEach((activity) => {
@@ -162,58 +170,78 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
       return;
     }
     try {
-      
+
       const action = isFavorite ? "remove" : "add";
       const requestUrl = `${url}/api/user/user/${user._id}/addtoWishlist?type=schedule&itemId=${id}&action=${action}`;
-  
+
       const response = await fetch(requestUrl, {
-          method: "POST",
-          headers: { token },
+        method: "POST",
+        headers: { token },
       });
 
       if (response.ok) {
-          console.log("data", response.data);
-          setIsFavorite(!isFavorite);
+        console.log("data", response.data);
+        setIsFavorite(!isFavorite);
 
-        } else {
-          console.error("Error liking schedule:");
-          alert("Lỗi khi thêm vào danh sách yêu thích!");
-        }
-        
+      } else {
+        console.error("Error liking schedule:");
+        alert("Lỗi khi thêm vào danh sách yêu thích!");
+      }
+
     } catch (error) {
       console.error("Error liking schedule:", error);
     }
   };
-   
+  const handleUserClick = (id) => {
+    navigate(`/otherUserProfile/${id}`);
+  };
+
   return (
     <div className="card-container">
       <header className="card-header">
-        <div className="user-info">
-          <img
-            className="user-avatar"
-            src={schedule.idUser.avatar && schedule.idUser.avatar.includes("http") ? schedule.idUser.avatar : schedule.idUser.avatar ? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-            alt="user avatar"
-          />
-          <div>
-            <h5>
-              {schedule.idUser.name} <span className="verified">✔</span>
-            </h5>
-            <p className="user-date">
-              {new Date(schedule.createdAt).toLocaleString("en-US", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </p>
+        {
+          schedule.idUser && <div className="user-info" onClick={() => { handleUserClick(schedule.idUser._id) }}>
+            <img
+              className="user-avatar"
+              src={schedule.idUser.avatar && schedule.idUser.avatar.includes("http") ? schedule.idUser.avatar : schedule.idUser.avatar ? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+              alt="user avatar"
+            />
+            <div>
+              <h5>
+                {schedule.idUser.name} <span className="verified">✔</span>
+              </h5>
+              <p className="user-date">
+                {new Date(schedule.createdAt).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
           </div>
-        </div>
+        }
         <div className="post-location">
           <i className="fa fa-map-marker" aria-hidden="true"></i>
           <label className="location-text" htmlFor="null">
             {schedule.address}
           </label>
+        </div>
+        <div className="post-more-infor" onClick={() => toggleScheduleMenu(schedule._id)}>
+          <AiOutlineMore />
+          {openScheduleMenu === schedule._id && (
+            <div className="schedule-dropdown-menu">
+              <div className="follower-menu-button" >
+              <FiFlag />
+                <button>Xem hồ sơ</button>
+              </div>
+              <div className="follower-menu-button" >
+              <FiFlag />
+                <button>Báo cáo lịch trình này</button>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -223,7 +251,7 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
             // Hiển thị ảnh nếu có imgSrc
             <img
               className="content-image"
-              src={ schedule.imgSrc[0].includes("http") ? schedule.imgSrc[0] : `${url}/images/${schedule.imgSrc[0]}`}
+              src={schedule.imgSrc[0].includes("http") ? schedule.imgSrc[0] : `${url}/images/${schedule.imgSrc[0]}`}
               alt="Schedule Image"
             />
           ) : schedule.videoSrc ? (
@@ -247,15 +275,15 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
             />
           )}
 
-            <button
-              className={isFavorite=== true ?  "heart-icon" : "heart-icon-empty"}
-              title={isFavorite ? "Xóa khỏi wishlist" : "Lưu vào wishlist"}
-              onClick={() => {
-                handleHeartClick(schedule._id);
-              }}
-            >
-              <FaHeart />
-            </button>
+          <button
+            className={isFavorite === true ? "heart-icon" : "heart-icon-empty"}
+            title={isFavorite ? "Xóa khỏi wishlist" : "Lưu vào wishlist"}
+            onClick={() => {
+              handleHeartClick(schedule._id);
+            }}
+          >
+            <FaHeart />
+          </button>
         </div>
       </div>
 
@@ -363,9 +391,8 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
       <footer className="card-footer">
         <div className="actions">
           <i
-            className={`fa-solid fa-heart favorite-icon ${
-              isLike() ? "enabled" : ""
-            }`}
+            className={`fa-solid fa-heart favorite-icon ${isLike() ? "enabled" : ""
+              }`}
             onClick={handleLike}
           ></i>
           <label className="action-text" htmlFor="null">
