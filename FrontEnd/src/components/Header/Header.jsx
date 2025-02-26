@@ -22,6 +22,7 @@ const Header = ({ setShowLogin }) => {
   const menuRef = useRef(null); // Reference for the menu
   const navigate = useNavigate();
   const location = useLocation();
+  const sidebarRef = useRef(null);
   const notificationRef = useRef(null); // Reference for the notifications dropdown
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -112,11 +113,8 @@ const Header = ({ setShowLogin }) => {
       );
     });
 
-    // Lắng nghe sự kiện updateUser
     socket.on(`${user._id}status`, (updateUser) => {
-
       let countdown = 10;
-
       // Gọi toast.error lần đầu tiên
       const toastId = toast.error(
         <div className="custom-toast">
@@ -201,10 +199,14 @@ const Header = ({ setShowLogin }) => {
         setNotificationsVisible(false);
       }
 
+      if ( sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setSidebarVisible(false);
+      }
+
     };
 
     // Add event listener when the menu is visible
-    if (menuVisible || notificationsVisible) {
+    if (sidebarVisible || menuVisible || notificationsVisible) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -227,9 +229,7 @@ const Header = ({ setShowLogin }) => {
 
       <div className="header-right">
 
-        <button className="menu-toggle" onClick={toggleSidebar}>
-          ☰
-        </button>
+      
 
         {/* Menu chính khi màn hình lớn */}
         <ul className="header-menu">
@@ -258,9 +258,9 @@ const Header = ({ setShowLogin }) => {
 
         
         {sidebarVisible  && ( console.log(sidebarVisible),
-          <div className="sidebar visible">
+          <div className="sidebar visible" ref={sidebarRef}>
             <button className="close-sidebar" onClick={toggleSidebar}>
-              X
+              x
             </button>
             <ul className="sidebar-menu">
               <Link to="/" onClick={toggleSidebar}>
@@ -288,6 +288,42 @@ const Header = ({ setShowLogin }) => {
           </div>
         )}
 
+        {token !== null &&
+          <div className="notification-container">
+            <button className="icon-button" onClick={toggleNotifications}>
+              <FaBell className="bell-icon" />
+              {unreadCount > 0 &&
+                <span className="notification-badge">
+                  {<span className="unread-count">{unreadCount}</span>}
+                </span>
+              }
+
+            </button>
+
+            {/* Notifications Dropdown */}
+            {notificationsVisible && (
+              <div className="notifications-dropdown" ref={notificationRef}>
+                <ul className="notifications-list">
+                  {loading && <p>Loading notifications...</p>}
+                  {!loading && notifications.length === 0 && <p>No notifications</p>}
+                  {notifications.map((notification, index) => (
+                    <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}`} onClick={() => { notification.status === 'unread' && handleNotificationClick(notification._id) }}>
+                      <div className="notification-avatar">
+                        <img src={notification.idSender && notification.idSender.avatar ? notification.idSender.avatar : notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
+                      </div>
+                      <div className="notification-content">
+                        <p><strong>{notification.idSender ? notification.idSender.name : "Admin"}</strong></p>
+                        <p> {notification.content}</p>
+                        <span className="notification-time">{new Date(notification.createdAt).toLocaleString()}</span>
+                      </div>
+                      {notification.status === 'unread' && <span className="unread-dot"></span>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        }
 
         {/* Chờ chèn token vào  */}
         {token === null ? <button className="header-login" onClick={() => setShowLogin(true)}>Đăng nhập</button> :
@@ -339,42 +375,11 @@ const Header = ({ setShowLogin }) => {
         }
 
 
-        {token !== null &&
-          <div className="notification-container">
-            <button className="icon-button" onClick={toggleNotifications}>
-              <FaBell className="bell-icon" />
-              {unreadCount > 0 &&
-                <span className="notification-badge">
-                  {<span className="unread-count">{unreadCount}</span>}
-                </span>
-              }
+      
 
-            </button>
-
-            {/* Notifications Dropdown */}
-            {notificationsVisible && (
-              <div className="notifications-dropdown" ref={notificationRef}>
-                <ul className="notifications-list">
-                  {loading && <p>Loading notifications...</p>}
-                  {!loading && notifications.length === 0 && <p>No notifications</p>}
-                  {notifications.map((notification, index) => (
-                    <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}`} onClick={() => { notification.status === 'unread' && handleNotificationClick(notification._id) }}>
-                      <div className="notification-avatar">
-                        <img src={notification.idSender && notification.idSender.avatar ? notification.idSender.avatar : notification.idSender ? `${url}/images/${notification.idSender.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt={notification.user} className="notification-image" />
-                      </div>
-                      <div className="notification-content">
-                        <p><strong>{notification.idSender ? notification.idSender.name : "Admin"}</strong></p>
-                        <p> {notification.content}</p>
-                        <span className="notification-time">{new Date(notification.createdAt).toLocaleString()}</span>
-                      </div>
-                      {notification.status === 'unread' && <span className="unread-dot"></span>}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        }
+        <button className="menu-toggle" onClick={toggleSidebar}>
+          ☰
+        </button>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+/* Footer Styles */
 .footer {
     background-color: #0F1E32;
     width: 100%;
@@ -6,6 +7,7 @@
 .footer .footer-container {
     background-color: #13253F;
     width: 100%;
+    padding: 20px;
 }
 
 .footer .footer-header {
@@ -21,38 +23,38 @@
     font-weight: 300;
 }
 
-
-
 .footer .footer-columns {
+    display: flex;
     justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 0px 40px 0px;
-    display: flex;
+    padding: 40px 0;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .footer .footer-column {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 10px;
+    min-width: 200px;
 }
 
 .footer .footer-bottom {
     display: flex;
-    justify-content: space-between;
-    align-self: center;
+    flex-direction: column;
+    align-items: center;
     max-width: 1200px;
     padding-top: 20px;
     padding-bottom: 20px;
     margin: 0 auto;
+    text-align: center;
 }
 
 .footer .custom-select {
     position: relative;
     width: 200px;
-
 }
 
 .footer .selected-option {
@@ -87,7 +89,7 @@
 .footer .footer-logo {
     width: 35px;
     height: 35px;
-    margin-right: 10px;
+    margin: 5px;
 }
 
 .footer .footer-payment {
@@ -95,7 +97,6 @@
     flex-wrap: wrap;
     max-width: 180px;
     gap: 5px;
-
 }
 
 .footer .footer-payment-img {
@@ -125,4 +126,19 @@
 
 .footer .option:hover {
     background-color: #0F1E32;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .footer .footer-columns {
+        flex-direction: column;
+        align-items: center;
+    }
+    .footer .footer-column {
+        width: 100%;
+    }
+    .footer .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
 }

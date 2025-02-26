@@ -25,7 +25,6 @@
 .post-card-header h3 {
   font-size: 2rem;
   margin-bottom: 10px;
-  letter-spacing: 2px; /* Khoảng cách giữa các chữ cái */
   margin: 0; /* Loại bỏ khoảng trống mặc định */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Hiệu ứng bóng chữ */
 }
@@ -242,7 +241,7 @@
   width: 100%;
   position: absolute;
   top: 0;
-  z-index: 999;
+  z-index: 99;
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -329,17 +328,17 @@
   font-size: 1.2rem;
 }
 @media (max-width: 768px) {
-  .hero-title {
+  .hero-section .hero-title {
     margin-top: 0px;
-    font-size: 1.2em;
+    font-size: 4vw ;
     font-weight: bold;
     margin-bottom: 10px;
 }
 .home-background {
-  height: 50vh;
+  height: 60vw;
 }
 .hero-subtitle {
-  font-size: 0.7em;
+  font-size: 3vw;
   padding: 5px;
 }
 .hero-section{
@@ -353,31 +352,52 @@
   flex-direction: column;
 }
 .search-title {
+  
   width: unset;
   text-align: left;
+}
+.search-button {
+  margin: 2px 0;
+  width: 100%;
+  font-size: 3.5vw;
 }
 .search-icon {
   margin: 0;
   margin-left: 10px;
+  font-size: 3.5vw;
 }
 .search-input {
   padding: 5px;
   margin: 0px 0px 10px 3px;
+  font-size: 3.5vw;
 }
 .popular-cities {
   margin: 0px 10px ;
 }
 .cities-title {
-  font-size: 1.3rem;
+ font-size: 4vw;;
   font-weight: bold;
   margin-bottom: 10px;
 }
 .cities-description {
-  font-size: 0.8rem;
+  font-size: 3.2vw;
 }
 .city-slider {
   width: 100%;
   margin: 0 auto;
+}
+
+.popular-cities .city-buttons {  
+  gap: 5px;
+  margin-top: 10px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  justify-content: center;
+
+.city-button {
+  font-size: 3.5vw;
+  margin: 0 5px;
+}
 }
 .accommodation-banner {
   flex-direction: column;
@@ -423,7 +443,7 @@
   justify-content: center;
 }
 .post-card-header h3 {
-  font-size: 1.3rem;
+  font-size: 4vw;
 }
 .post-card-recommendations {
   padding: 10px;
@@ -444,6 +464,10 @@
 }
 .card-content {
   padding: 10px;
+}
+
+.slidebar-container .title {
+  font-size: 4vw !important;
 }
 .slidebar-container .custom-slide {
   padding: 5px;

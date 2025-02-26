@@ -21,7 +21,8 @@ import AddActivity from "./AddActivity/AddActivity";
 import Comment from "./Comment/Comment";
 import Expense from "./Expense/Expense";
 import "./Schedule.css";
-
+import { Tooltip } from "react-tooltip";
+import InviteTripmatesModal from "./InviteTripmatesModal/InviteTripmatesModal";
 
 const MapViewWithRoute = ({ activities, scheduleID }) => {
   const [activitiesWithCoordinates, setActivitiesWithCoordinates] = useState([]);
@@ -1020,7 +1021,7 @@ const Schedule = ({ mode }) => {
   const [dateEnd, setDateEnd] = useState("");
   const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
   const [isVideoOpen, setIsVideoOpen] = useState(false);
-
+  const [openInviteModal, setOpenInviteModal] = useState(false);
   const openVideoPopup = () => setIsVideoOpen(true);
   const closeVideoPopup = () => setIsVideoOpen(false);
   const [totalActivities, setTotalActivities] = useState(0)
@@ -1265,6 +1266,9 @@ const Schedule = ({ mode }) => {
     }
   };
 
+  const onCloseInviteModal = () => {
+    setOpenInviteModal(false);
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -1277,12 +1281,32 @@ const Schedule = ({ mode }) => {
             {mode === "view" ? "Xem  lịch trình" : "Chỉnh sửa lịch trình"}
           </h1>
           <span className="num-text">Tác giả: {inforSchedule.idUser.name}</span>
+
         </div>
         <div>
           {mode === "view" && (
             <button className="custom-schedule-btn" onClick={onEdit}>
               Chỉnh sửa ngay
             </button>
+          )}
+
+          {mode === "edit" && (
+            <div className="invitee_container">  
+              {inforSchedule.invitees?.map((invitee, index) => (
+                <div key={index} className="invitee_item">
+                  <img
+                    className="invitee_image"
+                    src={invitee.avatar && invitee.avatar.includes("http") ? invitee.avatar : `${url}/images/${invitee.avatar}`}
+                    alt={invitee.name}
+                  />
+                  <span className="invitee_name">{invitee.name}</span>
+                </div>
+              ))}
+              <button className="invitee_button" data-tooltip-id="save-tooltip" onClick={() => setOpenInviteModal(true)}>
+                <i className="fa-solid fa-user-plus"></i>
+                <Tooltip id="save-tooltip" place="bottom" style={{ fontSize: "12px", zIndex: "999" }} content="Thêm người tham gia" />
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -1439,6 +1463,8 @@ const Schedule = ({ mode }) => {
           </video>
         </div>
       </Modal>
+
+      <InviteTripmatesModal isOpen={openInviteModal} onClose={onCloseInviteModal}> </InviteTripmatesModal>
     </div>
   );
 };

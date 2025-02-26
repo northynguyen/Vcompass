@@ -201,10 +201,15 @@
   @media (max-width: 768px) {
     .features, .stats, .testimonials {
       flex-direction: column;
+      h1 {
+        font-size: 4vw !important;
+      }
     }
   
     .top-navigation {
       flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 0;
     }
   
     .top-navigation button {
@@ -213,11 +218,42 @@
     }
   
     .section {
-      padding: 40px 10px;
+      padding: 20px 10px;
+      margin-bottom: 0;
+      h2 {
+        font-size: 4.2vw !important;
+      }
+
+      ul li {
+        font-size: 3.8vw !important;
+      }
+
+      .features {
+        .feature {
+          margin: 10px 0;
+          text-align: center;
+
+          h3 , p {
+            font-size: 4vw !important;
+          }
+
+          img {
+            width: 80px;
+            height: 80px;
+          }        
+        }
+      }
     }
   
-    .stat {
+    .stats {
       margin-bottom: 20px;
+      strong {
+        font-size: 5vw !important;
+      }
+
+      p {
+        font-size: 4vw !important;
+      }
     }
   }
   

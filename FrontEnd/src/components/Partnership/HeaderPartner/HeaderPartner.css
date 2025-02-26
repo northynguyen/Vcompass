@@ -1,159 +1,252 @@
 /* Container styling */
 .header-partner {
-    background-color: #004c99; /* Deep blue background */
-    color: white;
-    padding: 2rem;
-    
-  }
-  
-  .header-partner-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
-    margin-bottom: 2rem;
-  }
-  
-  /* Partner login button */
-  .header-partner-container button {
-    background-color: #ff6600;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .header-partner-container button:hover {
-    background-color: #cc5200;
-  }
-  
-  /* Registration section layout */
+  background-color: #004c99;
+  color: white;
+  padding: 2rem;
+}
+
+.header-partner-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.header-partner-container h1 {
+  flex: 1;
+  min-width: 250px;
+}
+
+/* Partner login button */
+.header-partner-container button {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.header-partner-container button:hover {
+  background-color: #cc5200;
+}
+
+/* Registration section layout */
+.registration-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #003366;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  max-width: 1200px;
+  margin: 0 auto;
+  color: white;
+  flex-wrap: wrap;
+}
+
+/* Left content styling */
+.left-content {
+  flex: 1;
+  min-width: 280px;
+  margin-bottom: 1rem;
+}
+
+.left-content h1 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.left-content p {
+  font-size: 1.25rem;
+  color: #e6f2ff;
+  margin-bottom: 1.5rem;
+}
+
+/* Highlighted rotating text */
+.highlighted {
+  color: #ffcc00;
+  font-weight: bold;
+  transition: color 0.3s ease-in-out;
+}
+
+/* Right content (Registration box) */
+.right-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: #333;
+  min-width: 280px;
+}
+
+/* Registration box content */
+.registration-box h2 {
+  color: #004c99;
+  margin-bottom: 1rem;
+}
+
+.registration-box ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 1.5rem;
+}
+
+.registration-box ul li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.registration-box ul li::before {
+  content: "✔️";
+  margin-right: 0.75rem;
+  color: green;
+}
+
+/* Call-to-action button */
+.cta-button {
+  background-color: #0066cc;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.cta-button:hover {
+  background-color: #004c99;
+}
+
+/* Already registered section */
+.already-registered {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.already-registered p {
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.already-registered a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.already-registered a:hover {
+  text-decoration: underline;
+}
+
+/* 🟢 Mobile Responsive (dưới 1024px) */
+@media (max-width: 1024px) {
   .registration-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #003366;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    max-width: 1200px;
-    margin: 0 auto;
-    color: white;
-  }
-  
-  /* Left content styling */
-  .left-content h1 {
-    font-size: 2.5rem;
-    line-height: 1.2;
-    margin-bottom: 1rem;
-  }
-  
-  .left-content p {
-    font-size: 1.25rem;
-    color: #e6f2ff;
-    margin-bottom: 1.5rem;
-  }
-  
-  /* Highlighted rotating text */
-  .highlighted {
-    color: #ffcc00;
-    font-weight: bold;
-    transition: color 0.3s ease-in-out;
-  }
-  
-  /* Right content (Registration box) */
-  .right-content {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 8px;
-    max-width: 50%;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    color: #333;
-  }
-  
-  /* Registration box content */
-  .registration-box h2 {
-    color: #004c99;
-    margin-bottom: 1rem;
-  }
-  
-  .registration-box ul {
-    list-style: none;
-    padding-left: 0;
-    margin-bottom: 1.5rem;
-  }
-  
-  .registration-box ul li {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.75rem;
-  }
-  
-  .registration-box ul li::before {
-    content: "✔️";
-    margin-right: 0.75rem;
-    color: green;
-  }
-  
-  /* Call-to-action button */
-  .cta-button {
-    background-color: #0066cc;
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .cta-button:hover {
-    background-color: #004c99;
-  }
-  
-  /* Already registered section */
-  .already-registered {
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
-  }
-  
-  .already-registered p {
-    margin-bottom: 0.5rem;
-    color: #555;
-  }
-  
-  .already-registered a {
-    color: #0066cc;
-    text-decoration: none;
-  }
-  
-  .already-registered a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Mobile responsiveness */
-  @media (max-width: 768px) {
-    .registration-section {
       flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    .left-content, 
-    .right-content {
-      max-width: 100%;
-      margin-bottom: 1.5rem;
-    }
-  
-    .left-content h1 {
-      font-size: 2rem;
-    }
-  
-    .left-content p {
-      font-size: 1.1rem;
-    }
+      align-items: center;
+      text-align: center;
   }
-  
+
+  .left-content, 
+  .right-content {
+      max-width: 100%;
+      text-align: center;
+  }
+
+  .right-content {
+      padding: 1.5rem;
+  }
+}
+
+/* 🟢 Tablet & Mobile (dưới 768px) */
+@media (max-width: 768px) {
+  .header-partner {
+      padding: 1.5rem;
+  }
+
+  .header-partner-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      h1{
+          margin-bottom: 1rem;
+      }
+  }
+
+  .registration-section {
+      padding: 1.5rem;
+  }
+
+  .left-content h1 {
+      font-size: 2rem;
+  }
+
+  .left-content p {
+      font-size: 1.1rem;
+  }
+
+  .right-content {
+      padding: 1rem;
+  }
+
+  .cta-button {
+      font-size: 0.9rem;
+      padding: 0.75rem 1.5rem;
+  }
+}
+
+/* 🟢 Small Mobile (dưới 480px) */
+@media (max-width: 480px) {
+  .header-partner {
+      padding: 1rem;
+  }
+
+  .header-partner-container h1 {
+      font-size: 4vw;
+  }
+
+  .left-content h1 {
+      font-size: 3.5vw;
+  }
+
+  .left-content p {
+      font-size: 3.2vw;
+  }
+
+  .registration-section {
+      padding: 1rem;
+  }
+
+  .right-content {
+      padding: 0.75rem;
+      
+      .registration-box{
+          h2{
+              font-size: 4vw;
+          }
+
+          ul li{
+              font-size: 4vw;
+          }
+      }
+  }
+
+  .cta-button {
+      font-size: 4vw;
+      padding: 0.5rem 1rem;
+  }
+}

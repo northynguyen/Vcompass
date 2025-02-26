@@ -922,10 +922,26 @@ i.fa-solid.fa-plus.add-icon {
   font-size: 24px;
   cursor: pointer;
 }
+
+.invitee_button {
+  display: inline-block;
+  border: none;
+  padding: 10px 10px;
+  border-radius: 50%;
+  background-color: #f2f2f2;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.invitee_button:hover {
+  background-color: #c7c4c4;
+}
+
 /* Định dạng chung cho màn hình nhỏ */
 @media (max-width: 768px) {
   .schedule-container {
-    padding: 10px 5%;
+    padding: 3px 5%;
   }
   .date-section {
     gap: 0px;
@@ -936,6 +952,9 @@ i.fa-solid.fa-plus.add-icon {
     padding: 15px;
   }
 
+  img.custom-schedule-image, .custom-schedule-video {
+    height: 80vw;
+  }
   .activity-details {
     flex-direction: column;
     gap: 15px;
@@ -962,7 +981,11 @@ i.fa-solid.fa-plus.add-icon {
 
   .save-schedule {
     justify-content: center;
-    margin-right: 0;
+    .btn-save-schedule{
+      margin: 0px;
+      font: 4.5vw ;
+      padding: 8px 10px;
+    }
   }
 
   .header-container {
@@ -992,7 +1015,7 @@ i.fa-solid.fa-plus.add-icon {
     width: 100%;
   }
   .activity-header h2 {
-    font-size: 1.3em;
+    font-size: 4.5vw;
     margin-bottom: 10px;
 }
   .numday-title {
@@ -1002,15 +1025,17 @@ i.fa-solid.fa-plus.add-icon {
   }
 
   .date-actions {
-    flex-direction: column;
+    gap: 5px;
   }
 
   .date-actions button {
+    font-size: 3vw;
     width: 100%;
   }
 
   .add-new button {
     width: 100%;
+    font-size: 3.5vw;
   }
 
   .time-schedule-list {
@@ -1072,6 +1097,7 @@ i.fa-solid.fa-plus.add-icon {
   .type-activity {
     width: auto;
     padding: 5px 10px;
+    font-size: 3.5vw;
   }
 
   .expense-actions {
@@ -1095,7 +1121,7 @@ i.fa-solid.fa-plus.add-icon {
     }
   }
   .date-header h2 {
-    font-size: 1.3em;
+    font-size: 4.5vw;
   }
   .custom-schedule-header h1 {
     font-size: 1.5em;
@@ -1115,7 +1141,7 @@ i.fa-solid.fa-plus.add-icon {
     flex-direction: column;
   }
   .expense-container h1 {
-    font-size: 1.3em;
+    font-size: 4.5vw;
     margin-bottom: 0px;
   }
   .expense-container {
@@ -1187,7 +1213,6 @@ i.fa-solid.fa-plus.add-icon {
     margin: 0;
   }
   .header-right{
-    width: 100%;
     margin: 0;
     gap: 0px;
   }
@@ -1282,6 +1307,23 @@ i.fa-solid.fa-plus.add-icon {
 .custom-modal-container {
   padding: 15px;
   margin: 0px 10px;
+}
+
+.other-activity-body {
+  flex-direction: column;
+  gap: 10px;
+
+  .other-activity-name{
+    font-size: 3.5vw;
+  }
+
+  .other-activity-images {
+    flex-direction: row;
+    max-width: 80vw;
+    gap: 10px;
+    overflow-x: auto;
+    
+  }
 }
 
 }
