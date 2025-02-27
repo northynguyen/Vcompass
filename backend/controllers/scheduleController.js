@@ -34,7 +34,9 @@ export const getScheduleById = async (req, res) => {
     }
 
     // Lấy thông tin schedule
-    const schedule = await Schedule.findById(id).populate("idUser");
+    const schedule = await Schedule.findById(id)
+  .populate("idUser") 
+  .populate("idInvitee", "name avatar"); 
 
     if (!schedule) {
       return res

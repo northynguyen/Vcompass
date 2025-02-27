@@ -118,7 +118,9 @@ button.btn-save-schedule {
   flex: 3;
   width: 70%;
 }
-img.custom-schedule-image , .custom-schedule-video {
+
+img.custom-schedule-image,
+.custom-schedule-video {
   position: absolute;
   left: 0;
   top: 0;
@@ -129,6 +131,7 @@ img.custom-schedule-image , .custom-schedule-video {
   object-fit: cover;
   object-position: center;
 }
+
 .book-icon {
   color: #778088;
   margin-right: 10px;
@@ -229,7 +232,7 @@ p.des-schedule {
   font-size: 30px;
   color: #888888;
   flex: 1;
-  
+
 }
 
 .circle-num {
@@ -398,6 +401,7 @@ i.fa-solid.fa-plus.add-icon {
 .time-schedule-location a {
   font-size: 14px;
 }
+
 .time-schedule-location {
   margin-top: 10px;
   text-align: left;
@@ -442,7 +446,8 @@ i.fa-solid.fa-plus.add-icon {
 }
 
 .time-schedule-rating i,
-.time-schedule-header span, .time-schedule-header p {
+.time-schedule-header span,
+.time-schedule-header p {
   margin: 0;
   font-size: 13px;
 }
@@ -473,12 +478,14 @@ i.fa-solid.fa-plus.add-icon {
   margin: 0;
   font-size: 18px;
 }
+
 .custom-schedule-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 8%;
 }
+
 .custom-schedule-btn {
   background-color: #f8f87c;
   color: black;
@@ -494,10 +501,12 @@ i.fa-solid.fa-plus.add-icon {
 
 
 }
-.custom-schedule-btn:hover{
+
+.custom-schedule-btn:hover {
   background-color: #FFDA32;
   color: white;
 }
+
 .price-text {
   font-weight: bolder;
   color: #7BBCB0;
@@ -557,11 +566,12 @@ i.fa-solid.fa-plus.add-icon {
   font-size: 16px;
   color: #333;
   margin: 5px 0px;
-  gap: 10px;  
+  gap: 10px;
 }
 
 .time-schedule-usernote .note-icon {
-  color: #ff6347; /* Tomato color */
+  color: #ff6347;
+  /* Tomato color */
   margin-right: 12px;
 }
 
@@ -572,6 +582,7 @@ i.fa-solid.fa-plus.add-icon {
   color: #333;
   text-align: justify;
 }
+
 .note-icon-wrapper {
   display: flex;
   align-items: center;
@@ -585,99 +596,101 @@ i.fa-solid.fa-plus.add-icon {
   border-radius: 8px;
 
 
-/* Danh sách hoạt động tổng quan */
-.activity-overview-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
+  /* Danh sách hoạt động tổng quan */
+  .activity-overview-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
 
-/* Mỗi mục hoạt động */
-.activity-overview-list li {
-  background-color: #f9f9f9;
-  margin: 12px 0;
-  padding: 12px;
-  border-radius: 8px;
-  display: grid;
-  grid-template-columns: 1fr 2fr 3fr 1fr; /* Chia các cột: thời gian, loại, mô tả, chi phí */
-  align-items: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
-}
+  /* Mỗi mục hoạt động */
+  .activity-overview-list li {
+    background-color: #f9f9f9;
+    margin: 12px 0;
+    padding: 12px;
+    border-radius: 8px;
+    display: grid;
+    grid-template-columns: 1fr 2fr 3fr 1fr;
+    /* Chia các cột: thời gian, loại, mô tả, chi phí */
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+  }
 
-.activity-overview-list li:hover {
-  background-color: #e9f5ff; /* Màu nền khi hover */
-}
+  .activity-overview-list li:hover {
+    background-color: #e9f5ff;
+    /* Màu nền khi hover */
+  }
 
-/* Cột Thời gian */
-.activity-time {
-  font-weight: 600;
-  color: #333;
-  font-size: 1rem;
-  text-align: center;
-}
+  /* Cột Thời gian */
+  .activity-time {
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+    text-align: center;
+  }
 
-/* Cột Loại hoạt động */
-.activity-type {
-  font-weight: 600;
-  color: #007bff;
-  font-size: 1.1rem;
-  text-align: center;
-}
+  /* Cột Loại hoạt động */
+  .activity-type {
+    font-weight: 600;
+    color: #007bff;
+    font-size: 1.1rem;
+    text-align: center;
+  }
 
-/* Cột Mô tả */
-.activity-description {
-  font-size: 0.8rem;
-  color: #666;
-  padding: 0 10px;
-  font-weight: 400;
-  word-wrap: break-word;
-}
+  /* Cột Mô tả */
+  .activity-description {
+    font-size: 0.8rem;
+    color: #666;
+    padding: 0 10px;
+    font-weight: 400;
+    word-wrap: break-word;
+  }
 
-/* Cột Chi phí */
-.activity-cost {
-  font-weight: bold;
-  color: #e63946;
-  font-size: 1.1rem;
-  text-align: right;
-  padding-right: 10px;
-}
+  /* Cột Chi phí */
+  .activity-cost {
+    font-weight: bold;
+    color: #e63946;
+    font-size: 1.1rem;
+    text-align: right;
+    padding-right: 10px;
+  }
 
-/* Tiêu đề cột */
-.activity-overview-header {
-  display: grid;
-  grid-template-columns: 1fr 2fr 3fr 1fr;
-  margin-bottom: 12px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #333;
-}
+  /* Tiêu đề cột */
+  .activity-overview-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr 3fr 1fr;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+  }
 
-.activity-overview-header div {
-  padding: 8px 0;
-  text-align: center;
-}
+  .activity-overview-header div {
+    padding: 8px 0;
+    text-align: center;
+  }
 
-/* Tùy chỉnh cho loại hoạt động (Accommodation, Attraction, FoodService) */
-.activity-type-Accommodation {
-  background-color: #d1f7e3;
-}
+  /* Tùy chỉnh cho loại hoạt động (Accommodation, Attraction, FoodService) */
+  .activity-type-Accommodation {
+    background-color: #d1f7e3;
+  }
 
-.activity-type-Attraction {
-  background-color: #fef4d1;
-}
+  .activity-type-Attraction {
+    background-color: #fef4d1;
+  }
 
-.activity-type-FoodService {
-  background-color: #f7d1d1;
-}
+  .activity-type-FoodService {
+    background-color: #f7d1d1;
+  }
 
-/* Các hoạt động chưa có thông tin */
-.no-activities-message {
-  font-size: 1.2rem;
-  color: #888;
-  text-align: center;
-  margin-top: 20px;
-}
+  /* Các hoạt động chưa có thông tin */
+  .no-activities-message {
+    font-size: 1.2rem;
+    color: #888;
+    text-align: center;
+    margin-top: 20px;
+  }
 }
 
 .modal-footer .btn-cancel {
@@ -736,115 +749,140 @@ i.fa-solid.fa-plus.add-icon {
   z-index: 1000;
 
 }
+
+.video-popup-modal {
+  position: relative;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  height: 80%;
+  max-width: 90%;
+  /* Đảm bảo không gian modal rộng, tối đa 90% chiều rộng màn hình */
+  max-height: 90vh;
+  /* Tối đa chiều cao modal là 90% chiều cao của màn hình */
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Căn giữa nội dung trong modal */
+  overflow: hidden;
+  /* Đảm bảo không có thanh cuộn */
+}
+
+.video-popup-content {
+  width: 100%;
+  height: 100%;
+}
+
+.video-popup-content video {
+  width: 100%;
+  /* Video chiếm toàn bộ chiều rộng của modal */
+  height: 100%;
+  /* Video chiếm toàn bộ chiều cao của modal */
+  object-fit: contain;
+  /* Giữ tỉ lệ khung hình video */
+  border-radius: 8px;
+}
+
+.close-popup-button i {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.close-popup-button i:hover {
+  color: #ff0000;
+}
+
+/* Responsive: */
+@media (max-width: 768px) {
   .video-popup-modal {
-    position: relative;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    width: 80%;
-    height: 80%;
-    max-width: 90%; /* Đảm bảo không gian modal rộng, tối đa 90% chiều rộng màn hình */
-    max-height: 90vh; /* Tối đa chiều cao modal là 90% chiều cao của màn hình */
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* Căn giữa nội dung trong modal */
-    overflow: hidden; /* Đảm bảo không có thanh cuộn */
+    max-width: 95%;
+    /* Đảm bảo modal vẫn có thể điều chỉnh kích thước trên màn hình nhỏ */
+    max-height: 90vh;
   }
-  
-  .video-popup-content {
-    width: 100%;
-    height: 100%;
-  }
-  
+
   .video-popup-content video {
-    width: 100%; /* Video chiếm toàn bộ chiều rộng của modal */
-    height: 100%; /* Video chiếm toàn bộ chiều cao của modal */
-    object-fit: contain; /* Giữ tỉ lệ khung hình video */
-    border-radius: 8px;
+    object-fit: contain;
+    /* Giữ video không bị vỡ hình */
   }
-  
-  .close-popup-button i {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 30px;
-    cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .video-popup-modal {
+    max-width: 100%;
+    padding: 10px;
   }
-  
-  .close-popup-button i:hover {
-    color: #ff0000;
+
+  .video-popup-content video {
+    object-fit: contain;
   }
-  
-  /* Responsive: */
-  @media (max-width: 768px) {
-    .video-popup-modal {
-      max-width: 95%; /* Đảm bảo modal vẫn có thể điều chỉnh kích thước trên màn hình nhỏ */
-      max-height: 90vh;
-    }
-  
-    .video-popup-content video {
-      object-fit: contain; /* Giữ video không bị vỡ hình */
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .video-popup-modal {
-      max-width: 100%;
-      padding: 10px;
-    }
-  
-    .video-popup-content video {
-      object-fit: contain;
-    }
-  }
+}
 
 
 .video-button {
   display: inline-block;
-  background-color: #007bff; /* Màu xanh đậm */
-  color: #ffffff; /* Màu chữ trắng */
-  font-size: 18px; /* Kích thước chữ */
+  background-color: #007bff;
+  /* Màu xanh đậm */
+  color: #ffffff;
+  /* Màu chữ trắng */
+  font-size: 18px;
+  /* Kích thước chữ */
   font-weight: bold;
-  padding: 10px 20px; /* Khoảng cách bên trong */
+  padding: 10px 20px;
+  /* Khoảng cách bên trong */
   border: none;
-  border-radius: 25px; /* Bo góc tròn */
+  border-radius: 25px;
+  /* Bo góc tròn */
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .video-button:hover {
-  background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* Tăng bóng khi hover */
-  transform: translateY(-2px); /* Hiệu ứng nhấn nút */
+  background-color: #0056b3;
+  /* Màu xanh đậm hơn khi hover */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+  /* Tăng bóng khi hover */
+  transform: translateY(-2px);
+  /* Hiệu ứng nhấn nút */
 }
 
 .video-button:active {
-  transform: translateY(1px); /* Hiệu ứng khi nhấn nút */
+  transform: translateY(1px);
+  /* Hiệu ứng khi nhấn nút */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .video-button:focus {
-  outline: none; /* Loại bỏ viền focus mặc định */
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.7); /* Hiệu ứng focus */
+  outline: none;
+  /* Loại bỏ viền focus mặc định */
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.7);
+  /* Hiệu ứng focus */
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .video-button {
-    font-size: 16px; /* Giảm kích thước chữ trên màn hình nhỏ */
-    padding: 8px 16px; /* Giảm padding */
+    font-size: 16px;
+    /* Giảm kích thước chữ trên màn hình nhỏ */
+    padding: 8px 16px;
+    /* Giảm padding */
   }
 }
 
 @media (max-width: 480px) {
   .video-button {
-    font-size: 14px; /* Giảm thêm kích thước chữ trên màn hình rất nhỏ */
-    padding: 6px 12px; /* Giảm padding */
+    font-size: 14px;
+    /* Giảm thêm kích thước chữ trên màn hình rất nhỏ */
+    padding: 6px 12px;
+    /* Giảm padding */
   }
 }
 
@@ -854,16 +892,20 @@ i.fa-solid.fa-plus.add-icon {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Nền mờ */
-  z-index: 9999; /* Đảm bảo overlay nằm trên cùng */
+  background: rgba(0, 0, 0, 0.5);
+  /* Nền mờ */
+  z-index: 9999;
+  /* Đảm bảo overlay nằm trên cùng */
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .loading-spinner {
-  border: 8px solid rgba(255, 255, 255, 0.3); /* Viền mờ */
-  border-top: 8px solid #fff; /* Viền quay chính */
+  border: 8px solid rgba(255, 255, 255, 0.3);
+  /* Viền mờ */
+  border-top: 8px solid #fff;
+  /* Viền quay chính */
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -875,28 +917,32 @@ i.fa-solid.fa-plus.add-icon {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
 }
-.custom-icon{
+
+.custom-icon {
   z-index: 9999 !important;
 }
+
 .marker-number {
-  position : absolute;
+  position: absolute;
   background-color: #c11313;
   color: white;
   border-radius: 50%;
   width: 30px;
   height: 30px;
   text-align: center;
-  line-height: 30px; /* Center the number */
+  line-height: 30px;
+  /* Center the number */
   font-size: 14px;
   font-weight: bold;
 }
 
 .spinner-map {
-  
+
   border: 8px solid #f3f3f3;
   border-top: 8px solid #3498db;
   border-radius: 50%;
@@ -909,6 +955,7 @@ i.fa-solid.fa-plus.add-icon {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -921,6 +968,86 @@ i.fa-solid.fa-plus.add-icon {
   right: 10px;
   font-size: 24px;
   cursor: pointer;
+}
+
+.invitee_container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: visible;
+
+  .invitee_item {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-left: -10px;
+    border: 2px solid white;
+    z-index: 10 ;
+    /* Đảm bảo avatar nằm trên các phần tử khác */
+  }
+
+  /* CSS cho tooltip */
+  [data-tooltip-id] {
+    position: relative;
+  }
+
+  [data-tooltip-id]:hover::after {
+    content: attr(data-tooltip-content);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    /* Đảm bảo tooltip nằm trên các phần tử khác */
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+
+  .invitee_item {
+    position: relative;
+    overflow: visible;
+    /* Đảm bảo tooltip không bị cắt */
+  }
+
+  .invitee_item:first-child {
+    margin-left: 0;
+    /* Ảnh đầu tiên không bị đẩy vào */
+  }
+
+  .invitee_image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+
+  .invitee_button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    margin-left: 5px;
+    cursor: pointer;
+  }
+
+  .invitee_button i {
+    font-size: 18px;
+    color: #555;
+  }
+
 }
 
 .invitee_button {
@@ -943,18 +1070,22 @@ i.fa-solid.fa-plus.add-icon {
   .schedule-container {
     padding: 3px 5%;
   }
+
   .date-section {
     gap: 0px;
   }
+
   .activity-header {
     flex-direction: column;
     text-align: center;
     padding: 15px;
   }
 
-  img.custom-schedule-image, .custom-schedule-video {
+  img.custom-schedule-image,
+  .custom-schedule-video {
     height: 80vw;
   }
+
   .activity-details {
     flex-direction: column;
     gap: 15px;
@@ -981,9 +1112,10 @@ i.fa-solid.fa-plus.add-icon {
 
   .save-schedule {
     justify-content: center;
-    .btn-save-schedule{
+
+    .btn-save-schedule {
       margin: 0px;
-      font: 4.5vw ;
+      font: 4.5vw;
       padding: 8px 10px;
     }
   }
@@ -1010,14 +1142,17 @@ i.fa-solid.fa-plus.add-icon {
   .date-schedule input {
     width: 100%;
   }
+
   .title-des {
     flex: none;
     width: 100%;
   }
+
   .activity-header h2 {
     font-size: 4.5vw;
     margin-bottom: 10px;
-}
+  }
+
   .numday-title {
     width: auto;
     align-items: center;
@@ -1109,10 +1244,12 @@ i.fa-solid.fa-plus.add-icon {
     text-align: center;
     padding: 10px 5px;
   }
+
   .activity-overview-container {
     margin: 0px;
     padding: 0px;
     margin-bottom: 5px;
+
     .activity-overview-list li {
       grid-template-columns: none;
       display: flex;
@@ -1120,210 +1257,259 @@ i.fa-solid.fa-plus.add-icon {
       gap: 5px;
     }
   }
+
   .date-header h2 {
     font-size: 4.5vw;
   }
+
   .custom-schedule-header h1 {
     font-size: 1.5em;
   }
+
   p.des-schedule {
     margin: 8px 0px;
     text-align: left;
     font-size: small;
   }
+
   .activity-infor {
     flex-direction: column;
     margin-top: 10px;
     gap: 5px;
     box-shadow: unset;
   }
+
   .activity-content-card {
     flex-direction: column;
   }
+
   .expense-container h1 {
     font-size: 4.5vw;
     margin-bottom: 0px;
   }
+
   .expense-container {
     width: 90%;
     padding: 10px;
   }
+
   .expense-item {
     height: 70px;
   }
+
   .comment-large-container {
     padding: 0;
   }
+
   .commentitem-container {
-    padding:0;
+    padding: 0;
   }
+
   .post-actions-container {
     margin-bottom: 0px;
   }
+
   .comment-container {
     padding: 10px 0 15px 5px;
   }
+
   .user-avatar {
     margin-right: 8px;
   }
+
   .comment-text {
     border-radius: 8px;
     padding: 5px 10px;
     min-width: 80%;
   }
+
   .reply-content {
     border-radius: 8px;
     padding: 5px 10px;
   }
+
   .reply-container {
     margin-top: 0px;
   }
+
   .add-expense-modal {
     width: 90%;
     padding: 10px;
   }
+
   .modal-overlay {
     width: 100vw;
   }
+
   .add-activity-modal {
     padding: 10px 0px 10px 10px;
     width: 100%;
     max-width: 100%;
     margin: 0px 10px;
   }
+
   .list-accom__container {
     flex-direction: column;
     margin-top: 10px;
   }
+
   .list-accom__tour-item {
     flex-direction: column;
     margin-top: 10px;
   }
+
   .modal-header h2 {
     font-size: 1.3em;
   }
+
   .header-accom {
     flex-direction: column;
     padding: 0px;
     padding-bottom: 5px;
     margin-bottom: 5px;
   }
-  .header-left{
+
+  .header-left {
     width: 100%;
     margin: 0;
   }
-  .header-right{
+
+  .header-right {
     margin: 0;
     gap: 0px;
   }
+
   .header-right label {
     min-width: 120px;
     margin-bottom: 0;
   }
+
   .header-left h1 {
     font-size: 1.3em;
   }
+
   .list-accom__filters {
     width: 100%;
     margin: 0;
     padding: 10px 15px;
+
     input[type="text"] {
       margin-bottom: 0px;
+    }
   }
-  }
+
   button.custom-schedule-btn {
     padding: 10px 20px;
     margin-top: 10px;
-}
+  }
+
   .list-accom__filters h4 {
     margin: 0;
     margin-bottom: 5px;
   }
+
   .list-accom__tour-item-image {
     width: 100%;
     max-width: none;
     height: 130px;
   }
+
   .list-accom__tour-details h3 {
     margin: 5px 0px;
   }
+
   .list-accom__tour-details span {
     font-size: 14px;
   }
+
   .list-accom__tour-price {
     margin-top: 10px;
   }
+
   .name-price-container {
     flex-direction: column;
     gap: 10px;
   }
+
   .add-schedule-img {
     width: 85%;
     height: 150px;
   }
+
   .expense-summary {
     margin-top: 10px;
-}
+  }
+
   label.expense-sub-title {
     margin: 0;
   }
+
   .input-field {
     margin: 0;
     margin-bottom: 10px;
     margin-top: 4px;
   }
+
   .modal-header {
     display: flex;
   }
+
   .other-item-container {
     .form-group .address-input-group {
-        flex-direction: column;
-        align-items: start;
-        justify-content: start;
-        gap: 0;
+      flex-direction: column;
+      align-items: start;
+      justify-content: start;
+      gap: 0;
     }
   }
+
   .modal-body {
     padding: 10px;
   }
+
   .form-group {
     margin: 0;
   }
+
   .form-group label {
-      margin: 0;
-      font-weight: 400;
+    margin: 0;
+    font-weight: 400;
   }
+
   .form-group .address-input-group .search-btn {
-      width: 100%;
-      margin-bottom: 10px;
+    width: 100%;
+    margin-bottom: 10px;
   }
+
   .modal-footer {
     margin-right: 10px;
-}
-.custom-modal-overlay {
-  bottom: 0;
-  height: unset;
-}
-.custom-modal-container {
-  padding: 15px;
-  margin: 0px 10px;
-}
-
-.other-activity-body {
-  flex-direction: column;
-  gap: 10px;
-
-  .other-activity-name{
-    font-size: 3.5vw;
   }
 
-  .other-activity-images {
-    flex-direction: row;
-    max-width: 80vw;
+  .custom-modal-overlay {
+    bottom: 0;
+    height: unset;
+  }
+
+  .custom-modal-container {
+    padding: 15px;
+    margin: 0px 10px;
+  }
+
+  .other-activity-body {
+    flex-direction: column;
     gap: 10px;
-    overflow-x: auto;
-    
+
+    .other-activity-name {
+      font-size: 3.5vw;
+    }
+
+    .other-activity-images {
+      flex-direction: row;
+      max-width: 80vw;
+      gap: 10px;
+      overflow-x: auto;
+
+    }
   }
-}
 
 }

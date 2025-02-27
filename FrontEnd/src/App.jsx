@@ -24,6 +24,7 @@ import UserService from './pages/UserService/UserService';
 import OtherUserProfile from "./pages/OtherUserProfile/OtherUserProfile";
 
 import SearchSchedule from './pages/SearchSchedule/SearchSchedule';
+import ValidateEmail from "./components/ValidateEmail/ValidateEmail";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -70,6 +71,7 @@ function App() {
           <Route path="/booking" element={<HomeBooking />} />
           <Route path="/attractions" element={<HomeAttractions />} />
           <Route path="/foodservices" element={<HomeFoodService />} />
+          <Route path="/schedule/validate-email" element={<ValidateEmail />} />
           <Route path="/my-schedule" element={<MySchedule setShowLogin={setShowLogin} />} />
           <Route path="/schedule-edit/:id" element={<Schedule mode="edit" />} />
           <Route path="/schedule-view/:id" element={<Schedule mode="view" />} />

@@ -1084,14 +1084,19 @@ const Schedule = ({ mode }) => {
   useEffect(() => {
     setLoading(true);
     if (inforSchedule) {
-      if (mode === "edit" && (!user || inforSchedule.idUser._id !== user._id)) {
+      const isOwner = user && inforSchedule.idUser._id === user._id;
+      const isInvitee = user && inforSchedule.idInvitee.some(invitee => invitee._id.toString() === user._id.toString());
+
+      // Nếu đang ở chế độ "edit" và user không phải owner cũng không phải invitee -> Chuyển hướng 404
+      if (mode === "edit" && !isOwner && !isInvitee) {
         setLoading(false);
         window.location.href = '/404';
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     }
+}, [inforSchedule, mode, user]);
 
-  }, [inforSchedule, mode]);
   const updateSchedule = async () => {
     try {
       const response = await axios.put(
@@ -1292,19 +1297,37 @@ const Schedule = ({ mode }) => {
 
           {mode === "edit" && (
             <div className="invitee_container">  
-              {inforSchedule.invitees?.map((invitee, index) => (
-                <div key={index} className="invitee_item">
+              <div className="invitee_item" data-tooltip-id="avata-tooltip">
+                <img
+                  className="invitee_image"
+                  src={inforSchedule.idUser.avatar && inforSchedule.idUser.avatar.includes("http") ? inforSchedule.idUser.avatar : `${url}/images/${inforSchedule.idUser.avatar}`}
+                  alt={inforSchedule.idUser.name}
+                />
+                
+              </div>
+              <Tooltip id="avata-tooltip" place="bottom" style={{ fontSize: "12px", zIndex: "999", borderRadius: "10px" }} content= {inforSchedule.idUser.name} />
+
+              <div className="invitee_item" data-tooltip-id="avata-tooltip">
+                <img
+                  className="invitee_image"
+                  src="https://cdn11.dienmaycholon.vn/filewebdmclnew/public/userupload/files/Image%20FP_2024/avatar-dep-8.jpg"
+                  alt={inforSchedule.idUser.name}
+                />
+              </div>
+
+              {inforSchedule.idInvitee?.map((invitee, index) => (            
+                <div key={index} className="invitee_item" data-tooltip-id={`avata-tooltip-${index}`}>
                   <img
                     className="invitee_image"
                     src={invitee.avatar && invitee.avatar.includes("http") ? invitee.avatar : `${url}/images/${invitee.avatar}`}
                     alt={invitee.name}
                   />
-                  <span className="invitee_name">{invitee.name}</span>
+                  <Tooltip id={`avata-tooltip-${index}`} place="bottom" style={{ fontSize: "12px", zIndex: "999" , borderRadius: "10px" }} content={invitee.name} />
                 </div>
-              ))}
+              ))}          
               <button className="invitee_button" data-tooltip-id="save-tooltip" onClick={() => setOpenInviteModal(true)}>
                 <i className="fa-solid fa-user-plus"></i>
-                <Tooltip id="save-tooltip" place="bottom" style={{ fontSize: "12px", zIndex: "999" }} content="Thêm người tham gia" />
+                <Tooltip id="save-tooltip" place="top" style={{ fontSize: "12px", zIndex: "999",borderRadius: "10px" }} content="Thêm người tham gia" />
               </button>
             </div>
           )}
@@ -1464,7 +1487,7 @@ const Schedule = ({ mode }) => {
         </div>
       </Modal>
 
-      <InviteTripmatesModal isOpen={openInviteModal} onClose={onCloseInviteModal}> </InviteTripmatesModal>
+      <InviteTripmatesModal isOpen={openInviteModal} onClose={onCloseInviteModal} scheduleId={inforSchedule._id}> </InviteTripmatesModal>
     </div>
   );
 };

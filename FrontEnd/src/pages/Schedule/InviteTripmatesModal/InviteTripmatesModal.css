@@ -7,158 +7,340 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-  
-  
-  /* Modal box */
-  .modal {
-    background: white;
-    padding: 20px 30px;
-    border-radius: 20px;
-    width:40vw ;
-    min-height: 25vw;
-    position: relative;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Tiêu đề */
-  .modal-title {
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 15px;
-  }
-  
-  /* Chuyển đổi quyền */
-  .permission-toggle {
-    display: flex;
-    background-color: #f3f4f5;
-    border-radius: 8px;
-    overflow: hidden;
-    padding: 2px;
-  }
-  
-  .permission-toggle button {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    background: #ddd;
-    cursor: pointer;
-    font-size: 14px;
-  }
 
-  .permission-toggle button:hover {
-    background: rgb(197, 195, 195);
-    color: rgb(1, 1, 1);
-  }
-  
-  .permission-toggle button.active {
-    background: rgb(255, 255, 255);
-    color: rgb(1, 1, 1);
-    box-shadow: 0 4px 8px rgba(0,0,0,.2);
-}
-  
-  /* Ô nhập link + nút copy */
-  .share-link {
-    display: flex;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    margin-top: 10px;
-    padding: 12px;
-    overflow: hidden;
-    align-items: center;
-    color:#495057;
 
-    i{
-        align-items: center;
-        height: fit-content;
-
-    }
-  }
-  
-  .share-link input {
-    flex: 1;
-    padding: 8px;
-    border: none;
-    background: #f8f8f8;
-    font-size: 14px;
-  }
-
-  .share-link input:focus {
-    outline: none;
-  }
-  
-  .share-link button {
-    padding: 10px 16px;
-    background: #f75940;
-    color: white;
-    border-radius: 14px;  
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-  }
-  
-  .invite-tripmates {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    margin-top: 10px;
-    overflow: hidden;
-    align-items: center;
-    color:#495057;
-    background: #f8f8f8;
-
-    i{
-        position: absolute;
-        z-index: 10;
-        margin-left: 10px;
-        margin-top: 20px;
-    }
-
-    input {
-        display: block;
+    /* Modal box */
+    .modal {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 20px;
+        width: 40vw;
+        min-height: 25vw;
         position: relative;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Tiêu đề */
+    .modal-title {
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    /* Chuyển đổi quyền */
+    .permission-toggle {
+        display: flex;
+        background-color: #f3f4f5;
+        border-radius: 8px;
+        overflow: hidden;
+        padding: 2px;
+    }
+
+    .permission-toggle button {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        background: #ddd;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .permission-toggle button:hover {
+        background: rgb(197, 195, 195);
+        color: rgb(1, 1, 1);
+    }
+
+    .permission-toggle button.active {
+        background: rgb(255, 255, 255);
+        color: rgb(1, 1, 1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, .2);
+    }
+
+    /* Ô nhập link + nút copy */
+    .share-link {
+        display: flex;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        margin-top: 10px;
+        padding: 12px;
+        overflow: hidden;
+        align-items: center;
+        color: #495057;
+
+        i {
+            align-items: center;
+            height: fit-content;
+
+        }
+    }
+
+    .share-link input {
+        flex: 1;
+        padding: 8px;
+        border: none;
+        background: #f8f8f8;
+        font-size: 14px;
+    }
+
+    .share-link input:focus {
+        outline: none;
+    }
+
+    .share-link button {
+        padding: 10px 16px;
+        background: #f75940;
+        color: white;
+        border-radius: 14px;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .invite-tripmates-input {
+        border-radius: 10px;
+        margin-top: 10px;
+        align-items: center;
+        color: #495057;
+        background: #f5f5f5;
+
+        .ico-input {
+            position: absolute;
+            z-index: 10;
+            margin-left: 10px;
+            margin-top: 20px;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+        }
+        input {
+            display: block;
+            position: relative;
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            padding: 20px 20px 20px 35px;
+            background: #f5f5f5;
+        }
+
+
+    }
+
+
+
+
+    /* Quản lý người tham gia */
+    .manage-tripmates {
+
         width: 100%;
         padding: 8px;
-        border-radius: 6px;
+        margin-top: 10px;
+        background: none;
         border: none;
         font-size: 14px;
-        padding: 20px 20px 20px 35px;
+        color: gray;
+        cursor: pointer;
     }
 
-    
-  }
-
-  
-
-  
-  /* Quản lý người tham gia */
-  .manage-tripmates {
-    width: 100%;
-    padding: 8px;
-    margin-top: 10px;
-    background: none;
-    border: none;
-    font-size: 14px;
-    color: gray;
-    cursor: pointer;
-  }
-  
-  /* Nút đóng */
-  .close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: #f3f2f2;
-    border-radius: 50%;
-    align-items: center;
-    font-size: 16px;
-    padding-bottom: 5px;
-    color: gray;
-    cursor: pointer;
-  }
+    /* Nút đóng */
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #f3f2f2;
+        border-radius: 50%;
+        align-items: center;
+        font-size: 16px;
+        padding-bottom: 5px;
+        color: gray;
+        cursor: pointer;
+    }
 
     .close-btn:hover {
         background: #dedede;
     }
-  
+
+    .dropdown {
+        z-index: 10;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgb(236, 235, 235);
+        border: 1px solid #ddd;
+        padding: 6px;
+        border-radius: 6px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 5px;
+        z-index: 10;
+        transition: all 0.2s;
+    }
+
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        .dropdown-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-left: 20px;
+            gap: 5px;
+        }
+
+        i {
+            font-size: 20px;
+        }
+    }
+
+    .dropdown:hover {
+        background: #cbcbcb;
+    }
+
+    .dropdown-item i {
+        margin-right: 10px;
+    }
+
+    .email-tripmates-container {
+
+        .border-top {
+            color:#333;
+            border-top: 1px solid #ddd ;
+            margin: 0 10px;
+        }
+
+        .email-tripmates {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        
+        .title {
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .email-tripmates-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .email-tripmate {
+            display: flex;
+            align-items: center;
+            background: #f3f4f6;
+            border: #bbbbbb 1px solid;;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #333;
+            margin: 0 10px;
+            span{
+                font-size: 13px;
+                color: #777;
+           }
+        }
+
+        .email-tripmate button {
+            background: none;
+            border: none;
+            color: #777;
+            margin-left: 5px;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+
+            
+        }
+
+        .email-tripmate button:hover {
+            color: #333;
+        }
+
+        .add-tripmate {
+
+            background: none;
+            border: 1px dashed #aaa;
+            color: #777;
+            border-radius: 20px;
+            padding: 6px 10px;
+            cursor: pointer;
+            height: fit-content;
+            align-self: center;
+        }
+
+        .add-tripmate:hover {
+            background: #eee;
+        }
+
+        .email-message {
+            position: relative;
+            display: flex ;
+            flex-direction: column;
+            gap : 10px;
+            margin-top: 10px;
+            height: 160px;
+
+            .email-message-title {          
+                z-index: 10;
+                margin-top: 10px;
+            }
+
+            .email-message-textarea {
+                position: absolute;
+                width: 100%;                
+                height: 100%;
+                padding: 40px 20px 10px 10px;
+                border-radius: 6px;               
+                border: none;
+                resize: none;
+                color: #495057;
+                font: 0.9em sans-serif ;
+                background: #f5f5f5;
+
+            }
+        }
+
+        .send-invite-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+            padding: 10px;
+        }
+
+        .send-invite {
+            padding: 10px 16px;
+            background: #f75940;
+            color: white;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .sending{
+            background: #dc7869;
+            color: white;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 10px 16px;
+            cursor: not-allowed;
+        }
+    }
 }

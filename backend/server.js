@@ -39,25 +39,6 @@ global.io = new Server(server, {
 
 
 
-// global.io.on('connection', (socket) => {
-//   console.log('A user connected:', socket.id);
-
-//   // Lắng nghe event từ client
-//   socket.on('test-message', (data) => {
-//       console.log('Received test message from client:', data);
-//       // Phản hồi lại client
-//       socket.emit('server-response', { message: 'Message received', data });
-//   });
-
-//   // Ngắt kết nối
-//   socket.on('disconnect', () => {
-//       console.log('A user disconnected:', socket.id);
-//   });
-// });
-
-
-
-
 app.use(cors({ origin: ["http://localhost:5173", "http://localhost:5174" , "http://localhost:5175", "https://vcompass-partner.onrender.com","https://vcompass.onrender.com","https://vcompass-admin.onrender.com"] }));
 app.use(express.json());
 
