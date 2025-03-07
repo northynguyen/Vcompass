@@ -54,7 +54,7 @@ const Home = () => {
             )}&sortBy=likes&page=1&limit=6`
           );
           if (scheduleResponse.data.success) {
-            console.log(scheduleResponse.data);
+            //console.log(scheduleResponse.data);
             const publicSchedules = scheduleResponse.data.schedules.filter(
               (schedule) =>
                 schedule.isPublic === true && schedule.idUser !== user._id
@@ -349,7 +349,7 @@ const Home = () => {
       </div>
 
       {schedules &&
-        (console.log(schedules),
+        (//console.log(schedules),
           (
             <div className="post-card-recommendations">
               <div className="post-card-header">

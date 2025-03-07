@@ -25,9 +25,11 @@ import OtherUserProfile from "./pages/OtherUserProfile/OtherUserProfile";
 
 import SearchSchedule from './pages/SearchSchedule/SearchSchedule';
 import ValidateEmail from "./components/ValidateEmail/ValidateEmail";
+import ChatBox from "./components/ChatBox/ChatBox";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
+  const [currentConversation, setCurrentConversation] = useState()
   const [isMobile, setIsMobile] = useState(false);
 
   //  const isMobileDevice = () => {
@@ -77,12 +79,13 @@ function App() {
           <Route path="/schedule-view/:id" element={<Schedule mode="view" />} />
           <Route path="/booking-process/step2" element={<BookingProcess />} />
           <Route path="/searchSchedule" element={<SearchSchedule />} />
-          <Route path="/otherUserProfile/:id" element={<OtherUserProfile />} />
+          <Route path="/otherUserProfile/:id" element={<OtherUserProfile setCurrentConversation = {setCurrentConversation}/>} />
           <Route path="/booking-process/finalstep" element={<BookingProcess />} />
           <Route path="*" element={<Page404 />} />
           <Route path="/404" element={<Page404 />} />
           <Route path="/auth/success" element={<AuthRedirect />} />
-        </Routes>
+        </Routes >
+        <ChatBox currentConversation = {currentConversation} setCurrentConversation = {setCurrentConversation}/>
         <Footer />
       </div>
     </>

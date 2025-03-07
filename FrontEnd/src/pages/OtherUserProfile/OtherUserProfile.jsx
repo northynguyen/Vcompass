@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { FaTransgender } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
@@ -12,7 +12,7 @@ import ImagesModal from '../../components/ImagesModal/ImagesModal';
 import PostCard from "../../components/Poster/PostCard";
 import "./OtherUserProfile.css";
 
-export default function OtherUserProfile() {
+export default function OtherUserProfile({setCurrentConversation}) {
   const [isFollow, setIsFollow] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const { url, token, user } = useContext(StoreContext);
@@ -37,6 +37,41 @@ export default function OtherUserProfile() {
   }
   const toggleFollowerMenu = (id) => {
     setOpenFollowerMenu(openFollowerMenu === id ? null : id); // Nếu bấm lại sẽ ẩn menu
+  };
+  const onChatClick = async () => {
+    const senderId = user._id;
+    const receiverId = currentUser._id
+    try {
+      const res = await fetch(`${url}/api/conversations/getConver/${senderId}/${receiverId}`, {method: "GET"});
+      let data = await res.json();
+      if (res.ok && data.conversation) {
+        console.log("✅ Cuộc trò chuyện đã tồn tại:", data.conversation._id);
+        setCurrentConversation(data.conversation)
+        return data.conversation._id;
+      }
+      const createRes = await fetch(`${url}/api/conversations/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ senderId, receiverId })
+      });
+
+      const createData = await createRes.json();
+
+      if (createRes.ok && createData.conversation) {
+        console.log("🆕 Cuộc trò chuyện mới được tạo:", createData.conversation._id);
+        setCurrentConversation(createData.conversation)
+        return createData.conversation._id;
+      } else {
+        console.error("❌ Lỗi khi tạo cuộc trò chuyện:", createData.message);
+        return null;
+      }
+    } catch (error) {
+      console.error("🚨 Lỗi khi xử lý cuộc trò chuyện:", error);
+      return null;
+    }
   };
   const onCreateNewPostClick = () => {
     navigate("/create-schedule")
@@ -239,14 +274,22 @@ export default function OtherUserProfile() {
             </div>
           </div>
           {!isMyProfile &&
-            <button
-              className={`fanpage-watch-button ${isFollow ? "followed" : ""}`}
-              onClick={onFollowClick}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              {isFollow ? (isHovered ? "Bỏ theo dõi" : "Đang theo dõi") : "Theo dõi"}
-            </button>
+            <div className="profile-button-container">
+              <button
+                className={`fanpage-watch-button ${isFollow ? "followed" : ""}`}
+                onClick={onFollowClick}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                {isFollow ? (isHovered ? "Bỏ theo dõi" : "Đang theo dõi") : "Theo dõi"}
+              </button>
+              <button
+                className={`fanpage-watch-button`}
+                onClick={onChatClick}
+              >
+                Nhắn tin
+              </button>
+            </div>
           }
           {isMyProfile &&
             <button
