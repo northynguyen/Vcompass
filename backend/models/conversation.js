@@ -1,25 +1,17 @@
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const LastMessageSchema = new Schema({
-  lastMessage: { type: String, required: true },
-  time: { type: Date, required: true },
-});
-
-const MessageSchema = new Schema({
-  idMessage: { type: String, required: true },
+export const Message = new Schema({
   senderId: { type: String, required: true },
-  content: { type: String, required: true },
-  createdAt: { type: Date, required: true },
+  content: { type: String },
+  media: { type: String },
+  mediaType: { type: String, enum: ["image", "video", "other"] },
+  isReaded: {type: Boolean, required: true, default: false},
+  createdAt: { type: Date, required: true, default: Date.now },
 });
 
 const ConversationSchema = new Schema({
-  idConversation: { type: String, required: true },
-  lastMessage: LastMessageSchema,
-  messages: [MessageSchema],
-  participantIds: {
-    idFirstUser: { type: String, required: true },
-    idSecondUser: { type: String, required: true },
-  },
+  messages: [Message],
+  participantIds: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
 });
 
 const Conversation =

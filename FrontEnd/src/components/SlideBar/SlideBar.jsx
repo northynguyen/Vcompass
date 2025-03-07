@@ -69,7 +69,7 @@ const SlideBar = ({ type }) => {
             fetchFoodServices();
         } else if (type === 'attraction') {
             fetchAttractions();
-            console.log(popularServices);
+           // console.log(popularServices);
         }
     }, [type, url]);
 
@@ -82,7 +82,7 @@ const SlideBar = ({ type }) => {
     };
 
     const renderCardContent = (service) => {
-        console.log(service);
+        //console.log(service);
         switch (type) {
             case 'accommodation':
                 return (
