@@ -4,9 +4,10 @@ import { FaEdit, FaAngleDown, FaAngleUp } from "react-icons/fa"; // Import icon 
 import Modal from "react-modal";
 import ConfirmDialog from "../../../components/Dialog/ConfirmDialog";
 import "./Expense.css";
+import { v4 as uuidv4 } from 'uuid';
 
 
-const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule }) => {
+const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule, socket, inforSchedule }) => {
   const isEditMode = !!selectedExpense;
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -44,10 +45,25 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule }) =
     setIsConfirmDeleteOpen(true);
   };
   const handleConfirmDelete = () => {
-    setInforSchedule((prevSchedule) => ({
-      ...prevSchedule,
-      additionalExpenses: prevSchedule.additionalExpenses.filter((exp) => exp._id !== selectedExpense.id),
-    }));
+    setInforSchedule(prev => {
+      const updatedExpenses = prev.additionalExpenses.filter(
+        exp => exp._id !== selectedExpense._id
+      );
+
+      // Emit sự kiện để update real-time khi xóa
+      if (socket?.current) {
+        socket.current.emit('updateExpenses', {
+          scheduleId: inforSchedule._id,
+          expenses: updatedExpenses
+        });
+      }
+
+      return {
+        ...prev,
+        additionalExpenses: updatedExpenses
+      };
+    });
+
     closeModal();
     setIsConfirmDeleteOpen(false);
   };
@@ -62,16 +78,36 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule }) =
       [name]: name === 'cost' ? Number(value) : value,
     }));
   };
-  const handleSubmit = () => {
-    const newExpense = { ...formData };
-    setInforSchedule((prevSchedule) => ({
-      ...prevSchedule,
-      additionalExpenses: isEditMode
-        ? prevSchedule.additionalExpenses.map((exp) =>
-          exp._id === selectedExpense.id ? { ...exp, ...formData } : exp
-        )
-        : [...prevSchedule.additionalExpenses, newExpense],
-    }));
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Tạo expense mới với id
+    const newExpense = {
+      ...formData,
+      _id: selectedExpense?._id || uuidv4() // Sử dụng id cũ nếu đang edit, tạo mới nếu đang thêm
+    };
+
+    setInforSchedule(prev => {
+      const updatedExpenses = selectedExpense 
+        ? prev.additionalExpenses.map(exp => exp._id === selectedExpense._id ? newExpense : exp)
+        : [...prev.additionalExpenses, newExpense];
+
+      const newSchedule = {
+        ...prev,
+        additionalExpenses: updatedExpenses
+      };
+
+      // Emit sự kiện để update real-time
+      if (socket?.current) {
+        socket.current.emit('updateExpenses', {
+          scheduleId: inforSchedule._id,
+          expenses: updatedExpenses
+        });
+      }
+
+      return newSchedule;
+    });
+
     closeModal();
   };
 
@@ -140,11 +176,10 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule }) =
 
 
 
-const Expense = ({ expenses, additionExpenses, setInforSchedule, mode }) => {
-  const totalCost = [...expenses, ...additionExpenses].reduce((acc, expense) => acc + expense.cost, 0);
+const Expense = ({ expenses, additionExpenses, setInforSchedule, mode, socket, inforSchedule }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
-  const [isExpanded, setIsExpanded] = useState(false); // Thêm state để điều khiển hiển thị chi phí
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const openModalForAdd = () => {
     setSelectedExpense(null);
@@ -164,6 +199,45 @@ const Expense = ({ expenses, additionExpenses, setInforSchedule, mode }) => {
   const toggleExpand = () => {
     setIsExpanded(!isExpanded); // Đảo ngược trạng thái mở/đóng chi phí
   };
+
+  const handleExpenseChange = (updatedExpenses) => {
+    setInforSchedule(prev => {
+      const newSchedule = {
+        ...prev,
+        additionalExpenses: updatedExpenses
+      };
+
+      // Emit sự kiện để update real-time
+      if (socket?.current) {
+        socket.current.emit('updateExpenses', {
+          scheduleId: inforSchedule._id,
+          expenses: updatedExpenses
+        });
+      }
+
+      return newSchedule;
+    });
+  };
+
+  // Thêm useEffect để lắng nghe sự kiện cập nhật từ server
+  useEffect(() => {
+    if (socket?.current) {
+      socket.current.on('expensesUpdated', (updatedExpenses) => {
+        setInforSchedule(prev => ({
+          ...prev,
+          additionalExpenses: updatedExpenses
+        }));
+      });
+    }
+  }, [socket]);
+
+  const calculateTotalCost = () => {
+    const activityCosts = expenses.reduce((acc, exp) => acc + (exp.cost || 0), 0);
+    const additionalCosts = additionExpenses.reduce((acc, exp) => acc + (exp.cost || 0), 0);
+    return activityCosts + additionalCosts;
+  };
+
+  const totalCost = calculateTotalCost();
 
   return (
     <div className="expense-container">
@@ -199,7 +273,7 @@ const Expense = ({ expenses, additionExpenses, setInforSchedule, mode }) => {
           ))}
 
           {additionExpenses.map((additionExpen) => (
-            <div className="expense-item" key={additionExpen.id}>
+            <div className="expense-item" key={additionExpen._id}>
               <div className="expense-icon">
                 <img src="https://png.pngtree.com/png-clipart/20230504/original/pngtree-money-flat-icon-png-image_9138340.png" alt={additionExpen.name} />
               </div>
@@ -238,9 +312,21 @@ const Expense = ({ expenses, additionExpenses, setInforSchedule, mode }) => {
           <h3>Tổng chi phí thực tế</h3>
           <h1>{totalCost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</h1>
         </div>
+        {mode === "edit" && (
+          <button className="add-expense-btn" onClick={openModalForAdd}>
+            Thêm chi phí
+          </button>
+        )}
       </div>
 
-      <AddExpense isOpen={isModalOpen} closeModal={closeModal} selectedExpense={selectedExpense} setInforSchedule={setInforSchedule} />
+      <AddExpense 
+        isOpen={isModalOpen}
+        closeModal={closeModal}
+        selectedExpense={selectedExpense}
+        setInforSchedule={setInforSchedule}
+        socket={socket}
+        inforSchedule={inforSchedule}
+      />
     </div>
   );
 };

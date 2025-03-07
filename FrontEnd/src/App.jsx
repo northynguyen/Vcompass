@@ -25,6 +25,7 @@ import OtherUserProfile from "./pages/OtherUserProfile/OtherUserProfile";
 
 import SearchSchedule from './pages/SearchSchedule/SearchSchedule';
 import ValidateEmail from "./components/ValidateEmail/ValidateEmail";
+import MapWithPlaces from "./components/MapTest";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -59,7 +60,19 @@ function App() {
     <>
       {showLogin && <SignIn setShowLogin={setShowLogin} />}
       <div className="app">
-        <ToastContainer />
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable={false}
+          theme="light"
+          limit={3}
+          style={{ zIndex: 9999 }}
+        />
         <Header setShowLogin={setShowLogin} />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -71,7 +84,7 @@ function App() {
           <Route path="/booking" element={<HomeBooking />} />
           <Route path="/attractions" element={<HomeAttractions />} />
           <Route path="/foodservices" element={<HomeFoodService />} />
-          <Route path="/schedule/validate-email" element={<ValidateEmail />} />
+          <Route path="/schedule/validate-email" element={<ValidateEmail setShowLogin={setShowLogin}/>} />
           <Route path="/my-schedule" element={<MySchedule setShowLogin={setShowLogin} />} />
           <Route path="/schedule-edit/:id" element={<Schedule mode="edit" />} />
           <Route path="/schedule-view/:id" element={<Schedule mode="view" />} />
@@ -82,6 +95,7 @@ function App() {
           <Route path="*" element={<Page404 />} />
           <Route path="/404" element={<Page404 />} />
           <Route path="/auth/success" element={<AuthRedirect />} />
+          <Route path="/mapplace" element={<MapWithPlaces />} />
         </Routes>
         <Footer />
       </div>

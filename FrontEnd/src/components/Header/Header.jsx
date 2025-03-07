@@ -96,7 +96,7 @@ const Header = ({ setShowLogin }) => {
       console.log("Received notification:", notification);
       fetchNotifications(); // Cập nhật danh sách thông báo
       setUnreadCount((prev) => prev + 1); // Tăng số lượng chưa đọc
-      toast.info(
+      toast(
         <div className="custom-toast">
           <h4>🔔 {notification.nameSender} </h4>
           <p>{notification.content}</p>

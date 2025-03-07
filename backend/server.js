@@ -16,6 +16,9 @@ import { Server } from 'socket.io'; // Import Socket.IO
 import http from 'http';
 import emailRouter from "./routes/emailRoutes.js";
 import {googleCallback} from "./controllers/userController.js"
+// Import setupScheduleSocket
+import { setupScheduleSocket } from './socket/scheduleSocket.js';
+
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -67,6 +70,9 @@ app.use((err, req, res, next) => {
 app.get("/", (req, res) => {
   res.send("API WORKING");
 });
+
+// Thiết lập Socket.IO cho schedule
+setupScheduleSocket(global.io);
 
 server.listen(port, () => {
   console.log(`IO server started on http://localhost:${port}`);

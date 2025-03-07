@@ -6,9 +6,10 @@ import "./MySchedule.css";
 import { FaTrash, FaGlobe, FaUserSecret } from "react-icons/fa";
 import ConfirmDialog from "../../components/Dialog/ConfirmDialog";
 
-const MySchedule = ({setShowLogin}) => {
+const MySchedule = ({ setShowLogin }) => {
   const { url, token, user } = useContext(StoreContext);
   const [schedules, setSchedules] = useState([]);
+  const [groupSchedules, setGroupSchedules] = useState([]);
   const [wishlists, setWishlists] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeScheduleId, setActiveScheduleId] = useState(null);
@@ -17,6 +18,8 @@ const MySchedule = ({setShowLogin}) => {
   const [message, setMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [action, setAction] = useState("");
+  const [scheduleType, setScheduleType] = useState("my-schedule");
+  const [listRender , setListRender] = useState([]);
   const navigate = useNavigate();
   const popupRef = useRef(null);
 
@@ -26,7 +29,7 @@ const MySchedule = ({setShowLogin}) => {
   };
 
   useEffect(() => {
-    if(!token){
+    if (!token) {
       setShowLogin(true);
     }
   })
@@ -45,32 +48,46 @@ const MySchedule = ({setShowLogin}) => {
 
   useEffect(() => {
     const fetchSchedulesData = async () => {
-      try {
-        const schedulesResponse = await axios.get(
-          `${url}/api/schedule/user/getSchedules`,
-          { headers: { token } }
-        );
-        const wishlistsResponse = await axios.get(
-          `${url}/api/schedule/user/getSchedules?type=wishlist`,
-          { headers: { token } }
-        );
+     
+    
+        try {
+          const schedulesResponse = await axios.get(
+            `${url}/api/schedule/user/getSchedules`,
+            { headers: { token } }
+          );
 
-        if (schedulesResponse.data.success) {
-          setSchedules(schedulesResponse.data.schedules);
-        } else {
-          console.error("Failed to fetch schedules:", schedulesResponse.data.message);
-        }
+          const groupSchedulesResponse = await axios.get(
+            `${url}/api/schedule/user/getSchedules?type=group`,
+            { headers: { token } }
+          );
 
-        if (wishlistsResponse.data.success) {
-          setWishlists(wishlistsResponse.data.schedules);
-        } else {
-          console.error("Failed to fetch wishlists:", wishlistsResponse.data.message);
+          const wishlistsResponse = await axios.get(
+            `${url}/api/schedule/user/getSchedules?type=wishlist`,
+            { headers: { token } }
+          );
+          if (groupSchedulesResponse.data.success) {
+            setGroupSchedules(groupSchedulesResponse.data.schedules);
+          } else {
+            console.error("Failed to fetch group schedules:", groupSchedulesResponse.data.message);
+          }
+
+          if (schedulesResponse.data.success) {
+            setSchedules(schedulesResponse.data.schedules);
+          } else {
+            console.error("Failed to fetch schedules:", schedulesResponse.data.message);
+          }
+
+          if (wishlistsResponse.data.success) {
+            setWishlists(wishlistsResponse.data.schedules);
+          } else {
+            console.error("Failed to fetch wishlists:", wishlistsResponse.data.message);
+          }
+        } catch (error) {
+          console.error("Error fetching schedules or wishlists:", error);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching schedules or wishlists:", error);
-      } finally {
-        setIsLoading(false);
-      }
+      
     };
 
     if (token) fetchSchedulesData();
@@ -81,23 +98,23 @@ const MySchedule = ({setShowLogin}) => {
       const [day, month, year] = dateStr.split('-').map(Number);
       return new Date(year, month - 1, day);
     };
-  
+
     const startDate = parseDate(startDateStr);
     const endDate = parseDate(endDateStr);
-  
+
     // Calculate the difference in time (in milliseconds)
     const durationInMs = endDate - startDate;
-  
+
     if (durationInMs <= 0) {
       return "Ngày kết thúc phải sau ngày bắt đầu.";
     }
-  
+
     // Convert milliseconds to days
     const days = Math.floor(durationInMs / (1000 * 60 * 60 * 24));
-  
+
     return `${days}`;
   };
-  
+
   const handleDeleteSchedule = async () => {
     try {
       const response = await axios.delete(
@@ -178,6 +195,15 @@ const MySchedule = ({setShowLogin}) => {
     }
   };
 
+  useEffect(() => {
+    if (scheduleType === "my-schedule") {
+      setListRender(schedules);}
+    else if (scheduleType === "group-schedule") {
+      setListRender(groupSchedules);
+      console.log("groupSchedules", groupSchedules);
+    }
+  }, [scheduleType, schedules, groupSchedules]);
+
   return (
     <div className="my-schedule-container">
       <header className="hero-section">
@@ -192,10 +218,24 @@ const MySchedule = ({setShowLogin}) => {
       </header>
 
       <section className="my-schedule-section">
-        <h2>Lịch trình của tôi</h2>
-        {!isLoading && schedules.length > 0 ? (
-          schedules.map((schedule) => (
-            console.log("schedule", schedule),
+        <div className="schedule-type-buttons">
+          <button
+            className={ scheduleType === "my-schedule" ? "active" : ""}
+            onClick ={() => setScheduleType("my-schedule")}
+          >
+            Lịch trình của bạn 
+          </button>
+          <button
+            className={scheduleType === "group-schedule" ? "active" : ""}
+            onClick={() => setScheduleType("group-schedule")}
+          >
+            Lịch trình nhóm 
+          </button>
+
+        </div>
+
+        {!isLoading && listRender.length > 0 ? (
+          listRender.map((schedule) => (
             <div
               key={schedule._id}
               className="my-schedule-card"
@@ -276,10 +316,10 @@ const MySchedule = ({setShowLogin}) => {
                   <div className="schedule-date">
                     <h3> {calculateDaysAndNights(schedule.dateStart, schedule.dateEnd)}</h3>
                     <span>Ngày</span>
-                   </div>
-                 
-                 </div>
-               
+                  </div>
+
+                </div>
+
                 <div className="schedule-info">
                   <h3>{schedule.scheduleName}</h3>
                   <p> Địa điểm: {schedule.address}</p>
@@ -287,10 +327,10 @@ const MySchedule = ({setShowLogin}) => {
                   <p>Ngày kết thúc: {schedule.dateEnd}</p>
                 </div>
 
-                <div className="schedule-user"> 
+                <div className="schedule-user">
                   <img
                     className="avatar"
-                    src={ schedule.idUser.avatar ? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                    src={schedule.idUser.avatar ? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                     alt={schedule.userName}
                   />
                   <p>{schedule.idUser.name || "Unknown User"}</p>

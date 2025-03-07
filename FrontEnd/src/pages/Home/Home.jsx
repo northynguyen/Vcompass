@@ -38,7 +38,7 @@ const Home = () => {
         // Fetch user schedules (to get cities)
         const userScheduleResponse = await axios.get(
           `${url}/api/schedule/user/getSchedules`,
-          { headers: { token } }
+          { headers: { token }  }
         );
         if (userScheduleResponse.data.success) {
           cities.push(
