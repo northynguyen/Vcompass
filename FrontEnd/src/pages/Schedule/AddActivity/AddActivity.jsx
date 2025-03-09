@@ -8,7 +8,6 @@ import ListFoodServices, { FoodServiceItem } from "../../ListFoodServices/ListFo
 import "./AddActivity.css";
 
 import axios from "axios";
-// Thiết lập root element cho modal
 Modal.setAppElement("#root");
 
 const OtherItem = ({ setCurDes, curDes }) => {
@@ -158,9 +157,6 @@ const OtherItem = ({ setCurDes, curDes }) => {
     </div>
   );
 };
-
-
-
 
 
 const Header = ({ option, setOption, setCurDes }) => {

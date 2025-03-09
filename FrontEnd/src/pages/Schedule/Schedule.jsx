@@ -1329,6 +1329,12 @@ const Schedule = ({ mode }) => {
 
   useEffect(() => {
     if (mode === "edit" && inforSchedule) {
+      const allUsers = new Set([
+        inforSchedule.idUser._id,
+        ...(inforSchedule.idInvitee?.map(user => user._id) || [])
+      ]);
+      setInactiveUsers(allUsers);
+      
       socket.current = io(url, {
         transports: ['websocket'],
         upgrade: false
@@ -1522,7 +1528,7 @@ const Schedule = ({ mode }) => {
             <div className="invitee_container">  
               <div className="invitee_item" data-tooltip-id="avata-tooltip">
                 <img
-                  className={`invitee_image ${isUnActive(inforSchedule.idUser) ? "unactive_avatar" : ""}`}
+                  className={`invitee_image ${isUnActive(inforSchedule.idUser._id ) ? "unactive_avatar" : ""}`}
                   src={inforSchedule.idUser.avatar && inforSchedule.idUser.avatar.includes("http") ? inforSchedule.idUser.avatar : `${url}/images/${inforSchedule.idUser.avatar}`}
                   alt={inforSchedule.idUser.name}
                 />

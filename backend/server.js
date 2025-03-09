@@ -17,10 +17,6 @@ import { notificationRoutes } from "./routes/notificationRoutes.js";
 import scheduleRouter from "./routes/scheduleRoutes.js";
 import userRoutes from "./routes/userRoute.js";
 import videoRouter from "./routes/videoRoutes.js";
-import { Server } from 'socket.io'; // Import Socket.IO
-import http from 'http';
-import emailRouter from "./routes/emailRoutes.js";
-import {googleCallback} from "./controllers/userController.js"
 import { setupScheduleSocket } from './socket/scheduleSocket.js';
 
 const app = express();
