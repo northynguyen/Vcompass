@@ -3,7 +3,10 @@ import moment from 'moment';
 import "moment/locale/vi";
 import React, { useContext, useEffect, useState } from 'react';
 import { FaCommentAlt, FaHeart, FaRegPaperPlane, FaShare } from 'react-icons/fa';
+import { AiOutlineMore } from "react-icons/ai";
+import { FiFlag } from "react-icons/fi";
 import { StoreContext } from '../../../Context/StoreContext';
+import ReportForm from '../../../components/Report/ReportForm';
 import './Comment.css';
 // Post actions for liking, commenting, and sharing
 export const PostActions = ({ handleLike, likeCount, commentCount, replyCount, isLike, postUrl }) => {
@@ -191,6 +194,18 @@ const CommentContent = ({ comment, scheduleId, token, updateComments, url, user 
     const [replyText, setReplyText] = useState('');
     const [showReplies, setShowReplies] = useState(false);
     const [replyInputVisible, setReplyInputVisible] = useState(false);
+
+    const [openCommentMenuId, setOpenCommentMenuId] = useState(null);
+    const [openReplyMenuId, setOpenReplyMenuId] = useState(null);
+    // Toggle menu cho comment chính
+    const toggleCommentMenu = (commentId) => {
+        setOpenCommentMenuId(openCommentMenuId === commentId ? null : commentId);
+    };
+
+    // Toggle menu cho từng reply
+    const toggleReplyMenu = (replyId) => {
+        setOpenReplyMenuId(openReplyMenuId === replyId ? null : replyId);
+    };
     const handleReplySubmit = async () => {
         if (!user) {
             alert("Vui lòng đăng nhập trước");
@@ -217,16 +232,19 @@ const CommentContent = ({ comment, scheduleId, token, updateComments, url, user 
         }
     };
 
-
     return (
         <div className="comment-container">
+
             <div className="user-avatar">
                 <img src={comment.avatar && comment.avatar.includes('http') ? comment.avatar : `${url}/images/${comment.avatar}` || "https://cdn-icons-png.flaticon.com/512/149/149071.png  "} alt="avatar" className="avatar-image" />
             </div>
             <div className="comment-content">
-                <div className="comment-text">
-                    <span className="user-name">{comment.userName}</span>
-                    <p>{comment.content}</p>
+                <div className="comment-line">
+                    <div className="comment-text">
+                        <span className="user-name">{comment.userName}</span>
+                        <p>{comment.content}</p>
+                    </div>
+
                 </div>
                 <div className="comment-actions">
                     <span>{formatDate(comment.createdAt)}</span>
@@ -247,9 +265,12 @@ const CommentContent = ({ comment, scheduleId, token, updateComments, url, user 
                             <img src={reply.avatar && reply.avatar.includes('https') ? reply.avatar : `${url}/images/${reply.avatar}` || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDLxQhCB-aYA9ieFW-Rkd0TMKzG6FNflehVA&s"} alt="avatar" className="avatar-image" />
                         </div>
                         <div>
-                            <div className="reply-content">
-                                <span className="reply-user-name">{reply.userName}</span>
-                                <p className="reply-text">{reply.content}</p>
+                            <div className="comment-line">
+                                <div className="reply-content">
+                                    <span className="reply-user-name">{reply.userName}</span>
+                                    <p className="reply-text">{reply.content}</p>
+                                </div>
+
                             </div>
                             <div className="comment-actions">
                                 <span>{formatDate(reply.createdAt)}</span>
@@ -259,19 +280,9 @@ const CommentContent = ({ comment, scheduleId, token, updateComments, url, user 
                     </div>
                 ))}
 
-                {replyInputVisible && (
-                    <div className="reply-input-container">
-                        <input
-                            type="text"
-                            placeholder="Viết câu trả lời..."
-                            value={replyText}
-                            onChange={(e) => setReplyText(e.target.value)}
-                            className="input-comment-field"
-                        />
-                        <FaRegPaperPlane onClick={handleReplySubmit} className="send-icon" />
-                    </div>
-                )}
+
             </div>
+
         </div>
     );
 };

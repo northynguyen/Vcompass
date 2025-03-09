@@ -15,7 +15,9 @@ import videoRouter from "./routes/videoRoutes.js";
 import { Server } from 'socket.io'; // Import Socket.IO
 import http from 'http';
 import emailRouter from "./routes/emailRoutes.js";
-import {googleCallback} from "./controllers/userController.js"
+import { googleCallback } from "./controllers/userController.js";
+import extensionRouter from "./routes/extensionRoutes.js";
+import reportRouter from "./routes/reportRoutes.js";
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -24,22 +26,22 @@ const server = http.createServer(app);
 
 // Enable CORS for all routes
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:5174" , "http://localhost:5175", "https://vcompass-partner.onrender.com","https://vcompass.onrender.com","https://vcompass-admin.onrender.com"], // Update with your frontend URL
-    credentials: true
+  origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "https://vcompass-partner.onrender.com", "https://vcompass.onrender.com", "https://vcompass-admin.onrender.com"], // Update with your frontend URL
+  credentials: true
 }));
 
 
 global.io = new Server(server, {
-    cors: {
-        origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175",, "https://vcompass-partner.onrender.com","https://vcompass.onrender.com","https://vcompass-admin.onrender.com"], // Update with your frontend URL
-        methods: ["GET", "POST"],
-        credentials: true
-    }
+  cors: {
+    origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", , "https://vcompass-partner.onrender.com", "https://vcompass.onrender.com", "https://vcompass-admin.onrender.com"], // Update with your frontend URL
+    methods: ["GET", "POST"],
+    credentials: true
+  }
 });
 
 
 
-app.use(cors({ origin: ["http://localhost:5173", "http://localhost:5174" , "http://localhost:5175", "https://vcompass-partner.onrender.com","https://vcompass.onrender.com","https://vcompass-admin.onrender.com"] }));
+app.use(cors({ origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "https://vcompass-partner.onrender.com", "https://vcompass.onrender.com", "https://vcompass-admin.onrender.com"] }));
 app.use(express.json());
 
 
@@ -47,7 +49,7 @@ connectDB();
 app.use("/auth/google/callback", googleCallback);
 app.use("/images", express.static("uploads"));
 app.use("/api/user", userRoutes);
-app.use("/api/notifications", notificationRoutes); 
+app.use("/api/notifications", notificationRoutes);
 app.use("/api/accommodations", accommRoutes);
 app.use("/api/foodservices", foodServiceRoutes);
 app.use("/api/schedule", scheduleRouter);
@@ -57,6 +59,8 @@ app.use("/api/bookings", bookingRouter);
 app.use("/api/videos", videoRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/ai", aiRoute);
+app.use("/api/extensions", extensionRouter);
+app.use("/api/reports", reportRouter);
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ success: false, message: "Internal Server Error." });

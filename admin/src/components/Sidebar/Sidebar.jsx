@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './Sidebar.css';
 import { FaThLarge, FaUsers, FaUmbrellaBeach, FaHotel, FaBell, FaEnvelope, FaServicestack, FaUserFriends } from 'react-icons/fa'; // Import icons
 import { FaBuildingUser } from "react-icons/fa6";
+import { IoExtensionPuzzle } from "react-icons/io5";
+import { TbMessageReportFilled } from "react-icons/tb";
 const Sidebar = () => {
     const navigate = useNavigate();
     const location = useLocation(); // Lấy thông tin URL hiện tại
@@ -76,6 +78,20 @@ const Sidebar = () => {
                     >
                         <FaHotel />
                         Quản lý dịch vụ
+                    </li>
+                    <li
+                        className={isActive('/extensions') ? 'active' : ''}
+                        onClick={() => handleNavigation('/extensions')}
+                    >
+                        <IoExtensionPuzzle />
+                        Quản lý tiện ích
+                    </li>
+                    <li
+                        className={isActive('/reportmanagement') ? 'active' : ''}
+                        onClick={() => handleNavigation('/reportmanagement')}
+                    >
+                        <TbMessageReportFilled />
+                        Quản lý báo cáo
                     </li>
                     {/* <li
                         className={isActive('/message') ? 'active' : ''}

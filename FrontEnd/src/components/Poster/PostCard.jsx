@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../../Context/StoreContext";
 import { FiFlag } from "react-icons/fi";
 import "./PostCard.css";
+import ReportForm from "../Report/ReportForm";
 
 
 const PostCard = ({ schedule, handleScheduleClick }) => {
@@ -15,6 +16,7 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
   const [likes, setLikes] = useState(schedule?.likes || []);
   const [isFavorite, setIsFavorite] = useState(false);
   const [openScheduleMenu, setOpenScheduleMenu] = useState(null);
+  const [showReport, setShowReport] = useState(false);
   const navigate = useNavigate();
   const activityCosts = {
     Accommodation: 0,
@@ -233,12 +235,12 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
           {openScheduleMenu === schedule._id && (
             <div className="schedule-dropdown-menu">
               <div className="follower-menu-button" >
-              <FiFlag />
+                <FiFlag />
                 <button>Xem hồ sơ</button>
               </div>
               <div className="follower-menu-button" >
-              <FiFlag />
-                <button>Báo cáo lịch trình này</button>
+                <FiFlag />
+                <button onClick={() => setShowReport(true)}>Báo cáo</button>
               </div>
             </div>
           )}
@@ -414,7 +416,9 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
           Xem chi tiết
         </button>
       </footer>
+      {showReport && <ReportForm targetId={schedule._id} targetType="Schedule" onClose={() => setShowReport(false)} />}
     </div>
+
   );
 };
 

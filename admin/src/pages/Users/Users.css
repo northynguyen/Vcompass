@@ -7,3 +7,10 @@
     /* Cách nhau 20px */
     padding: 20px;
 }
+
+.search-input {
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
