@@ -8,7 +8,7 @@ const ProfileCards = ({ profile, type }) => {
   const { url } = React.useContext(StoreContext);
   const handleNavigate = () => {
     // Navigate to the appropriate profile details page based on the type
-    const baseUrl = type === "user" ? `/users/user/` : `/partners/partner/`;
+    const baseUrl = type === "user" ? `/users/${profile._id}` : type === "partner" ? `/partners/${profile.id}` : "";
     navigate(baseUrl, { state: { profile } }); // Giữ nguyên để truyền profile
   };
 
@@ -32,8 +32,8 @@ const ProfileCards = ({ profile, type }) => {
             {profile.gender === "male"
               ? "Nam"
               : profile.gender === "female"
-              ? "Nữ"
-              : "Khác"}
+                ? "Nữ"
+                : "Khác"}
           </p>
           <p>
             <strong>Ngày sinh:</strong>{" "}

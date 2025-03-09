@@ -13,7 +13,7 @@ const reportSchema = new mongoose.Schema({
     },
     targetType: {
         type: String,
-        enum: ["Itinerary", "Comment", "User"], // Các loại đối tượng
+        enum: ["Schedule", "Comment", "User", "Hotel", "Room", "Accommodation"], // Các loại đối tượng
         required: true,
     },
     reason: {
@@ -34,7 +34,7 @@ const reportSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["pending", "reviewed", "resolved"],
+        enum: ["pending", "rejected", "resolved"],
         default: "pending", // Mặc định là chưa xử lý
     },
     createdAt: {

@@ -1,0 +1,108 @@
+/* Màn tối phía sau popup */
+.report-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* Màu nền tối */
+    z-index: 9998;
+    /* Nằm dưới popup */
+}
+
+/* Popup form */
+.report-popup {
+    position: fixed;
+    /* Cố định popup trên màn hình */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fefefe;
+    /* Màu nền sáng */
+    padding: 2rem;
+    border-radius: 16px;
+    z-index: 9999;
+    /* Đảm bảo nằm trên cùng */
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    color: #333;
+    /* Màu chữ tối */
+}
+
+/* Tiêu đề form */
+.report-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    color: black;
+    /* Màu nổi bật */
+}
+
+/* Nút đóng (X) */
+.report-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #1DA1F2;
+    transition: transform 0.2s;
+}
+
+.report-close:hover {
+    transform: scale(1.2);
+    /* Hiệu ứng phóng to */
+}
+
+/* Form và các input */
+.report-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* Label */
+.report-label {
+    font-weight: bold;
+}
+
+/* Dropdown chọn lý do */
+.report-select {
+    padding: 0.8rem;
+    border: 2px solid #1DA1F2;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+}
+
+/* Textarea cố định kích thước */
+.report-textarea {
+    padding: 0.8rem;
+    border: 2px solid #1DA1F2;
+    border-radius: 12px;
+    background: #fff;
+    resize: none;
+    /* Không thể thay đổi kích thước */
+    min-height: 120px;
+}
+
+/* Nút gửi báo cáo */
+.report-submit {
+    background-color: #1DA1F2;
+    color: white;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.report-submit:hover {
+    background-color: #1DA1F2;
+    /* Màu hover */
+}
