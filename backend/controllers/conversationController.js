@@ -14,8 +14,8 @@ export const addConversation = async (req, res) => {
       conversation = await conversation.populate("participantIds", "_id name avatar");
     }
     res.status(200).json({ success: true, conversation });
-    global.io.emit(`${receiverId}-newConversation`, conversation._id);
-    global.io.emit(`${senderId}-newConversation`, conversation._id);
+    global.io.emit(`${receiverId}-newConversation`, conversation);
+    global.io.emit(`${senderId}-newConversation`, conversation);
   } catch (error) {
     console.error("❌ Lỗi khi tạo conversation:", error);
     res.status(500).json({ success: false, message: "Lỗi server" });

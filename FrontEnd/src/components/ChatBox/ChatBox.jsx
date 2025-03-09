@@ -124,9 +124,10 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
 
         fetchConversations();
 
-        socket.on(`${user._id}-newConversation`, (convId) => {
-            console.log("📩 New conversation detected, joining:", convId);
-            socket.emit("joinRoom", convId);
+        socket.on(`${user._id}-newConversation`, (conv) => {
+            console.log("📩 New conversation detected, joining:", conv._id);
+            socket.emit("joinRoom", conv._id);
+            setConversations(prev => [...prev, conv]);
         });
         socket.on("newMessage", (message) => {
             console.log("📩 Received message:", message);
