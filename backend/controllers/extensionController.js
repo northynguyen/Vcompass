@@ -13,7 +13,7 @@ export const getAllExtensions = async (req, res) => {
             .limit(pageSize);
 
         const totalExtensions = await ExtensionModal.countDocuments();
-
+        console.log("totalExtensions", extensions);
         res.json({
             success: true,
             message: "Get extensions with pagination success",

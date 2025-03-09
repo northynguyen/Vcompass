@@ -7,6 +7,10 @@ export const createReport = async (req, res) => {
     try {
         const { targetId, targetType, reason, description } = req.body;
         const reporterId = req.userId; // Lấy từ middleware xác thực
+        const existingReport = await Report.findOne({ reporterId, targetId });
+        if (existingReport) {
+            return res.status(400).json({ message: "Bạn đã báo cáo nội dung này rồi!" });
+        }
         const newReport = new Report({
             reporterId,
             targetId,
@@ -25,14 +29,25 @@ export const createReport = async (req, res) => {
 // Lấy danh sách báo cáo (chỉ admin)
 export const getReports = async (req, res) => {
     try {
-        const reports = await Report.find()
+        const { status } = req.query;
+
+        // Tạo điều kiện lọc nếu có status
+        const filter = status && status !== "All" ? { status } : {};
+
+        const reports = await Report.find(filter)
             .populate("reporterId", "name")
-            .sort({ createdAt: -1 }) // Sắp xếp giảm dần theo thời gian
-        res.status(200).json(reports);
+            .sort({ createdAt: -1 }); // Sắp xếp giảm dần theo thời gian
+
+        res.status(200).json({
+            success: true,
+            reports,
+        });
     } catch (error) {
+        console.error("Error fetching reports:", error);
         res.status(500).json({ message: "Error fetching reports", error });
     }
 };
+
 
 
 // Cập nhật trạng thái report
@@ -40,7 +55,7 @@ export const updateReportStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { status } = req.body;
-
+        console.log("status", req.body);
         const updatedReport = await Report.findByIdAndUpdate(id, { status }, { new: true });
         if (!updatedReport) {
             return res.status(404).json({ message: "Report not found" });

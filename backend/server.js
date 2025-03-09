@@ -1,3 +1,4 @@
+
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
@@ -17,6 +18,8 @@ import { notificationRoutes } from "./routes/notificationRoutes.js";
 import scheduleRouter from "./routes/scheduleRoutes.js";
 import userRoutes from "./routes/userRoute.js";
 import videoRouter from "./routes/videoRoutes.js";
+import extensionRouter from "./routes/extensionRoutes.js";
+import reportRouter from "./routes/reportRoutes.js";
 import { setupScheduleSocket } from './socket/scheduleSocket.js';
 
 const app = express();
@@ -86,6 +89,9 @@ app.use("/api/videos", videoRouter);
 app.use("/api/email", emailRouter);
 app.use("/api/ai", aiRoute);
 app.use("/api/conversations", conversationRoutes);
+app.use("/api/extensions", extensionRouter);
+app.use("/api/reports", reportRouter);
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ success: false, message: "Internal Server Error." });

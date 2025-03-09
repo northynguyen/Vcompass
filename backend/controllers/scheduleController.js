@@ -37,6 +37,7 @@ export const getScheduleById = async (req, res) => {
     // Lấy thông tin schedule
     const schedule = await Schedule.findById(id)
       .populate("idUser")
+
       .populate("idInvitee", "name avatar email");
 
     if (!schedule) {
@@ -89,6 +90,7 @@ export const updateSchedule = async (req, res) => {
   const { id } = req.params ;
 
   const scheduleData = req.body;
+  console.log("scheduleData", scheduleData);
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res
@@ -96,7 +98,6 @@ export const updateSchedule = async (req, res) => {
         .json({ success: false, message: "Invalid ID format" });
     }
 
-    console.log("scheduleData", scheduleData);
     const updatedSchedule = await Schedule.findByIdAndUpdate(id, scheduleData, {
       new: true,
     });

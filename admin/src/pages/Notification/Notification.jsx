@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { StoreContext } from '../../Context/StoreContext';
 import './Notification.css';
 
-const Notification = ({ userData, accommodationData, foodserviceData, hideName, onClose }) => {
+const Notification = ({ userData, accommodationData, foodserviceData, scheduleData, hideName, onClose }) => {
     const { admin, url } = useContext(StoreContext);
     const [userName, setUserName] = useState(userData?.name || "");
     const [content, setContent] = useState("");
@@ -65,7 +65,15 @@ const Notification = ({ userData, accommodationData, foodserviceData, hideName, 
             }
             setContent(statusMessage);
         }
-    }, [userData, accommodationData, foodserviceData]); // Chạy lại khi có dữ liệu mới
+        else if (scheduleData) {
+            // Nội dung mẫu thông báo cho người dùng về schedule của họ
+            let statusMessage = "";
+            if (scheduleData.status === "unactive") {
+                statusMessage = `Lịch trình của bạn, ${scheduleData.scheduleName} đã bị báo cáo vi phạm. Sau khi xem xét chúng tôi đã đưa lịch trình về trạng thái private để bạn có thể sửa chữa. Chúng tôi sẽ nặng tay hơn nếu có những báo cáo tương tự`;
+            }
+            setContent(statusMessage);
+        }
+    }, [userData, accommodationData, foodserviceData, scheduleData]); // Chạy lại khi có dữ liệu mới
 
     // const getTypeNo = () => {
     //     if (userData) {
@@ -134,6 +142,31 @@ const Notification = ({ userData, accommodationData, foodserviceData, hideName, 
                 }
 
 
+            } else if (scheduleData) {
+                // Gửi thông báo liên quan đến lịch trình
+                await axios.post(`${url}/api/notifications/notifications/`, {
+                    idSender: admin._id,
+                    idReceiver: scheduleData.idUser,
+                    content,
+                    typeNo: "user",
+                    nameSender: "Admin",
+                    imgSender: admin.img || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+                });
+
+                // Cập nhật trạng thái của lịch trình
+                const response = await fetch(`${url}/api/schedule/update/${scheduleData._id}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ isPublic: false }),
+                });
+                if (response.status === 200) {
+                    setContent("");
+                    toast.success("Cập nhật trang thái thành công!");
+                    onClose();
+                }
+
             } else if (userData) {
                 // Gửi thông báo liên quan đến người dùng hoặc đối tác
                 await axios.post(`${url}/api/notifications/notifications/`, {
@@ -182,7 +215,9 @@ const Notification = ({ userData, accommodationData, foodserviceData, hideName, 
                                 ? accommodationData.partnerName
                                 : foodserviceData
                                     ? foodserviceData.partnerName
-                                    : userName
+                                    : scheduleData
+                                        ? scheduleData.name
+                                        : userName
                         }
                         onChange={(e) => setUserName(e.target.value)}
                         disabled={!!accommodationData || !!foodserviceData || !!userData?.name}
