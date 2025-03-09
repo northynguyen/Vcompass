@@ -15,7 +15,8 @@ import PartnerDetails from '../../components/PartnerDetails/PartnerDetails';
 import Attraction from '../Attraction/Attraction';
 import AttractionDetails from '../Attraction/AttractionDetails';
 import MyProfileContainer from '../MyProfile/MyProfile';
-
+import Extensions from '../Extensions/ListExtensions';
+import ReportManagement from '../ReportManagement/ReportManagement';
 const MainPage = () => {
   return (
     <>
@@ -30,13 +31,14 @@ const MainPage = () => {
             <Route path="/tours" element={<Tours />} />
             <Route path="/users" element={<Users />} />
             <Route path="/partners" element={<Partners />} />
-            <Route path="/users/user" element={<UserDetails />} />
-            <Route path="/partners/partner" element={<PartnerDetails />} />
+            <Route path="/users/:idUser" element={<UserDetails />} />
+            <Route path="/partners/:idPartner" element={<PartnerDetails />} />
             <Route path="/attraction" element={<Attraction />} />
             <Route path="/attraction/details" element={<AttractionDetails />} />
             <Route path="/message" element={<Message />} />
             <Route path="/myprofile" element={<MyProfileContainer />} />
-
+            <Route path="/extensions" element={<Extensions />} />
+            <Route path="/reportmanagement" element={<ReportManagement />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </div>

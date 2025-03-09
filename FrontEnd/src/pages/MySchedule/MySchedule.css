@@ -54,6 +54,28 @@
   /* My Schedule Section */
   .my-schedule-section {
     margin-bottom: 60px;
+    .schedule-type-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+      button {
+        background-color: #f9f9f9;
+        padding: 8px 16px;
+        color: #333;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+
+    button.active {
+      border-radius: 0px;  
+      border-bottom: #e64a19 2px solid;
+      
+    }
+    
   }
 
   .my-schedule-section h2 {
@@ -219,8 +241,8 @@
 
   /* Featured Schedules Section */
   .featured-schedules-section h2 {
-    font-size: 1.4rem;
-    font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: 500;
     color: #333;
     text-align: center;
     margin-bottom: 30px;

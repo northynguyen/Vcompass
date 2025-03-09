@@ -204,7 +204,10 @@ export default function OtherUserProfile({setCurrentConversation}) {
     const fetchSchedulesData = async () => {
       try {
         const schedulesResponse = await axios.get(
-          `${url}/api/schedule/otherUser/getSchedules/${id}`
+          `${url}/api/schedule/user/getSchedules?type=follower`, {
+            headers: { token },
+            params: {id: id},
+          }
         );
         if (schedulesResponse.data.success) {
           setSchedules(schedulesResponse.data.schedules);

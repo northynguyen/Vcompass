@@ -5,7 +5,7 @@ import axios from "axios";
 import { StoreContext } from "../../../Context/StoreContext";
 import { toast } from "react-toastify";
 
-const InviteTripmatesModal = ({ isOpen, onClose , scheduleId }) => {
+const InviteTripmatesModal = ({ isOpen, onClose , schedule, setInforSchedule}) => {
     const [permission, setPermission] = useState("edit");
     const [email, setEmail] = useState("");
     const [showDropdown, setShowDropdown] = useState(false);
@@ -15,7 +15,7 @@ const InviteTripmatesModal = ({ isOpen, onClose , scheduleId }) => {
     const [emailMessage, setEmailMessage] = useState("Choeck ut my trip plan on Wanderlog! We can collaborate in real time, have all our travel reservations in one place, and so much more. Let’s plan the best trip ever!   ");
     const {user,url} = useContext(StoreContext);
     const [isSending, setIsSending] = useState(false);
-
+    const [idRemoveTripmate, setIdRemoveTripmate] = useState([]);
     const copyToClipboard = () => {
         navigator.clipboard.writeText(tripLink);
         alert("Link copied!");
@@ -47,7 +47,7 @@ const InviteTripmatesModal = ({ isOpen, onClose , scheduleId }) => {
             emails: emailTripmates,
             message: emailMessage,
             user : user,
-            scheduleId : scheduleId 
+            scheduleId : schedule._id
           });
           
           if (response.data.success) {
@@ -66,6 +66,28 @@ const InviteTripmatesModal = ({ isOpen, onClose , scheduleId }) => {
            
         }
       };
+
+    const removeTripmate = async (id) => {
+        if (user._id !== schedule.idUser) {
+            alert(" Bạn không có quyền chỉnh sửa thông tin này");
+            return;
+        }
+        setIdRemoveTripmate([...idRemoveTripmate, id]);
+    };
+
+    const undoRemoveTripmate = (id) => {
+        setIdRemoveTripmate(idRemoveTripmate.filter((item) => item !== id));
+    };
+
+    const handleClose = () => {
+        onClose(); // Gọi hàm đóng modal hoặc thực hiện hành động cần thiết
+       
+        setInforSchedule((prevSchedule) => ({
+            ...prevSchedule,
+            idInvitee: prevSchedule.idInvitee.filter(item => !idRemoveTripmate.includes(item._id))
+        }));
+    };
+    
 
     if (!isOpen) return null;
 
@@ -87,14 +109,16 @@ const InviteTripmatesModal = ({ isOpen, onClose , scheduleId }) => {
                         ⚙ Manage tripmates
                     </button>
                 </div>
-
+                {permission === "edit" && (
                 <div className="share-link">
                     <i className="fa fa-link"></i>
                     <input type="text" value={tripLink} readOnly />
                     <button onClick={copyToClipboard}>Copy link</button>
                 </div>
+                )}
 
-                <div className="invite-tripmates-input">
+                {permission === "edit" && (            
+                    <div className="invite-tripmates-input">
                     <div className="input-container">
           
                         <i className="fa fa-envelope-o ico-input" aria-hidden="true"></i>
@@ -162,10 +186,30 @@ const InviteTripmatesModal = ({ isOpen, onClose , scheduleId }) => {
                    
                     
                 </div>
+                )}
 
+                {permission === "view" && (
+                    <div className="tripmates-list-manage">
+                        {schedule.idInvitee.map((invitee) => (
+                            console.log(invitee),
+                            <div className={"tripmate-item-manage" + (idRemoveTripmate.includes(invitee._id) ? " removed" : "") } key={invitee._id}>
+                                <img src={invitee.avatar} alt="Tripmate" className="tripmate-image"/>
+                                <div className="tripmate-info"> 
+                                    <span>{invitee.name}</span>
+                                    <small>{invitee.email}</small>
+                                </div>
+                               {idRemoveTripmate.includes(invitee._id) ? (
+                                    <button className="undo" onClick={() => undoRemoveTripmate(invitee._id)}>Undo</button>
+                                ) : (
+                                    <button onClick={() => removeTripmate(invitee._id)}>✕</button>
+                                )}
+                                
+                            </div>
+                        ))}                                    
+                    </div>
+                )}
 
-                <button className="manage-tripmates"></button>
-                <button className="close-btn" onClick={onClose}>✕</button>
+                <button className="close-btn" onClick={handleClose}>✕</button>
             </div>
         </div>
     );

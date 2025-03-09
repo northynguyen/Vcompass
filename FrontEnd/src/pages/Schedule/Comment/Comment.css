@@ -4,16 +4,18 @@
   align-items: flex-start;
   padding: 10px 0 15px 5%;
   width: 100%;
-  
+
 }
 
 .comment-large-container {
   padding: 0 10%;
 }
+
 .commentitem-container {
   padding: 10px 0 15px 5%;
   border-bottom: 1px solid #e9ebee;
 }
+
 /* User Avatar */
 .user-avatar {
   position: relative;
@@ -45,8 +47,13 @@
 }
 
 /* Comment Content */
+.comment-line {
+  display: flex;
+  width: 100%;
+}
+
 .comment-content {
-  flex: 1;
+  width: 100%;
 }
 
 .comment-text {
@@ -61,24 +68,27 @@
   min-width: 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-.view-replies-container
-{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.view-replies{
-    padding-top: 10px;
-    color: #65676b;
-    font-size: 14px;
-    font-weight: 500;
-    transition: color 0.3s ease;
-    cursor: pointer;
-}
-.comment-text p{
-    color : #65676b;
 
-  }
+.view-replies-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 300px;
+}
+
+.view-replies {
+  padding-top: 10px;
+  color: #65676b;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.comment-text p {
+  color: #65676b;
+
+}
 
 .user-name {
   font-weight: bold;
@@ -151,7 +161,7 @@
   color: red;
 }
 
- .liked {
+.liked {
   color: red;
 }
 
@@ -236,6 +246,7 @@
   flex-direction: column;
   margin-left: 40px;
 }
+
 /* Reply Section */
 .reply-container {
   display: flex;
@@ -362,4 +373,54 @@
 
 .share-dropdown button:hover {
   background-color: #ddd;
+}
+
+.more-options {
+  position: relative;
+  /* Định vị cho dropdown */
+  cursor: pointer;
+}
+
+.more-icon {
+  font-size: 24px;
+  /* Kích thước icon */
+  color: #555;
+  transition: color 0.3s;
+  margin-top: 20px;
+
+}
+
+.more-icon:hover {
+  color: #000;
+  /* Đổi màu khi hover */
+}
+
+.options-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  /* Hiển thị lên trên */
+  min-width: 120px;
+  overflow: hidden;
+  width: 150px;
+}
+
+.options-menu button {
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.options-menu button:hover {
+  background: #f5f5f5;
+  /* Hiệu ứng hover */
 }

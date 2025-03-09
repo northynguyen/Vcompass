@@ -1513,3 +1513,61 @@ i.fa-solid.fa-plus.add-icon {
   }
 
 }
+
+.cursors-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.cursor-container {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.cursor {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #007bff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-label {
+  position: absolute;
+  left: 15px;
+  top: -5px;
+  background-color: #007bff;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* Thêm style cho container chứa cursors */
+.cursors-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.invitee_item.inactive {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.unactive_avatar {
+  opacity: 0.5;
+}
