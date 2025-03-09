@@ -9,7 +9,7 @@ import { StoreContext } from "../../../Context/StoreContext";
 import "./ActivityTime.css";
 import ImagesModal from "../../../components/ImagesModal/ImagesModal";
 import { use } from "react";
-const ActivityTime = ({ activity, setInforSchedule, mode }) => {
+const ActivityTime = ({ activity, setInforSchedule, mode, socket, inforSchedule }) => {
   const timeStart = activity.timeStart;
   const timeEnd = activity.timeEnd;
   const generateTimeOptions = () => {
@@ -49,6 +49,15 @@ const ActivityTime = ({ activity, setInforSchedule, mode }) => {
           ),
         };
       });
+
+      // Emit sự kiện để update real-time
+      if (socket?.current) {
+        socket.current.emit('updateActivities', {
+          scheduleId: inforSchedule._id,
+          activities: updatedActivities
+        });
+      }
+
       return { ...prevSchedule, activities: updatedActivities };
     });
   }, [startTime, endTime]);
@@ -290,7 +299,7 @@ export const FoodServiceActivity = ({
   data,
   handleEdit,
   setIsOpenModal,
-  mode,
+  mode,socket 
 }) => {
   const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
   const { url, user, token } = useContext(StoreContext);
@@ -466,7 +475,7 @@ export const AttractionActivity = ({
   data,
   handleEdit,
   setIsOpenModal,
-  mode,
+  mode, socket 
 }) => {
   const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
   const { url, user, token } = useContext(StoreContext);
@@ -642,7 +651,7 @@ export const OtherActivity = ({
   activity,
   handleEdit,
   setIsOpenModal,
-  mode,
+  mode, socket 
 }) => {
   const { url } = useContext(StoreContext);
   

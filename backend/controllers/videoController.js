@@ -71,8 +71,8 @@ const uploadImage = async (req, res) => {
     }
 
     const result = await uploadToCloudinary(req.file.buffer, 'image', 'images', [
-      { width: 800, crop: 'scale' },  
-      { quality: 'auto' },       
+      { width: 800, crop: 'scale' },
+      { quality: 'auto' },
     ]);
 
     res.status(200).json({

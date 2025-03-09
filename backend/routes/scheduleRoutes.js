@@ -8,7 +8,6 @@ import {
   getTopAddressSchedule,
   updateLikeComment,
   deleteActivity, uploadFiles ,deleteSchedule,
-  getSchedulesByIdOtherUser
 
 } from "../controllers/scheduleController.js";
 import authMiddleware from "../middleware/auth.js";
@@ -20,7 +19,7 @@ scheduleRouter.get("/getAllSchedule", getAllSchedule);
 scheduleRouter.get("/:id", getScheduleById);
 scheduleRouter.put("/update/:id", updateSchedule);
 scheduleRouter.get("/user/getSchedules", authMiddleware, getSchedulesByIdUser);
-scheduleRouter.get("/otherUser/getSchedules/:id", getSchedulesByIdOtherUser);
+// scheduleRouter.get("/otherUser/getSchedules/:id", getSchedulesByIdOtherUser);
 scheduleRouter.get("/getByCity/Top", getTopAddressSchedule);
 
 scheduleRouter.post("/user/updateLikeComment", authMiddleware, updateLikeComment);

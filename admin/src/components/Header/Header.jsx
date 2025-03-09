@@ -97,11 +97,11 @@ const Header = () => {
           <small>{new Date(notification.createdAt).toLocaleString()}</small>
         </div>,
         {
-          autoClose: 5000,
-          pauseOnHover: true,
-          theme: "light",
           position: "top-right",
-        });
+          autoClose: 3000,
+          closeOnClick: true,
+        }
+      );
     });
 
     // Ngắt kết nối khi component unmounts

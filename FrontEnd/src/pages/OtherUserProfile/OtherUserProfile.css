@@ -313,6 +313,11 @@ p.follower-num-follower {
   gap: 8px;
   padding-left: 8px;
 }
+.profile-button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
 @media (max-width: 768px) {
   .fanpage-container {
     width: 100%;
@@ -375,5 +380,10 @@ p.follower-num-follower {
 }
 .dropdown-menu button {
   font-size: 14px;
+}
+.profile-button-container {
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
 }
 }

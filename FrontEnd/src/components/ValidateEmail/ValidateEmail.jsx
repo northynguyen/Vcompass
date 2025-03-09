@@ -4,15 +4,14 @@ import { jwtDecode } from "jwt-decode";
 import { StoreContext } from "../../Context/StoreContext";
 import axios from 'axios';
 
-const ValidateEmail = () => {
+const ValidateEmail = ({setShowLogin }) => {
   const [scheduleData, setScheduleData] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user,url } = useContext(StoreContext);
+  const { user,url,token } = useContext(StoreContext);
   console.log(user);
   useEffect(() => {
     const validateToken = async () => {
-      console.log("Validating token...");
       const queryParams = new URLSearchParams(location.search);
       const token = queryParams.get('token');
       const scheduleId = queryParams.get('id');
@@ -32,8 +31,8 @@ const ValidateEmail = () => {
       }
       const user = JSON.parse(localStorage.getItem('user'));
       if (!decoded.email || decoded.email !== user.email) {
-
-        alert( decoded.email + ' ' + user.email);
+        alert( "Bạn không có quyền truy cập trang này");
+        navigate('/');
         return;
       }
 
@@ -73,6 +72,12 @@ const ValidateEmail = () => {
       }
     };
 
+    if (!user) {
+      setShowLogin(true);
+      return 
+    }
+    
+
     validateToken();
   }, [location, navigate, user]);
 
@@ -84,3 +89,4 @@ const ValidateEmail = () => {
 };
 
 export default ValidateEmail;
+

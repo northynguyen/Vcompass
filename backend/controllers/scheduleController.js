@@ -25,6 +25,7 @@ export const addSchedule = async (req, res) => {
 export const getScheduleById = async (req, res) => {
   const { id } = req.params;
   const { activityId } = req.query;
+  const userId = req.user?._id; // Giả sử bạn có middleware auth để lấy user
 
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -36,13 +37,18 @@ export const getScheduleById = async (req, res) => {
     // Lấy thông tin schedule
     const schedule = await Schedule.findById(id)
       .populate("idUser")
-      .populate("idInvitee", "name avatar");
+
+      .populate("idInvitee", "name avatar email");
 
     if (!schedule) {
       return res
         .status(404)
         .json({ success: false, message: "Schedule not found" });
     }
+
+    // Kiểm tra quyền chỉnh sửa
+    const canEdit = schedule.idUser.equals(userId) || 
+                   schedule.idInvitee.some(invitee => invitee._id.equals(userId));
 
     // Nếu có activityId, tìm activity cụ thể trong schedule.activities
     if (activityId) {
@@ -68,6 +74,7 @@ export const getScheduleById = async (req, res) => {
       success: true,
       message: "Get schedule success",
       schedule,
+      canEdit // Thêm flag này vào response
     });
   } catch (error) {
     console.error("Error retrieving schedule:", error);
@@ -80,7 +87,8 @@ export const getScheduleById = async (req, res) => {
 };
 
 export const updateSchedule = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params ;
+
   const scheduleData = req.body;
   console.log("scheduleData", scheduleData);
   try {
@@ -114,42 +122,37 @@ export const updateSchedule = async (req, res) => {
   }
 };
 
-export const getSchedulesByIdOtherUser = async (req, res) => {
-  const { id } = req.params;
-  try {
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "User ID is required",
-      });
-    }
-    const schedules = await Schedule.find({ idUser: id }).populate("idUser");
-    if (!schedules.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No schedules found for this user",
-      });
-    }
-    return res.json({
-      success: true,
-      message: "Schedules retrieved successfully",
-      schedules,
-    });
-  } catch (error) {
-    console.error("Error retrieving schedules:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error retrieving schedules",
-      error,
-    });
-  }
-};
 
 export const getSchedulesByIdUser = async (req, res) => {
   const { userId } = req.body; // Replace with user ID extraction from token, if needed.
-  const { type } = req.query;
+  const { type, id } = req.query;
+  
+  if (!userId) {
+    return res.status(400).json({
+      success: false,
+      message: "User ID is required",
+    });
+  }
 
   try {
+    if (type === "group") {
+      console.log("type group -------");
+      const schedules = await Schedule.find({ 
+        idInvitee: new mongoose.Types.ObjectId(userId) 
+    });
+      if (!schedules.length) {
+        return res.status(404).json({
+          success: false,
+          message: "No schedules found for this user",
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: "Schedules retrieved successfully",
+        schedules,
+      })
+    }
     if (type === "wishlist") {
       const user = await User.findById(userId);
       if (!user) {
@@ -166,15 +169,18 @@ export const getSchedulesByIdUser = async (req, res) => {
         message: "Wishlist schedules retrieved successfully",
         schedules,
       });
-    } else {
-      if (!userId) {
+    }
+     else {
+      const idUserFind = type === "follower" ? id : userId;
+      console.log("idUserFind : ", idUserFind);
+      if (!idUserFind) {
         return res.status(400).json({
           success: false,
           message: "User ID is required",
         });
       }
 
-      const schedules = await Schedule.find({ idUser: userId });
+      const schedules = await Schedule.find({ idUser: idUserFind }).populate("idUser");
       if (!schedules.length) {
         return res.status(404).json({
           success: false,

@@ -8,7 +8,6 @@ import ListFoodServices, { FoodServiceItem } from "../../ListFoodServices/ListFo
 import "./AddActivity.css";
 
 import axios from "axios";
-// Thiết lập root element cho modal
 Modal.setAppElement("#root");
 
 const OtherItem = ({ setCurDes, curDes }) => {
@@ -160,9 +159,6 @@ const OtherItem = ({ setCurDes, curDes }) => {
 };
 
 
-
-
-
 const Header = ({ option, setOption, setCurDes }) => {
 
   const onChange = (value) => {
@@ -193,7 +189,7 @@ const Header = ({ option, setOption, setCurDes }) => {
   );
 };
 
-const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSchedule, activity, city }) => {
+const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSchedule, activity, city, socket ,inforSchedule  }) => {
   const [option, setOption] = React.useState("Accommodation");
   const [choice, setChoice] = React.useState("List");
   const [cost, setCost] = React.useState("")
@@ -288,7 +284,20 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
           return day;
         });
 
-        return { ...prevSchedule, activities: updatedActivities };
+        const newSchedule = {
+          ...prevSchedule,
+          activities: updatedActivities
+        };
+
+        // Emit sự kiện để update real-time
+        if (socket?.current) {
+          socket.current.emit('updateActivities', {
+            scheduleId: inforSchedule._id,
+            activities: updatedActivities
+          });
+        }
+
+        return newSchedule;
       });
 
       closeModal();

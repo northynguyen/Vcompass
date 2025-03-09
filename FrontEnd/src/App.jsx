@@ -25,9 +25,11 @@ import OtherUserProfile from "./pages/OtherUserProfile/OtherUserProfile";
 
 import SearchSchedule from './pages/SearchSchedule/SearchSchedule';
 import ValidateEmail from "./components/ValidateEmail/ValidateEmail";
+import ChatBox from "./components/ChatBox/ChatBox";
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
+  const [currentConversation, setCurrentConversation] = useState()
   const [isMobile, setIsMobile] = useState(false);
 
   //  const isMobileDevice = () => {
@@ -59,7 +61,19 @@ function App() {
     <>
       {showLogin && <SignIn setShowLogin={setShowLogin} />}
       <div className="app">
-        <ToastContainer />
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable={false}
+          theme="light"
+          limit={3}
+          style={{ zIndex: 9999 }}
+        />
         <Header setShowLogin={setShowLogin} />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -71,18 +85,19 @@ function App() {
           <Route path="/booking" element={<HomeBooking />} />
           <Route path="/attractions" element={<HomeAttractions />} />
           <Route path="/foodservices" element={<HomeFoodService />} />
-          <Route path="/schedule/validate-email" element={<ValidateEmail />} />
+          <Route path="/schedule/validate-email" element={<ValidateEmail setShowLogin={setShowLogin}/>} />
           <Route path="/my-schedule" element={<MySchedule setShowLogin={setShowLogin} />} />
           <Route path="/schedule-edit/:id" element={<Schedule mode="edit" />} />
           <Route path="/schedule-view/:id" element={<Schedule mode="view" />} />
           <Route path="/booking-process/step2" element={<BookingProcess />} />
           <Route path="/searchSchedule" element={<SearchSchedule />} />
-          <Route path="/otherUserProfile/:id" element={<OtherUserProfile />} />
+          <Route path="/otherUserProfile/:id" element={<OtherUserProfile setCurrentConversation = {setCurrentConversation}/>} />
           <Route path="/booking-process/finalstep" element={<BookingProcess />} />
           <Route path="*" element={<Page404 />} />
           <Route path="/404" element={<Page404 />} />
           <Route path="/auth/success" element={<AuthRedirect />} />
         </Routes>
+        <ChatBox currentConversation = {currentConversation} setCurrentConversation = {setCurrentConversation}/>
         <Footer />
       </div>
     </>

@@ -6,6 +6,7 @@ import Modal from "react-modal";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { StoreContext } from "../../Context/StoreContext";
+import { io } from "socket.io-client";
 
 import L from "leaflet";
 import "leaflet-routing-machine";
@@ -23,6 +24,7 @@ import Expense from "./Expense/Expense";
 import "./Schedule.css";
 import { Tooltip } from "react-tooltip";
 import InviteTripmatesModal from "./InviteTripmatesModal/InviteTripmatesModal";
+import _ from "lodash";
 
 const MapViewWithRoute = ({ activities, scheduleID }) => {
   const [activitiesWithCoordinates, setActivitiesWithCoordinates] = useState([]);
@@ -224,6 +226,7 @@ const Activity = ({
   setInforSchedule,
   mode,
   inforSchedule,
+  socket 
 }) => {
   //console.log("activities", activity);
   return (
@@ -248,6 +251,7 @@ const Activity = ({
                   setCurrentActivity={setCurrentActivity}
                   openModal={openModal}
                   mode={mode}
+                  socket ={socket}
                 />
               </div>
             )}
@@ -266,6 +270,7 @@ const ActivityItem = ({
   setInforSchedule,
   mode,
   inforSchedule,
+  socket 
 }) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -369,6 +374,8 @@ const ActivityItem = ({
         activity={activity}
         mode={mode}
         setInforSchedule={setInforSchedule}
+        socket={socket}
+        inforSchedule={inforSchedule}
       />
       <div className="num-activity">
         -<div className="circle-num">{index + 1}</div>-
@@ -442,6 +449,7 @@ const InforScheduleMedal = ({
   closeModal,
   inforSchedule,
   setInforSchedule,
+  socket,
 }) => {
   const [scheduleName, setScheduleName] = useState("");
   const [startDay, setStartDay] = useState("");
@@ -676,6 +684,21 @@ const InforScheduleMedal = ({
 
       toast.success("Lịch trình đã được cập nhật thành công!");
       closeModal();
+
+      // Emit sự kiện để update real-time
+      if (socket) {
+        socket.current.emit('updateScheduleInfo', {
+          scheduleId: inforSchedule._id,
+          scheduleInfo: {
+            scheduleName,
+            description,
+            dateStart: startDayString,
+            dateEnd: endDateString,
+            imgSrc: mediaType === 'image' ? uploadedImgSrc : inforSchedule.imgSrc,
+            videoSrc
+          }
+        });
+      }
     } catch (error) {
       console.error("Error:", error);
       toast.error("Có lỗi xảy ra trong quá trình upload!");
@@ -831,6 +854,7 @@ const DateSchedule = ({
   city,
   inforSchedule,
   index,
+  socket,
 }) => {
   //console.log("schedule", schedule);
   const [scheduleDate, setScheduleDate] = useState(schedule);
@@ -937,6 +961,7 @@ const DateSchedule = ({
                       setInforSchedule={setInforSchedule}
                       setCurrentDestination={setCurrentDestination}
                       mode={mode}
+                      socket={socket}
                     />
                   ) : (
                     <p>Chưa có hoạt động nào</p>
@@ -1003,6 +1028,8 @@ const DateSchedule = ({
         destination={currentDestination}
         setInforSchedule={setInforSchedule}
         city={city}
+        socket={socket}
+        inforSchedule={inforSchedule}
       />
     </div>
   );
@@ -1022,9 +1049,12 @@ const Schedule = ({ mode }) => {
   const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [openInviteModal, setOpenInviteModal] = useState(false);
-  const openVideoPopup = () => setIsVideoOpen(true);
-  const closeVideoPopup = () => setIsVideoOpen(false);
-  const [totalActivities, setTotalActivities] = useState(0)
+  const [totalActivities, setTotalActivities] = useState(0);
+  const [cursors, setCursors] = useState(new Map());
+  const [inactiveUsers, setInactiveUsers] = useState(new Set());
+  
+  // Thêm socket ref vào đây
+  const socket = useRef(null);
 
   const toggleWishlist = async () => {
     try {
@@ -1222,8 +1252,6 @@ const Schedule = ({ mode }) => {
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
-
-    // Nếu không có điểm đến (thả ra ngoài)
     if (!destination) return;
 
     // Nếu cùng một DateSchedule
@@ -1240,10 +1268,22 @@ const Schedule = ({ mode }) => {
       const updatedSchedule = [...inforSchedule.activities];
       updatedSchedule[dayIndex].activity = updatedActivities;
 
-      setInforSchedule((prev) => ({
-        ...prev,
-        activities: updatedSchedule,
-      }));
+      setInforSchedule((prev) => {
+        const newSchedule = {
+          ...prev,
+          activities: updatedSchedule,
+        };
+
+        // Emit sự kiện để update real-time
+        if (socket.current) {
+          socket.current.emit('updateActivities', {
+            scheduleId: inforSchedule._id,
+            activities: updatedSchedule
+          });
+        }
+
+        return newSchedule;
+      });
     } else {
       // Nếu khác DateSchedule
       const sourceDayIndex = parseInt(source.droppableId, 10);
@@ -1264,16 +1304,205 @@ const Schedule = ({ mode }) => {
       updatedSchedule[sourceDayIndex].activity = sourceDay;
       updatedSchedule[destDayIndex].activity = destDay;
 
-      setInforSchedule((prev) => ({
-        ...prev,
-        activities: updatedSchedule,
-      }));
+      setInforSchedule((prev) => {
+        const newSchedule = {
+          ...prev,
+          activities: updatedSchedule,
+        };
+
+        // Emit sự kiện để update real-time
+        if (socket.current) {
+          socket.current.emit('updateActivities', {
+            scheduleId: inforSchedule._id,
+            activities: updatedSchedule
+          });
+        }
+
+        return newSchedule;
+      });
     }
   };
 
   const onCloseInviteModal = () => {
     setOpenInviteModal(false);
   };
+
+  useEffect(() => {
+    if (mode === "edit" && inforSchedule) {
+      const allUsers = new Set([
+        inforSchedule.idUser._id,
+        ...(inforSchedule.idInvitee?.map(user => user._id) || [])
+      ]);
+      setInactiveUsers(allUsers);
+      
+      socket.current = io(url, {
+        transports: ['websocket'],
+        upgrade: false
+      });
+
+      socket.current.emit('joinSchedule', {
+        scheduleId: inforSchedule._id,
+        user: user
+      });
+
+      // Lắng nghe các sự kiện update
+      socket.current.on('activitiesUpdated', (activities) => {
+        setInforSchedule(prev => ({...prev, activities}));
+      });
+
+      socket.current.on('scheduleInfoUpdated', (scheduleInfo) => {
+        setInforSchedule(prev => ({...prev, ...scheduleInfo}));
+      });
+
+      socket.current.on('expensesUpdated', (expenses) => {
+        setInforSchedule(prev => ({
+          ...prev, 
+          additionalExpenses: expenses
+        }));
+      });
+
+      // Thêm lại các event listeners cho cursor
+      socket.current.on('cursorUpdate', (cursor) => {
+        setCursors(prev => new Map(prev.set(cursor.userId, cursor)));
+        setInactiveUsers(prev => {
+          const next = new Set(prev);
+          next.delete(cursor.userId);
+          return next;
+        });
+      });
+
+      socket.current.on('userJoined', (user) => {
+        toast(`${user.name} đã tham gia chỉnh sửa`, {
+          position: "top-right",
+          autoClose: 3000,
+          closeOnClick: true,
+        });
+      });
+
+      socket.current.on('userLeft', (userId) => {
+        setCursors(prev => {
+          const next = new Map(prev);
+          next.delete(userId);
+          return next;
+        });
+      });
+
+      socket.current.on('userInactive', (userId) => {
+        setInactiveUsers(prev => new Set(prev.add(userId)));
+      });
+
+      // Tối ưu handleMouseMove với throttle
+      const handleMouseMove = _.throttle((e) => {
+        if (socket.current) {
+          const scheduleElement = document.querySelector('.custom-schedule');
+          if (scheduleElement) {
+            const targetElement = e.target.closest('button, h2, .activity-item, .expense-item, .time-schedule-item, input, select');
+            
+            if (targetElement) {
+              const elementRect = targetElement.getBoundingClientRect();
+              const scheduleRect = scheduleElement.getBoundingClientRect();
+              
+              const relativeX = ((e.clientX - elementRect.left) / elementRect.width) * 100;
+              const relativeY = ((e.clientY - elementRect.top) / elementRect.height) * 100;
+
+              socket.current.volatile.emit('cursorMove', {
+                scheduleId: inforSchedule._id,
+                x: relativeX,
+                y: relativeY,
+                targetInfo: {
+                  type: targetElement.tagName.toLowerCase(),
+                  className: targetElement.className,
+                  id: targetElement.id,
+                  text: targetElement.textContent?.slice(0, 50),
+                  offsetTop: targetElement.offsetTop,
+                  offsetLeft: targetElement.offsetLeft,
+                  width: elementRect.width,
+                  height: elementRect.height
+                }
+              });
+            }
+          }
+        }
+      }, 16);
+
+      document.addEventListener('mousemove', handleMouseMove);
+
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        handleMouseMove.cancel();
+        if (socket.current) {
+          socket.current.emit('leaveSchedule', inforSchedule._id);
+          socket.current.disconnect();
+        }
+      };
+    }
+  }, [mode, inforSchedule?._id, user]);
+
+  // Thêm hàm render cursors
+  const renderCursors = () => {
+    const scheduleElement = document.querySelector('.custom-schedule');
+    if (!scheduleElement) return null;
+
+    return Array.from(cursors.values()).map(cursor => {
+      let position = {
+        left: `${cursor.x}%`,
+        top: `${cursor.y}%`
+      };
+
+      // Nếu có thông tin về phần tử đang hover
+      if (cursor.targetInfo) {
+        // Tìm phần tử tương ứng dựa trên thông tin
+        const targetElement = findMatchingElement(cursor.targetInfo);
+        
+        if (targetElement) {
+          const elementRect = targetElement.getBoundingClientRect();
+          // Tính toán vị trí chính xác trên phần tử
+          position = {
+            left: `${elementRect.left + (cursor.x * elementRect.width / 100)}px`,
+            top: `${elementRect.top + (cursor.y * elementRect.height / 100)}px`
+          };
+        }
+      }
+
+      return (
+        <div
+          key={cursor.userId}
+          className="cursor-container"
+          style={{
+            ...position,
+            transform: 'translate(-50%, -50%)'
+          }}
+        >
+          <div className="cursor"></div>
+          <div className="cursor-label">{cursor.name}</div>
+        </div>
+      );
+    });
+  };
+
+  // Hàm tìm phần tử tương ứng dựa trên thông tin
+  const findMatchingElement = (targetInfo) => {
+    const elements = document.querySelectorAll(
+      `${targetInfo.type}${targetInfo.className ? `.${targetInfo.className.split(' ').join('.')}` : ''}${targetInfo.id ? `#${targetInfo.id}` : ''}`
+    );
+
+    // Tìm phần tử phù hợp nhất dựa trên vị trí và nội dung
+    return Array.from(elements).find(element => {
+      const matchesText = !targetInfo.text || element.textContent?.includes(targetInfo.text);
+      const matchesPosition = Math.abs(element.offsetTop - targetInfo.offsetTop) < 10 &&
+                            Math.abs(element.offsetLeft - targetInfo.offsetLeft) < 10;
+      return matchesText && matchesPosition;
+    });
+  };
+
+  // Thêm lại các hàm xử lý video popup
+  const openVideoPopup = () => setIsVideoOpen(true);
+  const closeVideoPopup = () => setIsVideoOpen(false);
+  const isUnActive = (id)=>{
+    if(id === user._id)
+       return false;
+    return inactiveUsers.has(id);
+  }
 
   if (loading) {
     return <div>Loading...</div>;
@@ -1299,30 +1528,36 @@ const Schedule = ({ mode }) => {
             <div className="invitee_container">  
               <div className="invitee_item" data-tooltip-id="avata-tooltip">
                 <img
-                  className="invitee_image"
+                  className={`invitee_image ${isUnActive(inforSchedule.idUser._id ) ? "unactive_avatar" : ""}`}
                   src={inforSchedule.idUser.avatar && inforSchedule.idUser.avatar.includes("http") ? inforSchedule.idUser.avatar : `${url}/images/${inforSchedule.idUser.avatar}`}
                   alt={inforSchedule.idUser.name}
                 />
                 
               </div>
-              <Tooltip id="avata-tooltip" place="bottom" style={{ fontSize: "12px", zIndex: "999", borderRadius: "10px" }} content= {inforSchedule.idUser.name} />
+              <Tooltip 
+                id="avata-tooltip" 
+                place="bottom"
+                 style={{ fontSize: "12px", zIndex: "999", borderRadius: "10px" }} 
+                content= {inforSchedule.idUser._id === user._id ? "Bạn" :  `${inforSchedule.idUser.name}${inactiveUsers.has(inforSchedule.idUser._id) ?  "" :" (Hoạt động)"}` } />              
 
-              <div className="invitee_item" data-tooltip-id="avata-tooltip">
-                <img
-                  className="invitee_image"
-                  src="https://cdn11.dienmaycholon.vn/filewebdmclnew/public/userupload/files/Image%20FP_2024/avatar-dep-8.jpg"
-                  alt={inforSchedule.idUser.name}
-                />
-              </div>
-
-              {inforSchedule.idInvitee?.map((invitee, index) => (            
+              {inforSchedule.idInvitee?.map((invitee, index) => (
                 <div key={index} className="invitee_item" data-tooltip-id={`avata-tooltip-${index}`}>
                   <img
-                    className="invitee_image"
+                    className={`invitee_image ${isUnActive(invitee._id) ? "unactive_avatar" : ""}`}
                     src={invitee.avatar && invitee.avatar.includes("http") ? invitee.avatar : `${url}/images/${invitee.avatar}`}
                     alt={invitee.name}
                   />
-                  <Tooltip id={`avata-tooltip-${index}`} place="bottom" style={{ fontSize: "12px", zIndex: "999" , borderRadius: "10px" }} content={invitee.name} />
+                  <Tooltip
+                    id={`avata-tooltip-${index}`}
+                    place="bottom"
+                    style={{ fontSize: "12px", zIndex: "999", borderRadius: "10px" }}
+                    content={
+                      invitee._id === user._id
+                        ? "Bạn"
+                        : `${invitee.name}${inactiveUsers.has(invitee._id) ? "" :" (Hoạt động)"}`
+                    }
+                  />
+
                 </div>
               ))}          
               <button className="invitee_button" data-tooltip-id="save-tooltip" onClick={() => setOpenInviteModal(true)}>
@@ -1430,6 +1665,7 @@ const Schedule = ({ mode }) => {
                   setInforSchedule={setInforSchedule}
                   mode={mode}
                   inforSchedule={inforSchedule}
+                  socket={socket}
                 />
               );
             })
@@ -1445,6 +1681,8 @@ const Schedule = ({ mode }) => {
           additionExpenses={extractAdditionExpenses(inforSchedule)}
           setInforSchedule={setInforSchedule}
           mode={mode}
+          socket={socket}
+          inforSchedule={inforSchedule}
         />
       </div>
       {mode === "edit" && (
@@ -1461,6 +1699,7 @@ const Schedule = ({ mode }) => {
         closeModal={closeInforSchedule}
         inforSchedule={inforSchedule}
         setInforSchedule={setInforSchedule}
+        socket={socket}
       />
 
 
@@ -1487,7 +1726,14 @@ const Schedule = ({ mode }) => {
         </div>
       </Modal>
 
-      <InviteTripmatesModal isOpen={openInviteModal} onClose={onCloseInviteModal} scheduleId={inforSchedule._id}> </InviteTripmatesModal>
+      <InviteTripmatesModal isOpen={openInviteModal} onClose={onCloseInviteModal} schedule={inforSchedule} setInforSchedule={setInforSchedule}> </InviteTripmatesModal>
+
+      {/* Render cursors */}
+      {mode === "edit" && (
+        <div className="cursors-container">
+          {renderCursors()}
+        </div>
+      )}
     </div>
   );
 };
