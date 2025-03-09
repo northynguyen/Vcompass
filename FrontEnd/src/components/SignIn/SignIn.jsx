@@ -93,7 +93,7 @@ const SignIn = ({ setShowLogin }) => {
         }
     }
     const onGoogleLogin = () => {
-        window.open(`${url}/api/user/google`, "_self"); // Redirect to your backend Google login route
+        window.open(`${url}/api/user/google`, "_self"); 
     }
 
     return (
