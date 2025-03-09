@@ -68,6 +68,7 @@ const MySchedule = ({ setShowLogin }) => {
           if (groupSchedulesResponse.data.success) {
             setGroupSchedules(groupSchedulesResponse.data.schedules);
           } else {
+            setGroupSchedules([]);
             console.error("Failed to fetch group schedules:", groupSchedulesResponse.data.message);
           }
 
