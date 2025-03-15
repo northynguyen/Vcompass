@@ -4,21 +4,28 @@ import ExtensionModal from "../models/extensions.js"; // Đường dẫn đến 
 // Lấy tất cả extensions với phân trang
 export const getAllExtensions = async (req, res) => {
     try {
-        const { page = 1, limit = 10 } = req.query; // Mặc định page = 1, limit = 10
+        let { page = 1, limit = 10 } = req.query;
         const pageNumber = parseInt(page, 10);
         const pageSize = parseInt(limit, 10);
 
-        const extensions = await ExtensionModal.find()
-            .skip((pageNumber - 1) * pageSize)
-            .limit(pageSize);
+        let extensions;
+        if (!pageSize || pageSize === 0) {
+            // Nếu limit = 0 hoặc không có limit → Lấy toàn bộ
+            extensions = await ExtensionModal.find();
+        } else {
+            // Phân trang bình thường
+            extensions = await ExtensionModal.find()
+                .skip((pageNumber - 1) * pageSize)
+                .limit(pageSize);
+        }
 
         const totalExtensions = await ExtensionModal.countDocuments();
-        console.log("totalExtensions", extensions);
+
         res.json({
             success: true,
-            message: "Get extensions with pagination success",
+            message: "Get extensions success",
             extensions,
-            pagination: {
+            pagination: pageSize === 0 ? null : {
                 totalItems: totalExtensions,
                 currentPage: pageNumber,
                 totalPages: Math.ceil(totalExtensions / pageSize),
@@ -33,6 +40,7 @@ export const getAllExtensions = async (req, res) => {
         });
     }
 };
+
 
 export const getAllCategories = async (req, res) => {
     try {

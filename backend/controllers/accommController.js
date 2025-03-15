@@ -11,7 +11,7 @@ export const getListAccomm = async (req, res) => {
     const query = {};
 
     if (name) {
-      const regex = new RegExp(name.split('').join('.*'), 'i'); 
+      const regex = new RegExp(name.split('').join('.*'), 'i');
       query.$or = [
         { name: { $regex: regex } },
         { city: { $regex: regex } }
@@ -504,59 +504,144 @@ export const updateRatingResponse = async (req, res) => {
   const { response, responseTime } = req.body; // Nhận dữ liệu phản hồi từ body
 
   try {
-      // Tìm accommodation theo accommodationId
-      const accommodation = await Accommodation.findById(accommodationId);
+    // Tìm accommodation theo accommodationId
+    const accommodation = await Accommodation.findById(accommodationId);
 
-      if (!accommodation) {
-          return res.status(404).json({ error: 'Accommodation not found' });
-      }
+    if (!accommodation) {
+      return res.status(404).json({ error: 'Accommodation not found' });
+    }
 
-      // Tìm rating trong mảng ratings của accommodation
-      const rating = accommodation.ratings.id(ratingId); // Sử dụng phương thức `id()` của Mongoose để tìm rating theo ratingId
+    // Tìm rating trong mảng ratings của accommodation
+    const rating = accommodation.ratings.id(ratingId); // Sử dụng phương thức `id()` của Mongoose để tìm rating theo ratingId
 
-      if (!rating) {
-          return res.status(404).json({ error: 'Rating not found' });
-      }
+    if (!rating) {
+      return res.status(404).json({ error: 'Rating not found' });
+    }
 
-      // Cập nhật phản hồi và thời gian phản hồi
-      rating.response = response;
-      rating.responseTime = responseTime || new Date();
+    // Cập nhật phản hồi và thời gian phản hồi
+    rating.response = response;
+    rating.responseTime = responseTime || new Date();
 
-      // Lưu thay đổi vào cơ sở dữ liệu
-      await accommodation.save();
+    // Lưu thay đổi vào cơ sở dữ liệu
+    await accommodation.save();
 
-      // Trả về kết quả thành công
-      res.status(200).json({ message: 'Phản hồi thành công' });
+    // Trả về kết quả thành công
+    res.status(200).json({ message: 'Phản hồi thành công' });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Server error' });
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
 export const getAccommWishList = async (req, res) => {
-  const { userId } = req.body; 
+  const { userId } = req.body;
 
   try {
-      const user = await userModel.findById(userId);
-      if (!user) {
-          return res.status(404).json({ success: false, message: "User not found" });
-      }
-
-      const accomms = await Accommodation.find({ _id: { $in: user.favorites.accommodation } });
-      if (!accomms.length) {
-          return res.json({ success: true, message: "No accommodations found in wishlist" , accommodations: []});
-      }
-
-      return res.json({
-          success: true,
-          message: "Wishlist accommodations retrieved successfully",
-          accommodations: accomms,
-      });
-  } catch (error) {
-      console.error("Error retrieving wishlist accommodations:", error);
-      res.status(500).json({
-          success: false,
-          message: "Error retrieving wishlist accommodations",
-      })
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
     }
+
+    const accomms = await Accommodation.find({ _id: { $in: user.favorites.accommodation } });
+    if (!accomms.length) {
+      return res.json({ success: true, message: "No accommodations found in wishlist", accommodations: [] });
+    }
+
+    return res.json({
+      success: true,
+      message: "Wishlist accommodations retrieved successfully",
+      accommodations: accomms,
+    });
+  } catch (error) {
+    console.error("Error retrieving wishlist accommodations:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving wishlist accommodations",
+    })
+  }
 }
+export const searchAccommodations = async (req, res) => {
+  try {
+    const {
+      amenities,
+      rating, // Đổi từ minRating để khớp với frontend
+      minPrice,
+      maxPrice,
+      keyword,
+      adults, // Đổi từ maxAdults
+      children, // Đổi từ maxChildren
+      startDate, // Thêm lọc theo ngày
+      endDate, // Thêm lọc theo ngày
+      page = 1,
+      limit = 10
+    } = req.query;
+
+    const query = {};
+
+    // Lọc theo tiện ích (amenities)
+    if (amenities) {
+      const amenitiesArray = amenities.split(",");
+      query.amenities = { $all: amenitiesArray };
+    }
+
+    // Tìm theo từ khóa (name, city)
+    if (keyword) {
+      query.$or = [
+        { name: { $regex: keyword, $options: "i" } },
+        { city: { $regex: keyword, $options: "i" } }
+      ];
+    }
+
+    // Lọc theo khoảng giá
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    // Lọc theo rating tối thiểu
+    if (rating) {
+      query["ratings.rating"] = { $gte: Number(rating) };
+    }
+
+    // Lọc theo số người tối đa (người lớn & trẻ em)
+    if (adults || children) {
+      query.roomTypes = {
+        $elemMatch: {
+          "numPeople.adult": { $gte: Number(adults || 0) },
+          "numPeople.child": { $gte: Number(children || 0) }
+        }
+      };
+    }
+
+    // Lọc theo ngày check-in/check-out (nếu có)
+    if (startDate || endDate) {
+      query.availableDates = {};
+      if (startDate) query.availableDates.$gte = new Date(startDate);
+      if (endDate) query.availableDates.$lte = new Date(endDate);
+    }
+
+    // Phân trang
+    const skip = (Number(page) - 1) * Number(limit);
+
+    // Truy vấn DB
+    const accommodations = await Accommodation.find(query)
+      .skip(skip)
+      .limit(Number(limit));
+
+    // Tổng số kết quả tìm thấy
+    const total = await Accommodation.countDocuments(query);
+
+    res.status(200).json({
+      success: true,
+      total,
+      page: Number(page),
+      totalPages: Math.ceil(total / Number(limit)),
+      data: accommodations,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Lỗi server!", error: error.message });
+  }
+};
+
+

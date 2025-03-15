@@ -8,24 +8,24 @@ import { createNotification } from "./notiController.js";
 
 const getListFoodService = async (req, res) => {
 
-    try {
-        const { name, minPrice, maxPrice, city, status } = req.query;
-        // Build query object
-        const query = {};
+  try {
+    const { name, minPrice, maxPrice, city, status } = req.query;
+    // Build query object
+    const query = {};
 
-        // Add name filter if provided
-        if (name) {
-            query.$or = [
-                { "foodServiceName": { $regex: name, $options: 'i' } }, // Tìm kiếm trong tên địa điểm
-                { "city": { $regex: name, $options: 'i' } }, // Tìm kiếm trong tên tính
-            ];
-        }
+    // Add name filter if provided
+    if (name) {
+      query.$or = [
+        { "foodServiceName": { $regex: name, $options: 'i' } }, // Tìm kiếm trong tên địa điểm
+        { "city": { $regex: name, $options: 'i' } }, // Tìm kiếm trong tên tính
+      ];
+    }
 
-        // Add price range filter if provided
-        if (minPrice && maxPrice) {
-            query["price.minPrice"] = minPrice ? { $gte: Number(minPrice) } : undefined;
-            query["price.maxPrice"] = maxPrice ? { $lte: Number(maxPrice) } : undefined;
-        }
+    // Add price range filter if provided
+    if (minPrice && maxPrice) {
+      query["price.minPrice"] = minPrice ? { $gte: Number(minPrice) } : undefined;
+      query["price.maxPrice"] = maxPrice ? { $lte: Number(maxPrice) } : undefined;
+    }
 
 
     // Add city filter if provided
@@ -164,35 +164,35 @@ const createFoodService = async (req, res) => {
         newFoodService.menuImages = menuImages;
       }
 
-            await newFoodService.save();
-        }
-        const partner = await partnerModel.findById(idPartner);
-        if (!partner) {
-            return res.status(404).json({ success: false, message: "Partner not found" });
-        }
-
-        const notificationData = {
-            idSender: idPartner,
-            idReceiver: "admin",
-            type: "admin",
-            content: `Partner ${partner.name} vừa thêm một dịch vụ ăn uống: ${newFoodService.name}`,
-            nameSender: partner.name || "Partner",
-            imgSender: partner.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-        };
-
-        await createNotification(global.io, notificationData);
-        res.status(201).json({
-            success: true,
-            message: "Create food service successfully",
-            newFoodService: newFoodService,
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: "Error creating food service",
-        });
-        console.log(error);
+      await newFoodService.save();
     }
+    const partner = await partnerModel.findById(idPartner);
+    if (!partner) {
+      return res.status(404).json({ success: false, message: "Partner not found" });
+    }
+
+    const notificationData = {
+      idSender: idPartner,
+      idReceiver: "admin",
+      type: "admin",
+      content: `Partner ${partner.name} vừa thêm một dịch vụ ăn uống: ${newFoodService.name}`,
+      nameSender: partner.name || "Partner",
+      imgSender: partner.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    };
+
+    await createNotification(global.io, notificationData);
+    res.status(201).json({
+      success: true,
+      message: "Create food service successfully",
+      newFoodService: newFoodService,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error creating food service",
+    });
+    console.log(error);
+  }
 };
 
 const updateFoodService = async (req, res) => {
@@ -281,18 +281,18 @@ const updateStatusFoodServiceAdmin = async (req, res) => {
     foodService.status = status;
     foodService.adminId = adminId;
 
-        // Lưu thay đổi vào database
-        await foodService.save();
+    // Lưu thay đổi vào database
+    await foodService.save();
 
-        res.status(200).json({
-            success: true,
-            message: "Updated food service status successfully",
-            updatedFoodService: foodService,
-        });
-    } catch (error) {
-        res.status(400).json({ success: false, message: "Error updating food service status" });
-        console.error("Error updating food service status:", error);
-    }
+    res.status(200).json({
+      success: true,
+      message: "Updated food service status successfully",
+      updatedFoodService: foodService,
+    });
+  } catch (error) {
+    res.status(400).json({ success: false, message: "Error updating food service status" });
+    console.error("Error updating food service status:", error);
+  }
 };
 
 const deleteFoodService = async (req, res) => {
@@ -376,22 +376,22 @@ const addReview = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Accommodation not found." });
     }
-    const notificationData ={ 
+    const notificationData = {
       idSender: reviewData.idUser,
       idReceiver: foodService.idPartner,
       nameSender: reviewData.userName,
       type: "partner",
       imgSender: reviewData.userImage,
       content: `${reviewData.userName} đã đánh giá dịch vụ của bạn với điểm ${reviewData.rate} sao.`,
-  }
-
-  await createNotification(global.io, notificationData);
-
-        res.status(200).json({ success: true, message: "Review added successfully.", foodService });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "An error occurred while adding the review." });
     }
+
+    await createNotification(global.io, notificationData);
+
+    res.status(200).json({ success: true, message: "Review added successfully.", foodService });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "An error occurred while adding the review." });
+  }
 };
 export const updateRatingResponse = async (req, res) => {
   const { foodServiceId, ratingId } = req.params; // Nhận accommodationId và ratingId từ URL
@@ -431,21 +431,96 @@ const getWishlist = async (req, res) => {
   const { userId } = req.body;
 
   try {
-      const user = await userModel.findById(userId);
-      if (!user) {
-          return res.status(404).json({ success: false, message: "User not found" });
-      }
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
 
-      const wishlist = await FoodService.find({ _id: { $in: user.favorites.foodService } });
-      if (!wishlist.length) {
-          return res.status(200).json({ success: true, message: "No food services found in wishlist" , foodServices: []});
-      }
+    const wishlist = await FoodService.find({ _id: { $in: user.favorites.foodService } });
+    if (!wishlist.length) {
+      return res.status(200).json({ success: true, message: "No food services found in wishlist", foodServices: [] });
+    }
 
-      res.status(200).json({ success: true, foodServices: wishlist });
+    res.status(200).json({ success: true, foodServices: wishlist });
   } catch (error) {
-      console.error("Error retrieving wishlist:", error);
-      res.status(500).json({ success: false, message: "Error retrieving wishlist" });
+    console.error("Error retrieving wishlist:", error);
+    res.status(500).json({ success: false, message: "Error retrieving wishlist" });
+  }
+};
+export const searchFoodServices = async (req, res) => {
+  try {
+    const {
+      amenities,
+      minRating,
+      minPrice,
+      maxPrice,
+      serviceType,
+      status,
+      keyword,
+      page = 1,
+      limit = 10
+    } = req.query;
+
+    const query = {};
+
+    // Tìm theo tiện ích (amenities)
+    if (amenities) {
+      const amenitiesArray = amenities.split(",");
+      query.amenities = { $all: amenitiesArray };
+    }
+
+    if (keyword) {
+      query.$or = [
+        { foodServiceName: { $regex: keyword, $options: "i" } }, // Tìm trong tên
+        { city: { $regex: keyword, $options: "i" } }             // Tìm trong thành phố
+      ];
+    }
+
+
+    // Lọc theo loại dịch vụ (restaurant, cafe, bar, etc.)
+    if (serviceType) {
+      query.serviceType = serviceType;
+    }
+
+
+
+    // Lọc theo trạng thái (active, pending, block, unActive)
+    if (status) {
+      query.status = status;
+    }
+
+    // Lọc theo khoảng giá
+    if (minPrice || maxPrice) {
+      query["price.minPrice"] = { $gte: Number(minPrice) || 0 };
+      query["price.maxPrice"] = { $lte: Number(maxPrice) || Infinity };
+    }
+
+    // Lọc theo rating lớn hơn mức tối thiểu
+    if (minRating) {
+      query["ratings.rating"] = { $gte: Number(minRating) };
+    }
+
+    // Phân trang
+    const skip = (Number(page) - 1) * Number(limit);
+
+    // Tìm kiếm food services phù hợp
+    const foodServices = await FoodService.find(query)
+      .skip(skip)
+      .limit(Number(limit));
+
+    // Tổng số kết quả tìm thấy
+    const total = await FoodService.countDocuments(query);
+
+    res.status(200).json({
+      success: true,
+      total,
+      page: Number(page),
+      totalPages: Math.ceil(total / Number(limit)),
+      data: foodServices,
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Lỗi server!", error: error.message });
   }
 };
 
-export { getListFoodService, getListByPartner, createFoodService, updateFoodService, deleteFoodService, addReview, getAdminGetListByPartner, updateStatusFoodServiceAdmin,getWishlist };
+export { getListFoodService, getListByPartner, createFoodService, updateFoodService, deleteFoodService, addReview, getAdminGetListByPartner, updateStatusFoodServiceAdmin, getWishlist };

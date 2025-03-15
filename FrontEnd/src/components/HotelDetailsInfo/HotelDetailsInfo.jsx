@@ -12,12 +12,15 @@ import './HotelDetailsInfo.css';
 import RoomCard from './RoomCard'; // Nhập RoomCard từ file mới
 import RoomDetail from './RoomDetail/RoomDetail';
 
-const HotelDetailsInfo = ({ serviceId }) => {
-  const [dateRange, setDateRange] = useState([null, null]);
+const HotelDetailsInfo = ({ serviceId, filterData }) => {
+  const [dateRange, setDateRange] = useState([
+    filterData?.startDay ? new Date(filterData.startDay) : null,
+    filterData?.endDay ? new Date(filterData.endDay) : null,
+  ]);
   const [startDate, endDate] = dateRange;
   const [showGuestDropdown, setShowGuestDropdown] = useState(false);
-  const [adults, setAdults] = useState(2);
-  const [children, setChildren] = useState(1);
+  const [adults, setAdults] = useState(filterData?.adults ?? 2);
+  const [children, setChildren] = useState(filterData?.children ?? 0);
   const [numRooms, setNumRooms] = useState(1);
   const [isSave, setIsSave] = useState(false);
   const { url, token, user } = React.useContext(StoreContext);
@@ -28,15 +31,21 @@ const HotelDetailsInfo = ({ serviceId }) => {
   const [accommodation, setAccommodation] = useState(null);
 
   const navigate = useNavigate();
+  const formatDate = (date) => {
+    return date ? new Date(date).toLocaleDateString("en-VN") : null;
+  };
+
   const [dataSend, setDataSend] = useState({
     bookingInfo: {
-      startDate: null,
-      endDate: null,
-      adults: 2,
-      children: 0,
-      diffDays: ""
+      startDate: formatDate(filterData?.startDay),
+      endDate: formatDate(filterData?.endDay),
+      adults: filterData?.adults ?? 2,
+      children: filterData?.children ?? 0,
+      diffDays: filterData?.startDay && filterData?.endDay
+        ? Math.ceil((new Date(filterData.endDay) - new Date(filterData.startDay)) / (1000 * 60 * 60 * 24))
+        : "",
     }
-  })
+  });
   const toggleWishlist = async () => {
     try {
       const newStatus = !isSave;
@@ -325,7 +334,7 @@ const HotelDetailsInfo = ({ serviceId }) => {
               <div className={`favorite-button ${isSave ? "saved" : ""} `} onClick={toggleWishlist}>
                 <i className="fa-solid fa-bookmark schedule-icon"></i>
                 <p className="favourite-btn">
-                    {!isSave ? "Lưu địa điểm": "Đã lưu địa điểm"}
+                  {!isSave ? "Lưu địa điểm" : "Đã lưu địa điểm"}
                 </p>
               </div>
             </div>

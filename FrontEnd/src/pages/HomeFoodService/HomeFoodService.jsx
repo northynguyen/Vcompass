@@ -4,133 +4,87 @@ import './HomeFoodService.css';
 import FoodServiceCards from './FoodServiceCards';
 import LeftSideBar from './LeftSideBar';
 import { StoreContext } from '../../Context/StoreContext';
-import axios from 'axios';
 
 
 const HomeFoodService = () => {
-    const [location, setLocation] = useState('');
-    const [backupFoodServices, setBackupFoodServices] = useState([]);
-    const [filterData, setFilterData] = useState({ priceRange: { min: 0, max: Infinity }, selectedAmenities: [], rating: 0 });
-    const [foodServicesFound, setFoodServicesFound] = useState([]);
-    const [isSearching, setIsSearching] = useState(false);
     const { url } = useContext(StoreContext);
-    // Xử lý khi bộ lọc thay đổi
-    const handleFilterChange = (newFilterData) => {
-        setFilterData((prevData) => ({ ...prevData, ...newFilterData }));
+    const [location, setLocation] = useState("");
+    const [foodServicesFound, setFoodServicesFound] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(false);
+
+    const fetchFoodServices = async (searchLocation = location, pageNum = 1, filters = {}) => {
+        setLoading(true);
+        try {
+            const params = new URLSearchParams({
+                keyword: searchLocation,
+                page: pageNum,
+                limit: 6,
+                minPrice: filters.priceRange?.min || 0,
+                maxPrice: filters.priceRange?.max || 700000,
+                rating: filters.rating || "",
+                amenities: filters.selectedAmenities?.join(",") || "",
+            });
+            const response = await fetch(`${url}/api/foodservices/search?${params.toString()}`);
+            const data = await response.json();
+            if (data.success) {
+                setFoodServicesFound(data.data);
+                setTotalPages(data.totalPages);
+            }
+        } catch (error) {
+            console.error("Lỗi khi lấy dữ liệu Food Services:", error);
+        }
+        setLoading(false);
     };
 
     useEffect(() => {
-        const fetchFoodServices = async () => {
-            try {
-                let foodServices = [];
-                if (isSearching && backupFoodServices.length > 0) {
-                    // Khi đang tìm kiếm, sử dụng dữ liệu đã backup
-                    foodServices = [...backupFoodServices];
-                } else {
-                    // Nếu không tìm kiếm, gọi API để lấy dữ liệu đầy đủ
-                    const response = await axios.get(`${url}/api/foodservices`);
-                    foodServices = response.data.foodService;
-                    setBackupFoodServices(response.data.foodService);
-                }
-
-                const filteredFoodServices = applyFilters(foodServices);
-                setFoodServicesFound(filteredFoodServices);
-            } catch (error) {
-                console.error("Error fetching Food Services:", error);
-            }
-        };
-
         fetchFoodServices();
-    }, [url, filterData, isSearching]);
+    }, [page]);
 
-    // Hàm áp dụng bộ lọc
-    const applyFilters = (foodServices) => {
-        return foodServices.filter((foodService) => {
-
-
-            // Lọc theo giá
-            if (filterData.priceRange && (foodService.price.minPrice < filterData.priceRange.min || foodService.price.maxPrice > filterData.priceRange.max)) {
-                return false;
-            }
-
-            // Lọc theo tiện ích
-            if (filterData.selectedAmenities.length > 0) {
-                const hasAllSelectedAmenities = filterData.selectedAmenities.every((amenity) =>
-                    foodService.amenities.includes(amenity)
-                );
-                if (!hasAllSelectedAmenities) return false;
-            }
-
-            // Tính điểm đánh giá trung bình
-            let averageRating = null;
-            if (foodService.ratings && foodService.ratings.length > 0) {
-                const totalRating = foodService.ratings.reduce((sum, rating) => sum + rating.rate, 0);
-                averageRating = totalRating / foodService.ratings.length;
-            }
-
-            // Lọc theo đánh giá
-            if (filterData.rating && (averageRating === null || averageRating < parseFloat(filterData.rating))) {
-                return false;
-            }
-
-            return true;
-        });
+    const handleSearch = () => {
+        setPage(1);
+        fetchFoodServices(location, 1);
     };
 
-    // Hàm tìm kiếm theo địa điểm
-    const handleSearch = async () => {
-        setFoodServicesFound([]); // Reset danh sách tạm thời
-        try {
-            const response = await axios.get(`${url}/api/foodservices?name=${location}`);
-            if (!response.data.success) {
-                throw new Error("Failed to fetch foodServices");
-            }
-
-            setBackupFoodServices(response.data.foodService); // Lưu lại kết quả tìm kiếm vào backup
-            setFoodServicesFound(response.data.foodService); // Cập nhật danh sách hiển thị
-            setIsSearching(true); // Đánh dấu là đang tìm kiếm
-        } catch (error) {
-            console.error("Error fetching foodServices:", error);
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
+            fetchFoodServices(location, newPage);
         }
     };
 
-    // Reset trạng thái tìm kiếm
-    const resetSearch = () => {
-        setIsSearching(false);
-        setFoodServicesFound(applyFilters(backupFoodServices));
-    };
     return (
         <div className="home-attractions-container">
-
             <form className="attractions-search-form" onSubmit={(e) => e.preventDefault()}>
-                {/* Location Input */}
                 <div className="attractions-search-item">
                     <span role="img" aria-label="location">📍</span>
                     <input
                         type="text"
-                        placeholder="Bà Rịa - Vũng Tàu"
+                        placeholder="Cơm nghêu Vũng Tàu"
                         className="attractions-input"
                         onChange={(e) => setLocation(e.target.value)}
                         value={location}
                     />
                 </div>
-
-                {/* Search Button */}
-                <button
-                    type="submit"
-                    className="attractions-search-btn"
-                    onClick={handleSearch}
-                >
+                <button type="submit" className="attractions-search-btn" onClick={handleSearch}>
                     Tìm kiếm
                 </button>
             </form>
 
             <div className="attractions-content-container">
-                <LeftSideBar onFilterChange={handleFilterChange} />
-                <FoodServiceCards foodServicesFound={foodServicesFound} />
+                <LeftSideBar onFilterChange={(filters) => fetchFoodServices(location, 1, filters)} />
+                {loading ? <p>Đang tải...</p> : <FoodServiceCards foodServicesFound={foodServicesFound} />}
             </div>
-        </div>
 
+            {totalPages > 1 && (
+                <div className="pagination">
+                    <button disabled={page === 1} onClick={() => handlePageChange(page - 1)}>«</button>
+                    <span>Trang {page} / {totalPages}</span>
+                    <button disabled={page === totalPages} onClick={() => handlePageChange(page + 1)}>»</button>
+                </div>
+            )}
+        </div>
     );
 };
 
