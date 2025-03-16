@@ -1,128 +1,69 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import './LeftSideBar.css';
 import { Range } from 'react-range';
 import { FaFilter } from "react-icons/fa";
-const LeftSideBar = ({ onFilterChange }) => {
+import axios from 'axios';
+import { StoreContext } from '../../Context/StoreContext';
+
+const LeftSideBar = ({ onFilterChange = () => { } }) => {
     const [isFilterVisible, setIsFilterVisible] = useState(false);
     const [priceRange, setPriceRange] = useState({ min: 0, max: 700000 });
-    // const [sortOrder, setSortOrder] = useState('');
     const [selectedAmenities, setSelectedAmenities] = useState([]);
-    // const [roomSize, setRoomSize] = useState('');
     const [rating, setRating] = useState('');
-
-    const amenities = {
-        basicServices: [
-            "Wi-Fi",
-            "Bãi đậu xe",
-            "Dịch vụ 24/7",
-            "Két an toàn",
-            "Tủ lạnh mini",
-            "Truyền hình cáp và truyền hình vệ tinh"
-        ],
-        transportationServices: [
-            "Dịch vụ đưa đón sân bay",
-            "Dịch vụ đặt vé",
-            "Dịch vụ hỗ trợ khách hàng",
-            "Dịch vụ giặt ủi",
-        ],
-        roomAndDiningServices: [
-            "Dịch vụ phòng",
-            "Nhà hàng và quầy bar",
-            "Phục vụ ăn sáng",
-
-        ],
-        recreationalAmenities: [
-            "Hồ bơi",
-            "Khu vui chơi trẻ em",
-            "Công viên và khu vườn",
-            "Trung tâm thể dục thể thao",
-            "Dịch vụ spa và massage"
-        ],
-        businessAndEventServices: [
-            "Phòng hội nghị",
-            "Tổ chức tour du lịch"
-        ],
-
-    };
-
-
-    const logAndCallOnFilterChange = () => {
-        // Tạo đối tượng dữ liệu lọc đầy đủ và gọi onFilterChange ngay lập tức
-        const filters = {
-            priceRange,
-            // sortOrder,
-            selectedAmenities,
-            // roomSize,
-            rating,
-        };
-        onFilterChange?.(filters);
-    };
+    const [amenities, setAmenities] = useState([]);
+    const { url } = useContext(StoreContext);
+    const groupedAmenities = amenities.reduce((acc, amenity) => {
+        if (!acc[amenity.category]) {
+            acc[amenity.category] = [];
+        }
+        acc[amenity.category].push(amenity);
+        return acc;
+    }, {});
+    // Lấy danh sách amenities từ API
     useEffect(() => {
-        const filters = {
-            priceRange,
-            // sortOrder,
-            selectedAmenities,
-            // roomSize,
-            rating,
-        };
-        onFilterChange?.(filters);
+        axios.get(`${url}/api/extensions?limit=0`)
+            .then(response => {
+                if (response.data.success) {
+                    setAmenities(response.data.extensions);
+                }
+            })
+            .catch(error => console.error('Error fetching amenities:', error));
+    }, []);
 
-    }, [priceRange, selectedAmenities, rating]); // Chạy khi bất kỳ trạng thái nào thay đổi
+    // Gọi API khi bất kỳ filter nào thay đổi
+    useEffect(() => {
+        onFilterChange({ priceRange, selectedAmenities, rating });
+    }, [priceRange, selectedAmenities, rating]);
 
+    // Xử lý tick/bỏ tick tiện ích
     const handleCheckboxChange = (event, type) => {
         const { value, checked } = event.target;
 
         if (type === 'amenities') {
-            const updatedAmenities = checked
-                ? [...selectedAmenities, value]
-                : selectedAmenities.filter(item => item !== value);
-            setSelectedAmenities(updatedAmenities);
-            logAndCallOnFilterChange(); // Gọi ngay khi cập nhật tiện nghi
-
-            // }else if (type === 'roomSize') {
-            //     setRoomSize(value);
-            //     logAndCallOnFilterChange(); // Gọi ngay khi chọn kích thước phòng
+            setSelectedAmenities(prev => {
+                const updated = checked ? [...prev, value] : prev.filter(item => item !== value);
+                return updated;
+            });
         } else if (type === 'rating') {
-            setRating(value);
-            logAndCallOnFilterChange(); // Gọi ngay khi chọn xếp hạng
+            setRating(checked ? value : '');
         }
     };
 
-    // const handleSortOrderChange = (event) => {
-    //     const value = event.target.value;
-    //     setSortOrder(value);
-    //     logAndCallOnFilterChange(); // Gọi ngay khi chọn thứ tự sắp xếp
-    // };
-
+    // Xử lý thay đổi giá tiền
     const handlePriceChange = (values) => {
-        const [newMin, newMax] = values;
-        setPriceRange({
-            min: Math.max(0, Math.min(700000, newMin)),
-            max: Math.max(0, Math.min(700000, newMax)),
-        });
-        logAndCallOnFilterChange(); // Gọi ngay khi thay đổi khoảng giá
+        setPriceRange({ min: values[0], max: values[1] });
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        const numericValue = Math.max(0, Math.min(700000, Number(value)));
+    // Xử lý nhập liệu trực tiếp vào input giá tiền
+    const handleInputChange = (e, type) => {
+        const value = parseInt(e.target.value, 10) || 0;
         setPriceRange((prev) => ({
             ...prev,
-            [name]: numericValue,
+            [type]: Math.min(Math.max(0, value), 700000),
         }));
-        logAndCallOnFilterChange(); // Gọi ngay khi thay đổi giá thủ công
     };
-    const getCategoryName = (key) => {
-        const categoryNames = {
-            basicServices: "Dịch vụ cơ bản",
-            transportationServices: "Dịch vụ vận chuyển",
-            roomAndDiningServices: "Dịch vụ phòng và ăn uống",
-            recreationalAmenities: "Tiện ích giải trí",
-            businessAndEventServices: "Dịch vụ kinh doanh và sự kiện",
-        };
-        return categoryNames[key] || key;
-    };
+
     return (
         <div className="left-sidebar">
             <div className="filter-header">
@@ -131,7 +72,24 @@ const LeftSideBar = ({ onFilterChange }) => {
             </div>
             <div className={`filter-content ${isFilterVisible ? "show" : "hide"}`}>
                 <h3>Khoảng giá</h3>
-                <div className="price-range-slider">
+                <div className="price-filter-container">
+                    <div className="price-inputs">
+                        <input
+                            type="number"
+                            value={priceRange.min}
+                            onChange={(e) => handleInputChange(e, "min")}
+                            min="0"
+                            max="700000"
+                        />
+                        <span>-</span>
+                        <input
+                            type="number"
+                            value={priceRange.max}
+                            onChange={(e) => handleInputChange(e, "max")}
+                            min="0"
+                            max="700000"
+                        />
+                    </div>
                     <Range
                         values={[priceRange.min, priceRange.max]}
                         step={1000}
@@ -139,143 +97,34 @@ const LeftSideBar = ({ onFilterChange }) => {
                         max={700000}
                         onChange={handlePriceChange}
                         renderTrack={({ props, children }) => (
-                            <div
-                                {...props}
-                                style={{
-                                    ...props.style,
-                                    height: '6px',
-                                    width: '100%',
-                                    backgroundColor: '#ddd',
-                                    margin: '15px 0',
-                                }}
-                            >
+                            <div {...props} className="range-track">
                                 {children}
                             </div>
                         )}
-                        renderThumb={({ props, index }) => (
-                            <div
-                                {...props}
-                                style={{
-                                    ...props.style,
-                                    height: '20px',
-                                    width: '20px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#007BFF',
-                                    cursor: 'pointer',
-                                    boxShadow: '0 0 2px rgba(0, 0, 0, 0.5)',
-                                }}
-                            />
+                        renderThumb={({ props }) => (
+                            <div {...props} className="range-thumb" />
                         )}
                     />
-                    <div className="price-range-inputs">
-                        <input
-                            type="number"
-                            name="min"
-                            value={priceRange.min}
-                            onChange={handleInputChange}
-                            placeholder="Giá thấp nhất"
-                            className="price-input"
-                        />
-                        <input
-                            type="number"
-                            name="max"
-                            value={priceRange.max}
-                            onChange={handleInputChange}
-                            placeholder="Giá cao nhất"
-                            className="price-input"
-                        />
-                    </div>
                 </div>
-
-                {/* <div className="filter-section">
-                <h3>Sắp xếp theo</h3>
-                <label>
-                    <input
-                        type="radio"
-                        name="sortOrder"
-                        value="asc"
-                        checked={sortOrder === 'asc'}
-                        onChange={handleSortOrderChange}
-                    />
-                    Giá thấp đến cao
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="sortOrder"
-                        value="desc"
-                        checked={sortOrder === 'desc'}
-                        onChange={handleSortOrderChange}
-                    />
-                    Giá cao đến thấp
-                </label>
-            </div> */}
-
                 <div className="filter-section">
                     <h3>Tiện nghi</h3>
-                    {Object.entries(amenities).map(([category, amenityList]) => (
+                    {Object.keys(groupedAmenities).map((category) => (
                         <div key={category} className="amenity-category">
-                            <h4>{getCategoryName(category)}</h4> {/* Hàm để hiển thị tên danh mục theo ý bạn */}
-                            {amenityList.map((amenity, index) => (
-                                <label key={amenity}>
+                            <h4>{category}</h4>
+                            {groupedAmenities[category].map((amenity) => (
+                                <label key={amenity._id}>
                                     <input
                                         type="checkbox"
-                                        value={amenity}
-                                        checked={selectedAmenities.includes(amenity)}
+                                        value={amenity.name}
+                                        checked={selectedAmenities.includes(amenity.name)}
                                         onChange={(e) => handleCheckboxChange(e, 'amenities')}
                                     />
-                                    {amenity}
+                                    {amenity.name}
                                 </label>
                             ))}
                         </div>
                     ))}
                 </div>
-
-
-                {/* <div className="filter-section">
-                <h3>Kích thước phòng</h3>
-                <label>
-                    <input
-                        type="radio"
-                        name="roomSize"
-                        value="0-40"
-                        checked={roomSize === '0-40'}
-                        onChange={(e) => handleCheckboxChange(e, 'roomSize')}
-                    />
-                    0 - 40 m²
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="roomSize"
-                        value="40-60"
-                        checked={roomSize === '40-60'}
-                        onChange={(e) => handleCheckboxChange(e, 'roomSize')}
-                    />
-                    40 - 60 m²
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="roomSize"
-                        value="60+"
-                        checked={roomSize === '60+'}
-                        onChange={(e) => handleCheckboxChange(e, 'roomSize')}
-                    />
-                    Trên 60 m²
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        name="roomSize"
-                        value="80+"
-                        checked={roomSize === '80+'}
-                        onChange={(e) => handleCheckboxChange(e, 'roomSize')}
-                    />
-                    Trên 80 m²
-                </label>
-            </div> */}
-
                 <div className="filter-section">
                     <h3>Xếp hạng</h3>
                     <label>
@@ -301,16 +150,11 @@ const LeftSideBar = ({ onFilterChange }) => {
                 </div>
             </div>
         </div>
-
     );
 };
 
 LeftSideBar.propTypes = {
     onFilterChange: PropTypes.func,
-};
-
-LeftSideBar.defaultProps = {
-    onFilterChange: () => { },
 };
 
 export default LeftSideBar;

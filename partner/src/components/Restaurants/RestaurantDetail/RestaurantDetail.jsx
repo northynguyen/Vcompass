@@ -72,28 +72,22 @@ const RestaurantDetail = ({ onBack, RestaurantData }) => {
     );
 
     const mapRef = useRef();
-    const availableAmenities = [
-        "Wi-Fi",
-        "Bãi đậu xe",
-        "Dịch vụ 24/7",
-        "Dịch vụ đưa đón sân bay",
-        "Dịch vụ phòng",
-        "Hồ bơi",
-        "Nhà hàng và quầy bar",
-        "Phòng hội nghị",
-        "Trung tâm thể dục thể thao",
-        "Dịch vụ spa và massage",
-        "Khu vui chơi trẻ em",
-        "Tổ chức tour du lịch",
-        "Dịch vụ giặt ủi",
-        "Két an toàn",
-        "Tủ lạnh mini",
-        "Phục vụ ăn sáng",
-        "Dịch vụ đặt vé",
-        "Công viên và khu vườn",
-        "Truyền hình cáp và truyền hình vệ tinh",
-        "Dịch vụ hỗ trợ khách hàng"
-    ];
+    const [availableAmenities, setAvailableAmenities] = useState([]);
+
+    useEffect(() => {
+        const fetchAmenities = async () => {
+            try {
+                const response = await fetch(`${url}/api/extensions?limit=0`);
+                const data = await response.json();
+                const formattedAmenities = data.extensions.map(item => item.name);
+                setAvailableAmenities(formattedAmenities);
+            } catch (error) {
+                console.error("Lỗi khi fetch dữ liệu:", error);
+            }
+        };
+
+        fetchAmenities();
+    }, []);
 
     useEffect(() => {
         if (RestaurantData) {
