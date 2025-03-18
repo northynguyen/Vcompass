@@ -11,7 +11,10 @@ export const addConversation = async (req, res) => {
         participantIds: [senderId, receiverId],
       });
       await conversation.save();
-      conversation = await conversation.populate("participantIds", "_id name avatar");
+      conversation = await conversation.populate(
+        "participantIds",
+        "_id name avatar"
+      );
     }
     res.status(200).json({ success: true, conversation });
     global.io.emit(`${receiverId}-newConversation`, conversation);
@@ -25,18 +28,24 @@ export const addConversation = async (req, res) => {
 export const getConversationsByUser = async (req, res) => {
   try {
     const { userId } = req.params;
-
     const conversations = await Conversation.find({
-      participantIds: userId,
+      $and: [
+        { participantIds: userId },
+        { participantIds: { $not: { $all: ["636861746169616969616969"] } } }, // Loại bỏ cuộc trò chuyện có chat-ai
+      ],
     }).populate("participantIds", "_id name avatar");
 
     res.status(200).json(conversations);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Lỗi khi lấy danh sách cuộc trò chuyện", error });
+    console.error("🔥 Error fetching conversations:", error);
+
+    res.status(500).json({
+      message: "Lỗi khi lấy danh sách cuộc trò chuyện",
+      error: error.message || error,
+    });
   }
 };
+
 export const sendMessage = async (req, res) => {
   try {
     const { conversationId, senderId, content, media, mediaType } = req.body;
@@ -45,7 +54,7 @@ export const sendMessage = async (req, res) => {
       content: content || "",
       media: media || null,
       mediaType: mediaType || null,
-      createdAt: Date.now()
+      createdAt: Date.now(),
     };
 
     const conversation = await Conversation.findByIdAndUpdate(
@@ -70,7 +79,7 @@ export const getConversationsTwoUserId = async (req, res) => {
     const { senderId, receiverId } = req.params;
     const conversation = await Conversation.findOne({
       participantIds: { $all: [senderId, receiverId] },
-    }).populate("participantIds", "_id name avatar");;
+    }).populate("participantIds", "_id name avatar");
     if (conversation) {
       return res.status(200).json({ success: true, conversation });
     }
@@ -97,32 +106,36 @@ export const deleteMessage = async (req, res) => {
   }
 };
 export const markMessagesAsRead = async (req, res) => {
-    try {
-      const { conversationId, userId } = req.body;
-      const conversation = await Conversation.findById(conversationId);
-      if (!conversation) {
-        return res.status(404).json({ message: "Cuộc trò chuyện không tồn tại" });
-      }
-      const updatedConversation = await Conversation.findByIdAndUpdate(
-        conversationId,
-        {
-          $set: { "messages.$[elem].isReaded": true },
-        },
-        {
-          arrayFilters: [{ "elem.senderId": { $ne: userId }, "elem.isReaded": false }],
-          new: true,
-        }
-      );
-      res.status(200).json({
-        message: "Tất cả tin nhắn đã được đánh dấu là đã đọc",
-        updatedConversation,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Lỗi khi cập nhật trạng thái tin nhắn", error });
+  try {
+    const { conversationId, userId } = req.body;
+    const conversation = await Conversation.findById(conversationId);
+    if (!conversation) {
+      return res.status(404).json({ message: "Cuộc trò chuyện không tồn tại" });
     }
-  };
-  
+    const updatedConversation = await Conversation.findByIdAndUpdate(
+      conversationId,
+      {
+        $set: { "messages.$[elem].isReaded": true },
+      },
+      {
+        arrayFilters: [
+          { "elem.senderId": { $ne: userId }, "elem.isReaded": false },
+        ],
+        new: true,
+      }
+    );
+    res.status(200).json({
+      message: "Tất cả tin nhắn đã được đánh dấu là đã đọc",
+      updatedConversation,
+    });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Lỗi khi cập nhật trạng thái tin nhắn", error });
+  }
+};
+
 export const deleteConversation = async (req, res) => {
   try {
     const { conversationId } = req.params;
