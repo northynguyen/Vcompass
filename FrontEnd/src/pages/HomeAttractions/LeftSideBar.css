@@ -6,6 +6,7 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     font-family: Arial, sans-serif;
+    max-width: 300px;
 }
 
 .left-sidebar h2 {
@@ -197,4 +198,50 @@
 
 .filter-content {
     display: block;
+}
+
+.price-filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.price-inputs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price-inputs input {
+    width: 45%;
+    padding: 5px;
+    font-size: 16px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+.price-inputs input:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.range-track {
+    height: 6px;
+    width: 100%;
+    background-color: #ddd;
+    border-radius: 3px;
+    margin: 10px 0;
+}
+
+.range-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background-color: #007BFF;
+    cursor: pointer;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }

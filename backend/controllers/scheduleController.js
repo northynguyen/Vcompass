@@ -140,7 +140,7 @@ export const getSchedulesByIdUser = async (req, res) => {
         idInvitee: new mongoose.Types.ObjectId(userId) 
     });
       if (!schedules.length) {
-        return res.status(404).json({
+        return res.json({
           success: false,
           message: "No schedules found for this user",
         });

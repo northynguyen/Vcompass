@@ -68,7 +68,7 @@ const InviteTripmatesModal = ({ isOpen, onClose , schedule, setInforSchedule}) =
       };
 
     const removeTripmate = async (id) => {
-        if (user._id !== schedule.idUser) {
+        if (user._id !== schedule.idUser._id) {
             alert(" Bạn không có quyền chỉnh sửa thông tin này");
             return;
         }

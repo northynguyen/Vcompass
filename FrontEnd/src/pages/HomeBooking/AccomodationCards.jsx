@@ -35,7 +35,8 @@ const AccomodationCards = ({ accommodationsFound, startDay, endDay, adults, chil
             {accomodations.length === 0 && <p>Không tìm thấy khách sạn</p>}
             <div className="card-list">
                 {accomodations.map((item) => {
-                    const prices = item.roomTypes.map(room => room.pricePerNight);
+                    const prices = item.roomTypes ? item.roomTypes.map(room => room.pricePerNight) : [];
+
                     const minPrice = Math.min(...prices);
                     const maxPrice = Math.max(...prices);
                     const { totalReviews, averageRating } = getRatingInfo(item.ratings);
@@ -53,7 +54,7 @@ const AccomodationCards = ({ accommodationsFound, startDay, endDay, adults, chil
                                         ⭐ {averageRating} ({totalReviews} đánh giá)
                                     </p>
                                 </div>
-                                <div className='card-content-price'>    
+                                <div className='card-content-price'>
                                     <p className="card-range-price">{minPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
                                     <p className="card-range-price">đến</p>
                                     <p className="card-range-price">{maxPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>

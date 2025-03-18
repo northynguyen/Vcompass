@@ -4,103 +4,70 @@ import './HomeAttractions.css';
 import AttractionsCards from './AttractionsCards';
 import LeftSideBar from './LeftSideBar';
 import { StoreContext } from '../../Context/StoreContext';
-import axios from 'axios';
 
 const HomeAttractions = () => {
-    const [location, setLocation] = useState('');
-    const [backupAttractions, setBackupAttractions] = useState([]);
-    const [filterData, setFilterData] = useState({ priceRange: { min: 0, max: Infinity }, selectedAmenities: [], rating: 0 });
-    const [attractionsFound, setAttractionsFound] = useState([]);
-    const [isSearching, setIsSearching] = useState(false);
     const { url } = useContext(StoreContext);
-    // Xử lý khi bộ lọc thay đổi
-    const handleFilterChange = (newFilterData) => {
-        setFilterData((prevData) => ({ ...prevData, ...newFilterData }));
-    };
+    const [location, setLocation] = useState("");
+    const [attractionsFound, setAttractionsFound] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchAttractions = async () => {
-            try {
-                let attractions = [];
-                if (isSearching && backupAttractions.length > 0) {
-                    // Khi đang tìm kiếm, sử dụng dữ liệu đã backup
-                    attractions = [...backupAttractions];
-                } else {
-                    // Nếu không tìm kiếm, gọi API để lấy dữ liệu đầy đủ
-                    const response = await axios.get(`${url}/api/attractions`);
-                    attractions = response.data.attractions;
-                    setBackupAttractions(response.data.attractions);
-                }
-
-                const filteredAttractions = applyFilters(attractions);
-                setAttractionsFound(filteredAttractions);
-            } catch (error) {
-                console.error("Error fetching attractions:", error);
-            }
-        };
-
-        fetchAttractions();
-    }, [url, filterData, isSearching]);
-
-    // Hàm áp dụng bộ lọc
-    const applyFilters = (attractions) => {
-        return attractions.filter((attraction) => {
-            // Lọc theo giá
-            if (filterData.priceRange && (attraction.price > filterData.priceRange.max || attraction.price < filterData.priceRange.min)) {
-                return false;
-            }
-
-            // Lọc theo tiện ích
-            if (filterData.selectedAmenities.length > 0) {
-                const hasAllSelectedAmenities = filterData.selectedAmenities.every((amenity) =>
-                    attraction.amenities.includes(amenity)
-                );
-                if (!hasAllSelectedAmenities) return false;
-            }
-
-            // Tính điểm đánh giá trung bình
-            let averageRating = null;
-            if (attraction.ratings && attraction.ratings.length > 0) {
-                const totalRating = attraction.ratings.reduce((sum, rating) => sum + rating.rate, 0);
-                averageRating = totalRating / attraction.ratings.length;
-            }
-
-            // Lọc theo đánh giá
-            if (filterData.rating && (averageRating === null || averageRating < parseFloat(filterData.rating))) {
-                return false;
-            }
-
-            return true;
-        });
-    };
-
-    // Hàm tìm kiếm theo địa điểm
-    const handleSearch = async () => {
-        setAttractionsFound([]); // Reset danh sách tạm thời
+    const fetchAttractions = async (searchLocation = location, pageNum = 1, filters = {}) => {
+        setLoading(true);
         try {
-            const response = await axios.get(`${url}/api/attractions?name=${location}`);
-            if (!response.data.success) {
-                throw new Error("Failed to fetch attractions");
+            const params = new URLSearchParams({
+                keyword: searchLocation,
+                page: pageNum,
+                limit: 6,
+                minPrice: filters.priceRange?.min || 0,
+                maxPrice: filters.priceRange?.max || 700000,
+                rating: filters.rating || '',
+                amenities: filters.selectedAmenities?.join(',') || ''
+            });
+            const response = await fetch(`${url}/api/attractions/search?${params.toString()}`);
+            const data = await response.json();
+            if (data.success) {
+                setAttractionsFound(data.data);
+                setTotalPages(data.totalPages);
             }
-
-            setBackupAttractions(response.data.attractions); // Lưu lại kết quả tìm kiếm vào backup
-            setAttractionsFound(response.data.attractions); // Cập nhật danh sách hiển thị
-            setIsSearching(true); // Đánh dấu là đang tìm kiếm
         } catch (error) {
-            console.error("Error fetching attractions:", error);
+            console.error("Lỗi khi lấy dữ liệu attractions:", error);
+        }
+        setLoading(false);
+    };
+
+
+    // Gọi API khi component mount hoặc thay đổi trang
+    useEffect(() => {
+        fetchAttractions();
+    }, [page]);
+
+    // Xử lý khi nhấn nút tìm kiếm
+    const handleSearch = () => {
+        setPage(1); // Reset về trang đầu tiên khi tìm kiếm
+        fetchAttractions(location, 1);
+    };
+
+    // Chuyển trang
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
+            fetchAttractions(location, newPage);
         }
     };
+    useEffect(() => {
+        if (location) { // Chỉ fetch nếu có location
+            fetchAttractions(location, page);
+        }
+    }, [page]);
 
-    // Reset trạng thái tìm kiếm
-    const resetSearch = () => {
-        setIsSearching(false);
-        setAttractionsFound(applyFilters(backupAttractions));
-    };
     return (
+
         <div className="home-attractions-container">
 
+            {/* Form tìm kiếm */}
             <form className="attractions-search-form" onSubmit={(e) => e.preventDefault()}>
-                {/* Location Input */}
                 <div className="attractions-search-item">
                     <span role="img" aria-label="location">📍</span>
                     <input
@@ -111,23 +78,26 @@ const HomeAttractions = () => {
                         value={location}
                     />
                 </div>
-
-                {/* Search Button */}
-                <button
-                    type="submit"
-                    className="attractions-search-btn"
-                    onClick={handleSearch}
-                >
+                <button type="submit" className="attractions-search-btn" onClick={handleSearch}>
                     Tìm kiếm
                 </button>
             </form>
 
+            {/* Danh sách attraction */}
             <div className="attractions-content-container">
-                <LeftSideBar onFilterChange={handleFilterChange} />
-                 <AttractionsCards attractionsFound={attractionsFound} />
+                <LeftSideBar onFilterChange={filters => fetchAttractions(location, 1, filters)} />
+                {loading ? <p>Đang tải...</p> : <AttractionsCards attractionsFound={attractionsFound} />}
             </div>
-        </div>
 
+            {/* Phân trang */}
+            {totalPages > 1 && (
+                <div className="pagination">
+                    <button disabled={page === 1} onClick={() => handlePageChange(page - 1)}>«</button>
+                    <span>Trang {page} / {totalPages}</span>
+                    <button disabled={page === totalPages} onClick={() => handlePageChange(page + 1)}>»</button>
+                </div>
+            )}
+        </div>
     );
 };
 
