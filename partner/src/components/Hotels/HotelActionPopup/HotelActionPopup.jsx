@@ -18,28 +18,6 @@ const redIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-const availableAmenities = [
-    "Wi-Fi",
-    "Bãi đậu xe",
-    "Dịch vụ 24/7",
-    "Dịch vụ đưa đón sân bay",
-    "Dịch vụ phòng",
-    "Hồ bơi",
-    "Nhà hàng và quầy bar",
-    "Phòng hội nghị",
-    "Trung tâm thể dục thể thao",
-    "Dịch vụ spa và massage",
-    "Khu vui chơi trẻ em",
-    "Tổ chức tour du lịch",
-    "Dịch vụ giặt ủi",
-    "Két an toàn",
-    "Tủ lạnh mini",
-    "Phục vụ ăn sáng",
-    "Dịch vụ đặt vé",
-    "Công viên và khu vườn",
-    "Truyền hình cáp và truyền hình vệ tinh",
-    "Dịch vụ hỗ trợ khách hàng"
-];
 
 const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
     const { url } = useContext(StoreContext);
@@ -72,28 +50,22 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
         "Sơn La", "Tây Ninh", "Thái Bình", "Thái Nguyên", "Thanh Hóa", "Thừa Thiên Huế",
         "Tiền Giang", "TP Hồ Chí Minh", "Tuyên Quang", "Vĩnh Long", "Vĩnh Phúc", "Yên Bái"
     ];
-    const availableAmenities = [
-        "Wi-Fi",
-        "Bãi đậu xe",
-        "Dịch vụ 24/7",
-        "Dịch vụ đưa đón sân bay",
-        "Dịch vụ phòng",
-        "Hồ bơi",
-        "Nhà hàng và quầy bar",
-        "Phòng hội nghị",
-        "Trung tâm thể dục thể thao",
-        "Dịch vụ spa và massage",
-        "Khu vui chơi trẻ em",
-        "Tổ chức tour du lịch",
-        "Dịch vụ giặt ủi",
-        "Két an toàn",
-        "Tủ lạnh mini",
-        "Phục vụ ăn sáng",
-        "Dịch vụ đặt vé",
-        "Công viên và khu vườn",
-        "Truyền hình cáp và truyền hình vệ tinh",
-        "Dịch vụ hỗ trợ khách hàng"
-    ];
+    const [availableAmenities, setAvailableAmenities] = useState([]);
+
+    useEffect(() => {
+        const fetchAmenities = async () => {
+            try {
+                const response = await fetch(`${url}/api/extensions?limit=0`);
+                const data = await response.json();
+                const formattedAmenities = data.extensions.map(item => item.name);
+                setAvailableAmenities(formattedAmenities);
+            } catch (error) {
+                console.error("Lỗi khi fetch dữ liệu:", error);
+            }
+        };
+
+        fetchAmenities();
+    }, []);
 
     const [existingImages, setExistingImages] = useState(hotel?.images || []);
     const [newImages, setNewImages] = useState([]);

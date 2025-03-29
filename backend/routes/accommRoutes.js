@@ -9,7 +9,8 @@ import {
   listRooms,
   updateAccommodation,
   updateRoomType, addReview,
-  updateAccommodationStatusByAdmin,updateRatingResponse,getAccommWishList
+  updateAccommodationStatusByAdmin, updateRatingResponse, getAccommWishList,
+  searchAccommodations
 } from "../controllers/accommController.js";
 import upload from "../middleware/upload.js";
 import authMiddleware from "../middleware/auth.js";
@@ -18,6 +19,7 @@ import { handleUploadErrors } from '../middleware/upload.js';
 const accommRoutes = express.Router();
 
 accommRoutes.get("/", getListAccomm);
+accommRoutes.get("/search", searchAccommodations);
 accommRoutes.get("/:partnerId", getListAccommbyPartner);
 accommRoutes.post("/:partnerId", upload.array("newImages", 8), addNew); // Add new accommodation
 accommRoutes.put("/:partnerId/:id", upload.array("newImages", 8), updateAccommodation); // Update accommodation

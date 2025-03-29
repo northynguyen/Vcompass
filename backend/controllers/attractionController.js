@@ -7,45 +7,57 @@ import { uploadToCloudinaryV2, deleteImage } from './videoController.js';
 // Controller function to get all attractions
 const getAttractions = async (req, res) => {
     try {
-        const { name, minPrice, maxPrice, city } = req.query;
+        const { name, minPrice, maxPrice, city, page = 1, limit = 10 } = req.query;
 
-        // Build query object
+        // Chuyển đổi page và limit sang số
+        const pageNumber = Math.max(1, Number(page));
+        const limitNumber = Math.max(1, Number(limit));
+        const skip = (pageNumber - 1) * limitNumber;
+
+        // Tạo query object
         const query = {};
 
-        // Add name filter if provided
+        // Lọc theo tên hoặc thành phố
         if (name) {
             query.$or = [
-                { attractionName: { $regex: name, $options: 'i' } }, // Tìm kiếm trong tên địa điểm
-                { city: { $regex: name, $options: 'i' } }, // Tìm kiếm trong tên thành phố
+                { attractionName: { $regex: name, $options: 'i' } },
+                { city: { $regex: name, $options: 'i' } },
             ];
         }
 
-        // Add price range filter if provided
+        // Lọc theo khoảng giá
         if (minPrice || maxPrice) {
             query.price = {};
             if (minPrice) query.price.$gte = Number(minPrice);
             if (maxPrice) query.price.$lte = Number(maxPrice);
         }
 
-        // Add city filter if provided
+        // Lọc theo thành phố
         if (city) {
             query.city = { $regex: city, $options: 'i' };
         }
 
-        // Execute query
-        const attractions = await Attraction.find(query);
+        // Lấy tổng số bản ghi (cho frontend phân trang)
+        const totalAttractions = await Attraction.countDocuments(query);
+
+        // Thực hiện truy vấn với phân trang
+        const attractions = await Attraction.find(query)
+            .skip(skip)
+            .limit(limitNumber);
 
         res.status(200).json({
             success: true,
-            attractions: attractions
+            total: totalAttractions,
+            page: pageNumber,
+            totalPages: Math.ceil(totalAttractions / limitNumber),
+            attractions
         });
     } catch (error) {
-        console.error(error); // Log the error for debugging
-        res.status(500).json({
-            message: 'Server error'
-        });
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
     }
 };
+
 
 const getAttractionById = async (req, res) => {
     const { id } = req.params; // Lấy id từ params
@@ -210,7 +222,7 @@ const addReview = async (req, res) => {
 };
 
 const getAttracWishList = async (req, res) => {
-    const { userId } = req.body; 
+    const { userId } = req.body;
 
     try {
         const user = await userModel.findById(userId);
@@ -229,6 +241,58 @@ const getAttracWishList = async (req, res) => {
         res.status(500).json({ success: false, message: "Error retrieving wish list attractions" });
     }
 }
+export const searchAttractions = async (req, res) => {
+    try {
+        const { amenities, minRating, minPrice, maxPrice, keyword, page = 1, limit = 10 } = req.query;
+        // Giới hạn page và limit để tránh abuse
+        if (page < 1) page = 1;
+        if (limit < 1) limit = 10;
+        if (limit > 50) limit = 50; // Giới hạn tối đa 50 bản ghi/trang
+        const query = {};
 
-export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview, deleteAttraction, getAttracWishList }; // Export the getAttractions;
+        // Tìm theo amenities (mảng)
+        if (amenities) {
+            const amenitiesArray = amenities.split(",");
+            query.amenities = { $all: amenitiesArray }; // Lọc những attraction có tất cả amenities trong danh sách
+        }
 
+
+
+        // Lọc theo khoảng giá
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.$gte = Number(minPrice);
+            if (maxPrice) query.price.$lte = Number(maxPrice);
+        }
+
+        // Lọc rating lớn hơn 3 sao hoặc 4 sao
+        if (minRating) {
+            query["ratings.rating"] = { $gte: Number(minRating) };
+        }
+        if (keyword) {
+            query.$or = [
+                {
+                    attractionName: { $regex: keyword, $options: "i" }
+                }, // Tìm trong tên
+                { city: { $regex: keyword, $options: "i" } }             // Tìm trong thành phố
+            ];
+        }
+        // Phân trang
+        const skip = (Number(page) - 1) * Number(limit);
+
+        const attractions = await Attraction.find(query).skip(skip).limit(Number(limit));
+
+        const total = await Attraction.countDocuments(query);
+
+        res.status(200).json({
+            success: true,
+            total,
+            page: Number(page),
+            totalPages: Math.ceil(total / Number(limit)),
+            data: attractions,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Lỗi server!", error: error.message });
+    }
+};
+export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview, deleteAttraction, getAttracWishList }; 

@@ -10,8 +10,10 @@ import { GoDotFill } from "react-icons/go";
 import { IoIosArrowBack, IoIosArrowForward, IoMdSend } from "react-icons/io";
 import { MdOutlineInsertEmoticon, MdOutlineMessage } from "react-icons/md";
 import { VscCopilot } from "react-icons/vsc";
+import { useNavigate } from 'react-router-dom';
 import io from "socket.io-client";
 import logo from '../../assets/logo.png';
+import logo_ai from '../../assets/logo_ai.png';
 import { StoreContext } from "../../Context/StoreContext";
 import "./ChatBox.css";
 
@@ -21,17 +23,34 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
     const [message, setMessage] = useState("");
     const [conversations, setConversations] = useState([]);
     const [currentChattingUser, setCurrentChattingUser] = useState()
+    const [currentAIConversation, setCurrentAIConversation] = useState()
     const { url, token, user } = useContext(StoreContext);
     const [unReadMessages, setUnReadMessages] = useState(0)
     const [showPicker, setShowPicker] = useState(false);
+    const [hoveredMessage, setHoveredMessage] = useState(null);
+    const [isAIJoin, setIsAIJoin] = useState(false);
+    const hoverTimeoutRef = useRef(null);
     const emojiRef = useRef(null);
     const fileInputRef = useRef(null);
+    const socketRef = useRef(null);
     const messagesEndRef = useRef(null);
+    const currentAIConversationRef = useRef(currentAIConversation);
+    const navigate = useNavigate();
+    const chatAIId = "636861746169616969616969"
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({});
         }
+    };
+    const handleMouseEnter = (index) => {
+        hoverTimeoutRef.current = setTimeout(() => {
+            setHoveredMessage(index);
+        }, 500); // 1 giây
+    };
+    const handleMouseLeave = () => {
+        clearTimeout(hoverTimeoutRef.current);
+        setHoveredMessage(null);
     };
     const onChangeTabClick = (tab) => {
         setCurrentTab(tab)
@@ -40,7 +59,10 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
         setMessage((prev) => prev + emoji.emoji);
         setShowPicker(false);
     };
-
+    const handleUserClick = (id) => {
+        navigate(`/otherUserProfile/${id}`);
+        window.location.reload()
+    };
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
         if (!file) return;
@@ -51,10 +73,10 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
         let fileUrl = null;
         if (file.type.startsWith("image/")) {
             fileUrl = await uploadImage(file);
-            handleSendMessage("", fileUrl, "image");
+            handleSendMessage(currentConversation._id, user._id, "", fileUrl, "image");
         } else if (file.type.startsWith("video/")) {
             fileUrl = await uploadVideo(file);
-            handleSendMessage("", fileUrl, "video");
+            handleSendMessage(currentConversation._id, user._id, "", fileUrl, "video");
         }
 
     };
@@ -96,12 +118,11 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
             throw error;
         }
     };
-
-
     useEffect(() => {
         if (!user?._id) return;
         console.log("Connecting to chat socket...");
-        const socket = io(url);
+        socketRef.current = io(url);
+        const socket = socketRef.current;
         const fetchConversations = async () => {
             try {
                 const res = await fetch(`${url}/api/conversations/${user._id}`, {
@@ -131,28 +152,37 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
         });
         socket.on("newMessage", (message) => {
             console.log("📩 Received message:", message);
-            setConversations((prev) => {
-                let updatedConversations = prev.map((conversation) =>
-                    conversation._id === message.conversationId
-                        ? {
-                            ...conversation,
-                            messages: [...conversation.messages, message],
-                        }
-                        : conversation
-                );
-                updatedConversations = updatedConversations.sort((a, b) => {
-                    const lastMessageA = a.messages?.[a.messages.length - 1]?.createdAt || 0;
-                    const lastMessageB = b.messages?.[b.messages.length - 1]?.createdAt || 0;
-                    return new Date(lastMessageB) - new Date(lastMessageA);
+            const currentAIConversation = currentAIConversationRef.current;
+            console.log(currentAIConversation)
+            if (currentAIConversation && message.conversationId === currentAIConversation._id) {
+                setCurrentAIConversation((prev) => {
+                    return { ...prev, messages: [...prev.messages, message] };
+                });
+            }
+            else {
+                setConversations((prev) => {
+                    let updatedConversations = prev.map((conversation) =>
+                        conversation._id === message.conversationId
+                            ? {
+                                ...conversation,
+                                messages: [...conversation.messages, message],
+                            }
+                            : conversation
+                    );
+                    updatedConversations = updatedConversations.sort((a, b) => {
+                        const lastMessageA = a.messages?.[a.messages.length - 1]?.createdAt || 0;
+                        const lastMessageB = b.messages?.[b.messages.length - 1]?.createdAt || 0;
+                        return new Date(lastMessageB) - new Date(lastMessageA);
+                    });
+
+                    return updatedConversations;
                 });
 
-                return updatedConversations;
-            });
-
-            setCurrentConversation((prev) => {
-                if (!prev || prev._id !== message.conversationId) return prev;
-                return { ...prev, messages: [...prev.messages, message] };
-            });
+                setCurrentConversation((prev) => {
+                    if (!prev || prev._id !== message.conversationId) return prev;
+                    return { ...prev, messages: [...prev.messages, message] };
+                });
+            }
         });
         return () => {
             socket.off("newMessage");
@@ -174,11 +204,15 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
             setCurrentChattingUser(chatUser);
         }
     }, [currentConversation]);
-    const handleSendMessage = async (message, media, mediaType) => {
-        console.log("media", media)
+    useEffect(() => {
+        if (currentAIConversation) {
+            currentAIConversationRef.current = currentAIConversation;
+            scrollToBottom();
+        }
+    }, [currentAIConversation]);
+    const handleSendMessage = async (conversationId, sender, message, media, mediaType) => {
         if (message.trim() === "" && !media) return;
-        const conversationId = currentConversation._id;
-        const senderId = user._id;
+        const senderId = sender || user._id;
         const content = message;
         try {
             const sendMessageRequest = await fetch(`${url}/api/conversations/send`, {
@@ -200,6 +234,95 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
             ).length || 0;
             return total + unreadCount;
         }, 0);
+    };
+    const handleChatAIClick = async () => {
+        const socket = socketRef.current;
+        if (!socket) {
+            console.error("❌ Socket chưa được khởi tạo!");
+            return;
+        }
+        const senderId = user._id;
+        const receiverId = "636861746169616969616969"
+        try {
+            const res = await fetch(`${url}/api/conversations/getConver/${senderId}/${receiverId}`, { method: "GET" });
+            let data = await res.json();
+            if (res.ok && data.conversation) {
+                console.log("✅ Cuộc trò chuyện đã tồn tại:", data.conversation._id);
+                setCurrentAIConversation(data.conversation)
+                console.log("id", data.conversation._id)
+                socket.emit("joinRoom", data.conversation._id);
+                setIsAIJoin(true)
+                console.log("📡 Đã gửi yêu cầu tham gia phòng:", data.conversation._id);
+                return data.conversation._id;
+            }
+            const createRes = await fetch(`${url}/api/conversations/add`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ senderId, receiverId })
+            });
+            const createData = await createRes.json();
+
+            if (createRes.ok && createData.conversation) {
+                console.log("🆕 Cuộc trò chuyện mới với AI đã tạo:", createData.conversation._id);
+                setCurrentAIConversation(createData.conversation)
+                scrollToBottom();
+                return createData.conversation._id;
+            } else {
+                console.error("❌ Lỗi khi tạo cuộc trò chuyện:", createData.message);
+                return null;
+            }
+        } catch (error) {
+            console.error("🚨 Lỗi khi xử lý cuộc trò chuyện:", error);
+            return null;
+        }
+    }
+    const markAsReaded = async (conversationId, userId) => {
+        try {
+            await fetch(`${url}/api/conversations/mark-as-read`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ conversationId, userId }),
+            });
+            setConversations((prevConversations) =>
+                prevConversations.map((conv) =>
+                    conv._id === conversationId
+                        ? {
+                            ...conv,
+                            messages: conv.messages.map((msg) =>
+                                msg.senderId !== userId ? { ...msg, isReaded: true } : msg
+                            ),
+                        }
+                        : conv
+                )
+            );
+            console.log("đã đọc")
+        } catch (error) {
+            console.error("🚨 Lỗi khi đánh dấu đã đọc:", error);
+            return null;
+        }
+    }
+    const handleChatAI = async (message) => {
+        handleSendMessage(currentAIConversation._id, user._id, message, "", "text")
+        if (message.trim() === "" && !media) return;
+        try {
+            const sendMessageRequest = await fetch(`${url}/api/ai/chatAi`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message })
+            });
+            const response = await sendMessageRequest.json()
+            if (response) {
+                handleSendMessage(currentAIConversation._id, "636861746169616969616969", response.reply, "", "text")
+            }
+
+            console.log(response)
+        } catch (error) {
+            console.error("🚨 Lỗi khi xử lý cuộc trò chuyện:", error);
+            return null;
+        }
     };
     useEffect(() => {
         setUnReadMessages(countUnReadMessages)
@@ -223,7 +346,7 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
 
             {/* Hộp thoại chat */}
             <div className={`chat-wrapper ${isOpen ? "open" : "closed"}`}>
-                {!currentConversation &&
+                {!currentConversation && !currentAIConversation &&
                     <div className="chat-frame-container">
                         <div className="chat-frame">
                             {currentTab === "AI" &&
@@ -233,7 +356,7 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
                                             <img src={logo} className="chat-logo-image"></img>
                                         </div>
                                         <div className="chat-head-text">Hi {user.name} 👋 </div>
-                                        <div className="chat-desc-container">
+                                        <div className="chat-desc-container" onClick={() => handleChatAIClick()}>
                                             <div className="chat-desc-left">
                                                 <p className="chat-desc-title">Đặt câu hỏi</p>
                                                 <p className="chat-desc-text">AI - Trợ lý ảo sẵn sàng giúp bạn</p>
@@ -291,26 +414,45 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
                                 }
                             </div>
                             <div className="chat-message-container">
+                                {currentChattingUser &&
+                                    <div className="ai-introduce-container">
+                                        <img src={currentChattingUser.avatar && currentChattingUser.avatar.includes("http") ? currentChattingUser.avatar : currentChattingUser.avatar ? `${url}/images/${currentChattingUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                            alt="Avatar" className="chat-ai-avatar" />
+                                        <a className="chatting-ai-name" >{currentChattingUser.name}</a>
+                                        <div className="view-profile-container" onClick={() => { handleUserClick(currentChattingUser._id) }}>
+                                            <p className="view-profile-button">Xem trang cá nhân</p>
+                                        </div>
+                                    </div>
+                                }
                                 <div className="message-container">
                                     {currentConversation.messages?.map((msg, index) => (
-                                        msg.media ? (
-                                            msg.mediaType === "image" ? (
-                                                <img src={msg.media} alt="sent-img" className={`sent-image ${msg.senderId === user._id ? "me" : ""} `} />
+                                        <div className={`message-wrapper ${msg.senderId === user._id ? "me" : ""} `} key={index}
+                                            onMouseEnter={() => handleMouseEnter(index)}
+                                            onMouseLeave={handleMouseLeave}>
+                                            {msg.media ? (
+                                                msg.mediaType === "image" ? (
+                                                    <img src={msg.media} alt="sent-img" className={`sent-image ${msg.senderId === user._id ? "me" : ""} `} />
+                                                ) : (
+                                                    <video
+                                                        key={index}
+                                                        className={`sent-video ${msg.senderId === user._id ? "me" : ""} `}
+                                                        src={msg.media}
+                                                        controls>
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                )
                                             ) : (
-                                                <video
-                                                    key={index}
-                                                    className={`sent-video ${msg.senderId === user._id ? "me" : ""} `}
-                                                    src={msg.media}
-                                                    controls>
-                                                    Your browser does not support the video tag.
-                                                </video>
-                                            )
-                                        ) : (
-                                            <div key={index} className={`message ${msg.senderId === user._id ? "me" : ""} `}>
-                                                <p className="message-text">{msg.content}</p>
-                                            </div>
+                                                <div key={index} className={`message ${msg.senderId === user._id ? "me" : ""} `}>
+                                                    <p className="message-text">{msg.content}</p>
+                                                </div>
+                                            )}
+                                            {hoveredMessage === index && (
+                                                <div className="message-timestamp">
+                                                    {new Date(msg.createdAt).toLocaleString()} {/* Hiển thị thời gian */}
+                                                </div>
+                                            )}
+                                        </div>
 
-                                        )
                                     ))}
                                     <div ref={messagesEndRef} />
                                 </div>
@@ -342,11 +484,60 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
                                     type="text"
                                     placeholder="Nhập tin nhắn..."
                                     value={message}
+                                    onClick={() => markAsReaded(currentConversation._id, user._id)}
                                     onChange={(e) => setMessage(e.target.value)}
-                                    onKeyDown={(e) => e.key === "Enter" && handleSendMessage(message, "", "text")}
+                                    onKeyDown={(e) => e.key === "Enter" && handleSendMessage(currentConversation._id, user._id, message, "", "text")}
                                     className="chat-input"
                                 />
-                                <button className="send-button" onClick={() => handleSendMessage(message, "", "text")}>
+                                <button className="send-button" onClick={() => handleSendMessage(currentConversation._id, user._id, message, "", "text")}>
+                                    <IoMdSend size={22} />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+                {currentAIConversation &&
+                    <div className="chat-frame-container slide-in">
+                        <div className="chat-user">
+                            <div className="chatting-user-title">
+                                <div className="chat-user-back-icon" onClick={() => setCurrentAIConversation(null)}>
+                                    <IoIosArrowBack />
+                                </div>
+                                <div className="chat-user-left">
+                                    <img src={logo_ai} alt="Avatar" className="chatting-user-avatar" />
+                                    <div className="ai-name-container">
+                                        <a className="chatting-user-name">VCompass AI</a>
+                                        <p className="ai-name-des">Trợ lý hữu ích của bạn</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="chat-message-container">
+                                <div className="ai-introduce-container">
+                                    <img src={logo_ai} alt="Avatar" className="chat-ai-avatar" />
+                                    <a className="chatting-ai-name" >VCompass AI</a>
+                                    <p className="ai-name-des">Hỏi bất cứ vấn đề gì bạn muốn</p>
+                                </div>
+                                <div className="message-container">
+                                    {currentAIConversation?.messages?.map((msg, index) => (
+                                        <div key={index} className={`message ${msg.senderId === user._id ? "me" : ""} `}>
+                                            <p className="message-text">{msg.content}</p>
+                                        </div>
+                                    ))}
+                                    <div ref={messagesEndRef} />
+                                </div>
+                            </div>
+
+                            {/* Chat Control */}
+                            <div className="chat-control-button">
+                                <input
+                                    type="text"
+                                    placeholder="Nhập tin nhắn..."
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    onKeyDown={(e) => e.key === "Enter" && handleChatAI(message)}
+                                    className="chat-input"
+                                />
+                                <button className="send-button" onClick={() => handleChatAI(message)}>
                                     <IoMdSend size={22} />
                                 </button>
                             </div>
