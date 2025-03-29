@@ -1,4 +1,3 @@
-
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
@@ -20,7 +19,16 @@ import userRoutes from "./routes/userRoute.js";
 import videoRouter from "./routes/videoRoutes.js";
 import extensionRouter from "./routes/extensionRoutes.js";
 import reportRouter from "./routes/reportRoutes.js";
+import activityLogRouter from "./routes/activityLogRoutes.js";
 import { setupScheduleSocket } from './socket/scheduleSocket.js';
+import shortVideoRoutes from "./routes/ShortVideoRoutes.js";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Tạo __dirname cho ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -28,20 +36,24 @@ const port = process.env.PORT || 4000;
 // Create HTTP server from the Express app
 const server = http.createServer(app);
 
-// Enable CORS for all routes
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "http://localhost:5175",
-      "https://vcompass-partner.onrender.com",
-      "https://vcompass.onrender.com",
-      "https://vcompass-admin.onrender.com",
-    ], // Update with your frontend URL
-    credentials: true,
-  })
-);
+// Cấu hình CORS
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "https://vcompass-partner.onrender.com",
+    "https://vcompass.onrender.com",
+    "https://vcompass-admin.onrender.com",
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'token', 'Authorization']
+}));
+
+// Tăng giới hạn kích thước body
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 global.io = new Server(server, {
   cors: {
@@ -72,8 +84,6 @@ app.use(
   })
 );
 
-app.use(express.json());
-
 connectDB();
 app.use("/auth/google/callback", googleCallback);
 app.use("/images", express.static("uploads"));
@@ -91,6 +101,8 @@ app.use("/api/ai", aiRoute);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/extensions", extensionRouter);
 app.use("/api/reports", reportRouter);
+app.use("/api/activitylog", activityLogRouter);
+app.use('/api/shortvideo', shortVideoRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -118,4 +130,16 @@ global.io.on("connection", (socket) => {
 });
 server.listen(port, () => {
   console.log(`IO server started on http://localhost:${port}`);
+});
+
+const uploadDirs = [
+  path.join(__dirname, 'public', 'uploads'),
+  path.join(__dirname, 'public', 'uploads', 'videos'),
+  path.join(__dirname, 'public', 'uploads', 'thumbnails')
+];
+
+uploadDirs.forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
 });

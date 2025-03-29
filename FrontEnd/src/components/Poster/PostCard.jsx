@@ -49,7 +49,7 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
   };
   const handleLike = async () => {
     if (!user) {
-      alert("Vui lòng đăng nhập trước");
+      alert("Vui lòng đăng nhập trước");
       return;
     }
     try {
@@ -65,6 +65,17 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
       if (response.data.success) {
         console.log("data", response.data);
         setLikes(response.data.schedule.likes);
+
+        // Thêm activity log khi like/unlike
+        await axios.post(`${url}/api/activity-logs`, {
+          idUser: user._id,
+          action: isLike() ? 'UNLIKE_SCHEDULE' : 'LIKE_SCHEDULE',
+          metadata: {
+            scheduleId: schedule._id,
+            scheduleName: schedule.scheduleName
+          }
+        });
+
       } else {
         console.error("Error liking schedule:", response.data.message);
       }
@@ -168,11 +179,10 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
 
   const handleHeartClick = async (id) => {
     if (!user) {
-      alert("Vui lòng đăng nhập trước");
+      alert("Vui lòng đăng nhập trước");
       return;
     }
     try {
-
       const action = isFavorite ? "remove" : "add";
       const requestUrl = `${url}/api/user/user/${user._id}/addtoWishlist?type=schedule&itemId=${id}&action=${action}`;
 
@@ -185,9 +195,20 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
         console.log("data", response.data);
         setIsFavorite(!isFavorite);
 
+        // Thêm activity log khi thêm/xóa khỏi wishlist
+        await axios.post(`${url}/api/activity-logs`, {
+          idUser: user._id,
+          action: isFavorite ? 'REMOVE_FROM_WISHLIST' : 'ADD_TO_WISHLIST',
+          metadata: {
+            scheduleId: schedule._id,
+            scheduleName: schedule.scheduleName,
+            type: 'schedule'
+          }
+        });
+
       } else {
         console.error("Error liking schedule:");
-        alert("Lỗi khi thêm vào danh sách yêu thích!");
+        alert("Lỗi khi thêm vào danh sách yêu thích!");
       }
 
     } catch (error) {

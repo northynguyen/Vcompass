@@ -23,7 +23,7 @@ const ImageGallery = ({
                                     
                         {images.map((image, index) => (
                             <div key={index} className="image-container">
-                                <img src={`${url}/images/${image}`} alt={`Image ${index + 1}`} />
+                                <img src={image.includes('http') ? image : `${url}/images/${image}`} alt={`Image ${index + 1}`} />
                                 {onDeleteImage && (
                                     <button type="button" onClick={() => onDeleteImage(index)} className="delete-button">
                                         x

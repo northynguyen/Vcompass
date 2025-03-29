@@ -1,9 +1,9 @@
 /* Container */
 .list-accom__container {
   display: flex;
+  flex-direction: column;
   max-width: 95%;
   margin: 0 auto;
-  margin-top: 40px;
   margin-bottom: 40px;
 }
 
@@ -11,15 +11,17 @@
 .list-accom__filters {
   width: 280px;
   background-color: #f9f9f9;
-  padding: 20px;
+  padding: 10px 20px;
   margin-right: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   flex-grow: 1;
+  margin-bottom:10px;
 }
 
 .list-accom__filters h4 {
-  font-size: 18px;
+  margin-top : 0px !important;
+  font-size: 1rem ;
   margin-bottom: 10px;
 }
 
@@ -64,6 +66,7 @@
 /* Individual Tour Item */
 .list-accom__tour-item {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   padding: 20px;
   margin-bottom: 20px;
@@ -81,11 +84,12 @@
 
 /* Tour Item Image */
 .list-accom__tour-item-image {
-  max-width: 200px;
-  height: 150px;
+  width: 100%;
+  height: auto;
+  max-height: 200px;
   object-fit: cover;
   border-radius: 8px;
-  margin-right: 20px;
+  padding-bottom: 10px;
 }
 
 /* Tour Item Details */
@@ -94,13 +98,16 @@
 }
 
 .list-accom__tour-details h3 {
-  font-size: 22px;
+  font-size: 1.1rem ;
   margin-bottom: 10px;
   color: #333;
 }
 
+.list-accom__tour-details span {
+  font-size: 0.9rem;
+}
 .list-accom__tour-location a {
-  font-size: 14px;
+  font-size: 1rem;
   color: #0071c2;
   text-decoration: none;
 }
@@ -111,6 +118,7 @@
 
 .list-accom__tour-facilities {
   margin: 10px 0;
+  line-height: 1.5;
 }
 
 .list-accom__tour-facilities span {
@@ -119,7 +127,7 @@
   padding: 5px 10px;
   background-color: #f1f1f1;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 0.9rem !important;
 }
 
 .list-accom__tour-rating {

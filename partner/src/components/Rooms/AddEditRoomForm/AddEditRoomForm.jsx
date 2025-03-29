@@ -285,7 +285,7 @@ const AddEditRoomForm = ({ room = {}, onSave, onCancel }) => {
       <div className="image-previews">
         {existingImages.map((img, idx) => (
           <div key={idx} className="image-preview">
-            <img src={`${url}/images/${img}`} alt={`Hình phòng ${idx + 1}`} />
+            <img src={img.includes('https') ? img : `${url}/images/${img}`} alt={`Hình phòng ${idx + 1}`} />
             <button type="button" onClick={() => handleExistingImageRemove(idx)}>x</button>
           </div>
         ))}

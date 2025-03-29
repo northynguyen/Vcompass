@@ -2,6 +2,8 @@ import Attraction from '../models/attraction.js'; // Import the Attraction model
 import mongoose from "mongoose"; // Import mongoose (though it's not used here)
 import userModel from "../models/user.js";
 import fs from "fs";
+import { uploadToCloudinaryV2, deleteImage } from './videoController.js';
+
 // Controller function to get all attractions
 const getAttractions = async (req, res) => {
     try {
@@ -67,13 +69,23 @@ const getAttractionById = async (req, res) => {
         res.status(500).json({ message: 'Server error' }); // Trả về lỗi server
     }
 };
+
 const addAttraction = async (req, res) => {
     try {
         const newAttraction = new Attraction(JSON.parse(req.body.attractionData));
 
         if (req.files) {
             if (req.files.images) {
-                const images = req.files.images.map((file) => file.filename);
+                // Upload images to Cloudinary instead of storing filenames
+                const imagePromises = req.files.images.map(async (file) => {
+                    const result = await uploadToCloudinaryV2(file.buffer, 'attractions', [
+                        { width: 800, crop: 'scale' },
+                        { quality: 'auto' }
+                    ]);
+                    return result.secure_url;
+                });
+                
+                const images = await Promise.all(imagePromises);
                 newAttraction.images = images;
             }
         }
@@ -97,7 +109,7 @@ const addAttraction = async (req, res) => {
 const updateAttraction = async (req, res) => {
     const attractionId = req.params.id;
     const updateData = JSON.parse(req.body.attractionData);
-    console.log(JSON.parse(req.body.attractionData))// Parse FormData fields from req.body
+    console.log(JSON.parse(req.body.attractionData))
     try {
         const attraction = await Attraction.findById(attractionId);
         if (!attraction) {
@@ -108,30 +120,38 @@ const updateAttraction = async (req, res) => {
         let updatedImages = updateData.images || [];
 
         // Check if images are provided and process the file uploads
-        if (req.files.images) {
-            const newImagePaths = req.files.images.map((file) => file.filename);
-            updatedImages.push(...newImagePaths);
+        if (req.files && req.files.images) {
+            const imagePromises = req.files.images.map(async (file) => {
+                const result = await uploadToCloudinaryV2(file.buffer, 'attractions', [
+                    { width: 800, crop: 'scale' },
+                    { quality: 'auto' }
+                ]);
+                return result.secure_url;
+            });
+            
+            const newImageUrls = await Promise.all(imagePromises);
+            updatedImages.push(...newImageUrls);
         }
-
 
         // Filter out images to remove (images not present in the new update)
         const imagesToRemove = attraction.images.filter((img) => !updatedImages.includes(img));
         updateData.images = updatedImages;
 
-
         // Assign updated fields from updateData to the attraction object
         Object.assign(attraction, updateData);
 
-        // Delete old images asynchronously
-        const deleteImage = async (imageName) => {
+        // Delete old images from Cloudinary
+        const deletePromises = imagesToRemove.map(async (imageUrl) => {
+            // Extract public_id from the Cloudinary URL
+            const publicId = imageUrl.split('/').pop().split('.')[0];
             try {
-                return await fs.promises.unlink(`uploads/${imageName}`);
+                await deleteImage({ imagePath: `attractions/${publicId}` });
             } catch (err) {
-                console.error(`Failed to delete image ${imageName}:`, err);
+                console.error(`Failed to delete image ${imageUrl}:`, err);
             }
-        };
+        });
 
-        await Promise.all(imagesToRemove.map((image) => deleteImage(image)));
+        await Promise.all(deletePromises);
 
         // Save updated attraction data
         await attraction.save();
@@ -209,5 +229,6 @@ const getAttracWishList = async (req, res) => {
         res.status(500).json({ success: false, message: "Error retrieving wish list attractions" });
     }
 }
-export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview, deleteAttraction,getAttracWishList }; // Export the getAttractions;
+
+export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview, deleteAttraction, getAttracWishList }; // Export the getAttractions;
 

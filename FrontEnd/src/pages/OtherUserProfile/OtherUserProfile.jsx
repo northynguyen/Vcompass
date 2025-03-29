@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { FaTransgender } from "react-icons/fa";
-import { FaLocationDot } from "react-icons/fa6";
+import { FaLocationDot, FaPlay } from "react-icons/fa6";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { RiUserUnfollowLine } from "react-icons/ri";
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { StoreContext } from "../../Context/StoreContext";
 import ImagesModal from '../../components/ImagesModal/ImagesModal';
 import PostCard from "../../components/Poster/PostCard";
+import UserShortVideos from "../ShortVideo/UserShortVideos/UserShortVideos";
 import "./OtherUserProfile.css";
 
 export default function OtherUserProfile({setCurrentConversation}) {
@@ -25,11 +26,13 @@ export default function OtherUserProfile({setCurrentConversation}) {
   const [totalPosts, setTotalPosts] = useState(0);
   const [imageList, setImageList] = useState([]);
   const [videoList, setVideoList] = useState([]);
+  const [shortVideoList, setShortVideoList] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMyProfile, setIsMyProfile] = useState(false);
   const [openFollowerMenu, setOpenFollowerMenu] = useState(null);
   const [unfollowerList, setUnfollowerList] = useState([]);
+  const [activeTab, setActiveTab] = useState("schedule");
 
   const navigate = useNavigate();
   const onFollowClick = () => {
@@ -257,8 +260,73 @@ export default function OtherUserProfile({setCurrentConversation}) {
   useEffect(() => {
     console.log("unfollowerList updated:", unfollowerList);
   }, [unfollowerList]);
-  const otherUserTabList = ["Bài viết", "Ảnh", "Video", "Người theo dõi"]
-  const myTabList = ["Bài viết", "Ảnh", "Video", "Người theo dõi", "Đang theo dõi"]
+  const otherUserTabList = ["Bài viết", "Ảnh", "Video", "Người theo dõi" , "Video ngắn"]
+  const myTabList = ["Bài viết", "Ảnh", "Video", "Người theo dõi", "Đang theo dõi", "Video ngắn"]
+
+  // Thêm dữ liệu mẫu cho video ngắn (sẽ được thay thế bằng dữ liệu thực từ API)
+  useEffect(() => {
+    if (!isLoading && currentUser) {
+      // Giả lập dữ liệu video ngắn cho demo
+      setShortVideoList([
+        {
+          id: 1,
+          thumbnail: 'https://picsum.photos/300/500?random=1',
+          title: "WORLD'S HIGHEST BASKETBALL SHOT",
+          views: '7.8M',
+          isPinned: true
+        },
+        {
+          id: 2,
+          thumbnail: 'https://picsum.photos/300/500?random=2',
+          title: '',
+          views: '12.7M',
+          isPinned: true
+        },
+        {
+          id: 3,
+          thumbnail: 'https://picsum.photos/300/500?random=3',
+          title: 'If sports were played by their literal name',
+          views: '17.4M',
+          isPinned: true
+        },
+        {
+          id: 4,
+          thumbnail: 'https://picsum.photos/300/500?random=4',
+          title: 'Every kid did this while shooting in the driveway',
+          views: '283.8K',
+          isPinned: true
+        },
+        {
+          id: 5,
+          thumbnail: 'https://picsum.photos/300/500?random=5',
+          title: '',
+          views: '746K',
+          isPinned: false
+        },
+        {
+          id: 6,
+          thumbnail: 'https://picsum.photos/300/500?random=6',
+          title: 'Oreo Roll Roulette 🥝',
+          views: '570.8K',
+          isPinned: false
+        },
+        {
+          id: 7,
+          thumbnail: 'https://picsum.photos/300/500?random=7',
+          title: 'Spoiler: it was 😎',
+          views: '894K',
+          isPinned: false
+        },
+        {
+          id: 8,
+          thumbnail: 'https://picsum.photos/300/500?random=8',
+          title: 'IMPOSSIBLE FOOTBALL WALL 🤯',
+          views: '6.5M',
+          isPinned: false
+        }
+      ]);
+    }
+  }, [isLoading, currentUser]);
 
   if (isLoading || !currentUser) return <div>Loading...</div>;
   return (
@@ -438,6 +506,9 @@ export default function OtherUserProfile({setCurrentConversation}) {
                   </div>
                 ))}
             </div>}
+          {currentTab === "Video ngắn" &&
+            <UserShortVideos currentUserId={currentUser._id} />
+          }
         </div>
       </div>
       <ImagesModal

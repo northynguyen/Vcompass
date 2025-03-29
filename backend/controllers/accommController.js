@@ -4,6 +4,8 @@ import Accommodation from "../models/accommodation.js";
 import userModel from "../models/user.js";
 import partnerModel from "../models/partner.js";
 import { createNotification } from "./notiController.js";
+import { uploadToCloudinaryV2, deleteImageFromCloudinary } from './videoController.js';
+
 export const getListAccomm = async (req, res) => {
   try {
 
@@ -118,86 +120,215 @@ export const getListAccommbyPartner = async (req, res) => {
 
 export const addNew = async (req, res) => {
   const { partnerId } = req.params;
-  const accommodationData = req.body;
-  if (typeof accommodationData.location === "string") {
-    accommodationData.location = JSON.parse(accommodationData.location);
-  }
-
-  // Parse contact if it's a string
-  if (typeof accommodationData.contact === "string") {
-    accommodationData.contact = JSON.parse(accommodationData.contact);
-  }
-
+  let accommodationData;
+  
   try {
+    console.log("Request body keys:", Object.keys(req.body));
+    console.log("Files received:", req.files ? req.files.map(f => f.originalname) : 'No files');
+    
+    // Parse the JSON data if it's a string
+    if (req.body.hotelData) {
+      try {
+        accommodationData = typeof req.body.hotelData === 'string' 
+          ? JSON.parse(req.body.hotelData) 
+          : req.body.hotelData;
+      } catch (parseError) {
+        console.error("Error parsing hotelData:", parseError);
+        return res.status(400).json({
+          success: false,
+          message: "Invalid hotel data format",
+          error: parseError.message
+        });
+      }
+    } else {
+      // If hotelData is not provided, use the entire body
+      accommodationData = req.body;
+    }
+
+    console.log("Parsed accommodation data:", accommodationData);
+
+    // Create new accommodation object
     const newAccommodation = new Accommodation({
       ...accommodationData,
       idPartner: partnerId,
-      images: req.files ? req.files.map((file) => file.filename) : [], // Store uploaded images
+      status: "pending" // Default status
     });
 
-    await newAccommodation.save();
-    const partner = await partnerModel.findById(partnerId);
-    if (!partner) {
-      return res.status(404).json({ success: false, message: "Partner not found" });
+    // Initialize images array if it doesn't exist
+    if (!newAccommodation.images) {
+      newAccommodation.images = [];
     }
 
-    const notificationData = {
-      idSender: partnerId,
-      idReceiver: "admin",
-      type: "admin",
-      content: `Partner ${partner.name} vừa thêm một dịch vụ: ${newAccommodation.name}`,
-      nameSender: partner.name,
-      imgSender: partner.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    // Handle image uploads to Cloudinary
+    if (req.files && req.files.length > 0) {
+      console.log("Uploading images to Cloudinary...");
+      const imagePromises = req.files.map(async (file) => {
+        try {
+          // Check if file buffer is valid
+          if (!file.buffer || file.buffer.length === 0) {
+            console.error("Empty file buffer detected:", file.originalname);
+            return null;
+          }
+          
+          console.log(`Uploading file ${file.originalname} with buffer size ${file.buffer.length}`);
+          
+          const result = await uploadToCloudinaryV2(file.buffer, 'images', [
+            { width: 800, crop: 'scale' },
+            { quality: 'auto' }
+          ]);
+
+          console.log("Image upload result:", result);
+          
+          if (!result || !result.secure_url) {
+            console.error("Invalid Cloudinary result:", result);
+            return null;
+          }
+          
+          return result.secure_url;
+        } catch (err) {
+          console.error(`Error uploading file ${file.originalname}:`, err);
+          return null;
+        }
+      });
+      
+      try {
+        const uploadedImages = await Promise.all(imagePromises);
+        console.log("Uploaded images:", uploadedImages);
+        
+        // Filter out any null values from failed uploads
+        const validImages = uploadedImages.filter(img => img !== null);
+        console.log("Valid images to add:", validImages);
+        
+        // Add the new images to the accommodation
+        if (validImages.length > 0) {
+          newAccommodation.images = newAccommodation.images.concat(validImages);
+        }
+      } catch (uploadError) {
+        console.error("Error processing uploaded images:", uploadError);
+        // Continue without images if there's an error
+      }
     }
 
-    await createNotification(global.io, notificationData);
+    console.log("Final accommodation data to save:", {
+      name: newAccommodation.name,
+      images: newAccommodation.images.length,
+      roomTypes: newAccommodation.roomTypes?.length || 0
+    });
+
+    // Save the accommodation
+    const savedAccommodation = await newAccommodation.save();
+    console.log("Saved accommodation with ID:", savedAccommodation._id);
+
+    // Create notification
+    try {
+      const partner = await partnerModel.findById(partnerId);
+      if (partner) {
+        const notificationData = {
+          idSender: partnerId,
+          idReceiver: "admin",
+          type: "admin",
+          content: `Partner ${partner.name} vừa thêm một dịch vụ: ${newAccommodation.name}`,
+          nameSender: partner.name,
+          imgSender: partner.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        };
+
+        await createNotification(global.io, notificationData);
+      }
+    } catch (notificationError) {
+      console.error("Error creating notification:", notificationError);
+      // Continue even if notification fails
+    }
+    
     res.json({
       success: true,
-      message: "Accommodation added successfully",
-      accommodation: newAccommodation,
+      message: "Add new accommodation successfully",
+      accommodation: savedAccommodation,
     });
   } catch (error) {
-    res.json({
+    console.error("Error in addNew:", error);
+    res.status(500).json({
       success: false,
-      message: "Error adding new accommodation",
-      error,
+      message: "Error adding new accommodation: " + (error.message || "Unknown error"),
+      error: error.message || "Unknown error",
     });
-    console.error(error);
   }
 };
 
 // Update an accommodation by partnerId and accommodationId
 export const updateAccommodation = async (req, res) => {
   const { partnerId, id } = req.params;
-  const updateData = req.body;
-
+  let updateData;
+  
   try {
+    // Parse the JSON data if it's a string
+    if (typeof req.body.hotelData === 'string') {
+      updateData = JSON.parse(req.body.hotelData);
+    } else {
+      updateData = req.body;
+    }
+
     const accommodation = await Accommodation.findOne({
       _id: id,
       idPartner: partnerId,
     });
+    
     if (!accommodation) {
-      return res.json({
+      return res.status(404).json({
         success: false,
         message: "Accommodation not found or partner mismatch",
       });
     }
 
     // Ensure updateData.images is an array
-    const updatedImages = updateData.images ? updateData.images : [];
+    const updatedImages = updateData.images ? 
+      (Array.isArray(updateData.images) ? updateData.images : [updateData.images]) 
+      : [];
 
     // Handle new uploaded images, if any
     if (req.files && req.files.length > 0) {
-      const newImagePaths = req.files.map((file) => file.filename);
-      updatedImages.push(...newImagePaths);
+      console.log("Uploading new images to Cloudinary...");
+      const imagePromises = req.files.map(async (file) => {
+        try {
+          // Check if file buffer is valid
+          if (!file.buffer || file.buffer.length === 0) {
+            console.error("Empty file buffer detected:", file.originalname);
+            return null;
+          }
+          
+          const result = await uploadToCloudinaryV2(file.buffer, 'images', [
+            { width: 800, crop: 'scale' },
+            { quality: 'auto' }
+          ]);
+          console.log("Image result:", result);
+          
+          if (!result || !result.secure_url) {
+            console.error("Invalid Cloudinary result:", result);
+            return null;
+          }
+          
+          return result.secure_url;
+        } catch (err) {
+          console.error(`Error uploading file ${file.originalname}:`, err);
+          return null;
+        }
+      });
+      
+      const newImageUrls = await Promise.all(imagePromises);
+      console.log("Uploaded new images:", newImageUrls);
+      
+      // Filter out any null values from failed uploads
+      const validNewImages = newImageUrls.filter(img => img !== null);
+      updatedImages.push(...validNewImages);
     }
 
     // Ensure existingImages is an array
-    const existingImages = accommodation.images ? accommodation.images : [];
+    const existingImages = accommodation.images ? 
+      (Array.isArray(accommodation.images) ? accommodation.images : [accommodation.images]) 
+      : [];
 
     // Filter out images that should be removed
     const imagesToRemove = existingImages.filter(
-      (img) => updatedImages.includes(img) === false
+      (img) => !updatedImages.includes(img)
     );
 
     // Update accommodation images
@@ -216,22 +347,26 @@ export const updateAccommodation = async (req, res) => {
     // Merge updated data into the existing accommodation
     Object.assign(accommodation, updateData);
 
-    // Function to delete an image from the server
-    const deleteImage = (imageName) => {
-      return new Promise((resolve, reject) => {
-        fs.unlink(`uploads/${imageName}`, (err) => {
-          if (err) {
-            console.error(`Failed to delete image ${imageName}:`, err);
-            resolve(); // Continue even if one image fails to delete
-          } else {
-            resolve();
-          }
-        });
+    // Delete old images from Cloudinary
+    if (imagesToRemove.length > 0) {
+      console.log("Deleting old images from Cloudinary:", imagesToRemove);
+      const deletePromises = imagesToRemove.map(async (imageUrl) => {
+        try {
+          // Extract public_id from the Cloudinary URL
+          const urlParts = imageUrl.split('/');
+          const filenameWithExtension = urlParts[urlParts.length - 1];
+          const publicId = filenameWithExtension.split('.')[0];
+          
+          // Use the new function that doesn't require req/res
+          await deleteImageFromCloudinary(`images/${publicId}`);
+          console.log(`Successfully deleted image: ${publicId}`);
+        } catch (err) {
+          console.error(`Failed to delete image ${imageUrl}:`, err);
+        }
       });
-    };
 
-    // Delete all images that are no longer associated with the accommodation
-    await Promise.all(imagesToRemove.map((image) => deleteImage(image)));
+      await Promise.all(deletePromises);
+    }
 
     // Save the updated accommodation
     await accommodation.save();
@@ -242,12 +377,12 @@ export const updateAccommodation = async (req, res) => {
       accommodation,
     });
   } catch (error) {
-    res.json({
+    console.error("Error in updateAccommodation:", error);
+    res.status(500).json({
       success: false,
       message: "Error updating accommodation",
-      error,
+      error: error.message,
     });
-    console.error(error);
   }
 };
 
@@ -293,46 +428,113 @@ export const updateAccommodationStatusByAdmin = async (req, res) => {
 // Add a new room type to an accommodation by partnerId and accommodationId
 export const addNewRoom = async (req, res) => {
   const { accommodationId } = req.params;
-  const roomTypeData = JSON.parse(req.body.roomTypeUpdate);
-
-  console.log(roomTypeData);
-
 
   try {
-    const accommodation = await Accommodation.findOne({ _id: accommodationId });
+    console.log("Adding new room to accommodation:", accommodationId);
+    console.log("Request body keys:", Object.keys(req.body));
+    console.log("Files received:", req.files ? req.files.map(f => f.originalname) : 'No files');
+
+    // Find the accommodation by ID
+    const accommodation = await Accommodation.findById(accommodationId);
     if (!accommodation) {
-      return res.json({
-        success: false,
-        message: "Accommodation not found or partner mismatch",
+      return res.status(404).json({ 
+        success: false, 
+        message: "Accommodation not found." 
       });
     }
 
-    const existingRoomType = accommodation.roomTypes.find(
-      (room) =>
-        room.nameRoomType.toLowerCase() ===
-        roomTypeData.nameRoomType.toLowerCase()
-    );
-    if (existingRoomType) {
-      return res.json({ success: false, message: "Room type already exists" });
+    // Parse the room data
+    let roomData;
+    try {
+      roomData = typeof req.body.roomData === 'string' 
+        ? JSON.parse(req.body.roomData) 
+        : req.body.roomData;
+      
+      console.log("Parsed room data:", roomData);
+    } catch (parseError) {
+      console.error("Error parsing roomData:", parseError);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid room data format",
+        error: parseError.message
+      });
     }
 
-    const newRoomType = {
-      idRoomType: new mongoose.Types.ObjectId(),
-      ...roomTypeData,
-      images: req.files ? req.files.map((file) => file.filename) : [], // Store uploaded images
+    // Initialize the room with the provided data
+    const newRoom = {
+      ...roomData,
+      images: []
     };
 
-    accommodation.roomTypes.push(newRoomType); // Add new room type
-    await accommodation.save();
+    // Handle image uploads to Cloudinary
+    if (req.files && req.files.length > 0) {
+      console.log("Uploading room images to Cloudinary...");
+      const imagePromises = req.files.map(async (file) => {
+        try {
+          // Check if file buffer is valid
+          if (!file.buffer || file.buffer.length === 0) {
+            console.error("Empty file buffer detected:", file.originalname);
+            return null;
+          }
+          
+          console.log(`Uploading file ${file.originalname} with buffer size ${file.buffer.length}`);
+          
+          const result = await uploadToCloudinaryV2(file.buffer, 'images', [
+            { width: 800, crop: 'scale' },
+            { quality: 'auto' }
+          ]);
+
+          console.log("Room image upload result:", result);
+          
+          if (!result || !result.secure_url) {
+            console.error("Invalid Cloudinary result:", result);
+            return null;
+          }
+          
+          return result.secure_url;
+        } catch (err) {
+          console.error(`Error uploading file ${file.originalname}:`, err);
+          return null;
+        }
+      });
+      
+      try {
+        const uploadedImages = await Promise.all(imagePromises);
+        console.log("Uploaded room images:", uploadedImages);
+        
+        // Filter out any null values from failed uploads
+        const validImages = uploadedImages.filter(img => img !== null);
+        console.log("Valid room images to add:", validImages);
+        
+        // Add the new images to the room
+        if (validImages.length > 0) {
+          newRoom.images = validImages;
+        }
+      } catch (uploadError) {
+        console.error("Error processing uploaded room images:", uploadError);
+        // Continue without images if there's an error
+      }
+    }
+
+    // Add the new room to the accommodation's roomTypes array
+    accommodation.roomTypes.push(newRoom);
+    
+    // Save the updated accommodation
+    const updatedAccommodation = await accommodation.save();
+    console.log("Added new room to accommodation:", updatedAccommodation._id);
 
     res.json({
       success: true,
-      message: "Room type added successfully",
-      rooms: accommodation.roomTypes,
+      message: "Room type added successfully.",
+      rooms: updatedAccommodation.roomTypes,
     });
   } catch (error) {
-    console.error("Error adding new room type:", error);
-    res.json({ success: false, message: "Error adding new room type" });
+    console.error("Error adding new room:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error adding new room: " + (error.message || "Unknown error"),
+      error: error.message || "Unknown error",
+    });
   }
 };
 
@@ -410,40 +612,102 @@ export const updateRoomType = async (req, res) => {
       return res.json({ success: false, message: "Room type not found" });
     }
 
-    const roomTypeUpdate = JSON.parse(req.body.roomTypeUpdate);
-    let updatedImages = roomTypeUpdate.images || [];
-
-    if (req.files && req.files.length > 0) {
-      const newImagePaths = req.files.map((file) => file.filename);
-      updatedImages = updatedImages.concat(newImagePaths);
+    // Parse the room type update data
+    let roomTypeUpdate;
+    try {
+      roomTypeUpdate = typeof req.body.roomTypeUpdate === 'string' 
+        ? JSON.parse(req.body.roomTypeUpdate) 
+        : req.body.roomTypeUpdate;
+    } catch (err) {
+      console.error("Error parsing roomTypeUpdate:", err);
+      return res.status(400).json({ 
+        success: false, 
+        message: "Invalid room type data format" 
+      });
     }
 
+    // Ensure images array exists
+    let updatedImages = roomTypeUpdate.images || [];
+    if (!Array.isArray(updatedImages)) {
+      updatedImages = [updatedImages].filter(Boolean);
+    }
+
+    // Handle file uploads
+    if (req.files && req.files.length > 0) {
+      console.log("Uploading room images to Cloudinary...");
+      console.log("Files to upload:", req.files.map(f => ({ name: f.originalname, size: f.size })));
+      
+      const imagePromises = req.files.map(async (file) => {
+        try {
+          // Check if file buffer is valid
+          if (!file.buffer || file.buffer.length === 0) {
+            console.error("Empty file buffer detected:", file.originalname);
+            return null;
+          }
+          
+          console.log(`Uploading file ${file.originalname} with buffer size ${file.buffer.length}`);
+          
+          const result = await uploadToCloudinaryV2(file.buffer, 'images', [
+            { width: 800, crop: 'scale' },
+            { quality: 'auto' }
+          ]);
+          
+          console.log("Room image upload result:", result);
+          
+          if (!result || !result.secure_url) {
+            console.error("Invalid Cloudinary result:", result);
+            return null;
+          }
+          
+          return result.secure_url;
+        } catch (err) {
+          console.error(`Error uploading file ${file.originalname}:`, err);
+          return null;
+        }
+      });
+      
+      const newImageUrls = await Promise.all(imagePromises);
+      console.log("Uploaded room images:", newImageUrls);
+      
+      // Filter out any null values from failed uploads
+      const validNewImages = newImageUrls.filter(img => img !== null);
+      updatedImages = updatedImages.concat(validNewImages);
+    }
+
+    // Get existing images
     const existingImages = roomType.images || [];
+    
+    // Find images to remove
     const imagesToRemove = existingImages.filter(
-      (img) => !roomTypeUpdate.images.includes(img)
+      (img) => !updatedImages.includes(img)
     );
 
+    // Update the room type data
     roomTypeUpdate.images = updatedImages;
-
     Object.assign(roomType, roomTypeUpdate);
 
-    const deleteImage = (imageName) => {
-      return new Promise((resolve, reject) => {
-        fs.unlink(`uploads/${imageName}`, (err) => {
-          if (err) {
-            console.error(`Failed to delete image ${imageName}:`, err);
-            // Decide whether to reject or resolve based on your needs
-            // Here, we resolve to continue even if one image fails to delete
-            resolve();
-          } else {
-            resolve();
-          }
-        });
+    // Delete old images from Cloudinary
+    if (imagesToRemove.length > 0) {
+      console.log("Deleting old room images from Cloudinary:", imagesToRemove);
+      const deletePromises = imagesToRemove.map(async (imageUrl) => {
+        try {
+          // Extract public_id from the Cloudinary URL
+          const urlParts = imageUrl.split('/');
+          const filenameWithExtension = urlParts[urlParts.length - 1];
+          const publicId = filenameWithExtension.split('.')[0];
+          
+          // Use the new function that doesn't require req/res
+          await deleteImageFromCloudinary(`images/${publicId}`);
+          console.log(`Successfully deleted room image: ${publicId}`);
+        } catch (err) {
+          console.error(`Failed to delete image ${imageUrl}:`, err);
+        }
       });
-    };
 
-    // Delete all images that are no longer associated with the room
-    await Promise.all(imagesToRemove.map((image) => deleteImage(image)));
+      await Promise.all(deletePromises);
+    }
+
+    // Save the updated accommodation
     await accommodation.save();
 
     res.json({

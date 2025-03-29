@@ -6,6 +6,7 @@ import facebook_icon from '../../assets/facebook.svg';
 import instagram_icon from '../../assets/instagram.svg';
 import twitter_icon from '../../assets/twitter.svg';
 import google_icon from '../../assets/google-plus.svg';
+import { Link } from 'react-router-dom';
 
 function Footer() {
     const [isFlagOpen, setIsFlagOpen] = useState(false); // Trạng thái điều khiển dropdown mở/đóng
@@ -92,7 +93,7 @@ function Footer() {
                     </div>
                     <div className="footer-column">
                         <p className="footer-header">Company</p>
-                        <a href="#" className="footer-title">Home</a>
+                        <Link href="#" className="footer-title">Home</Link>
                         <a href="#" className="footer-title">About us</a>
                         <a href="#" className="footer-title">Booking</a>
                         <a href="#" className="footer-title">PartnerShip</a>

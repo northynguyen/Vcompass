@@ -101,6 +101,9 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
 
     const popupRef = useRef(null);
     const mapRef = useRef(null);
+    const [searchAddress, setSearchAddress] = useState('');
+    const [manualCoords, setManualCoords] = useState({ lat: '', lng: '' });
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (popupRef.current && !popupRef.current.contains(event.target)) {
@@ -264,6 +267,66 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
         });
     };
 
+    // Function to search for location by address
+    const searchLocation = async () => {
+        if (!searchAddress.trim()) {
+            alert('Vui lòng nhập địa chỉ để tìm kiếm');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchAddress)}`);
+            if (!response.ok) throw new Error('Failed to search location');
+            
+            const data = await response.json();
+            if (data.length === 0) {
+                alert('Không tìm thấy địa điểm. Vui lòng thử lại với từ khóa khác.');
+                return;
+            }
+            
+            const { lat, lon, display_name } = data[0];
+            setFormData((prev) => ({
+                ...prev,
+                location: { 
+                    latitude: parseFloat(lat), 
+                    longitude: parseFloat(lon), 
+                    address: display_name 
+                },
+            }));
+            
+            // Fly to the found location
+            mapRef.current.flyTo([parseFloat(lat), parseFloat(lon)], 15);
+        } catch (error) {
+            console.error(error);
+            alert('Không thể tìm kiếm địa điểm. Vui lòng thử lại sau.');
+        }
+    };
+    
+    // Function to set location from manually entered coordinates
+    const setLocationFromCoords = async () => {
+        if (!manualCoords.lat || !manualCoords.lng) {
+            alert('Vui lòng nhập cả vĩ độ và kinh độ');
+            return;
+        }
+        
+        const lat = parseFloat(manualCoords.lat);
+        const lng = parseFloat(manualCoords.lng);
+        
+        if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+            alert('Tọa độ không hợp lệ. Vĩ độ phải từ -90 đến 90, kinh độ từ -180 đến 180.');
+            return;
+        }
+        
+        const address = await getAddressFromCoords(lat, lng);
+        setFormData((prev) => ({
+            ...prev,
+            location: { latitude: lat, longitude: lng, address },
+        }));
+        
+        // Fly to the entered coordinates
+        mapRef.current.flyTo([lat, lng], 15);
+    };
+
     // Render form fields based on action
     const renderFormFields = () => {
         switch (action) {
@@ -283,9 +346,44 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                         </div>
                         <div className="hap-form-group">
                             <label>Địa Điểm:</label>
+                            
+                            {/* Add search functionality */}
+                            <div className="hap-location-search">
+                                <input
+                                    type="text"
+                                    placeholder="Tìm kiếm địa điểm..."
+                                    value={searchAddress}
+                                    onChange={(e) => setSearchAddress(e.target.value)}
+                                />
+                                <button type="button" onClick={searchLocation} className="hap-search-btn">
+                                    Tìm kiếm
+                                </button>
+                            </div>
+                            
+                            {/* Add manual coordinate input */}
+                            <div className="hap-manual-coords">
+                                <div className="hap-coords-inputs">
+                                    <input
+                                        type="text"
+                                        placeholder="Vĩ độ (Latitude)"
+                                        value={manualCoords.lat}
+                                        onChange={(e) => setManualCoords({...manualCoords, lat: e.target.value})}
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Kinh độ (Longitude)"
+                                        value={manualCoords.lng}
+                                        onChange={(e) => setManualCoords({...manualCoords, lng: e.target.value})}
+                                    />
+                                </div>
+                                <button type="button" onClick={setLocationFromCoords} className="hap-coords-btn">
+                                    Đặt vị trí
+                                </button>
+                            </div>
+                            
                             <div className="hap-map-container">
                                 <MapContainer
-                                    center={[formData.location.latitude || 0, formData.location.longitude || 0]}
+                                    center={[formData.location.latitude || 10.8231, formData.location.longitude || 106.6297]} // Default to HCMC if no coords
                                     zoom={13}
                                     style={{ height: '200px', width: '100%' }}
                                     ref={mapRef}
@@ -300,6 +398,7 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                                     Sử dụng vị trí hiện tại
                                 </button>
                             </div>
+                            
                             <input
                                 type="text"
                                 name="address"
@@ -308,6 +407,11 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                                 placeholder="Địa chỉ"
                                 required
                             />
+                            
+                            {/* Display current coordinates */}
+                            <div className="hap-current-coords">
+                                <p>Tọa độ hiện tại: {formData.location.latitude ? `${formData.location.latitude.toFixed(6)}, ${formData.location.longitude.toFixed(6)}` : 'Chưa chọn'}</p>
+                            </div>
                         </div>
                         <div className="hap-form-group">
                             <label>Thành phố:</label>
@@ -378,7 +482,7 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                                     <div className="image-previews">
                                         {existingImages.map((img, idx) => (
                                             <div key={idx} className="image-preview">
-                                                <img src={`${url}/images/${img}`} alt={`Existing Room ${idx + 1}`} />
+                                                <img src={img.includes('http') ? img : `${url}/images/${img}`} alt={`Existing Room ${idx + 1}`} />
                                                 <button type="button" onClick={() => handleExistingImageRemove(idx)}>x</button>
                                             </div>
                                         ))}

@@ -5,8 +5,8 @@ export const StoreContext = createContext(null)
 const StoreContextProvider = (props) => {
   const [token, setToken] = useState("")
   const [user, setUser] = useState({})
-  const url = "https://vcompass-backend.onrender.com"
-  // const url = "http://localhost:4000"
+  // const url = "https://vcompass-backend.onrender.com"
+  const url = "http://localhost:4000"
 
   const fetchpartner = async (authtoken) => {
     if (authtoken) {
