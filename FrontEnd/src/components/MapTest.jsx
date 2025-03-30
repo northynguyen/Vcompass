@@ -3,7 +3,6 @@ import { GoogleMap, Marker, InfoWindow, useLoadScript } from "@react-google-maps
 import axios from "axios";
 import "./Maptest.css"; // Import file CSS
 
-const API_KEY = "AIzaSyBYQh7yM1m1WZdzL_k30O_-HttyEjsBUo8"; // Thay bằng API Key của bạn
 const LOCATION = { lat: 10.3465, lng: 107.0843 }; // Toạ độ Vũng Tàu
 const SEARCH_RADIUS = 5000; // Bán kính tìm kiếm (mét)
 const PLACE_TYPES = ["lodging", "restaurant", "tourist_attraction"]; // Loại địa điểm
