@@ -31,7 +31,6 @@
 
 .image-container {
     flex: 1;
-    /* Allow the image container to take full height */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -40,26 +39,25 @@
 }
 
 .image-container img {
-    height: 100%;
-    /* Fixed height */
-    width: auto;
+    width: 100% ;
     /* Maintain aspect ratio */
     max-width: 100%;
     /* Responsive width */
 }
 
 .button-add {
+    padding: 0.75rem 1.5rem;
     background-color: #4CAF50;
-    /* Green */
-    border: none;
     color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+.button-add:hover {
+    background-color: #45a049;
 }
 
 .content {
@@ -145,4 +143,198 @@
 .actions button:last-child:hover {
     background-color: #d32f2f;
     /* Darker red */
+}
+
+.attraction-list-container {
+    padding: 2rem;
+    background-color: #f5f7fa;
+    min-height: 100vh;
+}
+
+.attraction-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+}
+
+.attraction-list-header h1 {
+    font-size: 2rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.attractions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.attraction-card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.attraction-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.image-container {
+    width: 100%;
+    height: 300px;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+
+.content {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.content h3 {
+    font-size: 1.4rem;
+    color: #2c3e50;
+    margin: 0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.content h3:hover {
+    color: #3498db;
+}
+
+.content p {
+    color: #666;
+    line-height: 1.6;
+    margin: 0.5rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.info p, .info a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.info strong {
+    color: #2c3e50;
+    min-width: 80px;
+}
+
+.info a {
+    text-decoration: none;
+    color: #3498db;
+    transition: color 0.3s ease;
+}
+
+.info a:hover {
+    color: #2980b9;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #eee;
+}
+
+.actions button {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    height: auto;
+    width: auto;
+}
+
+.actions button:first-child {
+    background-color: #3498db;
+    color: white;
+}
+
+.actions button:first-child:hover {
+    background-color: #2980b9;
+}
+
+.actions button:last-child {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.actions button:last-child:hover {
+    background-color: #c0392b;
+}
+
+/* Loading and Error States */
+.loading-state, .error-state {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-size: 1.2rem;
+}
+
+.error-state {
+    color: #e74c3c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .attraction-list-container {
+        padding: 1rem;
+    }
+
+    .attractions-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .attraction-list-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .attraction-list-header h1 {
+        font-size: 1.5rem;
+    }
 }

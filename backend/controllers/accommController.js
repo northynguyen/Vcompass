@@ -120,51 +120,44 @@ export const getListAccommbyPartner = async (req, res) => {
 
 export const addNew = async (req, res) => {
   const { partnerId } = req.params;
-  let accommodationData;
   
   try {
-    console.log("Request body keys:", Object.keys(req.body));
-    console.log("Files received:", req.files ? req.files.map(f => f.originalname) : 'No files');
+    console.log("Request body:", req.body);
     
-    // Parse the JSON data if it's a string
-    if (req.body.hotelData) {
-      try {
-        accommodationData = typeof req.body.hotelData === 'string' 
-          ? JSON.parse(req.body.hotelData) 
-          : req.body.hotelData;
-      } catch (parseError) {
-        console.error("Error parsing hotelData:", parseError);
-        return res.status(400).json({
-          success: false,
-          message: "Invalid hotel data format",
-          error: parseError.message
-        });
-      }
-    } else {
-      // If hotelData is not provided, use the entire body
-      accommodationData = req.body;
+    // Parse the accommodation data
+    let accommodationData;
+    try {
+      // Parse contact and location if they are strings
+      const contact = typeof req.body.contact === 'string' ? JSON.parse(req.body.contact) : req.body.contact;
+      const location = typeof req.body.location === 'string' ? JSON.parse(req.body.location) : req.body.location;
+      
+      accommodationData = {
+        ...req.body,
+        contact,
+        location
+      };
+      
+      console.log("Parsed accommodation data:", accommodationData);
+    } catch (parseError) {
+      console.error("Error parsing data:", parseError);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid data format",
+        error: parseError.message
+      });
     }
 
-    console.log("Parsed accommodation data:", accommodationData);
-
-    // Create new accommodation object
     const newAccommodation = new Accommodation({
       ...accommodationData,
       idPartner: partnerId,
-      status: "pending" // Default status
+      images: []
     });
-
-    // Initialize images array if it doesn't exist
-    if (!newAccommodation.images) {
-      newAccommodation.images = [];
-    }
 
     // Handle image uploads to Cloudinary
     if (req.files && req.files.length > 0) {
       console.log("Uploading images to Cloudinary...");
       const imagePromises = req.files.map(async (file) => {
         try {
-          // Check if file buffer is valid
           if (!file.buffer || file.buffer.length === 0) {
             console.error("Empty file buffer detected:", file.originalname);
             return null;
@@ -176,7 +169,7 @@ export const addNew = async (req, res) => {
             { width: 800, crop: 'scale' },
             { quality: 'auto' }
           ]);
-
+          
           console.log("Image upload result:", result);
           
           if (!result || !result.secure_url) {
@@ -191,54 +184,41 @@ export const addNew = async (req, res) => {
         }
       });
       
-      try {
-        const uploadedImages = await Promise.all(imagePromises);
-        console.log("Uploaded images:", uploadedImages);
-        
-        // Filter out any null values from failed uploads
-        const validImages = uploadedImages.filter(img => img !== null);
-        console.log("Valid images to add:", validImages);
-        
-        // Add the new images to the accommodation
-        if (validImages.length > 0) {
-          newAccommodation.images = newAccommodation.images.concat(validImages);
-        }
-      } catch (uploadError) {
-        console.error("Error processing uploaded images:", uploadError);
-        // Continue without images if there's an error
+      const uploadedImages = await Promise.all(imagePromises);
+      console.log("Uploaded images:", uploadedImages);
+      
+      // Filter out any null values from failed uploads
+      const validImages = uploadedImages.filter(img => img !== null);
+      console.log("Valid images to add:", validImages);
+      
+      if (validImages.length > 0) {
+        newAccommodation.images = validImages;
       }
     }
 
-    console.log("Final accommodation data to save:", {
-      name: newAccommodation.name,
-      images: newAccommodation.images.length,
-      roomTypes: newAccommodation.roomTypes?.length || 0
-    });
+    console.log("Final accommodation data to save:", newAccommodation);
 
     // Save the accommodation
     const savedAccommodation = await newAccommodation.save();
     console.log("Saved accommodation with ID:", savedAccommodation._id);
 
     // Create notification
-    try {
-      const partner = await partnerModel.findById(partnerId);
-      if (partner) {
-        const notificationData = {
-          idSender: partnerId,
-          idReceiver: "admin",
-          type: "admin",
-          content: `Partner ${partner.name} vừa thêm một dịch vụ: ${newAccommodation.name}`,
-          nameSender: partner.name,
-          imgSender: partner.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-        };
-
-        await createNotification(global.io, notificationData);
-      }
-    } catch (notificationError) {
-      console.error("Error creating notification:", notificationError);
-      // Continue even if notification fails
+    const partner = await partnerModel.findById(partnerId);
+    if (!partner) {
+      return res.status(404).json({ success: false, message: "Partner not found" });
     }
-    
+
+    const notificationData = {
+      idSender: partnerId,
+      idReceiver: "admin",
+      type: "admin",
+      content: `Partner ${partner.name} vừa thêm một dịch vụ: ${newAccommodation.name}`,
+      nameSender: partner.name,
+      imgSender: partner.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    };
+
+    await createNotification(global.io, notificationData);
+
     res.json({
       success: true,
       message: "Add new accommodation successfully",
@@ -248,8 +228,8 @@ export const addNew = async (req, res) => {
     console.error("Error in addNew:", error);
     res.status(500).json({
       success: false,
-      message: "Error adding new accommodation: " + (error.message || "Unknown error"),
-      error: error.message || "Unknown error",
+      message: "Error adding new accommodation",
+      error: error.message,
     });
   }
 };
@@ -431,8 +411,8 @@ export const addNewRoom = async (req, res) => {
 
   try {
     console.log("Adding new room to accommodation:", accommodationId);
-    console.log("Request body keys:", Object.keys(req.body));
-    console.log("Files received:", req.files ? req.files.map(f => f.originalname) : 'No files');
+    console.log("Request body:", req.body);
+    console.log("Files received:", req.files ? req.files.length : 'No files');
 
     // Find the accommodation by ID
     const accommodation = await Accommodation.findById(accommodationId);
@@ -446,9 +426,10 @@ export const addNewRoom = async (req, res) => {
     // Parse the room data
     let roomData;
     try {
-      roomData = typeof req.body.roomData === 'string' 
-        ? JSON.parse(req.body.roomData) 
-        : req.body.roomData;
+      // Change from roomData to roomTypeUpdate
+      roomData = typeof req.body.roomTypeUpdate === 'string' 
+        ? JSON.parse(req.body.roomTypeUpdate) 
+        : req.body.roomTypeUpdate;
       
       console.log("Parsed room data:", roomData);
     } catch (parseError) {
@@ -462,7 +443,14 @@ export const addNewRoom = async (req, res) => {
 
     // Initialize the room with the provided data
     const newRoom = {
-      ...roomData,
+      nameRoomType: roomData.nameRoomType,
+      description: roomData.description,
+      roomSize: roomData.roomSize,
+      pricePerNight: roomData.pricePerNight,
+      status: roomData.status,
+      numPeople: roomData.numPeople,
+      numBed: roomData.numBed || [],
+      amenities: roomData.amenities || [],
       images: []
     };
 
@@ -471,7 +459,6 @@ export const addNewRoom = async (req, res) => {
       console.log("Uploading room images to Cloudinary...");
       const imagePromises = req.files.map(async (file) => {
         try {
-          // Check if file buffer is valid
           if (!file.buffer || file.buffer.length === 0) {
             console.error("Empty file buffer detected:", file.originalname);
             return null;
@@ -479,13 +466,11 @@ export const addNewRoom = async (req, res) => {
           
           console.log(`Uploading file ${file.originalname} with buffer size ${file.buffer.length}`);
           
-          const result = await uploadToCloudinaryV2(file.buffer, 'images', [
+          const result = await uploadToCloudinaryV2(file.buffer, 'rooms', [
             { width: 800, crop: 'scale' },
             { quality: 'auto' }
           ]);
 
-          console.log("Room image upload result:", result);
-          
           if (!result || !result.secure_url) {
             console.error("Invalid Cloudinary result:", result);
             return null;
@@ -498,23 +483,19 @@ export const addNewRoom = async (req, res) => {
         }
       });
       
-      try {
-        const uploadedImages = await Promise.all(imagePromises);
-        console.log("Uploaded room images:", uploadedImages);
-        
-        // Filter out any null values from failed uploads
-        const validImages = uploadedImages.filter(img => img !== null);
-        console.log("Valid room images to add:", validImages);
-        
-        // Add the new images to the room
-        if (validImages.length > 0) {
-          newRoom.images = validImages;
-        }
-      } catch (uploadError) {
-        console.error("Error processing uploaded room images:", uploadError);
-        // Continue without images if there's an error
+      const uploadedImages = await Promise.all(imagePromises);
+      console.log("Uploaded room images:", uploadedImages);
+      
+      // Filter out any null values from failed uploads
+      const validImages = uploadedImages.filter(img => img !== null);
+      console.log("Valid room images to add:", validImages);
+      
+      if (validImages.length > 0) {
+        newRoom.images = validImages;
       }
     }
+
+    console.log("Final room data to save:", newRoom);
 
     // Add the new room to the accommodation's roomTypes array
     accommodation.roomTypes.push(newRoom);
@@ -532,8 +513,8 @@ export const addNewRoom = async (req, res) => {
     console.error("Error adding new room:", error);
     res.status(500).json({
       success: false,
-      message: "Error adding new room: " + (error.message || "Unknown error"),
-      error: error.message || "Unknown error",
+      message: "Error adding new room",
+      error: error.message,
     });
   }
 };

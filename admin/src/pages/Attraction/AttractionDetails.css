@@ -101,12 +101,12 @@
 
 
 
-.image-attraction:hover,
-.image-container img:hover {
+.attraction-details .image-attraction:hover,
+.attraction-details .image-container img:hover {
     transform: scale(1.05);
 }
 
-.image-container {
+.attraction-details .image-container {
     position: relative;
     display: inline-block;
     max-width: 300px;

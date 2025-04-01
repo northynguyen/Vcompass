@@ -196,28 +196,8 @@ const createFoodService = async (req, res) => {
       nameSender: partner.name || "Partner",
       imgSender: partner.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     };
-    const notificationData = {
-      idSender: idPartner,
-      idReceiver: "admin",
-      type: "admin",
-      content: `Partner ${partner.name} vừa thêm một dịch vụ ăn uống: ${newFoodService.name}`,
-      nameSender: partner.name || "Partner",
-      imgSender: partner.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-    };
 
-    await createNotification(global.io, notificationData);
-    res.status(201).json({
-      success: true,
-      message: "Create food service successfully",
-      newFoodService: newFoodService,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: "Error creating food service",
-    });
-    console.log(error);
-  }
+
     await createNotification(global.io, notificationData);
     res.status(201).json({
       success: true,

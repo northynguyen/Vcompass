@@ -84,23 +84,72 @@ const getAttractionById = async (req, res) => {
 
 const addAttraction = async (req, res) => {
     try {
-        const newAttraction = new Attraction(JSON.parse(req.body.attractionData));
+        console.log("Request body:", req.body);
+        console.log("Files received:", req.files ? req.files.length : 'No files');
 
-        if (req.files) {
-            if (req.files.images) {
-                // Upload images to Cloudinary instead of storing filenames
-                const imagePromises = req.files.images.map(async (file) => {
+        let attractionData;
+        try {
+            attractionData = typeof req.body.attractionData === 'string' 
+                ? JSON.parse(req.body.attractionData) 
+                : req.body.attractionData;
+            
+            console.log("Parsed attraction data:", attractionData);
+        } catch (parseError) {
+            console.error("Error parsing attractionData:", parseError);
+            return res.status(400).json({
+                success: false,
+                message: "Invalid attraction data format",
+                error: parseError.message
+            });
+        }
+
+        const newAttraction = new Attraction({
+            ...attractionData,
+            images: []
+        });
+
+        // Handle image uploads to Cloudinary
+        if (req.files && req.files.length > 0) {
+            console.log("Uploading attraction images to Cloudinary...");
+            const imagePromises = req.files.map(async (file) => {
+                try {
+                    if (!file.buffer || file.buffer.length === 0) {
+                        console.error("Empty file buffer detected:", file.originalname);
+                        return null;
+                    }
+                    
+                    console.log(`Uploading file ${file.originalname} with buffer size ${file.buffer.length}`);
+                    
                     const result = await uploadToCloudinaryV2(file.buffer, 'attractions', [
                         { width: 800, crop: 'scale' },
                         { quality: 'auto' }
                     ]);
+                    
+                    if (!result || !result.secure_url) {
+                        console.error("Invalid Cloudinary result:", result);
+                        return null;
+                    }
+                    
                     return result.secure_url;
-                });
-                
-                const images = await Promise.all(imagePromises);
-                newAttraction.images = images;
+                } catch (err) {
+                    console.error(`Error uploading file ${file.originalname}:`, err);
+                    return null;
+                }
+            });
+            
+            const uploadedImages = await Promise.all(imagePromises);
+            console.log("Uploaded attraction images:", uploadedImages);
+            
+            // Filter out any null values from failed uploads
+            const validImages = uploadedImages.filter(img => img !== null);
+            console.log("Valid images to add:", validImages);
+            
+            if (validImages.length > 0) {
+                newAttraction.images = validImages;
             }
         }
+
+        console.log("Final attraction data to save:", newAttraction);
 
         await newAttraction.save();
 
@@ -110,11 +159,12 @@ const addAttraction = async (req, res) => {
             newAttraction: newAttraction,
         });
     } catch (error) {
+        console.error("Error creating attraction:", error);
         res.status(400).json({
             success: false,
             message: "Error creating attraction",
+            error: error.message
         });
-        console.error("Error:", error);
     }
 };
 

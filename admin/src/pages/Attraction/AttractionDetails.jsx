@@ -156,24 +156,24 @@ const AttractionDetails = () => {
     };
     const handleImageUpload = (e) => {
         const files = Array.from(e.target.files);
-        const newImagePreviews = files.map(file => URL.createObjectURL(file)); // Tạo blob URL cho UI
-        setImageData(prevImages => [...prevImages, ...files]); // Lưu file thực tế vào imagesData
+        const newImagePreviews = files.map(file => URL.createObjectURL(file));
+        setImageData(prevImages => [...prevImages, ...files]); // Lưu file thực tế
         setFormData(prevData => ({
             ...prevData,
-            images: [...prevData.images, ...newImagePreviews], // Blob URL chỉ để hiển thị
+            images: [...prevData.images, ...newImagePreviews], // Blob URL để hiển thị
         }));
     };
 
     const deleteImage = (index) => {
         setFormData(prevData => {
             const updatedImages = [...prevData.images];
-            updatedImages.splice(index, 1); // Xóa blob URL khỏi formData
+            updatedImages.splice(index, 1);
             return { ...prevData, images: updatedImages };
         });
 
         setImageData(prevData => {
             const updatedImageData = [...prevData];
-            updatedImageData.splice(index, 1); // Xóa file thực tế khỏi imageData
+            updatedImageData.splice(index, 1);
             return updatedImageData;
         });
     };
@@ -229,42 +229,60 @@ const AttractionDetails = () => {
 
     const handleSave = async () => {
         try {
-            // Lọc bỏ các ảnh đã bị xóa trong cả formData.images và imageData
-            const cleanedFormData = { ...formData };
-            cleanedFormData.images = cleanedFormData.images.filter(image =>
-                typeof image !== 'string' || !image.startsWith('blob:')
-            );
-
-            // Xóa ảnh đã bị xóa trong imageData (chỉ giữ ảnh chưa bị xóa)
-            const imagesToSend = imagesData.filter((image, index) => {
-                return !cleanedFormData.images.includes(URL.createObjectURL(image)); // Xóa ảnh bị xóa
-            });
-
-            // Tạo formData để gửi lên server
-            const formDataToSend = new FormData();
-            formDataToSend.append("attractionData", JSON.stringify(cleanedFormData));
-
-            // Thêm các file ảnh thực tế vào formData
-            imagesToSend.forEach(image => {
-                formDataToSend.append("images", image);
-            });
-
             let response;
+            const formDataToSend = new FormData();
+
+            // Append the images
+            imagesData.forEach((file) => {
+                formDataToSend.append("images", file);
+            });
+
+            const config = {
+                headers: { 
+                    token,
+                    'Content-Type': 'multipart/form-data'
+                }
+            };
+
             if (attractionData) {
-                response = await axios.put(`${url}/api/attractions/${attractionData._id}`,
+                // For updating existing attraction
+                const attrData = { 
+                    ...formData, 
+                    images: formData.images.filter(img => !img.startsWith('blob:')) // Keep only server images
+                };
+                console.log("Updating attraction data:", attrData);
+                
+                formDataToSend.append("attractionData", JSON.stringify(attrData));
+                response = await axios.put(
+                    `${url}/api/attractions/${attractionData._id}`,
                     formDataToSend,
-                    { headers: { token, 'Content-Type': 'multipart/form-data' } }
+                    config
                 );
             } else {
-                response = await axios.post(`${url}/api/attractions/`,
+                // For creating new attraction
+                const attrData = { 
+                    ...formData, 
+                    images: [], // Start with empty images array, new images will be uploaded
+                    status: "active" 
+                };
+                console.log("Creating new attraction data:", attrData);
+                
+                formDataToSend.append("attractionData", JSON.stringify(attrData));
+                response = await axios.post(
+                    `${url}/api/attractions`,
                     formDataToSend,
-                    { headers: { token, 'Content-Type': 'multipart/form-data' } }
+                    config
                 );
             }
 
             if (response.data.success) {
                 toast.success(response.data.message);
                 setIsEditing(false);
+                if (attractionData) {
+                    setFormData(response.data.updatedAttraction);
+                } else {
+                    setFormData(response.data.newAttraction);
+                }
                 navigate('/attraction');
             } else {
                 toast.error(response.data.message);
