@@ -6,9 +6,9 @@ import { MdManageAccounts } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { io } from 'socket.io-client';
+import logo from '../../assets/logo.png';
 import { StoreContext } from '../../Context/StoreContext';
 import './Header.css';
-import logo from '../../assets/logo.png'
 const Header = () => {
   // State to handle the visibility of the profile popup
   const [isProfilePopupVisible, setProfilePopupVisible] = useState(false);
@@ -207,19 +207,20 @@ const Header = () => {
         </button>
 
         {/* User Profile */}
-
-        <div className="user-profile">
-          <img
-            src={admin.avatar && admin.avatar.includes('http') ? admin.avatar : admin.avatar? `${url}/images/${admin.avatar}`  : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
-            alt="User Avatar"
-            className="user-avatar"
-            onClick={toggleProfilePopup} // Toggle profile popup on click
-          />
-          <div className="user-info">
-            <p>{admin.name}</p>
-            <span>Admin</span>
+        {admin &&
+          <div className="user-profile">
+            <img
+              src={admin.avatar && admin.avatar.includes('http') ? admin.avatar : admin.avatar ? `${url}/images/${admin.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+              alt="User Avatar"
+              className="user-avatar"
+              onClick={toggleProfilePopup} // Toggle profile popup on click
+            />
+            <div className="user-info">
+              <p>{admin.name}</p>
+              <span>Admin</span>
+            </div>
           </div>
-        </div>
+        }
 
         {isProfilePopupVisible && (
           <div className="profile-popup" ref={menuRef}>

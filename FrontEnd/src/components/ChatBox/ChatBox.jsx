@@ -327,8 +327,26 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
     useEffect(() => {
         setUnReadMessages(countUnReadMessages)
     }, [conversations]);
-
-
+    const generateSchedule = async (city, startDate, numDays, userId, budget) => {
+        if (!city || !startDate || !numDays || !userId || !budget) {
+            return;
+        }
+        try {
+            const generateScheduleRequest = await fetch(`${url}/api/ai/generateSchedule`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ city, startDate, numDays, userId, budget })
+            });
+            const response = await generateScheduleRequest.json()
+            if (response) {
+                console.log(response)
+            }
+            console.log(response)
+        } catch (error) {
+            console.error("🚨 Lỗi khi tạo lịch trình bằng AI", error);
+            return null;
+        }
+    };
     if (!token) return;
     return (
         <div className="chat-container">
@@ -359,6 +377,14 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
                                         <div className="chat-desc-container" onClick={() => handleChatAIClick()}>
                                             <div className="chat-desc-left">
                                                 <p className="chat-desc-title">Đặt câu hỏi</p>
+                                                <p className="chat-desc-text">AI - Trợ lý ảo sẵn sàng giúp bạn</p>
+                                            </div>
+                                            <BsFillPatchQuestionFill className="chat-ai-icon" />
+                                        </div>
+                                        <br />
+                                        <div className="chat-desc-container" onClick={() => generateSchedule("Bà Rịa - Vũng Tàu", "22-3-2025", 2, user._id, 1500000)}>
+                                            <div className="chat-desc-left">
+                                                <p className="chat-desc-title">Tạo lịch trình bằng AI</p>
                                                 <p className="chat-desc-text">AI - Trợ lý ảo sẵn sàng giúp bạn</p>
                                             </div>
                                             <BsFillPatchQuestionFill className="chat-ai-icon" />

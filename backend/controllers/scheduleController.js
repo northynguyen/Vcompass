@@ -9,8 +9,13 @@ import { ObjectId } from "mongodb";
 export const addSchedule = async (req, res) => {
   try {
     const { userId, schedule } = req.body;
-    const newSchedule = new Schedule({ ...schedule, idUser: userId });
-    console.log(schedule);
+    let newSchedule
+    if (userId){
+      newSchedule = new Schedule({ ...schedule, idUser: userId });
+    } else{
+      newSchedule = new Schedule({ ...schedule});
+    }
+    console.log(newSchedule);
     await newSchedule.save();
     res.json({
       success: true,

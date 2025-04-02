@@ -1,50 +1,80 @@
 import axios from 'axios';
 import React, { useContext, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { StoreContext } from '../../Context/StoreContext';
 import './CreateSchedule.css';
 
 const cities = [
   'Hà Nội', 'TP Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ',
-  'An Giang', 'Bà Rịa - Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu', 
-  'Bắc Ninh', 'Bến Tre', 'Bình Dương', 'Bình Định', 'Bình Phước', 
-  'Bình Thuận', 'Cà Mau', 'Cao Bằng', 'Đắk Lắk', 'Đắk Nông', 
-  'Điện Biên', 'Đồng Nai', 'Đồng Tháp', 'Gia Lai', 'Hà Giang', 
-  'Hà Nam', 'Hà Tĩnh', 'Hải Dương', 'Hậu Giang', 'Hòa Bình', 
-  'Hưng Yên', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu', 
-  'Lâm Đồng', 'Lạng Sơn', 'Lào Cai', 'Long An', 'Nam Định', 
-  'Nghệ An', 'Ninh Bình', 'Ninh Thuận', 'Phú Thọ', 'Phú Yên', 
+  'An Giang', 'Bà Rịa - Vũng Tàu', 'Bắc Giang', 'Bắc Kạn', 'Bạc Liêu',
+  'Bắc Ninh', 'Bến Tre', 'Bình Dương', 'Bình Định', 'Bình Phước',
+  'Bình Thuận', 'Cà Mau', 'Cao Bằng', 'Đắk Lắk', 'Đắk Nông',
+  'Điện Biên', 'Đồng Nai', 'Đồng Tháp', 'Gia Lai', 'Hà Giang',
+  'Hà Nam', 'Hà Tĩnh', 'Hải Dương', 'Hậu Giang', 'Hòa Bình',
+  'Hưng Yên', 'Khánh Hòa', 'Kiên Giang', 'Kon Tum', 'Lai Châu',
+  'Lâm Đồng', 'Lạng Sơn', 'Lào Cai', 'Long An', 'Nam Định',
+  'Nghệ An', 'Ninh Bình', 'Ninh Thuận', 'Phú Thọ', 'Phú Yên',
   'Quảng Bình', 'Quảng Nam', 'Quảng Ngãi', 'Quảng Ninh', 'Quảng Trị',
-  'Sóc Trăng', 'Sơn La', 'Tây Ninh', 'Thái Bình', 'Thái Nguyên', 
-  'Thanh Hóa', 'Thừa Thiên Huế', 'Tiền Giang', 'Trà Vinh', 'Tuyên Quang', 
+  'Sóc Trăng', 'Sơn La', 'Tây Ninh', 'Thái Bình', 'Thái Nguyên',
+  'Thanh Hóa', 'Thừa Thiên Huế', 'Tiền Giang', 'Trà Vinh', 'Tuyên Quang',
   'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái'
 ];
 
 
 const CreateSchedule = () => {
   const navigate = useNavigate();
+  const { type } = useParams();
   const [destination, setDestination] = useState('');
+  const [budget, setBudget] = useState("");
+  const [aiLoading, setAiLoading] = useState("");
   const [filteredCities, setFilteredCities] = useState([]);
   const [departureDate, setDepartureDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
-  const { url, token } = useContext(StoreContext);
+  const { user, url, token } = useContext(StoreContext);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const days = calculateDaysAndNights(departureDate, returnDate)
-    const schedule = {
-      idUser: "123",
-      description: `Tour ${destination} ${days.stringDay}`,
-      scheduleName: `Tour ${destination} ${days.stringDay}`,
-      address: destination,
-      imgSrc: [],
-      numDays: days.numDays,
-      dateStart: convertDateFormat(departureDate),
-      dateEnd: convertDateFormat(returnDate),
-      status: "Draft",
-      activities: Array.from({ length: days.numDays }, (_, i) => ({
-        day: i + 1,
-        activity: []
-      }))
+    let schedule
+    if (type === "ai") {
+      if (!destination || !departureDate || !budget) {
+        return;
+      }
+      const city = destination
+      const startDate = convertDateFormat(departureDate)
+      const numDays = days.numDays
+      const userId = user._id
+      try {
+        const generateScheduleRequest = await fetch(`${url}/api/ai/generateSchedule`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ city, startDate, numDays, userId, budget })
+        });
+        const response = await generateScheduleRequest.json()
+        if (response) {
+          console.log(response)
+          schedule = response
+        }
+        console.log(response)
+      } catch (error) {
+        console.error("🚨 Lỗi khi tạo lịch trình bằng AI", error);
+        return null;
+      }
+    } else {
+      schedule = {
+        idUser: user._id,
+        description: `Tour ${destination} ${days.stringDay}`,
+        scheduleName: `Tour ${destination} ${days.stringDay}`,
+        address: destination,
+        imgSrc: [],
+        numDays: days.numDays,
+        dateStart: convertDateFormat(departureDate),
+        dateEnd: convertDateFormat(returnDate),
+        status: "Draft",
+        activities: Array.from({ length: days.numDays }, (_, i) => ({
+          day: i + 1,
+          activity: []
+        }))
+      }
     }
     try {
       const response = await axios.post(url + "/api/schedule/addNew", { schedule: schedule },
@@ -90,7 +120,7 @@ const CreateSchedule = () => {
 
   const handleReturnDateChange = (e) => {
     setReturnDate(e.target.value);
-    
+
     // Reset departure date if it is before the selected return date
     if (departureDate && e.target.value > departureDate) {
       setDepartureDate('');
@@ -100,8 +130,7 @@ const CreateSchedule = () => {
   return (
     <div className="create-schedule-container">
       <div className="step-indicator">
-        <span className="step-number">1</span>
-        <h2>Bước 1: Chọn điểm đến và thời gian</h2>
+        <h2>Chọn điểm đến và thời gian</h2>
       </div>
       <form className="schedule-form" onSubmit={handleSubmit}>
         <div className="form-group">
@@ -142,6 +171,19 @@ const CreateSchedule = () => {
             onChange={(e) => setReturnDate(e.target.value)}
           />
         </div>
+        {
+          type === "ai" &&
+          <div className="form-group">
+            <label htmlFor="returnDate">Chi phí ước tính</label>
+            <input
+              type="text"
+              id="returnDate"
+              placeholder='Từ 2.000.000 - 5.000.000'
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+            />
+          </div>
+        }
         <button type="submit" className="submit-button">Lên lịch trình</button>
       </form>
     </div>

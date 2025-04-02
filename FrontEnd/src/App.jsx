@@ -80,7 +80,7 @@ function App() {
           <Route path="/place-details/:type/:serviceId" element={<PlaceDetails />} />
           <Route path="/partnership" element={<Partnership />} />
           <Route path="/about" element={<Schedule />} />
-          <Route path="/create-schedule" element={<CreateSchedule />} />
+          <Route path="/create-schedule/:type" element={<CreateSchedule />} />
           <Route path="/user-service/*" element={<UserService setShowLogin={setShowLogin} />} />
           <Route path="/booking" element={<HomeBooking />} />
           <Route path="/attractions" element={<HomeAttractions />} />

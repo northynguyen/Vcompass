@@ -212,9 +212,15 @@ const MySchedule = ({ setShowLogin }) => {
         <p>Chỉ mất 3-5 phút, bạn có thể tạo ngay cho mình lịch trình du lịch</p>
         <button
           className="create-schedule-btn"
-          onClick={() => navigate("/create-schedule")}
+          onClick={() => navigate("/create-schedule/manual")}
         >
           Tạo lịch trình
+        </button>
+        <button
+          className="create-schedule-btn"
+          onClick={() => navigate("/create-schedule/ai")}
+        >
+          Tạo lịch trình với AI
         </button>
       </header>
 
