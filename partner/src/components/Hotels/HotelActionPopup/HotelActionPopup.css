@@ -1,140 +1,415 @@
 /* HotelActionPopup.css */
 
-/* Popup Overlay */
+/* Main popup container */
 .hap-popup {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: 9999;
-}
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+}   
 
 /* Popup Content */
 .hap-popup-content {
-    position: relative;
-    width: 90%;
-    max-width: 800px;
-    max-height: 90vh;
-    overflow-y: auto;
     background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 700px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 25px;
+    position: relative;
+    animation: popup-fade 0.3s ease-out;
+}
+
+@keyframes popup-fade {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Scrollbar styling */
+.hap-popup-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.hap-popup-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
     border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    text-align: center;
-    animation: hap-slideDown 0.3s ease;
 }
 
-/* Slide Down Animation */
-@keyframes hap-slideDown {
-    from {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+.hap-popup-content::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
 }
 
-/* Close Button */
+.hap-popup-content::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* Close button */
 .hap-close-popup {
     position: absolute;
-    top: 10px;
+    top: 15px;
     right: 15px;
-    background-color: transparent;
+    background: none;
     border: none;
     font-size: 20px;
+    color: #666;
     cursor: pointer;
-    color: #333;
-    transition: color 0.3s ease;
+    transition: color 0.2s;
+    z-index: 10;
 }
 
 .hap-close-popup:hover {
-    color: #ff5c5c;
+    color: #f44336;
 }
 
-/* Popup Title */
+/* Title */
 .hap-title {
-    font-size: 24px;
+    margin-top: 0;
+    margin-bottom: 25px;
     color: #333;
-    margin-bottom: 20px;
-    font-weight: bold;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
 }
 
-/* Form Group */
+/* Form groups */
 .hap-form-group {
-    margin-bottom: 15px;
-    text-align: left;
+    margin-bottom: 20px;
 }
 
 .hap-form-group label {
     display: block;
-    font-size: 14px;
+    margin-bottom: 8px;
     font-weight: 600;
-    margin-bottom: 5px;
-    color: #555;
+    color: #444;
+    font-size: 15px;
 }
 
-.hap-form-group input,
-.hap-form-group textarea {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    transition: border-color 0.3s ease;
-}
-
-.hap-form-group input:focus,
-.hap-form-group textarea:focus {
-    border-color: #00aaff;
-    outline: none;
-}
-
-.hap-form-group textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
+.hap-form-group input[type="text"],
+.hap-form-group input[type="email"],
+.hap-form-group input[type="url"],
+.hap-form-group textarea,
 .hap-form-group select {
     width: 100%;
-    padding: 10px;
-    font-size: 14px;
+    padding: 12px;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #333;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #f9f9f9;
 }
 
+.hap-form-group input[type="text"]:focus,
+.hap-form-group input[type="email"]:focus,
+.hap-form-group input[type="url"]:focus,
+.hap-form-group textarea:focus,
 .hap-form-group select:focus {
-    border-color: #00aaff;
-    box-shadow: 0 0 5px rgba(0, 170, 255, 0.5);
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+    outline: none;
+    background-color: #fff;
+}
+
+.hap-form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Location search */
+.hap-location-search {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.hap-location-search input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px 0 0 8px;
+    font-size: 14px;
+    background-color: #f9f9f9;
+}
+
+.hap-location-search input:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+    outline: none;
+    background-color: #fff;
+}
+
+.hap-search-btn {
+    padding: 0 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.hap-search-btn:hover {
+    background-color: #3d8b40;
+}
+
+/* Search results */
+.hap-search-results {
+    margin: 15px 0;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hap-search-results h4 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+}
+
+.hap-search-results ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hap-search-results li {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+    border-radius: 4px;
+}
+
+.hap-search-results li:last-child {
+    border-bottom: none;
+}
+
+.hap-search-results li:hover {
+    background-color: #f0f7f0;
+}
+
+.hap-close-results-btn {
+    margin-top: 12px;
+    padding: 8px 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 100%;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.hap-close-results-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* Manual coordinates */
+.hap-manual-coords {
+    margin-bottom: 15px;
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.hap-coords-inputs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.hap-coords-inputs input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+}
+
+.hap-coords-inputs input:focus {
+    border-color: #2196F3;
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
     outline: none;
 }
 
-/* Submit Button */
-.hap-submit-btn {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #00aaff;
+.hap-coords-btn {
+    padding: 10px 12px;
+    background-color: #2196F3;
     color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.hap-coords-btn:hover {
+    background-color: #1976d2;
+}
+
+/* Map container */
+.hap-map-container {
+    margin-bottom: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.leaflet-container {
+    border-radius: 8px 8px 0 0;
+}
+
+.hap-current-location-btn {
+    margin-top: 0;
+    padding: 12px;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    border-radius: 0 0 8px 8px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.hap-current-location-btn:hover {
+    background-color: #f57c00;
+}
+
+/* Current coordinates display */
+.hap-current-coords {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+/* Submit buttons */
+.hap-submit-btn {
+    padding: 12px 24px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
     font-size: 16px;
     font-weight: 600;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.2s, transform 0.1s;
+    margin-right: 10px;
 }
 
 .hap-submit-btn:hover {
-    background-color: #008ecc;
+    background-color: #3d8b40;
+}
+
+.hap-submit-btn:active {
+    transform: scale(0.98);
+}
+
+.hap-submit-btn[style*="background-color: red"] {
+    background-color: #f44336 !important;
+}
+
+.hap-submit-btn[style*="background-color: red"]:hover {
+    background-color: #d32f2f !important;
+}
+
+/* Image previews */
+.image-previews {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.image-preview {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-preview button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: background-color 0.2s;
+}
+
+.image-preview button:hover {
+    background-color: rgba(244, 67, 54, 0.8);
+}
+
+/* Amenities list */
+.amenities {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.amenities li {
+    padding: 8px 12px;
+    background-color: #f0f7f0;
+    border-radius: 6px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.amenities li:before {
+    content: "✓";
+    margin-right: 8px;
+    color: #4CAF50;
+    font-weight: bold;
 }
 
 /* View Mode Image */
@@ -146,130 +421,19 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* File Input */
-.hap-file-input {
-    padding: 5px;
-}
-
-/* Single Image Preview */
-.hap-image-preview {
-    margin-top: 10px;
-    max-width: 100%;
-    max-height: 200px;
-    border-radius: 5px;
-    object-fit: cover;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* New Styles for Map Integration */
-
-/* Container for Map and Current Location Button */
-.hap-map-container {
-    margin-bottom: 10px;
-    position: relative;
-}
-
-/* Leaflet Map Container */
-.hap-map-container .react-leaflet-container {
-    height: 200px;
-    width: 100%;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-/* Current Location Button */
-.hap-current-location-btn {
-    padding: 8px 12px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-}
-
-.hap-current-location-btn:hover {
-    background-color: #218838;
-}
-
-/* New Styles for Multiple Image Uploads */
-
-/* Container for All Image Previews */
-.hap-image-preview-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-    justify-content: center;
-}
-
-/* Wrapper for Individual Image Preview and Delete Button */
-.hap-image-preview-wrapper {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-/* Image within the Preview Wrapper */
-.hap-image-preview-wrapper .hap-image-preview {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Delete Button for Image Preview */
-.hap-delete-image-btn {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: rgba(255, 255, 255, 0.7);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    padding: 2px 6px;
-    font-size: 12px;
-    transition: background-color 0.3s ease;
-}
-
-.hap-delete-image-btn:hover {
-    background-color: rgba(255, 0, 0, 0.8);
-    color: white;
-}
-
-/* Read-Only Inputs in View Mode */
-.hap-form-group input[readonly],
-.hap-form-group textarea[readonly] {
-    background-color: #f9f9f9;
-    border-color: #ccc;
-    cursor: not-allowed;
-}
-
-/* Responsive Design for Smaller Screens */
-@media (max-width: 600px) {
+/* Responsive adjustments */
+@media (max-width: 768px) {
     .hap-popup-content {
-        padding: 15px;
+        width: 95%;
+        padding: 20px 15px;
     }
-
-    .hap-title {
-        font-size: 20px;
+    
+    .amenities {
+        grid-template-columns: 1fr;
     }
-
-    .hap-submit-btn {
-        font-size: 14px;
-        padding: 8px 16px;
-    }
-
-    .hap-current-location-btn {
-        width: 100%;
-        font-size: 12px;
-    }
-
-    .hap-image-preview-wrapper {
-        width: 80px;
-        height: 80px;
+    
+    .hap-coords-inputs {
+        flex-direction: column;
+        gap: 8px;
     }
 }

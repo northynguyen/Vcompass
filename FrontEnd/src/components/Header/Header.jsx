@@ -228,9 +228,7 @@ const Header = ({ setShowLogin }) => {
         <img src={logo} className="logo-image"></img>
       </div>
 
-      <div className="header-right">
-
-
+      <div className="header-right-container">
 
         {/* Menu chính khi màn hình lớn */}
         <ul className="header-menu">
@@ -327,7 +325,7 @@ const Header = ({ setShowLogin }) => {
         }
 
         {/* Chờ chèn token vào  */}
-        {token === null ? <button className="header-login" onClick={() => setShowLogin(true)}>Đăng nhập</button> :
+        {token === null ? <button className="header-login" onClick={() => {setShowLogin(true), console.log("ddanwg nhap ")}}>Đăng nhập</button> :
           <div className="header-profile" ref={menuRef}>
             <div className="profile-section" onClick={toggleMenu}>
               <img

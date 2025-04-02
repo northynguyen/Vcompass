@@ -387,3 +387,169 @@ p.follower-num-follower {
   width: 100%;
 }
 }
+
+/* Thêm các styles cho phần video ngắn */
+.short-videos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 10px 0;
+}
+
+.short-video-card {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #000;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.short-video-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.short-video-thumbnail {
+  position: relative;
+  width: 100%;
+  padding-top: 177.78%; /* Tỷ lệ 9:16 cho video dọc */
+  background-color: #222;
+}
+
+.short-video-thumbnail img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pinned-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #ff3b5c;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.video-views {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.play-icon {
+  margin-right: 5px;
+  font-size: 12px;
+}
+
+.short-video-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30px 12px 12px;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+/* Responsive styles for mobile */
+@media (max-width: 768px) {
+  .short-videos-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .video-views {
+    font-size: 12px;
+  }
+  
+  .short-video-title {
+    font-size: 12px;
+    padding: 25px 8px 8px;
+  }
+}
+
+.other-user-tabs {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  margin-top: 20px;
+}
+
+.tab-button {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.tab-button:hover {
+  color: #2196F3;
+}
+
+.tab-button.active {
+  color: #2196F3;
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #2196F3;
+}
+
+.other-user-content {
+  padding: 20px 0;
+}
+
+.other-user-short-videos {
+  width: 100%;
+  height: auto;
+  min-height: 400px;
+}
+
+.other-user-short-videos .user-short-videos-container {
+  box-shadow: none;
+  border-radius: 0;
+  max-height: none;
+}
+
+.other-user-short-videos .user-videos-header {
+  display: none;
+}
+
+.no-schedules,
+.no-videos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: #666;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 20px;
+}

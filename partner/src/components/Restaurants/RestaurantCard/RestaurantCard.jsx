@@ -14,7 +14,7 @@ const RestaurantCard = ({ restaurant, onMenuClick, onCardClick, url }) => {
     return (
         <div className="restaurant-card" onClick={onCardClick}>
             <img
-                src={`${url}/images/${restaurant.images[0]}`}
+                src={restaurant.images[0]?.includes('http') ? restaurant.images[0] : `${url}/images/${restaurant.images[0]}`}
                 alt={restaurant.foodServiceName}
                 className="restaurant-image"
             />

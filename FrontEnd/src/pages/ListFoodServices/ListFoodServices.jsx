@@ -1,12 +1,13 @@
 import CryptoJS from "crypto-js";
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect, useState } from "react";
+import PropTypes from 'prop-types';
 import { StoreContext } from "../../Context/StoreContext";
 import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import "./ListFoodServices.css";
 import { Range } from 'react-range';
 
 // TourItem Component
-const FoodServiceItem = ({ foodService, status, setCurDes, id }) => {
+const FoodServiceItem = ({ foodService, status, setCurDes}) => {
   const { url } = useContext(StoreContext);
   const handleSelect = (e) => {
     e.stopPropagation();
@@ -35,9 +36,10 @@ const FoodServiceItem = ({ foodService, status, setCurDes, id }) => {
           </a>
         </div>
         <div className="list-accom__tour-facilities">
-          {foodService.amenities.map((facility, index) => (
+          {foodService.amenities.slice(0, 6).map((facility, index) => (
             <span key={index}>{facility}</span>
           ))}
+          {foodService.amenities.length > 6 && <span>...</span>}
         </div>
         <span>{foodService.description.length > 150 ? foodService.description.substring(0, 150) + "..." : foodService.description}</span>
         <div className="list-accom__tour-rating">{calculateTotalRate(foodService.ratings)}</div>
@@ -53,6 +55,31 @@ const FoodServiceItem = ({ foodService, status, setCurDes, id }) => {
     </div>
   );
 }
+
+FoodServiceItem.propTypes = {
+  foodService: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    foodServiceName: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string).isRequired,
+    name: PropTypes.string,
+    location: PropTypes.shape({
+      latitude: PropTypes.number.isRequired,
+      longitude: PropTypes.number.isRequired,
+      address: PropTypes.string.isRequired
+    }).isRequired,
+    amenities: PropTypes.arrayOf(PropTypes.string).isRequired,
+    description: PropTypes.string.isRequired,
+    ratings: PropTypes.array.isRequired,
+    price: PropTypes.shape({
+      minPrice: PropTypes.number.isRequired,
+      maxPrice: PropTypes.number.isRequired
+    }).isRequired,
+    activityType: PropTypes.string
+  }).isRequired,
+  status: PropTypes.string.isRequired,
+  setCurDes: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired
+};
 
 // TourList Component
 const TourList = ({ foodServices, sortOption, status, setCurDes }) => {
@@ -74,18 +101,25 @@ const TourList = ({ foodServices, sortOption, status, setCurDes }) => {
 
   return (
     <div className="list-accom__tour-list">
-      {currentTours.map((tour, index) => (
+          {currentTours.map((tour) => (
         <FoodServiceItem key={tour._id} foodService={tour}
-          status={status} setCurDes={setCurDes} id={tour._id} />
+          status={status} setCurDes={setCurDes} />
       ))}
       <Pagination currentPage={currentPage} totalPages={totalPages} setCurrentPage={setCurrentPage} />
     </div>
   );
 };
 
+TourList.propTypes = {
+  foodServices: PropTypes.array.isRequired,
+  sortOption: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
+  setCurDes: PropTypes.func.isRequired
+};
+
 // Filters Component
 const Filters = ({ 
-  sortOption, setSortOption, setNameFilter, setMinPrice, setMaxPrice, 
+  setNameFilter, setMinPrice, setMaxPrice, 
   nameFilter, minPrice, maxPrice, fetchAccommodations, isLoading
 }) => {
   const handleFilterChange = () => {
@@ -95,7 +129,7 @@ const Filters = ({
   return (
     <div className="list-accom__filters">
       {/* Name Filter */}
-      <h4>Filter by Name</h4>
+      <h4>Lọc theo tên</h4>
       <input 
         type="text" 
         placeholder="Accommodation Name" 
@@ -103,11 +137,9 @@ const Filters = ({
         onChange={(e) => setNameFilter(e.target.value)} 
       />
       
-      <hr />
 
       {/* Price Range Filter */}
-      <h4>Filter by Price</h4>
-      <label>Price Range</label>
+      <h4>Lọc theo giá</h4>
       <div className="price-range-slider">
         <Range
           values={[minPrice, maxPrice]} // Current min and max price
@@ -131,7 +163,7 @@ const Filters = ({
               {children}
             </div>
           )}
-          renderThumb={({ props, index }) => (
+          renderThumb={({ props}) => (
             <div
               {...props}
               style={{
@@ -153,12 +185,26 @@ const Filters = ({
       </div>
 
       <button onClick={handleFilterChange} disabled={isLoading}>
-        {isLoading ? <div className="loading-spinner"></div> : 'Apply Filters'}
+        {isLoading ? <div className="loading-spinner"></div> : 'Lọc'}
       </button>
 
       <hr />
     </div>
   );
+};
+
+Filters.propTypes = {
+  sortOption: PropTypes.string.isRequired,
+  setSortOption: PropTypes.func.isRequired,
+  setNameFilter: PropTypes.func.isRequired,
+  setMinPrice: PropTypes.func.isRequired,
+  setMaxPrice: PropTypes.func.isRequired,
+  nameFilter: PropTypes.string.isRequired,
+  minPrice: PropTypes.number.isRequired,
+  maxPrice: PropTypes.number.isRequired,
+  fetchAccommodations: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  style: PropTypes.object
 };
 
 // Pagination Component
@@ -170,8 +216,14 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => (
   </div>
 );
 
+Pagination.propTypes = {
+  currentPage: PropTypes.number.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  setCurrentPage: PropTypes.func.isRequired
+};
+
 // Main ListAccom Component
-const ListFoodServices = ({ status, setCurDes, city }) => {
+const ListFoodServices = ({ status, setCurDes, city, setListData }) => {
   const { url, user } = useContext(StoreContext);
   const [foodServices, setFoodServices] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // Track loading state
@@ -229,6 +281,12 @@ const ListFoodServices = ({ status, setCurDes, city }) => {
     fetchFoodServices();
   }, [url]);
 
+  useEffect(() => {
+    if ( foodServices.length > 0) {
+      setListData(foodServices);
+    }
+  }, [foodServices, setListData]);
+
   if (isLoading) {
     return <div>Loading accommodations...</div>;
   }
@@ -252,6 +310,12 @@ const ListFoodServices = ({ status, setCurDes, city }) => {
   );
 };
 
+ListFoodServices.propTypes = {
+  status: PropTypes.string.isRequired,
+  setCurDes: PropTypes.func.isRequired,
+  city: PropTypes.string,
+  setListData: PropTypes.func
+};
 
 export default ListFoodServices;
 export { FoodServiceItem };

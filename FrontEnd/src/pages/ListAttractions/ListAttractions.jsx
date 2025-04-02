@@ -1,8 +1,9 @@
 import CryptoJS from "crypto-js";
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
 import "./ListAttractions.css";
 import { Range } from 'react-range';
+import PropTypes from 'prop-types';
 
 export const calculateTotalRate = (ratings) => {
   const totalReviews = ratings.length;
@@ -12,7 +13,7 @@ export const calculateTotalRate = (ratings) => {
   return `${stars} (${totalReviews} reviews)`;
 };
 
-const AttractionItem = ({ attraction, status, setCurDes, id }) => {
+const AttractionItem = ({ attraction, status, setCurDes }) => {
   const { url } = useContext(StoreContext);
   const handleSelect = (e) => {
     e.stopPropagation();
@@ -29,7 +30,7 @@ const AttractionItem = ({ attraction, status, setCurDes, id }) => {
 
   return (
     <div className="list-accom__tour-item" onClick={onNavigateToDetails}>
-      <img src={`${url}/images/${attraction.images[0]}`} alt={attraction.name} className="list-accom__tour-item-image" />
+      <img src={`${url}/images/${attraction.images[0]}`} alt={attraction.attractionName} className="list-accom__tour-item-image" />
       <div className="list-accom__tour-details">
         <h3>{attraction.attractionName}</h3>
         <div className="list-accom__tour-location">
@@ -42,9 +43,10 @@ const AttractionItem = ({ attraction, status, setCurDes, id }) => {
           </a>
         </div>
         <div className="list-accom__tour-facilities">
-          {attraction.amenities.map((facility, index) => (
+          {attraction.amenities.slice(0, 6).map((facility, index) => (
             <span key={index}>{facility}</span>
           ))}
+          {attraction.amenities.length > 6 && <span>...</span>}
         </div>
         <span>{attraction.description.length > 150 ? attraction.description.substring(0, 150) + "..." : attraction.description}</span>
         <div className="list-accom__tour-rating">{calculateTotalRate(attraction.ratings)}</div>
@@ -60,13 +62,40 @@ const AttractionItem = ({ attraction, status, setCurDes, id }) => {
     </div>
   );
 }
+
+AttractionItem.propTypes = {
+  attraction: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    attractionName: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string).isRequired,
+    location: PropTypes.shape({
+      address: PropTypes.string.isRequired,
+      latitude: PropTypes.number.isRequired,
+      longitude: PropTypes.number.isRequired
+    }).isRequired,
+    amenities: PropTypes.arrayOf(PropTypes.string).isRequired,
+    description: PropTypes.string.isRequired,
+    ratings: PropTypes.array.isRequired,
+    price: PropTypes.number.isRequired,
+    activityType: PropTypes.string
+  }).isRequired,
+  status: PropTypes.string.isRequired,
+  setCurDes: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired
+};
+
 const SelectButton = ({ onClick }) => {
   return (
     <div onClick={onClick} className="select-container">
       <button className="selection-btn">Chọn</button>
     </div>
   );
-}
+};
+
+SelectButton.propTypes = {
+  onClick: PropTypes.func.isRequired
+};
+
 // TourList Component
 const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -85,6 +114,13 @@ const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
         return 0;
     }
   });
+
+  AttractionList.propTypes = {
+    attractions: PropTypes.array.isRequired,
+    sortOption: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    setCurDes: PropTypes.func.isRequired
+  };
 
   const totalPages = Math.ceil(sortedTours.length / toursPerPage);
   const currentTours = sortedTours.slice(
@@ -112,7 +148,7 @@ const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
 };
 
 // Component cho Filtersconst Filters = ({ 
-  const Filters = ({ sortOption, setSortOption, setNameFilter, setMinPrice, setMaxPrice, 
+  const Filters = ({  setNameFilter, setMinPrice, setMaxPrice, 
   nameFilter, minPrice, maxPrice, fetchAccommodations, isLoading 
 }) => {
   const handleFilterChange = () => {
@@ -130,11 +166,8 @@ const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
         onChange={(e) => setNameFilter(e.target.value)} 
       />
       
-      <hr />
-
       {/* Price Range Filter */}
       <h4>Lọc theo giá</h4>
-      <label>Giá</label>
       <div className="price-range-slider">
         <Range
           step={100000}
@@ -159,7 +192,7 @@ const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
               {children}
             </div>
           )}
-          renderThumb={({ props, index }) => (
+          renderThumb={({ props }) => (
             <div
               {...props}
               style={{
@@ -188,6 +221,20 @@ const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
   );
 };
 
+Filters.propTypes = {
+  sortOption: PropTypes.string.isRequired,
+  setSortOption: PropTypes.func.isRequired,
+  setNameFilter: PropTypes.func.isRequired,
+  setMinPrice: PropTypes.func.isRequired,
+  setMaxPrice: PropTypes.func.isRequired,
+  nameFilter: PropTypes.string.isRequired,
+  minPrice: PropTypes.number.isRequired,
+  maxPrice: PropTypes.number.isRequired,
+  fetchAccommodations: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  style: PropTypes.object
+};
+
 // Pagination Component
 const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
   return (
@@ -211,8 +258,14 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
   );
 };
 
+Pagination.propTypes = {
+  currentPage: PropTypes.number.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  setCurrentPage: PropTypes.func.isRequired
+};
+
 // Main ListAccom Component
-const ListAccom = ({ status, setCurDes, city }) => {
+const ListAccom = ({ status, setCurDes, city, setListData }) => {
   const { url, user } = useContext(StoreContext);
   const [attractions, setAttractions] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // Track loading state
@@ -270,6 +323,12 @@ const ListAccom = ({ status, setCurDes, city }) => {
     fetchAccommodations();
   }, [url]);
 
+  useEffect(() => {
+    if (attractions.length > 0) {
+      setListData(attractions);
+    }
+  }, [attractions, setListData]);
+
   if (isLoading) {
     return <div>Loading accommodations...</div>;
   }
@@ -293,6 +352,13 @@ const ListAccom = ({ status, setCurDes, city }) => {
       <AttractionList attractions={attractions} sortOption={sortOption} status={status} setCurDes={setCurDes} />
     </div>
   );
+};
+
+ListAccom.propTypes = {
+  status: PropTypes.string.isRequired,
+  setCurDes: PropTypes.func.isRequired,
+  city: PropTypes.string,
+  setListData: PropTypes.func
 };
 
 export default ListAccom;

@@ -2,6 +2,8 @@ import Attraction from '../models/attraction.js'; // Import the Attraction model
 import mongoose from "mongoose"; // Import mongoose (though it's not used here)
 import userModel from "../models/user.js";
 import fs from "fs";
+import { uploadToCloudinaryV2, deleteImage } from './videoController.js';
+
 // Controller function to get all attractions
 const getAttractions = async (req, res) => {
     try {
@@ -79,16 +81,75 @@ const getAttractionById = async (req, res) => {
         res.status(500).json({ message: 'Server error' }); // Trả về lỗi server
     }
 };
+
 const addAttraction = async (req, res) => {
     try {
-        const newAttraction = new Attraction(JSON.parse(req.body.attractionData));
+        console.log("Request body:", req.body);
+        console.log("Files received:", req.files ? req.files.length : 'No files');
 
-        if (req.files) {
-            if (req.files.images) {
-                const images = req.files.images.map((file) => file.filename);
-                newAttraction.images = images;
+        let attractionData;
+        try {
+            attractionData = typeof req.body.attractionData === 'string' 
+                ? JSON.parse(req.body.attractionData) 
+                : req.body.attractionData;
+            
+            console.log("Parsed attraction data:", attractionData);
+        } catch (parseError) {
+            console.error("Error parsing attractionData:", parseError);
+            return res.status(400).json({
+                success: false,
+                message: "Invalid attraction data format",
+                error: parseError.message
+            });
+        }
+
+        const newAttraction = new Attraction({
+            ...attractionData,
+            images: []
+        });
+
+        // Handle image uploads to Cloudinary
+        if (req.files && req.files.length > 0) {
+            console.log("Uploading attraction images to Cloudinary...");
+            const imagePromises = req.files.map(async (file) => {
+                try {
+                    if (!file.buffer || file.buffer.length === 0) {
+                        console.error("Empty file buffer detected:", file.originalname);
+                        return null;
+                    }
+                    
+                    console.log(`Uploading file ${file.originalname} with buffer size ${file.buffer.length}`);
+                    
+                    const result = await uploadToCloudinaryV2(file.buffer, 'attractions', [
+                        { width: 800, crop: 'scale' },
+                        { quality: 'auto' }
+                    ]);
+                    
+                    if (!result || !result.secure_url) {
+                        console.error("Invalid Cloudinary result:", result);
+                        return null;
+                    }
+                    
+                    return result.secure_url;
+                } catch (err) {
+                    console.error(`Error uploading file ${file.originalname}:`, err);
+                    return null;
+                }
+            });
+            
+            const uploadedImages = await Promise.all(imagePromises);
+            console.log("Uploaded attraction images:", uploadedImages);
+            
+            // Filter out any null values from failed uploads
+            const validImages = uploadedImages.filter(img => img !== null);
+            console.log("Valid images to add:", validImages);
+            
+            if (validImages.length > 0) {
+                newAttraction.images = validImages;
             }
         }
+
+        console.log("Final attraction data to save:", newAttraction);
 
         await newAttraction.save();
 
@@ -98,18 +159,19 @@ const addAttraction = async (req, res) => {
             newAttraction: newAttraction,
         });
     } catch (error) {
+        console.error("Error creating attraction:", error);
         res.status(400).json({
             success: false,
             message: "Error creating attraction",
+            error: error.message
         });
-        console.error("Error:", error);
     }
 };
 
 const updateAttraction = async (req, res) => {
     const attractionId = req.params.id;
     const updateData = JSON.parse(req.body.attractionData);
-    console.log(JSON.parse(req.body.attractionData))// Parse FormData fields from req.body
+    console.log(JSON.parse(req.body.attractionData))
     try {
         const attraction = await Attraction.findById(attractionId);
         if (!attraction) {
@@ -120,30 +182,38 @@ const updateAttraction = async (req, res) => {
         let updatedImages = updateData.images || [];
 
         // Check if images are provided and process the file uploads
-        if (req.files.images) {
-            const newImagePaths = req.files.images.map((file) => file.filename);
-            updatedImages.push(...newImagePaths);
+        if (req.files && req.files.images) {
+            const imagePromises = req.files.images.map(async (file) => {
+                const result = await uploadToCloudinaryV2(file.buffer, 'attractions', [
+                    { width: 800, crop: 'scale' },
+                    { quality: 'auto' }
+                ]);
+                return result.secure_url;
+            });
+            
+            const newImageUrls = await Promise.all(imagePromises);
+            updatedImages.push(...newImageUrls);
         }
-
 
         // Filter out images to remove (images not present in the new update)
         const imagesToRemove = attraction.images.filter((img) => !updatedImages.includes(img));
         updateData.images = updatedImages;
 
-
         // Assign updated fields from updateData to the attraction object
         Object.assign(attraction, updateData);
 
-        // Delete old images asynchronously
-        const deleteImage = async (imageName) => {
+        // Delete old images from Cloudinary
+        const deletePromises = imagesToRemove.map(async (imageUrl) => {
+            // Extract public_id from the Cloudinary URL
+            const publicId = imageUrl.split('/').pop().split('.')[0];
             try {
-                return await fs.promises.unlink(`uploads/${imageName}`);
+                await deleteImage({ imagePath: `attractions/${publicId}` });
             } catch (err) {
-                console.error(`Failed to delete image ${imageName}:`, err);
+                console.error(`Failed to delete image ${imageUrl}:`, err);
             }
-        };
+        });
 
-        await Promise.all(imagesToRemove.map((image) => deleteImage(image)));
+        await Promise.all(deletePromises);
 
         // Save updated attraction data
         await attraction.save();
@@ -221,7 +291,6 @@ const getAttracWishList = async (req, res) => {
         res.status(500).json({ success: false, message: "Error retrieving wish list attractions" });
     }
 }
-
 export const searchAttractions = async (req, res) => {
     try {
         const { amenities, minRating, minPrice, maxPrice, keyword, page = 1, limit = 10 } = req.query;
@@ -276,5 +345,4 @@ export const searchAttractions = async (req, res) => {
         res.status(500).json({ success: false, message: "Lỗi server!", error: error.message });
     }
 };
-export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview, deleteAttraction, getAttracWishList }; // Export the getAttractions;
-
+export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview, deleteAttraction, getAttracWishList }; 

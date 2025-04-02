@@ -125,17 +125,12 @@ const deleteImage = async (req, res) => {
       return res.status(400).json({ success: false, message: 'public_id is required' });
     }
 
-    cloudinary.v2.uploader.destroy(imagePath, { resource_type: 'image' }, (error, result) => {
-      if (error) {
-        console.error('Error deleting image:', error);
-        return res.status(500).json({ success: false, message: 'Error deleting image', error: error.message });
-      }
+    const result = await deleteImageFromCloudinary(imagePath);
 
-      res.status(200).json({
-        success: true,
-        message: 'Image deleted successfully',
-        result,
-      });
+    res.status(200).json({
+      success: true,
+      message: 'Image deleted successfully',
+      result,
     });
   } catch (error) {
     console.error('Error deleting image:', error);
@@ -143,20 +138,71 @@ const deleteImage = async (req, res) => {
   }
 };
 
- const uploadToCloudinaryV2 = (buffer, folder, transformations) => {
+const deleteImageFromCloudinary = async (imagePath) => {
   return new Promise((resolve, reject) => {
-    cloudinary.v2.uploader.upload_stream(
-      {
-        folder,
-        resource_type: 'image',
-        transformation: transformations,
-      },
-      (error, result) => {
-        if (error) reject(error);
-        else resolve(result);
+    if (!imagePath) {
+      return reject(new Error('imagePath is required'));
+    }
+
+    console.log(`Attempting to delete image: ${imagePath}`);
+    
+    cloudinary.v2.uploader.destroy(imagePath, { resource_type: 'image' }, (error, result) => {
+      if (error) {
+        console.error(`Error deleting image from Cloudinary: ${imagePath}`, error);
+        reject(error);
+      } else {
+        console.log(`Successfully deleted image from Cloudinary: ${imagePath}`, result);
+        resolve(result);
       }
-    ).end(buffer);
+    });
   });
 };
 
-export { upload, uploadVideo, uploadImage, deleteVideo, deleteImage, uploadToCloudinaryV2 };
+const uploadToCloudinaryV2 = async (buffer, folder = 'images', transformations = []) => {
+  try {
+    // Check if buffer is valid
+    if (!buffer || buffer.length === 0) {
+      throw new Error('Empty file buffer');
+    }
+    
+    console.log(`Buffer received: ${buffer.length} bytes`);
+    
+    // Convert buffer to base64
+    const b64 = Buffer.from(buffer).toString('base64');
+    console.log(`Base64 length: ${b64.length} characters`);
+    
+    const dataURI = `data:image/jpeg;base64,${b64}`;
+    
+    // Set up transformation options
+    const uploadOptions = {
+      folder: folder,
+      resource_type: 'auto'
+    };
+    
+    if (transformations && transformations.length > 0) {
+      uploadOptions.transformation = transformations;
+    }
+    
+    console.log(`Uploading to Cloudinary folder: ${folder} with options:`, uploadOptions);
+    
+    // Upload to Cloudinary
+    try {
+      const result = await cloudinary.uploader.upload(dataURI, uploadOptions);
+      console.log("Cloudinary upload successful:", {
+        public_id: result.public_id,
+        url: result.secure_url,
+        format: result.format,
+        size: result.bytes
+      });
+      return result;
+    } catch (cloudinaryError) {
+      console.error("Cloudinary upload error:", cloudinaryError);
+      throw cloudinaryError;
+    }
+  } catch (error) {
+    console.error('Error in uploadToCloudinaryV2:', error);
+    throw error;
+  }
+};
+
+export { upload, uploadVideo, uploadImage, deleteVideo, deleteImage, uploadToCloudinaryV2, deleteImageFromCloudinary };

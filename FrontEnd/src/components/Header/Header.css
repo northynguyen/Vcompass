@@ -58,13 +58,13 @@ img.logo-image {
   transition: transform 0.5s ease-in-out;
 }
 
-.header-right {
+.header-right-container {
     display: flex;
     align-items: center;
-    gap: 40px;
+    gap: 20px;
 }
 
-.header-right .header-login {
+.header-right-container .header-login {
   padding: 10px 30px;
   background-color: #f4ba0f; /* Màu xanh lá cây đậm, sang trọng và tươi mới */
   border-radius: 25px; /* Bo góc tròn mềm mại hơn */
@@ -76,7 +76,7 @@ img.logo-image {
   transition: background-color 0.3s, transform 0.2s ease-in-out; /* Hiệu ứng chuyển màu và phóng to */
 }
 
-.header-right .header-login:hover {
+.header-right-container .header-login:hover {
   background-color: #ffb005; /* Màu xanh lá đậm hơn khi hover */
   transform: translateY(-2px); /* Hiệu ứng nâng nút lên khi hover */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Tăng cường hiệu ứng bóng đổ */
@@ -438,7 +438,7 @@ img.logo-image {
     display: none;
 
   }
-  .header-right .header-login {
+  .header-right-container .header-login {
     padding: 10px 20px;
     font-size: 4vw;
   }

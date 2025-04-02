@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../Context/StoreContext";
 import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import CryptoJS from "crypto-js";
 import "./ListAccommodation.css";
 import { Range } from 'react-range';
+import PropTypes from 'prop-types';
 // Accommodation Item Component
-const AccomItem = ({ accommodation, status, setCurDes, id }) => {
+const AccomItem = ({ accommodation, status, setCurDes }) => {
   const handleSelect = (e) => {
     e.stopPropagation();
     accommodation.activityType = "Accommodation";
@@ -35,11 +36,12 @@ const AccomItem = ({ accommodation, status, setCurDes, id }) => {
           </a>
         </div>
         <div className="list-accom__tour-facilities">
-          {accommodation.amenities.map((facility, index) => (
+          {accommodation.amenities.slice(0, 8).map((facility, index) => (
             <span key={index}>{facility}</span>
           ))}
+          {accommodation.amenities.length > 8 && <span>...</span>}
         </div>
-        <span>{accommodation.description.length > 150 ? accommodation.description.substring(0, 150) + "..." : accommodation.description}</span>
+        <span>{accommodation.description.length > 150 ? accommodation.description.substring(0, 160) + "..." : accommodation.description}</span>
         <div className="list-accom__tour-rating">{calculateTotalRate(accommodation.ratings)}</div>
       </div>
       <div className="list-accom__tour-price">
@@ -47,6 +49,27 @@ const AccomItem = ({ accommodation, status, setCurDes, id }) => {
       </div>
     </div>
   );
+};
+
+AccomItem.propTypes = {
+  accommodation: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    images: PropTypes.arrayOf(PropTypes.string).isRequired, 
+    location: PropTypes.shape({
+      address: PropTypes.string.isRequired,
+      latitude: PropTypes.number.isRequired,
+      longitude: PropTypes.number.isRequired
+    }).isRequired,
+    amenities: PropTypes.arrayOf(PropTypes.string).isRequired,
+    description: PropTypes.string.isRequired,
+    ratings: PropTypes.array.isRequired,
+    price: PropTypes.number.isRequired,
+    activityType: PropTypes.string
+  }).isRequired,
+  status: PropTypes.string.isRequired,
+  setCurDes: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired
 };
 
 // Accommodation List Component
@@ -78,6 +101,13 @@ const AccomList = ({ accommodations, sortOption, status, setCurDes }) => {
   );
 };
 
+AccomList.propTypes = {
+  accommodations: PropTypes.array.isRequired,
+  sortOption: PropTypes.string.isRequired,
+  status: PropTypes.string.isRequired,
+  setCurDes: PropTypes.func.isRequired
+};
+
 // Pagination Component
 const Pagination = ({ currentPage, totalPages, setCurrentPage }) => (
   <div className="list-accom__pagination">
@@ -87,9 +117,15 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => (
   </div>
 );
 
+Pagination.propTypes = {
+  currentPage: PropTypes.number.isRequired,
+  totalPages: PropTypes.number.isRequired,
+  setCurrentPage: PropTypes.func.isRequired
+};
+
 // Filters Component with a single range slider for both min and max price
 const Filters = ({ 
-  sortOption, setSortOption, setNameFilter, setMinPrice, setMaxPrice, 
+   setNameFilter, setMinPrice, setMaxPrice, 
   nameFilter, minPrice, maxPrice, fetchAccommodations, isLoading
 }) => {
   const handleFilterChange = () => {
@@ -103,11 +139,9 @@ const Filters = ({
       <input type="text" placeholder="Tên khách sạn" value={nameFilter} 
         onChange={(e) => setNameFilter(e.target.value)} />
       
-      <hr />
 
       {/* Price Range Filter */}
       <h4>Lọc theo giá</h4>
-      <label>Giá </label>
       <div className="price-range-slider">
         <Range
           step={100000}
@@ -132,7 +166,7 @@ const Filters = ({
               {children}
             </div>
           )}
-          renderThumb={({ props, index }) => (
+          renderThumb={({ props }) => (
             <div
               {...props}
               style={{
@@ -158,10 +192,24 @@ const Filters = ({
       <hr />
     </div>
   );
+};  
+
+Filters.propTypes = {
+  sortOption: PropTypes.string.isRequired,
+  setSortOption: PropTypes.func.isRequired,
+  setNameFilter: PropTypes.func.isRequired,
+  setMinPrice: PropTypes.func.isRequired, 
+  setMaxPrice: PropTypes.func.isRequired,
+  nameFilter: PropTypes.string.isRequired,
+  minPrice: PropTypes.number.isRequired,
+  maxPrice: PropTypes.number.isRequired,
+  fetchAccommodations: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  style: PropTypes.object
 };
 
 // Main ListAccom Component
-const ListAccom = ({ status, setCurDes ,city}) => {
+const ListAccom = ({ status, setCurDes ,city, setListData}) => {
   const { url , user} = useContext(StoreContext);
   const [accommodations, setAccommodations] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // Track loading state
@@ -219,6 +267,12 @@ const ListAccom = ({ status, setCurDes ,city}) => {
     fetchAccommodations();
   }, [url]);
 
+  useEffect(() => {
+    if ( accommodations.length > 0) {
+      setListData(accommodations);
+    }
+  }, [accommodations, setListData]);
+
   if (isLoading) {
     return <div>Loading accommodations...</div>;
   }
@@ -244,6 +298,13 @@ const ListAccom = ({ status, setCurDes ,city}) => {
       <AccomList accommodations={accommodations} sortOption={sortOption} status={status} setCurDes={setCurDes} />
     </div>
   );
+};
+
+ListAccom.propTypes = {
+  status: PropTypes.string.isRequired,
+  setCurDes: PropTypes.func.isRequired,
+  city: PropTypes.string,
+  setListData: PropTypes.func
 };
 
 export default ListAccom;

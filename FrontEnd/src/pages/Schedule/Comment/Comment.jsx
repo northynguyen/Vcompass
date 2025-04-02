@@ -280,6 +280,19 @@ const CommentContent = ({ comment, scheduleId, token, updateComments, url, user 
                     </div>
                 ))}
 
+                {replyInputVisible && (
+                    <div className="reply-input-container">
+                        <input
+                            type="text"
+                            placeholder="Trả lời..."
+                            value={replyText}
+                            onChange={(e) => setReplyText(e.target.value)}
+                            className="input-comment-field"
+                        />
+                        <FaRegPaperPlane onClick={handleReplySubmit} className="send-icon" />
+                    </div>
+                )}
+
 
             </div>
 

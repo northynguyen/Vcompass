@@ -1,0 +1,155 @@
+.explore-container {
+  width: 100%;
+  height: 100%;
+  background-color: #121212;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.explore-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #2a2a2a;
+  position: sticky;
+  top: 0;
+  background-color: #121212;
+  z-index: 10;
+}
+
+.explore-header h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.back-button:hover {
+  color: #fe2c55;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: #2a2a2a;
+  border-radius: 20px;
+  padding: 8px 16px;
+  width: 240px;
+}
+
+.search-icon {
+  color: #888;
+  margin-right: 8px;
+}
+
+.search-box input {
+  background: none;
+  border: none;
+  color: white;
+  outline: none;
+  width: 100%;
+}
+
+.categories-scrollbar {
+  display: flex;
+  padding: 8px 16px;
+  border-bottom: 1px solid #2a2a2a;
+  top: 65px;
+  background-color: #121212;
+  z-index: 9;
+  min-height: 55px;
+  overflow-x: auto;
+  position: sticky;
+}
+
+.categories-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.category-item {
+  white-space: nowrap;
+  padding: 10px 16px;
+  margin-right: 12px;
+  background-color: #2a2a2a;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.category-item:hover {
+  background-color: #3a3a3a;
+}
+
+.category-item.active {
+  background-color: #fe2c55;
+}
+
+.videos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.video-card {
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.video-card:hover {
+  transform: scale(1.03);
+}
+
+.video-thumbnail {
+  position: relative;
+  padding-top: 177.78%; /* 16:9 aspect ratio */
+  background-color: #2a2a2a;
+}
+
+.video-thumbnail img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-views {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.video-info {
+  padding: 8px 0;
+}
+
+.video-username {
+  font-size: 14px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+}
+
+.verified-badge {
+  color: #fe2c55;
+  margin-left: 4px;
+  font-size: 12px;
+} 

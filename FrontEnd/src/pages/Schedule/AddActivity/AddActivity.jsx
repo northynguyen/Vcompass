@@ -6,9 +6,36 @@ import ListAccommodation, { AccomItem } from "../../ListAccommodation/ListAccomm
 import ListAttractions, { AttractionItem } from "../../ListAttractions/ListAttractions";
 import ListFoodServices, { FoodServiceItem } from "../../ListFoodServices/ListFoodServices";
 import "./AddActivity.css";
-
 import axios from "axios";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import PropTypes from 'prop-types';
+
+// Fix for default marker icon in Leaflet
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+});
+
 Modal.setAppElement("#root");
+
+// Component to recenter map when coordinates change
+const MapCenterSetter = ({ center }) => {
+  const map = useMap();
+  useEffect(() => {
+    if (center) {
+      map.setView(center, map.getZoom());
+    }
+  }, [center, map]);
+  return null;
+};
+
+MapCenterSetter.propTypes = {
+  center: PropTypes.array
+};
 
 const OtherItem = ({ setCurDes, curDes }) => {
   const [activityName, setActivityName] = useState(curDes?.name || "");
@@ -43,9 +70,13 @@ const OtherItem = ({ setCurDes, curDes }) => {
     // Cập nhật thông tin địa chỉ và tọa độ vào curDes
     setCurDes((prev) => ({
       ...prev,
-      address: selected.display_name,
-      latitude: parseFloat(selected.lat),
-      longitude: parseFloat(selected.lon),
+     
+      location: {
+        latitude: parseFloat(selected.lat),
+        longitude: parseFloat(selected.lon),
+        address: selected.display_name,
+      }
+     
     }));
   };
 
@@ -85,6 +116,16 @@ const OtherItem = ({ setCurDes, curDes }) => {
     }
   };
 
+  useEffect(() => {
+    // Cập nhật curDes khi có thay đổi
+    setCurDes(prev => ({
+      ...prev,
+      name: activityName,
+      address: address,
+      activityType: "Other"
+    }));
+  }, [activityName, address, setCurDes]);
+
   return (
     <div className="other-item-container">
       <div className="form-group">
@@ -95,10 +136,7 @@ const OtherItem = ({ setCurDes, curDes }) => {
           className="input-field"
           placeholder="Nhập tên hoạt động"
           value={activityName}
-          onChange={(e) => {
-            setActivityName(e.target.value);
-            setCurDes((prev) => ({ ...prev, name: e.target.value }));
-          }}
+          onChange={(e) => setActivityName(e.target.value)}
         />
       </div>
 
@@ -158,9 +196,12 @@ const OtherItem = ({ setCurDes, curDes }) => {
   );
 };
 
+OtherItem.propTypes = {
+  setCurDes: PropTypes.func.isRequired,
+  curDes: PropTypes.object
+};
 
 const Header = ({ option, setOption, setCurDes }) => {
-
   const onChange = (value) => {
     setOption(value)
     setCurDes(null)
@@ -189,14 +230,23 @@ const Header = ({ option, setOption, setCurDes }) => {
   );
 };
 
-const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSchedule, activity, city, socket ,inforSchedule  }) => {
+Header.propTypes = {
+  option: PropTypes.string.isRequired,
+  setOption: PropTypes.func.isRequired,
+  setCurDes: PropTypes.func.isRequired
+};
+
+const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSchedule, activity, city, socket, inforSchedule }) => {
   const [option, setOption] = React.useState("Accommodation");
   const [choice, setChoice] = React.useState("List");
   const [cost, setCost] = React.useState("")
   const [costDes, setCostDes] = React.useState("")
   const [description, setDescription] = React.useState("")
   const [curDes, setCurDes] = React.useState(null)
+  const [locations, setLocations] = useState([]);
   const { url } = useContext(StoreContext);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [listData, setListData] = useState([]);
 
   useEffect(() => {
     if (isOpen) {
@@ -207,14 +257,49 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         setDescription(activity.description)
       } else {
         setCurDes(null);
-        setCostDes()
-        setCost()
-        setDescription()
+        setCostDes("")
+        setCost("")
+        setDescription("")
       }
       setOption(activity ? activity.activityType : "Accommodation");
     }
+  }, [isOpen, activity, destination]);
 
-  }, [isOpen]);
+  useEffect(() => {
+    if (listData.length > 0) {
+      const locationData = listData.map(item => {
+        let latitude, longitude;
+        console.log(item);
+        if (option === 'Accommodation') {
+      
+          latitude = item.location?.latitude;
+          longitude = item.location?.longitude;
+         
+        } else if (option === 'FoodService') {
+         
+          latitude = item.location?.latitude;
+          longitude = item.location?.longitude;
+         
+        } else if (option === 'Attraction') {
+         
+          latitude = item.location?.latitude;
+          longitude = item.location?.longitude;
+          
+        }
+        
+        return {
+          latitude,
+          longitude,
+        };
+      });
+      
+      setLocations(locationData.filter(loc => loc.latitude && loc.longitude));
+    }
+  }, [ listData, option]);
+
+  const handleBack = () => {
+    setCurDes(null);
+  };
 
   const handleSave = async () => {
     try {
@@ -246,7 +331,6 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
       }
 
       // Chuẩn bị dữ liệu activity mới
-
       const newActivity = {
         activityType: curDes?.activityType || "Other",
         idDestination: curDes?._id || uuidv4(),
@@ -258,6 +342,8 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         description: description,
         timeStart: activity ? activity.timeStart : "00:00",
         timeEnd: activity ? activity.timeEnd : "00:30",
+        latitude: curDes.latitude || 0,
+        longitude: curDes.longitude || 0,
       };
 
       // Cập nhật activity trong schedule
@@ -306,8 +392,21 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
     }
   };
 
+  const handlePrevImage = () => {
+    if (curDes?.images?.length) {
+      setCurrentImageIndex((prev) => 
+        prev === 0 ? curDes.images.length - 1 : prev - 1
+      );
+    }
+  };
 
-
+  const handleNextImage = () => {
+    if (curDes?.images?.length) {
+      setCurrentImageIndex((prev) => 
+        prev === curDes.images.length - 1 ? 0 : prev + 1
+      );
+    }
+  };
 
   return (
     <Modal
@@ -316,143 +415,349 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
       className="add-activity-modal"
       overlayClassName="modal-overlay"
     >
-      <div className="add-activity">
+      <div className="add-activity split-layout">
         <div className="modal-header">
           <h2>Thêm mới hoạt động</h2>
           <button onClick={closeModal} className="close-btn">
             <i className="fa-regular fa-circle-xmark"></i>
           </button>
         </div>
-        <div className="modal-body">
-          <Header setOption={setOption} setCurDes={setCurDes} />
+        {(!curDes || (option === "Other" && !curDes?.name)) && ( 
+           <div className="search-filter-bar">
+           <div className="filter-row">
+             <div className="filter-group">
+               <label htmlFor="activity-type">Loại hoạt động</label>
+               <select
+                 id="activity-type"
+                 value={option}
+                 onChange={(e) => {
+                   setOption(e.target.value);
+                   setCurDes(null);
+                 }}
+               >
+                 <option value="Accommodation">Nghỉ ngơi</option>
+                 <option value="FoodService">Ăn uống</option>
+                 <option value="Attraction">Tham quan</option>
+                 <option value="Other">Hoạt động Khác</option>
+               </select>
+             </div>
+             
+             {option !== "Other" && (
+               <div className="filter-group">
+                 <label htmlFor="list-type">Chọn từ</label>
+                 <select
+                   id="list-type"
+                   value={choice}
+                   onChange={(e) => setChoice(e.target.value)}
+                 >
+                   <option value="List">Danh sách</option>
+                   <option value="WishList">WishList</option>
+                 </select>
+               </div>
+             )}
+           </div>
+         </div>
+        )}
+       
+        
+        <div className="modal-content-container">
+          {/* Left side - Original content */}
+          <div className="modal-left-panel">
+            <div className="modal-body">
+              {!curDes && option !== "Other" ? (
+                <div className="list-container">
+                  {choice === "List" && (
+                    <>
+                      {option === "Attraction" && <ListAttractions status="Schedule" setCurDes={setCurDes} city={city} setListData={setListData} />}
+                      {option === "Accommodation" && <ListAccommodation status="Schedule" setCurDes={setCurDes} city={city} setListData={setListData} />}
+                      {option === "FoodService" && <ListFoodServices status="Schedule" setCurDes={setCurDes} city={city} setListData={setListData} />}
+                    </>
+                  )}
 
-          {option !== "Other" && (
-            <select
-              id="sort-by"
-              value={choice}
-              onChange={(e) => setChoice(e.target.value)}
-            >
-              <option value="List">Chọn từ danh sách</option>
-              <option value="WishList">Chọn từ WishList</option>
-
-            </select>
-          )}
-
-          {choice === "List" && (
-            <>
-              {option === "Attraction" && <ListAttractions status="Schedule" setCurDes={setCurDes} city={city} />}
-              {option === "Accommodation" && <ListAccommodation status="Schedule" setCurDes={setCurDes} city={city} />}
-              {option === "FoodService" && <ListFoodServices status="Schedule" setCurDes={setCurDes} city={city} />}
-            </>
-          )}
-
-          {choice === "WishList" && (
-            <>
-              {option === "Attraction" && <ListAttractions status="WishList" setCurDes={setCurDes} city={city} />}
-              {option === "Accommodation" && <ListAccommodation status="WishList" setCurDes={setCurDes} city={city} />}
-              {option === "FoodService" && <ListFoodServices status="WishList" setCurDes={setCurDes} city={city} />}
-            </>
-          )}
-          {option === "Other" && (
-            <OtherItem
-              setCurDes={setCurDes}
-              curDes={curDes}
+                  {choice === "WishList" && (
+                    <>
+                      {option === "Attraction" && <ListAttractions status="WishList" setCurDes={setCurDes} city={city} setListData={setListData} />}
+                      {option === "Accommodation" && <ListAccommodation status="WishList" setCurDes={setCurDes} city={city} setListData={setListData} />}
+                      {option === "FoodService" && <ListFoodServices status="WishList" setCurDes={setCurDes} city={city} setListData={setListData} />}
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="form-page">
+                  {option !== "Other" && (
+                    <button className="back-btn" onClick={handleBack}>
+                      <i className="fas fa-arrow-left"></i> Quay lại
+                    </button>
+                  )}
+                  {option === "Other" && (
+                    <OtherItem
+                      setCurDes={setCurDes}
+                      curDes={curDes}
+                    />
+                  )}
+                  
+                  {/* Destination Info Card */}
+                  {option !== "Other" && curDes && (
+                    <div className="destination-info">
+                      <div className="destination-header">
+                        <h4>{curDes.name}</h4>
+                      </div>
+                      <div className="destination-content">
+                        {curDes.images && curDes.images.length > 0 && (
+                          <div className="img-add-activity-container">
+                            <button onClick={handlePrevImage} className="carousel-button">{"<"}</button>
+                            <img
+                              className="add-schedule-img"
+                              src={`${url}/images/${curDes.images[currentImageIndex]}`}
+                              alt={`${curDes.name}`}
+                            />
+                            <button onClick={handleNextImage} className="carousel-button">{">"}</button>
+                          </div>
+                        )}
+                        
+                        <div className="destination-details">
+                          <div className="destination-detail-item">
+                            <span className="detail-icon"><i className="fas fa-map-marker-alt"></i></span>
+                            <span className="detail-text">{curDes.location?.address || curDes.address}</span>
+                          </div>
+                          {curDes.contact?.phone && (
+                            <div className="destination-detail-item">
+                              <span className="detail-icon"><i className="fas fa-phone"></i></span>
+                              <span className="detail-text">{curDes.contact.phone}</span>
+                            </div>
+                          )}
+                          {curDes.price && (
+                            <div className="destination-detail-item">
+                              <span className="detail-icon"><i className="fas fa-tag"></i></span>
+                              <span className="detail-text">{curDes.price.toLocaleString()} VND</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="form-container-single">
+                    <FormAddActivity
+                      images={curDes?.images || null}
+                      cost={cost}
+                      setCost={setCost}
+                      costDes={costDes}
+                      setCostDes={setCostDes}
+                      description={description}
+                      setDescription={setDescription}
+                      option={option}
+                      curDes={curDes}
+                    />
+                  </div>
+                  
+                  <div className="modal-footer">
+                    <button className="save-btn" onClick={handleSave}>Lưu</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Right side - Map */}
+          <div className="modal-right-panel">
+            <h3>Vị trí trên bản đồ</h3>
+            <LocationsMapView 
+              locations={locations} 
+              selectedLocation={curDes} 
+              onSelectLocation={setCurDes} 
             />
-          )}
-
-          <div className="activity-infor-container">
-            {option === "Accommodation" && curDes && (
-              <AccomItem
-                accommodation={curDes}
-              />
-            )}
-            {option === "FoodService" && curDes && (
-              <FoodServiceItem
-                foodService={curDes}
-              />
-            )}
-            {option === "Attraction" && curDes && (
-              <AttractionItem
-                attraction={curDes}
-              />
-            )}
-
-            {
-              (curDes || option === "Other") && (
-                <FormAddActivity images={curDes?.images || null} cost={cost} setCost={setCost} costDes={costDes} setCostDes={setCostDes}
-                  description={description} setDescription={setDescription} option={option} />
-              )
-            }
           </div>
         </div>
-        {
-          (curDes || activity || option === "Other") && (
-            <div className="modal-footer">
-              <button className="save-btn" onClick={handleSave}>Lưu</button>
-            </div>
-          )
-        }
       </div>
-    </Modal >
-
-  )
+    </Modal>
+  );
 };
 
-const FormAddActivity = ({ images, cost, setCost, description, setDescription, option, costDes, setCostDes }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const { url } = useContext(StoreContext);
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
+AddActivity.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  currentDay: PropTypes.number.isRequired,
+  destination: PropTypes.object,
+  setInforSchedule: PropTypes.func.isRequired,
+  activity: PropTypes.object,
+  city: PropTypes.string,
+  socket: PropTypes.object,
+  inforSchedule: PropTypes.object.isRequired
+};
+
+// New component for displaying multiple locations on map
+const LocationsMapView = ({ locations, selectedLocation, onSelectLocation }) => {
+  const defaultPosition = [10.762622, 106.660172]; // Ho Chi Minh City coordinates
+  const mapCenter = selectedLocation?.location?.latitude && selectedLocation?.location?.longitude 
+    ? [selectedLocation.location.latitude, selectedLocation.location.longitude] 
+    : selectedLocation?.latitude && selectedLocation?.longitude
+    ? [selectedLocation.latitude, selectedLocation.longitude]
+    : defaultPosition;
+  
+  const handleMarkerClick = (location) => {
+    onSelectLocation(location);
   };
 
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
-  };
+  console.log("selectedLocation",selectedLocation);
+
   return (
-    <div className="form-group">
-      <div className="name-price-container">
-        <div className="title-container">
-          <label className="expense-sub-title" htmlFor="name-expense">Tên chi phí</label>
-          <input className="input-field"
-            id="name-expense" required
-            name="name"
-            placeholder="Nhập tên chi phí"
-            value={costDes}
-            onChange={(e) => setCostDes(e.target.value)}
-          />
-          <label className="expense-sub-title" htmlFor="des">Chi phí</label>
-          <input className="input-field"
-            id="name-expense" required
-            name="name"
-            placeholder="Nhập chi phí"
-            value={cost}
-            onChange={(e) => setCost(e.target.value)}
-          />
-          <label className="expense-sub-title" htmlFor="des">Ghi chú</label>
-          <textarea
-            placeholder="Nhập ghi chú chi tiết"
-            className="input-field" id="des"
-            name="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          ></textarea>
+    <div className="locations-map-container">
+      <MapContainer 
+        center={mapCenter} 
+        zoom={12} 
+        style={{ height: '100%', width: '100%', minHeight: '500px' }}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+      
+        {locations && locations.length > 0 && locations.map((location, index) => {
+          console.log(location);
+          if (location.latitude && location.longitude) {
+            const position = [location.latitude, location.longitude];
+            const isSelected = selectedLocation && location && 
+              (selectedLocation._id === location._id || 
+              (selectedLocation.latitude === location.latitude && 
+                selectedLocation.longitude === location.longitude));
+            
+            return (
+              <Marker 
+                key={location._id || index} 
+                position={position}
+                icon={isSelected ? 
+                  new L.Icon({
+                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                  }) : 
+                  new L.Icon.Default()
+                }
+              >
+                <Popup 
+                  autoPan={true}
+                  closeButton={true}
+                  closeOnClick={false}
+                  keepInView={true}
+                >
+                  <div>
+                    <strong>{location.name}</strong>
+                    <p>{location.address}</p>
+                  </div>
+                </Popup>
+              </Marker>
+            );
+          }
+          return null;
+        })}
+        
+        {/* Display selected location if it's not from the locations array */}
+        {selectedLocation && 
+         selectedLocation.location &&
+         selectedLocation.location.latitude && 
+         selectedLocation.location.longitude && 
+         !locations.find(loc => loc._id === selectedLocation._id) && (
+          <Marker 
+            position={[selectedLocation.location.latitude, selectedLocation.location.longitude]}
+            icon={new L.Icon({
+              iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+            })}
+          >
+            <Popup 
+              autoPan={true}
+              closeButton={true}
+              closeOnClick={false}
+              keepInView={true}
+            >
+              <div>
+                <strong>{selectedLocation.name || selectedLocation.foodServiceName || selectedLocation.attractionName}</strong>
+                <p>{selectedLocation.location.address || "New Address"}</p>
+                
+              </div>
+            </Popup>
+          </Marker>
+        )}
+      </MapContainer>
+    </div>
+  );
+};
+
+LocationsMapView.propTypes = {
+  locations: PropTypes.array,
+  selectedLocation: PropTypes.object,
+  onSelectLocation: PropTypes.func.isRequired
+};
+
+const FormAddActivity = ({ images, cost, setCost, description, setDescription, option, costDes, setCostDes, curDes }) => {
+  const { url } = useContext(StoreContext);
+  
+  return (
+    <div className="form-container">
+      <div className="destination-info">
+        {option === "Accommodation" && curDes && (
+          <AccomItem accommodation={curDes} />
+        )}
+        {option === "FoodService" && curDes && (
+          <FoodServiceItem foodService={curDes} />
+        )}
+        {option === "Attraction" && curDes && (
+          <AttractionItem attraction={curDes} />
+        )}
+      </div>
+
+      <div className="form-group">
+        <div className="info-container">
+          <div className="title-container">
+            <label className="expense-sub-title" htmlFor="name-expense">Tên chi phí</label>
+            <input className="input-field"
+              id="name-expense" required
+              name="name"
+              placeholder="Nhập tên chi phí"
+              value={costDes}
+              onChange={(e) => setCostDes(e.target.value)}
+            />
+            <label className="expense-sub-title" htmlFor="des">Chi phí</label>
+            <input className="input-field"
+              id="name-expense" required
+              name="name"
+              placeholder="Nhập chi phí"
+              value={cost}
+              onChange={(e) => setCost(e.target.value)}
+            />
+            <label className="expense-sub-title" htmlFor="des">Ghi chú</label>
+            <textarea
+              placeholder="Nhập ghi chú chi tiết"
+              className="input-field" id="des"
+              name="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            ></textarea>
+          </div>
         </div>
-        {option !== "Other" && <div className="img-add-activity-container">
-          <button onClick={handlePrev} className="carousel-button">{"<"}</button>
-          <img
-            className="add-schedule-img"
-            src={`${url}/images/${images[currentIndex]}`}
-            alt={`slide-${currentIndex}`}
-          />
-          <button onClick={handleNext} className="carousel-button">{">"}</button>
-        </div>}
       </div>
     </div>
-  )
-}
+  );
+};
+
+FormAddActivity.propTypes = {
+  images: PropTypes.array,
+  cost: PropTypes.string.isRequired,
+  setCost: PropTypes.func.isRequired,
+  description: PropTypes.string.isRequired,
+  setDescription: PropTypes.func.isRequired,
+  option: PropTypes.string.isRequired,
+  costDes: PropTypes.string.isRequired,
+  setCostDes: PropTypes.func.isRequired,
+  curDes: PropTypes.object
+};
 
 export default AddActivity;

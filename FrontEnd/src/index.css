@@ -1,3 +1,6 @@
+/* @import "tailwindcss"; */
+
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');*{
   padding: 0;
   margin: 0;
@@ -87,4 +90,31 @@ body::-webkit-scrollbar-thumb:hover {
   100% {
     opacity: 1;
   }
+}
+
+/* Style cho header khi ở trang ShortVideo */
+.short-video-header {
+  position: fixed;
+  top: -60px; /* Giả sử header cao 60px, điều chỉnh cho phù hợp */
+  left: 0;
+  right: 0;
+  z-index: 2000;
+  transition: top 0.3s ease;
+}
+
+/* Hiển thị header khi hover */
+.short-video-header:hover, 
+.header-trigger-area:hover ~ .short-video-header {
+  top: 0;
+}
+
+/* Trigger area ở trên cùng của trang */
+.header-trigger-area {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  z-index: 1999;
+  background-color: transparent;
 }

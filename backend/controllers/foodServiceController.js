@@ -5,6 +5,7 @@ import userModel from "../models/user.js";
 import partnerModel from "../models/partner.js";
 import { name } from "@cloudinary/url-gen/actions/namedTransformation";
 import { createNotification } from "./notiController.js";
+import { uploadToCloudinaryV2, deleteImage } from './videoController.js';
 
 const getListFoodService = async (req, res) => {
 
@@ -149,23 +150,39 @@ const createFoodService = async (req, res) => {
     );
     newFoodService.idPartner = idPartner;
     console.log("newFoodService:", newFoodService);
-    await newFoodService.save();
 
     // Check and save images if present
     if (req.files) {
       if (req.files.images) {
-        const images = req.files.images.map((file) => file.filename);
+        const imagePromises = req.files.images.map(async (file) => {
+          const result = await uploadToCloudinaryV2(file.buffer, 'foodServices', [
+            { width: 800, crop: 'scale' },
+            { quality: 'auto' }
+          ]);
+          return result.secure_url;
+        });
+        
+        const images = await Promise.all(imagePromises);
         newFoodService.images = images;
       }
 
       // Check and save menuImages if present
       if (req.files.menuImages) {
-        const menuImages = req.files.menuImages.map((file) => file.filename);
+        const menuImagePromises = req.files.menuImages.map(async (file) => {
+          const result = await uploadToCloudinaryV2(file.buffer, 'foodServicesMenu', [
+            { width: 800, crop: 'scale' },
+            { quality: 'auto' }
+          ]);
+          return result.secure_url;
+        });
+        
+        const menuImages = await Promise.all(menuImagePromises);
         newFoodService.menuImages = menuImages;
       }
-
-      await newFoodService.save();
     }
+
+    await newFoodService.save();
+    
     const partner = await partnerModel.findById(idPartner);
     if (!partner) {
       return res.status(404).json({ success: false, message: "Partner not found" });
@@ -179,6 +196,7 @@ const createFoodService = async (req, res) => {
       nameSender: partner.name || "Partner",
       imgSender: partner.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     };
+
 
     await createNotification(global.io, notificationData);
     res.status(201).json({
@@ -197,8 +215,26 @@ const createFoodService = async (req, res) => {
 
 const updateFoodService = async (req, res) => {
   const foodServiceId = req.body.Id;
-  const updateData = JSON.parse(req.body.foodServiceData);
+  
   try {
+    console.log("Updating food service:", foodServiceId);
+    console.log("Request body keys:", Object.keys(req.body));
+    console.log("Files received:", req.files ? (Array.isArray(req.files) ? req.files.length : Object.keys(req.files)) : 'No files');
+    
+    let updateData;
+    try {
+      updateData = typeof req.body.foodServiceData === 'string' 
+        ? JSON.parse(req.body.foodServiceData) 
+        : req.body.foodServiceData;
+    } catch (parseError) {
+      console.error("Error parsing foodServiceData:", parseError);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid food service data format",
+        error: parseError.message
+      });
+    }
+
     const foodService = await FoodService.findById(foodServiceId);
     if (!foodService) {
       return res
@@ -208,47 +244,191 @@ const updateFoodService = async (req, res) => {
 
     // Handle images and menuImages
     let updatedImages = updateData.images || [];
+    if (!Array.isArray(updatedImages)) {
+      updatedImages = [updatedImages].filter(Boolean);
+    }
+    
     let updatedMenuImages = updateData.menuImages || [];
+    if (!Array.isArray(updatedMenuImages)) {
+      updatedMenuImages = [updatedMenuImages].filter(Boolean);
+    }
 
+    // Process uploaded files
     if (req.files) {
-      if (req.files.images) {
-        const newImagePaths = req.files.images.map((file) => file.filename);
-        updatedImages.push(...newImagePaths);
-      }
-
-      if (req.files.menuImages) {
-        const newMenuImagePaths = req.files.menuImages.map(
-          (file) => file.filename
-        );
-        updatedMenuImages.push(...newMenuImagePaths);
+      // Check if req.files is an array or an object with named properties
+      if (Array.isArray(req.files)) {
+        // Handle array of files (all treated as regular images)
+        console.log("Processing array of files:", req.files.length);
+        
+        const imagePromises = req.files.map(async (file) => {
+          try {
+            if (!file.buffer || file.buffer.length === 0) {
+              console.error("Empty file buffer detected:", file.originalname);
+              return null;
+            }
+            
+            console.log(`Uploading file ${file.originalname} with buffer size ${file.buffer.length}`);
+            
+            const result = await uploadToCloudinaryV2(file.buffer, 'images', [
+              { width: 800, crop: 'scale' },
+              { quality: 'auto' }
+            ]);
+            
+            if (!result || !result.secure_url) {
+              console.error("Invalid Cloudinary result:", result);
+              return null;
+            }
+            
+            return result.secure_url;
+          } catch (err) {
+            console.error(`Error uploading file ${file.originalname}:`, err);
+            return null;
+          }
+        });
+        
+        const uploadedImages = await Promise.all(imagePromises);
+        const validImages = uploadedImages.filter(img => img !== null);
+        
+        if (validImages.length > 0) {
+          updatedImages = updatedImages.concat(validImages);
+        }
+      } else {
+        // Handle object with named properties
+        // Process regular images
+        if (req.files.images) {
+          console.log("Processing images:", req.files.images.length);
+          
+          const imagePromises = req.files.images.map(async (file) => {
+            try {
+              if (!file.buffer || file.buffer.length === 0) {
+                console.error("Empty file buffer detected:", file.originalname);
+                return null;
+              }
+              
+              const result = await uploadToCloudinaryV2(file.buffer, 'images', [
+                { width: 800, crop: 'scale' },
+                { quality: 'auto' }
+              ]);
+              
+              if (!result || !result.secure_url) {
+                console.error("Invalid Cloudinary result:", result);
+                return null;
+              }
+              
+              return result.secure_url;
+            } catch (err) {
+              console.error(`Error uploading file ${file.originalname}:`, err);
+              return null;
+            }
+          });
+          
+          const uploadedImages = await Promise.all(imagePromises);
+          const validImages = uploadedImages.filter(img => img !== null);
+          
+          if (validImages.length > 0) {
+            updatedImages = updatedImages.concat(validImages);
+          }
+        }
+        
+        // Process menu images
+        if (req.files.menuImages) {
+          console.log("Processing menu images:", req.files.menuImages.length);
+          
+          const menuImagePromises = req.files.menuImages.map(async (file) => {
+            try {
+              if (!file.buffer || file.buffer.length === 0) {
+                console.error("Empty file buffer detected:", file.originalname);
+                return null;
+              }
+              
+              const result = await uploadToCloudinaryV2(file.buffer, 'images', [
+                { width: 800, crop: 'scale' },
+                { quality: 'auto' }
+              ]);
+              
+              if (!result || !result.secure_url) {
+                console.error("Invalid Cloudinary result:", result);
+                return null;
+              }
+              
+              return result.secure_url;
+            } catch (err) {
+              console.error(`Error uploading file ${file.originalname}:`, err);
+              return null;
+            }
+          });
+          
+          const uploadedMenuImages = await Promise.all(menuImagePromises);
+          const validMenuImages = uploadedMenuImages.filter(img => img !== null);
+          
+          if (validMenuImages.length > 0) {
+            updatedMenuImages = updatedMenuImages.concat(validMenuImages);
+          }
+        }
       }
     }
 
+    console.log("Updated images:", updatedImages.length);
+    console.log("Updated menu images:", updatedMenuImages.length);
+
+    // Find images to remove
     const imagesToRemove = foodService.images.filter(
       (img) => !updatedImages.includes(img)
     );
+    
     const menuImagesToRemove = foodService.menuImages.filter(
       (img) => !updatedMenuImages.includes(img)
     );
 
+    // Update the food service data
     updateData.images = updatedImages;
     updateData.menuImages = updatedMenuImages;
 
+    // Merge updated data into the existing food service
     Object.assign(foodService, updateData);
 
-    // Use fs.promises.unlink for async file deletion
-    const deleteImage = async (imageName) => {
-      try {
-        return await fs.promises.unlink(`uploads/${imageName}`);
-      } catch (err) {
-        console.error(`Failed to delete image ${imageName}:`, err);
-      }
-    };
+    // Delete old images from Cloudinary
+    if (imagesToRemove.length > 0) {
+      console.log("Deleting old images from Cloudinary:", imagesToRemove);
+      const deleteImagePromises = imagesToRemove.map(async (imageUrl) => {
+        try {
+          // Extract public_id from the Cloudinary URL
+          const urlParts = imageUrl.split('/');
+          const filenameWithExtension = urlParts[urlParts.length - 1];
+          const publicId = filenameWithExtension.split('.')[0];
+          
+          await deleteImageFromCloudinary(`images/${publicId}`);
+          console.log(`Successfully deleted image: ${publicId}`);
+        } catch (err) {
+          console.error(`Failed to delete image ${imageUrl}:`, err);
+        }
+      });
+      
+      await Promise.all(deleteImagePromises);
+    }
 
-    await Promise.all(imagesToRemove.map((image) => deleteImage(image)));
-    await Promise.all(menuImagesToRemove.map((image) => deleteImage(image)));
+    if (menuImagesToRemove.length > 0) {
+      console.log("Deleting old menu images from Cloudinary:", menuImagesToRemove);
+      const deleteMenuImagePromises = menuImagesToRemove.map(async (imageUrl) => {
+        try {
+          // Extract public_id from the Cloudinary URL
+          const urlParts = imageUrl.split('/');
+          const filenameWithExtension = urlParts[urlParts.length - 1];
+          const publicId = filenameWithExtension.split('.')[0];
+          
+          await deleteImageFromCloudinary(`images/${publicId}`);
+          console.log(`Successfully deleted menu image: ${publicId}`);
+        } catch (err) {
+          console.error(`Failed to delete menu image ${imageUrl}:`, err);
+        }
+      });
+      
+      await Promise.all(deleteMenuImagePromises);
+    }
 
+    // Save the updated food service
     await foodService.save();
+    console.log("Food service updated successfully");
 
     res.status(200).json({
       success: true,
@@ -256,10 +436,12 @@ const updateFoodService = async (req, res) => {
       updatedFoodService: foodService,
     });
   } catch (error) {
-    res
-      .status(400)
-      .json({ success: false, message: "Error updating food service" });
     console.error("Error updating food service:", error);
+    res.status(400).json({ 
+      success: false, 
+      message: "Error updating food service: " + (error.message || "Unknown error"),
+      error: error.message || "Unknown error"
+    });
   }
 };
 

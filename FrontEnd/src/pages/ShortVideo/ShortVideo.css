@@ -1,0 +1,633 @@
+.short-video-container {
+  width: 100%;
+  height: 100vh;
+  background-color: #000;
+  display: flex;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+/* Khi hiển thị comments, điều chỉnh container */
+.short-video-container.with-comments {
+  padding-right: 400px; /* Để dành chỗ cho phần comments */
+}
+
+/* Sidebar */
+.tiktok-sidebar {
+  width: 80px;
+  height: 100%;
+  background-color: #000;
+  border-right: 1px solid #2a2a2a;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.tiktok-logo {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.tiktok-logo img {
+  height: 30px;
+}
+
+.sidebar-menu {
+  flex: 1;
+  padding-top: 20px;
+}
+
+.menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 0;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.menu-item:hover {
+  color: #fe2c55;
+}
+
+.menu-item.active {
+  color: #fe2c55;
+}
+
+.menu-item svg {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid #e6e6e6;
+}
+
+.following-accounts h4 {
+  font-size: 14px;
+  color: #8a8a8a;
+  margin-bottom: 10px;
+}
+
+.sidebar-links {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sidebar-links a {
+  color: #8a8a8a;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+/* Content */
+.tiktok-content {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  background-color: #000;
+  overflow: hidden;
+}
+
+.tiktok-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 0 20px;
+}
+
+.search-box {
+  width: 300px;
+  height: 40px;
+  background-color: #f1f1f2;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+}
+
+.search-icon {
+  color: #8a8a8a;
+  font-size: 16px;
+  margin-left: 8px;
+}
+
+/* Video Feed */
+.video-feed {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Navigation Buttons */
+.navigation-buttons {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 15;
+  transition: right 0.3s ease;
+}
+
+.nav-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.nav-arrow:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-arrow:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Video Actions Sidebar */
+.video-actions-sidebar {
+  right: 20px;
+  bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  z-index: 10;
+  transition: right 0.3s ease;
+}
+
+/* Điều chỉnh vị trí khi có comments */
+.with-comments .video-actions-sidebar {
+  right: 420px; /* 400px (width của comments) + 20px (padding ban đầu) */
+}
+
+.user-avatar-container {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  cursor: pointer;
+}
+
+.follow-button {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  background-color: #fe2c55;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.action-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  cursor: pointer;
+}
+
+.action-icon {
+  font-size: 28px;
+  margin-bottom: 5px;
+}
+
+.action-button span {
+  font-size: 14px;
+}
+
+.action-button.liked {
+  color: #fe2c55;
+}
+
+.music-disc {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-top: 10px;
+  animation: rotate 5s linear infinite;
+  border: 2px solid white;
+}
+
+.music-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Video Info */
+.video-info {
+  position: absolute;
+  left: 20px;
+  bottom: 100px;
+  max-width: 400px;
+  color: white;
+  z-index: 10;
+  padding: 0 20px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.username {
+  font-size: 17px;
+  font-weight: 700;
+  margin-right: 10px;
+}
+
+.follow-button-inline {
+  background-color: #fe2c55;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.video-description {
+  font-size: 16px;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.video-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.video-tag {
+  color: #69c9d0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Comments Container */
+.comments-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100%;
+  background-color: #fff;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.comments-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.comments-header h3 {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.close-comments {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+/* Comments Content */
+.comments-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.comments-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 20px;
+}
+
+.no-comments {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #888;
+  text-align: center;
+  padding: 20px;
+}
+
+.comment-item {
+  display: flex;
+  padding: 15px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.comment-content {
+  flex: 1;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.comment-username {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.comment-time {
+  color: #888;
+  font-size: 12px;
+}
+
+.comment-text {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.like-button {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+}
+
+.like-button:hover {
+  color: #fe2c55;
+}
+
+.reply-button {
+  color: #888;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.reply-button:hover {
+  text-decoration: underline;
+}
+
+.comment-input-container {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  background-color: #fff;
+}
+
+.comment-input {
+  flex: 1;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  padding: 10px 15px;
+  font-size: 14px;
+  outline: none;
+}
+
+.comment-input:focus {
+  border-color: #ddd;
+}
+
+.send-comment-button {
+  background: none;
+  border: none;
+  color: #2196F3;
+  font-size: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.send-comment-button:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Loading */
+.comments-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #2196F3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+/* Overlays */
+.upload-overlay,
+.explore-overlay,
+.user-videos-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+  width: 100%;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #000;
+  color: #fff;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .tiktok-sidebar {
+    width: 80px;
+  }
+  
+  .menu-item span,
+  .sidebar-footer {
+    display: none;
+  }
+  
+  .menu-item {
+    justify-content: center;
+    padding: 16px 0;
+  }
+  
+  .menu-item svg {
+    margin-right: 0;
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .short-video-container.with-comments {
+    padding-right: 0;
+  }
+  
+  .with-comments .video-actions-sidebar,
+  .with-comments .navigation-buttons {
+    display: none; /* Ẩn các nút khi hiển thị comments trên mobile */
+  }
+  
+  .tiktok-sidebar {
+    display: none;
+  }
+  
+  .comments-container {
+    width: 100%;
+  }
+  
+  .video-info {
+    left: 10px;
+    bottom: 80px;
+    max-width: 70%;
+    padding: 0 10px;
+  }
+  
+  .video-actions-sidebar {
+    right: 10px;
+  }
+  
+  .navigation-buttons {
+    right: 10px;
+  }
+  
+  .nav-arrow {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+  
+  .search-box {
+    width: 200px;
+  }
+} 
