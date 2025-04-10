@@ -171,3 +171,128 @@
     /* Chiếm ít không gian hơn */
     padding: 20px;
 }
+
+/* Container for the attractions component */
+.home-attractions-container {
+    width: 80%;
+    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Search form styling */
+.attractions-search-form {
+    display: flex;
+    gap: 15px;
+    width: 500px;
+    align-items: center;
+    margin: 0 auto;
+}
+
+/* Search item styling */
+.attractions-search-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.attractions-search-item span {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* Input styling */
+.attractions-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+}
+
+/* Search button */
+.attractions-search-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.attractions-search-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Main content container */
+.attractions-content-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.attractions-content-container>* {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.attractions-content-container .accomodation-cards {
+    flex: 3;
+    /* Chiếm nhiều không gian hơn */
+    padding: 20px;
+}
+
+.attractions-content-container .left-sidebar {
+    flex: 1;
+    /* Chiếm ít không gian hơn */
+    padding: 20px;
+}
+
+@media (max-width: 768px) {
+    .home-attractions-container {
+        width: 95%;
+        padding: 0px;
+    }
+
+    .attractions-search-form {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .attractions-search-item {
+        width: 100%;
+    }
+
+    .attractions-content-container {
+        flex-direction: column;
+    }
+
+    .accomodation-cards {
+        padding: 0px !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .attractions-content-container {
+        padding: 10px 0px !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import './Attraction.css';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { StoreContext } from '../../Context/StoreContext';
 import axios from 'axios';
 import Pagination from '../../components/Pagination/Pagination';
@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 const Attraction = ({ data }) => {
     const navigate = useNavigate();
     const { url } = useContext(StoreContext);
-    
+
     const handleEdit = () => {
         navigate(`/attraction/details`, { state: { attractionData: data } });
     };
@@ -37,10 +37,13 @@ const Attraction = ({ data }) => {
     return (
         <div className="attraction-card">
             <div className="image-container" onClick={handleEdit}>
-                <img 
-                    src={data.images[0].includes('http') ? data.images[0] : `${url}/images/${data.images[0]}`} 
-                    alt={data.attractionName}
-                />
+                {data.images && data.images.length > 0 && data.images[0] && (
+                    <img
+                        src={data.images[0].includes('http') ? data.images[0] : `${url}/images/${data.images[0]}`}
+                        alt={data.attractionName}
+                    />
+                )}
+
             </div>
             <div className="content">
                 <h3 onClick={handleEdit}>{data.attractionName}</h3>
@@ -79,11 +82,11 @@ const Attraction = ({ data }) => {
 const AttractionList = () => {
     const navigate = useNavigate();
     const { url } = useContext(StoreContext);
-    
+
     const [attractions, setAttractions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
