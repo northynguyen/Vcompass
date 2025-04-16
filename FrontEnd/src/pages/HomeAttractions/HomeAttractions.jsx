@@ -29,6 +29,7 @@ const HomeAttractions = () => {
             const data = await response.json();
             if (data.success) {
                 setAttractionsFound(data.data);
+                console.log(data.data); 
                 setTotalPages(data.totalPages);
             }
         } catch (error) {

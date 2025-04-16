@@ -711,7 +711,7 @@ export const OtherActivity = ({
               {activity.imgSrc.map((image, index) => (
                 <img
                   key={index}
-                  src={`${url}/images/${image}`}
+                  src={image.includes("http") ? image : `${url}/images/${image}`}
                   alt={activity.name}
                   className="other-activity-image"
                   onClick={() => openModal(index)} // Mở modal khi nhấp vào ảnh

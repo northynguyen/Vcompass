@@ -26,13 +26,101 @@ const CreateSchedule = () => {
   const { type } = useParams();
   const [destination, setDestination] = useState('');
   const [budget, setBudget] = useState("");
-  const [aiLoading, setAiLoading] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
   const [filteredCities, setFilteredCities] = useState([]);
   const [departureDate, setDepartureDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
+  const [selectedTypes, setSelectedTypes] = useState([]);
   const { user, url, token } = useContext(StoreContext);
+
+  // Thêm state để quản lý lỗi
+  const [errors, setErrors] = useState({
+    destination: '',
+    dates: '',
+    types: ''
+  });
+
+  const travelTypes = [
+    'Du lịch vui chơi',
+    'Du lịch học tập',
+    'Du lịch nghỉ dưỡng',
+    'Du lịch thương mại',
+    'Du lịch văn hóa',
+    'Du lịch ẩm thực'
+  ];
+
+  const handleTypeSelection = (selectedType) => {
+    setSelectedTypes(prev => {
+      if (prev.includes(selectedType)) {
+        return prev.filter(type => type !== selectedType);
+      } else {
+        return [...prev, selectedType];
+      }
+    });
+  };
+
+  // Hàm validate form
+  const validateForm = () => {
+    let tempErrors = {
+      destination: '',
+      dates: '',
+      types: ''
+    };
+    let isValid = true;
+
+    // Validate điểm đến
+    if (!destination.trim()) {
+      tempErrors.destination = 'Vui lòng chọn điểm đến';
+      isValid = false;
+    }
+
+    // Validate ngày đi và ngày về
+    if (!departureDate) {
+      tempErrors.dates = 'Vui lòng chọn ngày đi';
+      isValid = false;
+    } else if (!returnDate) {
+      tempErrors.dates = 'Vui lòng chọn ngày về';
+      isValid = false;
+    } else {
+      const start = new Date(departureDate);
+      const end = new Date(returnDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (start < today) {
+        tempErrors.dates = 'Ngày đi không thể là ngày trong quá khứ';
+        isValid = false;
+      } else if (end < start) {
+        tempErrors.dates = 'Ngày về phải sau ngày đi';
+        isValid = false;
+      }
+    }
+
+    // Validate loại hình du lịch
+    if (selectedTypes.length === 0) {
+      tempErrors.types = 'Vui lòng chọn ít nhất một loại hình du lịch';
+      isValid = false;
+    }
+
+    // Validate budget cho AI tour
+    if (type === "ai" && !budget.trim()) {
+      tempErrors.budget = 'Vui lòng nhập ngân sách dự kiến';
+      isValid = false;
+    }
+
+    setErrors(tempErrors);
+    return isValid;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setAiLoading(true);
+
     const days = calculateDaysAndNights(departureDate, returnDate)
     let schedule
     if (type === "ai") {
@@ -58,6 +146,8 @@ const CreateSchedule = () => {
       } catch (error) {
         console.error("🚨 Lỗi khi tạo lịch trình bằng AI", error);
         return null;
+      } finally {
+        setAiLoading(false);
       }
     } else {
       schedule = {
@@ -70,6 +160,7 @@ const CreateSchedule = () => {
         dateStart: convertDateFormat(departureDate),
         dateEnd: convertDateFormat(returnDate),
         status: "Draft",
+        type: selectedTypes,
         activities: Array.from({ length: days.numDays }, (_, i) => ({
           day: i + 1,
           activity: []
@@ -129,6 +220,12 @@ const CreateSchedule = () => {
 
   return (
     <div className="create-schedule-container">
+      {aiLoading && (
+        <div className="loading-indicator">
+          <img src="/src/assets/logo_ai.png" alt="Loading..." />
+          <p>Đang tạo lịch trình...</p>
+        </div>
+      )}
       <div className="step-indicator">
         <h2>Chọn điểm đến và thời gian</h2>
       </div>
@@ -142,7 +239,9 @@ const CreateSchedule = () => {
             value={destination}
             onChange={handleInputChange}
             autoComplete="off"
+            className={errors.destination ? 'error-input' : ''}
           />
+          {errors.destination && <div className="error-message">{errors.destination}</div>}
           {filteredCities.length > 0 && (
             <ul className="suggestions-list">
               {filteredCities.map((city, index) => (
@@ -160,6 +259,8 @@ const CreateSchedule = () => {
             id="departureDate"
             value={departureDate}
             onChange={(e) => setDepartureDate(e.target.value)}
+            min={new Date().toISOString().split('T')[0]}
+            className={errors.dates ? 'error-input' : ''}
           />
         </div>
         <div className="form-group">
@@ -169,19 +270,40 @@ const CreateSchedule = () => {
             id="returnDate"
             value={returnDate}
             onChange={(e) => setReturnDate(e.target.value)}
+            min={departureDate || new Date().toISOString().split('T')[0]}
+            className={errors.dates ? 'error-input' : ''}
           />
+          {errors.dates && <div className="error-message">{errors.dates}</div>}
+        </div>
+        <div className="form-group">
+          <label>Loại hình du lịch</label>
+          <div className="travel-types-container">
+            {travelTypes.map((travelType, index) => (
+              <button
+                key={index}
+                type="button"
+                className={`type-button ${selectedTypes.includes(travelType) ? 'selected' : ''} ${errors.types ? 'error-input' : ''}`}
+                onClick={() => handleTypeSelection(travelType)}
+              >
+                {travelType}
+              </button>
+            ))}
+          </div>
+          {errors.types && <div className="error-message">{errors.types}</div>}
         </div>
         {
           type === "ai" &&
           <div className="form-group">
-            <label htmlFor="returnDate">Chi phí ước tính</label>
+            <label htmlFor="budget">Chi phí ước tính</label>
             <input
               type="text"
-              id="returnDate"
+              id="budget"
               placeholder='Từ 2.000.000 - 5.000.000'
               value={budget}
               onChange={(e) => setBudget(e.target.value)}
+              className={errors.budget ? 'error-input' : ''}
             />
+            {errors.budget && <div className="error-message">{errors.budget}</div>}
           </div>
         }
         <button type="submit" className="submit-button">Lên lịch trình</button>

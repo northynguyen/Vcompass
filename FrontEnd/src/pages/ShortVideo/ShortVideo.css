@@ -8,7 +8,6 @@
   top: 0;
   left: 0;
   z-index: 1000;
-  transition: all 0.3s ease;
 }
 
 /* Khi hiển thị comments, điều chỉnh container */
@@ -19,12 +18,17 @@
 /* Sidebar */
 .tiktok-sidebar {
   width: 80px;
-  height: 100%;
+  height: 100vh;
   background-color: #000;
   border-right: 1px solid #2a2a2a;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  will-change: transform;
 }
 
 .tiktok-logo {
@@ -94,10 +98,12 @@
 /* Content */
 .tiktok-content {
   flex: 1;
-  height: 100%;
+  height: 100vh;
   position: relative;
   background-color: #000;
   overflow: hidden;
+  margin-left: 80px; /* Match sidebar width */
+  transition: none;
 }
 
 .tiktok-header {
@@ -145,6 +151,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  will-change: transform;
+}
+
+.video-feed::-webkit-scrollbar {
+  width: 6px;
+}
+
+.video-feed::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.video-feed::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
 }
 
 /* Navigation Buttons */
@@ -186,8 +209,8 @@
 
 /* Video Actions Sidebar */
 .video-actions-sidebar {
+  position: absolute;
   right: 20px;
-  bottom: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -198,7 +221,7 @@
 
 /* Điều chỉnh vị trí khi có comments */
 .with-comments .video-actions-sidebar {
-  right: 420px; /* 400px (width của comments) + 20px (padding ban đầu) */
+  right: 100px; /* 400px (width của comments) + 20px (padding ban đầu) */
 }
 
 .user-avatar-container {
@@ -240,6 +263,10 @@
   color: white;
   cursor: pointer;
 }
+.action-button:hover {
+  color:rgb(135, 129, 130);
+  transition: color 0.2s;
+}
 
 .action-icon {
   font-size: 28px;
@@ -258,10 +285,11 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  background-color: #333;
   overflow: hidden;
+  position: relative;
   margin-top: 10px;
-  animation: rotate 5s linear infinite;
-  border: 2px solid white;
+  animation: rotate 6s linear infinite;
 }
 
 .music-image {
@@ -271,8 +299,8 @@
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Video Info */
@@ -280,10 +308,10 @@
   position: absolute;
   left: 20px;
   bottom: 100px;
-  max-width: 400px;
+  width: 65%;
+  max-width: 350px;
   color: white;
   z-index: 10;
-  padding: 0 20px;
 }
 
 .user-info {
@@ -293,15 +321,15 @@
 }
 
 .username {
-  font-size: 17px;
-  font-weight: 700;
+  font-weight: bold;
+  font-size: 16px;
   margin-right: 10px;
 }
 
 .follow-button-inline {
-  background-color: #fe2c55;
-  color: #fff;
-  border: none;
+  background-color: transparent;
+  color: #fe2c55;
+  border: 1px solid #fe2c55;
   border-radius: 4px;
   padding: 2px 8px;
   font-size: 14px;
@@ -309,7 +337,7 @@
 }
 
 .video-description {
-  font-size: 16px;
+  font-size: 14px;
   margin-bottom: 10px;
   line-height: 1.3;
 }
@@ -321,313 +349,547 @@
 }
 
 .video-tag {
-  color: #69c9d0;
-  font-size: 16px;
-  font-weight: 600;
+  color: #25f4ee;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 /* Comments Container */
 .comments-container {
-  position: fixed;
   top: 0;
   right: 0;
   width: 400px;
   height: 100%;
-  background-color: #fff;
-  z-index: 1100;
+  background-color: #1f1f1f;
+  z-index: 20;
+  border-left: 1px solid #333;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
   animation: slideIn 0.3s ease;
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); }
+  from { transform: translateX(400px); }
   to { transform: translateX(0); }
 }
 
 .comments-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 15px 20px;
-  border-bottom: 1px solid #eee;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #333;
 }
 
 .comments-header h3 {
   font-size: 16px;
-  margin: 0;
+  color: white;
   font-weight: 600;
 }
 
 .close-comments {
   background: none;
   border: none;
-  font-size: 20px;
+  color: white;
+  font-size: 18px;
   cursor: pointer;
-  color: #666;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 5px;
 }
 
-/* Comments Content */
-.comments-content {
-  flex: 1;
+/* Loading container */
+.loading-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
-.comments-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 20px;
-}
-
-.no-comments {
-  display: flex;
-  justify-content: center;
   align-items: center;
+  gap: 20px;
+  z-index: 1000;
+  width: 100%;
   height: 100%;
-  color: #888;
+  background-color: #000;
+  will-change: transform;
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid white;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Empty container */
+.empty-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+  color: white;
   text-align: center;
   padding: 20px;
 }
 
-.comment-item {
-  display: flex;
-  padding: 15px 0;
-  border-bottom: 1px solid #f5f5f5;
-}
-
-.comment-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 12px;
-  object-fit: cover;
-}
-
-.comment-content {
-  flex: 1;
-}
-
-.comment-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-}
-
-.comment-username {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.comment-time {
-  color: #888;
-  font-size: 12px;
-}
-
-.comment-text {
-  margin: 0 0 8px;
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-.comment-actions {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.like-button {
-  background: none;
+.empty-container button {
+  margin-top: 20px;
+  background-color: #fe2c55;
+  color: white;
   border: none;
-  color: #888;
-  cursor: pointer;
-  font-size: 14px;
-  padding: 0;
-}
-
-.like-button:hover {
-  color: #fe2c55;
-}
-
-.reply-button {
-  color: #888;
-  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: bold;
   cursor: pointer;
 }
 
-.reply-button:hover {
-  text-decoration: underline;
+/* Responsive styles */
+/* Large desktop (1200px and up) */
+@media (min-width: 1200px) {
+  .video-feed {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  .video-info {
+    left: 50px;
+    bottom: 120px;
+    max-width: 400px;
+  }
+  
+  .video-actions-sidebar {
+    right: 50px;
+    bottom: 120px;
+  }
+  
+  .username {
+    font-size: 18px;
+  }
+  
+  .video-description {
+    font-size: 16px;
+  }
 }
 
-.comment-input-container {
-  display: flex;
-  align-items: center;
-  padding: 15px;
-  border-top: 1px solid #eee;
-  background-color: #fff;
+/* Desktop and tablet landscape (992px to 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .video-feed {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .video-info {
+    left: 40px;
+    bottom: 100px;
+  }
+  
+  .video-actions-sidebar {
+    right: 40px;
+    bottom: 100px;
+  }
 }
 
-.comment-input {
-  flex: 1;
-  border: 1px solid #eee;
-  border-radius: 20px;
-  padding: 10px 15px;
-  font-size: 14px;
-  outline: none;
-}
-
-.comment-input:focus {
-  border-color: #ddd;
-}
-
-.send-comment-button {
-  background: none;
-  border: none;
-  color: #2196F3;
-  font-size: 20px;
-  margin-left: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.send-comment-button:disabled {
-  color: #ccc;
-  cursor: not-allowed;
-}
-
-/* Loading */
-.comments-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
-.spinner {
-  width: 30px;
-  height: 30px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #2196F3;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 10px;
-}
-
-/* Overlays */
-.upload-overlay,
-.explore-overlay,
-.user-videos-overlay {
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1100;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 0.3s ease;
-  width: 100%;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* Loading */
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #000;
-  color: #fff;
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s ease-in-out infinite;
-  margin-bottom: 16px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
+/* Tablet (768px to 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
   .tiktok-sidebar {
-    width: 80px;
-  }
-  
-  .menu-item span,
-  .sidebar-footer {
-    display: none;
-  }
-  
-  .menu-item {
-    justify-content: center;
-    padding: 16px 0;
+    width: 60px;
   }
   
   .menu-item svg {
-    margin-right: 0;
-    font-size: 24px;
+    font-size: 20px;
+  }
+  
+  .menu-item span {
+    font-size: 10px;
+  }
+  
+  .short-video-container.with-comments {
+    padding-right: 350px;
+  }
+  
+  .comments-container {
+    width: 350px;
+  }
+  
+  .with-comments .video-actions-sidebar {
+    right: 370px;
+  }
+  
+  .video-actions-sidebar {
+    right: 15px;
+    bottom: 80px;
+  }
+  
+  .video-info {
+    left: 15px;
+    bottom: 80px;
+    max-width: 300px;
+  }
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .action-icon {
+    font-size: 22px;
+  }
+  
+  .action-button span {
+    font-size: 12px;
   }
 }
 
-@media (max-width: 768px) {
+/* Mobile landscape and small tablet (576px to 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .tiktok-sidebar {
+    width: 50px;
+  }
+  
+  .menu-item {
+    padding: 10px 0;
+  }
+  
+  .menu-item svg {
+    font-size: 18px;
+    margin-bottom: 2px;
+  }
+  
+  .menu-item span {
+    font-size: 9px;
+  }
+  
   .short-video-container.with-comments {
     padding-right: 0;
   }
   
-  .with-comments .video-actions-sidebar,
-  .with-comments .navigation-buttons {
-    display: none; /* Ẩn các nút khi hiển thị comments trên mobile */
-  }
-  
-  .tiktok-sidebar {
-    display: none;
-  }
-  
   .comments-container {
     width: 100%;
+    z-index: 30;
+  }
+  
+  .navigation-buttons {
+    display: none; /* Ẩn nút lên xuống */
+  }
+  
+  .video-actions-sidebar {
+    position: fixed;
+    flex-direction: column;
+    right: 10px;
+    width: auto;
+    justify-content: flex-start;
+    gap: 15px;
+    padding: 0;
+  }
+  
+ 
+  
+  .music-disc {
+    display: none;
   }
   
   .video-info {
     left: 10px;
     bottom: 80px;
-    max-width: 70%;
-    padding: 0 10px;
+    width: 80%;
+    max-width: 350px;
   }
   
-  .video-actions-sidebar {
-    right: 10px;
+  .action-icon {
+    font-size: 22px;
+    margin-bottom: 3px;
+  }
+  
+  .action-button span {
+    font-size: 10px;
+  }
+}
+
+/* Mobile (up to 575px) */
+@media (max-width: 575px) {
+  .tiktok-sidebar {
+    width: 45px;
+  }
+  
+  .menu-item {
+    padding: 8px 0;
+  }
+  
+  .menu-item svg {
+    font-size: 16px;
+    margin-bottom: 2px;
+  }
+  
+  .menu-item span {
+    font-size: 8px;
+  }
+  
+  .short-video-container.with-comments {
+    padding-right: 0;
+  }
+  
+  .comments-container {
+    width: 100%;
+    z-index: 30;
   }
   
   .navigation-buttons {
+    display: none; /* Ẩn nút lên xuống */
+  }
+  
+  .video-actions-sidebar {
+    position: fixed;
+    flex-direction: column;
     right: 10px;
+    width: auto;
+    justify-content: flex-start;
+    gap: 15px;
+    padding: 0;
+    background: none;
   }
   
-  .nav-arrow {
-    width: 35px;
-    height: 35px;
-    font-size: 16px;
+
+  
+  .music-disc {
+    display: none;
   }
   
-  .search-box {
-    width: 200px;
+  .video-info {
+    left: 10px;
+    bottom: 60px;
+    width: 75%;
+    max-width: 320px;
   }
-} 
+  
+  .username {
+    font-size: 14px;
+  }
+  
+  .follow-button-inline {
+    font-size: 12px;
+    padding: 1px 6px;
+  }
+  
+  .video-description {
+    font-size: 12px;
+  }
+  
+  .video-tag {
+    font-size: 12px;
+  }
+  
+  .action-icon {
+    font-size: 22px;
+    margin-bottom: 2px;
+  }
+  
+  .action-button span {
+    font-size: 10px;
+  }
+}
+
+/* Fixes for core UI elements */
+body .header {
+  z-index: 999;
+}
+
+.short-video-container ~ .header {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.short-video-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  z-index: 1001;
+  background: transparent;
+}
+
+.short-video-container:hover::before ~ .header,
+.short-video-container:hover ~ .header {
+  opacity: 1;
+}
+
+body .short-video-container ~ .header:hover,
+body .header:hover {
+  opacity: 1;
+}
+
+/* Scroll Help */
+.scroll-help {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 20;
+  animation: fadeInOut 3s forwards;
+  font-size: 14px;
+}
+
+.scroll-help svg {
+  font-size: 16px;
+  color: #fff;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Explore Tab Styles */
+.explore-tab {
+  flex: 1;
+  height: 100%;
+  background-color: #000;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.explore-tab .explore-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.explore-tab .video-card {
+  position: relative;
+  aspect-ratio: 9/16;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.explore-tab .video-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.explore-tab .video-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  color: white;
+}
+
+.explore-tab .video-info h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.explore-tab .video-info p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.schedule-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.schedule-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.schedule-button i {
+  font-size: 16px;
+}
+
+.schedule-button span {
+  font-weight: 500;
+}
+
+/* Schedule Popup */
+.schedule-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.schedule-popup-content {
+  position: relative;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.close-popup {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+  z-index: 1;
+}
+
+.close-popup:hover {
+  color: #333;
+}
+
+/* Responsive styles for popup */
+@media (max-width: 768px) {
+  .schedule-popup-content {
+    width: 95%;
+    padding: 15px;
+  }
+}

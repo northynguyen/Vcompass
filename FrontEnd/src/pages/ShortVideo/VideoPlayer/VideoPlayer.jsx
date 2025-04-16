@@ -182,7 +182,7 @@ const VideoPlayer = ({ videoUrl, onNext, onPrev, videoId }) => {
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
-      {!isLoaded && <div className="loading-spinner">Đang tải video...</div>}
+      {!isLoaded && <div className="loading-spinner"></div>}
       
       <video
         ref={videoRef}

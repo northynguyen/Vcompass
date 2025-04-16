@@ -18,6 +18,9 @@ const UploadVideo = ({ onClose }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [previewUrl, setPreviewUrl] = useState('');
   const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState('');
+  const [schedules, setSchedules] = useState([]);
+  const [selectedSchedule, setSelectedSchedule] = useState(null);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
   
   // Thêm refs để tham chiếu đến input file
   const videoInputRef = useRef(null);
@@ -27,6 +30,8 @@ const UploadVideo = ({ onClose }) => {
   const [uploadStatus, setUploadStatus] = useState('idle'); // 'idle', 'uploading', 'processing', 'success', 'error'
   const [uploadPhase, setUploadPhase] = useState(0); // 0-100: upload to server, 101-200: processing on server
   const processingTimerRef = useRef(null);
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
   
   // Hàm để mô phỏng tiến trình xử lý dựa trên kích thước file
   const simulateProcessingProgress = (fileSize) => {
@@ -76,13 +81,55 @@ const UploadVideo = ({ onClose }) => {
     { id: 'beauty', name: 'Làm đẹp' }
   ];
   
-  const handleFileChange = (e) => {
+  // Hàm lấy frame ngẫu nhiên từ video
+  const extractRandomFrame = async (videoUrl) => {
+    return new Promise((resolve) => {
+      const video = document.createElement('video');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      video.src = videoUrl;
+      video.crossOrigin = 'anonymous';
+
+      video.onloadedmetadata = () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        // Chọn thời điểm ngẫu nhiên trong video
+        const randomTime = Math.random() * video.duration;
+        video.currentTime = randomTime;
+
+        video.onseeked = () => {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob((blob) => {
+            const file = new File([blob], 'thumbnail.png', { type: 'image/png' });
+            resolve(file);
+          }, 'image/png');
+        };
+      };
+    });
+  };
+
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.type.startsWith('video/')) {
         setSelectedFile(file);
         const fileUrl = URL.createObjectURL(file);
         setPreviewUrl(fileUrl);
+
+        // Nếu chưa có thumbnail, tự động tạo từ video
+        if (!thumbnailFile) {
+          try {
+            const thumbnail = await extractRandomFrame(fileUrl);
+            setThumbnailFile(thumbnail);
+            const thumbnailUrl = URL.createObjectURL(thumbnail);
+            setThumbnailPreviewUrl(thumbnailUrl);
+          } catch (error) {
+            console.error('Error extracting thumbnail:', error);
+            toast.error('Không thể tạo thumbnail tự động');
+          }
+        }
       } else {
         toast.error('Vui lòng chọn file video hợp lệ');
       }
@@ -166,6 +213,9 @@ const UploadVideo = ({ onClose }) => {
       formData.append('video', selectedFile);
       if (thumbnailFile) {
         formData.append('thumbnail', thumbnailFile);
+      }
+      if (selectedSchedule) {
+        formData.append('scheduleId', selectedSchedule._id);
       }
       formData.append('title', title || 'Video không có tiêu đề');
       formData.append('description', description || '');
@@ -264,6 +314,27 @@ const UploadVideo = ({ onClose }) => {
       default:
         return '';
     }
+  };
+  
+  useEffect(() => {
+    fetchUserSchedules();
+  }, []);
+
+  const fetchUserSchedules = async () => {
+    try {
+      const response = await axios.get(`${url}/api/schedule/user/getSchedules`, {
+        headers: { token }
+      });
+      setSchedules(response.data.schedules);
+    } catch (error) {
+      console.error('Error fetching schedules:', error);  
+      toast.error('Không thể tải danh sách lịch trình');
+    }
+  };
+
+  const handleScheduleSelect = (schedule) => {
+    setSelectedSchedule(schedule);
+    setShowScheduleModal(false);
   };
   
   return (
@@ -443,6 +514,28 @@ const UploadVideo = ({ onClose }) => {
                 </label>
               </div>
             </div>
+            
+            <div className="form-group">
+              <label>Lịch trình</label>
+              <div className="schedule-selection">
+                <button 
+                  type="button" 
+                  className="select-schedule-btn"
+                  onClick={() => setShowScheduleModal(true)}
+                >
+                  {selectedSchedule ? selectedSchedule.scheduleName : 'Chọn lịch trình'}
+                </button>
+                {selectedSchedule && (
+                  <button 
+                    type="button" 
+                    className="clear-schedule-btn"
+                    onClick={() => setSelectedSchedule(null)}
+                  >
+                    Xóa
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
         
@@ -478,6 +571,33 @@ const UploadVideo = ({ onClose }) => {
           </button>
         </div>
       </form>
+
+      {showScheduleModal && (
+        <div className="schedule-modal">
+          <div className="schedule-modal-content">
+            <h3>Chọn lịch trình</h3>
+            <div className="schedule-list">
+              {schedules.map(schedule => (
+                <div 
+                  key={schedule._id} 
+                  className="schedule-item"
+                  onClick={() => handleScheduleSelect(schedule)}
+                >
+                  <h4>{schedule.scheduleName}</h4>
+                  <p>{schedule.description}</p>
+                  <span>{schedule.dateStart} - {schedule.dateEnd}</span>
+                </div>
+              ))}
+            </div>
+            <button 
+              className="close-modal-btn"
+              onClick={() => setShowScheduleModal(false)}
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

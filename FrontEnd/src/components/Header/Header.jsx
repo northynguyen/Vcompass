@@ -223,7 +223,7 @@ const Header = ({ setShowLogin }) => {
 
 
   return (
-    <div className={isHomePage ? 'home-header' : 'header'}>
+    <div className={ 'header'}>
       <div className="logo" onClick={() => window.location.replace('/')}>
         <img src={logo} className="logo-image"></img>
       </div>

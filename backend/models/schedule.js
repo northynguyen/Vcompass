@@ -61,6 +61,9 @@ const ScheduleSchema = new Schema(
     status: { type: String, required: true },
     activities: [ActivitySchema],
     additionalExpenses: [AdditionalExpenseSchema],
+
+    
+    type: { type: [String], required: true },
     comments: [CommentSchema],
     likes: [LikeSchema],
     createdAt: {

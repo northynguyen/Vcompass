@@ -403,7 +403,7 @@ const ActivityItem = ({
               mode={mode}
             />
           )}
-          {activity.activityType === "Attraction" && (
+          {activity.activityType === "Attraction" && data.attraction && (
             <AttractionActivity
               data={data.attraction}
               activity={activity}
@@ -1220,7 +1220,7 @@ const Schedule = ({ mode }) => {
           icon: activity.imgSrc,
         };
         expenses.push(expense);
-      });
+      });  
     });
     return expenses;
   };
@@ -1231,7 +1231,7 @@ const Schedule = ({ mode }) => {
       const additonExpense = {
         id: addExpense._id,
         name: addExpense.name,
-        cost: addExpense.cost,
+        cost: addExpense.cost,  
         description: addExpense.description,
       };
       additonExpenses.push(additonExpense);

@@ -43,7 +43,7 @@
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
+    max-width: 700px;
     width: 100%;
   }
   
@@ -114,4 +114,89 @@
     background-color: #f0f0f0;
   }
   
+  .travel-types-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .type-button {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .type-button:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .type-button.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+  }
+
+  .error-input {
+    border-color: #dc3545 !important;
+  }
+
+  .error-message {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 5px;
+  }
+
+  .type-button.error-input {
+    border-color: #dc3545;
+  }
+
+  .loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed; /* Position it fixed to cover the entire screen */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.9); /* Slightly more opaque background */
+    z-index: 1000; /* Ensure it appears above other content */
+    backdrop-filter: blur(5px); /* Add a blur effect to the background */
+    transition: opacity 0.3s ease; /* Smooth transition for opacity */
+  }
+
+  .loading-indicator img {
+    width: 80px; /* Increase the size of the loading icon */
+    height: 80px;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite; /* Apply pulsing animation */
+  }
+
+  .loading-indicator p {
+    margin-top: 15px; /* Space between icon and text */
+    font-size: 20px; /* Increase font size for loading text */
+    color: #333; /* Text color */
+    font-weight: bold; /* Make the text bold */
+  }
+
+  /* Keyframes for pulsing animation */
+  @keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+  }
 }

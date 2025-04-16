@@ -279,6 +279,7 @@ svg.chat-user-icon {
 .chat-frame-container {
   display: flex;
   flex-direction: column;
+  width: 100%;
   justify-content: space-between;
   flex-grow: 1;
 }

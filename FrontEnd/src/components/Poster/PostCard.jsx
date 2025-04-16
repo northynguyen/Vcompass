@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import axios from "axios";
 import CryptoJS from "crypto-js";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiOutlineMore } from "react-icons/ai";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { FaHeart } from "react-icons/fa";
@@ -10,13 +11,13 @@ import { FiFlag } from "react-icons/fi";
 import "./PostCard.css";
 import ReportForm from "../Report/ReportForm";
 
-
-const PostCard = ({ schedule, handleScheduleClick }) => {
+const PostCard = ({ schedule, handleScheduleClick, style }) => {
   const { url, user, token } = useContext(StoreContext);
   const [likes, setLikes] = useState(schedule?.likes || []);
   const [isFavorite, setIsFavorite] = useState(false);
   const [openScheduleMenu, setOpenScheduleMenu] = useState(null);
   const [showReport, setShowReport] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
   const activityCosts = {
     Accommodation: 0,
@@ -219,11 +220,26 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
     navigate(`/otherUserProfile/${id}`);
   };
 
+  // Track window width for responsive design
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Determine responsive styles
+
+
   return (
-    <div className="card-container">
+    <div className="card-container" style={style}>
       <header className="card-header">
         {
-          schedule.idUser && <div className="user-info" onClick={() => { handleUserClick(schedule.idUser._id) }}>
+          schedule.idUser && <div className="user-info-img" onClick={() => { handleUserClick(schedule.idUser._id) }}>
             <img
               className="user-avatar"
               src={schedule.idUser.avatar && schedule.idUser.avatar.includes("http") ? schedule.idUser.avatar : schedule.idUser.avatar ? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}

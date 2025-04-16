@@ -197,7 +197,7 @@
 .comment-item {
   display: flex;
   padding: 15px 0;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solidrgba(117, 119, 119, 0.78);
 }
 
 .comment-avatar {
@@ -221,7 +221,7 @@
 .comment-username {
   font-weight: 600;
   font-size: 14px;
-  color: #1e1d1f ;
+  color: white;
 }
 
 .comment-time {
@@ -230,7 +230,7 @@
 }
 
 .comment-text {
-  color: #2d2c2e;
+  color: #889093;
   margin: 0 0 8px;
   font-size: 14px;
   line-height: 1.4;
@@ -260,9 +260,12 @@
 }
 
 .reply-button {
-  color: #888;
+  color: #889093;
   font-size: 14px;
   cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 .reply-button:hover {
@@ -273,8 +276,7 @@
   display: flex;
   align-items: center;
   padding: 15px;
-  border-top: 1px solid #eee;
-  background-color: #fff;
+  background-color: #18181b;
 }
 
 .comment-input {
@@ -333,7 +335,7 @@
 .comment-replies {
   margin-top: 10px;
   margin-left: 10px;
-  border-left: 1px solid #f0f0f0;
+  border-left: 1px solid #889093;
   padding-left: 15px;
 }
 
@@ -364,25 +366,25 @@
 .reply-username {
   font-weight: 600;
   font-size: 13px;
-  color: #1e1d1f;
+  color: white;
 }
 
 .reply-time {
-  color: #888;
+  color: #889093;
   font-size: 11px;
 }
 
 .reply-text {
   margin: 0;
   font-size: 13px;
-  color: #2d2c2e;
+  color: #889093;
   line-height: 1.4;
 }
 
 .reply-input-container {
   padding: 10px 15px;
   border-top: 1px solid #eee;
-  background-color: #fff;
+  background-color: #18181b;
 }
 
 .replying-to {

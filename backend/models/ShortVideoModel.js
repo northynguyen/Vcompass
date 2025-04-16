@@ -99,6 +99,12 @@ const ShortVideoSchema = new mongoose.Schema({
     type: Number, // in seconds
     default: 0
   },
+  // Thêm trường liên kết với Schedule
+  scheduleId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'schedule',
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now
