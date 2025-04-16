@@ -6,7 +6,6 @@ import "./Maptest.css"; // Import file CSS
 const LOCATION = { lat: 10.3465, lng: 107.0843 }; // Toạ độ Vũng Tàu
 const SEARCH_RADIUS = 5000; // Bán kính tìm kiếm (mét)
 const PLACE_TYPES = ["lodging", "restaurant", "tourist_attraction"]; // Loại địa điểm
-const API_KEY = "AIzaSyAS3PJ_faqNzJOVQfNT857SfzRCucS5YMQ";
 
 const libraries = ["places"]; // Thêm thư viện Places API
 
