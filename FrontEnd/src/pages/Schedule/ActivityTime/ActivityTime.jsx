@@ -122,18 +122,18 @@ export const AccomActivity = ({
   mode,
 }) => {
 
-  
-  const [isSaved, setIsSaved] = useState(false); 
+
+  const [isSaved, setIsSaved] = useState(false);
   const { url, user, token } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
-      if(!user){
+      if (!user) {
         toast.error("Vui lòng đăng nhập !");
         return;
       }
       const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại
       const action = newStatus ? "add" : "remove"; // Chọn hành động dựa trên trạng thái mới
-  
+
       // Gửi yêu cầu tới API
       const response = await fetch(
         `${url}/api/user/user/${user._id}/addtoWishlist?type=accommodation&itemId=${data._id}&action=${action}`,
@@ -142,26 +142,26 @@ export const AccomActivity = ({
           headers: { token: token },
         }
       );
-  
+
       const result = await response.json();
-  
+
       if (result.success) {
         // Nếu API trả về thành công, cập nhật danh sách `favorites.accommodation`
         const updatedFavorites = newStatus
           ? [...user.favorites.accommodation, data._id] // Thêm item vào danh sách
           : user.favorites.accommodation.filter((id) => id !== data._id); // Xóa item khỏi danh sách
-  
+
         const updatedUserData = {
           ...user,
           favorites: { ...user.favorites, accommodation: updatedFavorites },
         };
-  
+
         // Lưu dữ liệu đã cập nhật vào localStorage
         localStorage.setItem("user", JSON.stringify(updatedUserData));
-  
+
         // Cập nhật trạng thái `isSaved`
         setIsSaved(newStatus);
-  
+
         // Hiển thị thông báo thành công
         toast.success(result.message);
         console.log(result.message);
@@ -172,20 +172,20 @@ export const AccomActivity = ({
     } catch (error) {
       // Xử lý lỗi khi gửi yêu cầu
       console.error("Failed to update wishlist:", error.message);
-  
+
       // Đảo lại trạng thái `isSaved` nếu có lỗi
       setIsSaved((prevState) => !prevState);
     }
   };
-  
+
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     //console.log("user",userData);
-     if(userData && userData.favorites.accommodation && userData.favorites.accommodation.includes(data._id)) {
-       setIsSaved(true)
-     }
-  } , [user ,data])
+    if (userData && userData.favorites.accommodation && userData.favorites.accommodation.includes(data._id)) {
+      setIsSaved(true)
+    }
+  }, [user, data])
 
   const onNavigateToDetails = () => {
     const encryptedServiceId = CryptoJS.AES.encrypt(
@@ -299,19 +299,19 @@ export const FoodServiceActivity = ({
   data,
   handleEdit,
   setIsOpenModal,
-  mode,socket 
+  mode, socket
 }) => {
   const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
   const { url, user, token } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
-      if(!user){
+      if (!user) {
         toast.error("Vui lòng đăng nhập !");
         return;
       }
       const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại
       const action = newStatus ? "add" : "remove"; // Chọn hành động dựa trên trạng thái mới
-  
+
       // Gửi yêu cầu tới API
       const response = await fetch(
         `${url}/api/user/user/${user._id}/addtoWishlist?type=foodService&itemId=${data._id}&action=${action}`,
@@ -320,27 +320,27 @@ export const FoodServiceActivity = ({
           headers: { token: token },
         }
       );
-  
+
       const result = await response.json();
-  
+
       if (result.success) {
         // Nếu API trả về thành công, cập nhật favorites.foodService
         const updatedFavorites = newStatus
           ? [...user.favorites.foodService, data._id] // Thêm item vào danh sách
           : user.favorites.foodService.filter((id) => id !== data._id); // Xóa item khỏi danh sách
-  
+
         const updatedUserData = {
           ...user,
           favorites: { ...user.favorites, foodService: updatedFavorites },
         };
-  
+
         // Lưu dữ liệu đã cập nhật vào localStorage
         localStorage.setItem("user", JSON.stringify(updatedUserData));
-  
+
         // Hiển thị thông báo thành công
         toast.success(result.message);
         console.log(result.message);
-  
+
         // Cập nhật trạng thái `isSaved`
         setIsSaved(newStatus);
       } else {
@@ -350,19 +350,19 @@ export const FoodServiceActivity = ({
     } catch (error) {
       // Xử lý lỗi khi gửi yêu cầu
       console.error("Failed to update wishlist:", error.message);
-  
+
       // Đảo lại trạng thái `isSaved` nếu có lỗi
       setIsSaved((prevState) => !prevState);
     }
   };
-  
+
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
-     if( userData && userData.favorites.foodService &&userData.favorites.foodService.includes(data._id)){
-       setIsSaved(true)     
-     }
-  } , [user, data._id])
+    if (userData && userData.favorites.foodService && userData.favorites.foodService.includes(data._id)) {
+      setIsSaved(true)
+    }
+  }, [user, data._id])
 
   const onNavigateToDetails = () => {
     const encryptedServiceId = CryptoJS.AES.encrypt(
@@ -376,7 +376,7 @@ export const FoodServiceActivity = ({
   if (!data || data.length === 0) {
     return <div className="div">...</div>;
   }
-  
+
 
   return (
     <div className="time-schedule-item">
@@ -475,19 +475,19 @@ export const AttractionActivity = ({
   data,
   handleEdit,
   setIsOpenModal,
-  mode, socket 
+  mode, socket
 }) => {
   const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
   const { url, user, token } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
-      if(!user){
+      if (!user) {
         toast.error("Vui lòng đăng nhập !");
         return;
       }
       const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại
       const action = newStatus ? "add" : "remove"; // Chọn hành động dựa trên trạng thái mới
-  
+
       // Gửi yêu cầu tới API
       const response = await fetch(
         `${url}/api/user/user/${user._id}/addtoWishlist?type=attraction&itemId=${data._id}&action=${action}`,
@@ -496,24 +496,24 @@ export const AttractionActivity = ({
           headers: { token: token },
         }
       );
-  
+
       const result = await response.json();
-  
+
       // Xử lý kết quả từ API
       if (result.success) {
         // Nếu thành công, cập nhật trạng thái `isSaved` và thêm/xóa item vào/from `favorites.attraction`
         const updatedFavorites = newStatus
           ? [...user.favorites.attraction, data._id] // Thêm item vào danh sách
           : user.favorites.attraction.filter((id) => id !== data._id); // Xóa item khỏi danh sách
-  
+
         const updatedUserData = {
           ...user,
           favorites: { ...user.favorites, attraction: updatedFavorites },
         };
-  
+
         // Lưu dữ liệu đã cập nhật vào localStorage
         localStorage.setItem("user", JSON.stringify(updatedUserData));
-  
+
         // Hiển thị thông báo thành công
         toast.success(result.message);
         console.log(result.message);
@@ -521,25 +521,25 @@ export const AttractionActivity = ({
         // Nếu thất bại, hiển thị lỗi
         toast.error(result.message);
       }
-  
+
       // Cập nhật trạng thái isSaved
       setIsSaved(newStatus);
     } catch (error) {
       // Xử lý lỗi khi gửi yêu cầu
       console.error("Failed to update wishlist:", error.message);
-  
+
       // Đảo lại trạng thái `isSaved` nếu có lỗi
       setIsSaved((prevState) => !prevState);
     }
   };
-  
+
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
-    if(userData && userData.favorites.attraction && userData.favorites.attraction.includes(data._id)){
-      setIsSaved(true)  
+    if (userData && userData.favorites.attraction && userData.favorites.attraction.includes(data._id)) {
+      setIsSaved(true)
     }
- } , [data._id])
+  }, [data._id])
 
   const onNavigateToDetails = () => {
     const encryptedServiceId = CryptoJS.AES.encrypt(
@@ -599,7 +599,7 @@ export const AttractionActivity = ({
             <span className="time-schedule-rating">
               ★★★★☆ ({data?.ratings?.length || 0} reviews)
             </span>
-            <h3>{data.name}</h3>
+            <h3>{data.attractionName}</h3>
             <div className="time-schedule-location">
               <i className="fa-solid fa-location-dot"></i>
               <a
@@ -651,10 +651,10 @@ export const OtherActivity = ({
   activity,
   handleEdit,
   setIsOpenModal,
-  mode, socket 
+  mode, socket
 }) => {
   const { url } = useContext(StoreContext);
-  
+
   // State điều khiển modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -689,7 +689,7 @@ export const OtherActivity = ({
         )}
       </div>
       <div className="other-activity-body">
-        <div className ="other-left">
+        <div className="other-left">
           <div className="other-activity-info">
             <h3 className="other-activity-name">{activity.name}</h3>
             <div className="other-activity-address">
@@ -720,7 +720,7 @@ export const OtherActivity = ({
             </div>
           )}
         </div>
-          <div className="time-schedule-right">
+        <div className="time-schedule-right">
           <div className="time-schedule-price">
             <p className="price-text">
               {activity.cost.toLocaleString("vi-VN", {
@@ -732,7 +732,7 @@ export const OtherActivity = ({
           <div />
         </div>
       </div>
-      
+
       <div className="time-schedule-usernote">
         <div className="note-icon-wrapper">
           <SlNotebook className="note-icon" />
@@ -742,11 +742,11 @@ export const OtherActivity = ({
       </div>
 
       {/* Hiển thị modal khi isModalOpen là true */}
-      <ImagesModal 
+      <ImagesModal
         isOpen={isModalOpen}
-        images={activity.imgSrc} 
-        selectedIndex={selectedImageIndex} 
-        onClose={closeModal} 
+        images={activity.imgSrc}
+        selectedIndex={selectedImageIndex}
+        onClose={closeModal}
       />
     </div>
   );

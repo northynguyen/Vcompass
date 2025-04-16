@@ -24,6 +24,7 @@
     "fs": "^0.0.1-security",
     "googleapis": "^144.0.0",
     "jsonwebtoken": "^9.0.2",
+    "keyword-extractor": "^0.0.28",
     "mongodb": "^6.9.0",
     "mongoose": "^8.7.1",
     "multer": "^1.4.5-lts.1",

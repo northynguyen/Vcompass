@@ -18,24 +18,24 @@ const HomeBooking = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [showGuestDropdown, setShowGuestDropdown] = useState(false);
+    const [filters, setFilters] = useState({});
     const dropdownRef = useRef(null);
 
-    const fetchAccommodations = async (searchLocation = location, pageNum = 1, filters = {}) => {
+    const fetchAccommodations = async () => {
         setLoading(true);
         try {
             const params = new URLSearchParams({
-                keyword: searchLocation,
-                page: pageNum,
+                keyword: location,
+                page: page,
                 limit: 6,
-                // minPrice: filters.priceRange?.min || 0,
-                // maxPrice: filters.priceRange?.max || 700000,
                 rating: filters.rating || '',
                 amenities: filters.selectedAmenities?.join(',') || '',
-                // startDate: startDate ? startDate.toISOString().split('T')[0] : '',
-                // endDate: endDate ? endDate.toISOString().split('T')[0] : '',
+                startDate: startDate ? startDate.toISOString().split('T')[0] : '',
+                endDate: endDate ? endDate.toISOString().split('T')[0] : '',
                 adults,
-                children
+                children,
             });
+
             const response = await fetch(`${url}/api/accommodations/search?${params.toString()}`);
             const data = await response.json();
             if (data.success) {
@@ -48,19 +48,18 @@ const HomeBooking = () => {
         setLoading(false);
     };
 
+    // Auto fetch khi bất kỳ input nào thay đổi
     useEffect(() => {
         fetchAccommodations();
-    }, [page]);
+    }, [page, location, filters, startDate, endDate, adults, children]);
 
     const handleSearch = () => {
-        setPage(1);
-        fetchAccommodations(location, 1);
+        setPage(1); // Trigger useEffect
     };
 
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
-            setPage(newPage);
-            fetchAccommodations(location, newPage);
+            setPage(newPage); // Trigger useEffect
         }
     };
 
@@ -72,9 +71,14 @@ const HomeBooking = () => {
         }
     };
 
+    const handleFilterChange = (newFilters) => {
+        setFilters(newFilters);
+        setPage(1); // reset về trang đầu khi thay filter
+    };
+
     return (
         <div className="home-booking-container">
-            <form className="home-booking-search-form" onSubmit={(e) => e.preventDefault()}>
+            <form className="home-booking-search-form" onSubmit={(e) => { e.preventDefault(); handleSearch(); }}>
                 <div className="home-booking-search-item">
                     <span role="img" aria-label="location">📍</span>
                     <input
@@ -109,27 +113,35 @@ const HomeBooking = () => {
                         <div className="home-booking-guest-dropdown" ref={dropdownRef}>
                             <div className="home-booking-guest-option">
                                 <span>Người lớn</span>
-                                <button onClick={() => handleGuestChange('decrement', 'adults')}>-</button>
+                                <button type="button" onClick={() => handleGuestChange('decrement', 'adults')}>-</button>
                                 <span className="num">{adults}</span>
-                                <button onClick={() => handleGuestChange('increment', 'adults')}>+</button>
+                                <button type="button" onClick={() => handleGuestChange('increment', 'adults')}>+</button>
                             </div>
                             <div className="home-booking-guest-option">
                                 <span>Trẻ em</span>
-                                <button onClick={() => handleGuestChange('decrement', 'children')}>-</button>
+                                <button type="button" onClick={() => handleGuestChange('decrement', 'children')}>-</button>
                                 <span className="num">{children}</span>
-                                <button onClick={() => handleGuestChange('increment', 'children')}>+</button>
+                                <button type="button" onClick={() => handleGuestChange('increment', 'children')}>+</button>
                             </div>
-                            <button className="home-booking-ok-btn" onClick={() => setShowGuestDropdown(false)}>Xong</button>
+                            <button type="button" className="home-booking-ok-btn" onClick={() => setShowGuestDropdown(false)}>Xong</button>
                         </div>
                     )}
                 </div>
 
-                <button type="submit" className="home-booking-search-btn" onClick={handleSearch}>Tìm kiếm</button>
+                <button type="submit" className="home-booking-search-btn">Tìm kiếm</button>
             </form>
 
             <div className='homeBooking-accomodations-container'>
-                <LeftSideBar onFilterChange={filters => fetchAccommodations(location, 1, filters)} />
-                <AccomodationCards accommodationsFound={accommodationsFound} startDay={startDate} endDay={endDate} adults={adults} children={children} />
+                <LeftSideBar onFilterChange={handleFilterChange} />
+                {loading ? <p>Đang tải...</p> : (
+                    <AccomodationCards
+                        accommodationsFound={accommodationsFound}
+                        startDay={startDate}
+                        endDay={endDate}
+                        adults={adults}
+                        children={children}
+                    />
+                )}
             </div>
 
             {totalPages > 1 && (

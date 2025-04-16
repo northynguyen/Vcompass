@@ -6,11 +6,11 @@ const ActivitySchema = new Schema({
     {
       activityType: { type: String, required: true },
       idDestination: { type: String, required: true },
-      name: { type: String},
+      name: { type: String },
       address: { type: String },
       imgSrc: [{ type: String }],
       cost: { type: Number, required: true },
-      costDescription: { type: String , default: ''},
+      costDescription: { type: String, default: '' },
       description: { type: String },
       timeStart: { type: String, required: true },
       timeEnd: { type: String, required: true },
@@ -49,7 +49,7 @@ const LikeSchema = new Schema({
 const ScheduleSchema = new Schema(
   {
     idUser: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
-    idInvitee : [{type: mongoose.Schema.Types.ObjectId, ref: "user"}],
+    idInvitee: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
     scheduleName: { type: String, required: true },
     description: { type: String },
     address: { type: String, required: true },
@@ -71,6 +71,7 @@ const ScheduleSchema = new Schema(
       default: Date.now,
     },
     isPublic: { type: Boolean, default: false },
+    tags: [{ type: String }],
   },
 );
 

@@ -5,16 +5,19 @@ import { upload } from '../middleware/upload.js'
 import multer from 'multer';
 import { createNotification } from "./notiController.js";
 import { ObjectId } from "mongodb";
+import keyword_extractor from "keyword-extractor";
 import { uploadToCloudinaryV2 } from './videoController.js';
 
 export const addSchedule = async (req, res) => {
   try {
     const { userId, schedule } = req.body;
     let newSchedule
-    if (userId){
-      newSchedule = new Schedule({ ...schedule, idUser: userId });
-    } else{
-      newSchedule = new Schedule({ ...schedule});
+    const tags = generateTagsFromSchedule(schedule);
+
+    if (userId) {
+      newSchedule = new Schedule({ ...schedule, idUser: userId, tags });
+    } else {
+      newSchedule = new Schedule({ ...schedule });
     }
     console.log(newSchedule);
     await newSchedule.save();
@@ -52,8 +55,8 @@ export const getScheduleById = async (req, res) => {
     }
 
     // Kiểm tra quyền chỉnh sửa
-    const canEdit = schedule.idUser.equals(userId) || 
-                   schedule.idInvitee.some(invitee => invitee._id.equals(userId));
+    const canEdit = schedule.idUser.equals(userId) ||
+      schedule.idInvitee.some(invitee => invitee._id.equals(userId));
 
     // Nếu có activityId, tìm activity cụ thể trong schedule.activities
     if (activityId) {
@@ -92,7 +95,7 @@ export const getScheduleById = async (req, res) => {
 };
 
 export const updateSchedule = async (req, res) => {
-  const { id } = req.params ;
+  const { id } = req.params;
 
   const scheduleData = req.body;
   try {
@@ -101,7 +104,10 @@ export const updateSchedule = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Invalid ID format" });
     }
-
+    // ✅ Tự động tạo tags nếu có activities mới
+    if (scheduleData.activities) {
+      scheduleData.tags = generateTagsFromSchedule(scheduleData);
+    }
     console.log("scheduleData", scheduleData);
     const updatedSchedule = await Schedule.findByIdAndUpdate(id, scheduleData, {
       new: true,
@@ -131,7 +137,7 @@ export const updateSchedule = async (req, res) => {
 export const getSchedulesByIdUser = async (req, res) => {
   const { userId } = req.body; // Replace with user ID extraction from token, if needed.
   const { type, id } = req.query;
-  
+
   if (!userId) {
     return res.status(400).json({
       success: false,
@@ -142,9 +148,9 @@ export const getSchedulesByIdUser = async (req, res) => {
   try {
     if (type === "group") {
       console.log("type group -------");
-      const schedules = await Schedule.find({ 
-        idInvitee: new mongoose.Types.ObjectId(userId) 
-    });
+      const schedules = await Schedule.find({
+        idInvitee: new mongoose.Types.ObjectId(userId)
+      });
       if (!schedules.length) {
         return res.json({
           success: false,
@@ -175,7 +181,7 @@ export const getSchedulesByIdUser = async (req, res) => {
         schedules,
       });
     }
-     else {
+    else {
       const idUserFind = type === "follower" ? id : userId;
       console.log("idUserFind : ", idUserFind);
       if (!idUserFind) {
@@ -597,6 +603,137 @@ export const deleteSchedule = async (req, res) => {
     console.error(error);
     res.status(500).json({ success: false, message: "Failed to delete schedule" });
   }
+};
+const generateTagsFromSchedule = (schedule) => {
+  const tags = new Set();
+
+  // 1. Địa điểm
+  if (schedule.address) {
+    tags.add(schedule.address);
+
+    const beachPlaces = ['Vũng Tàu', 'Phú Quốc', 'Nha Trang', 'Đà Nẵng', 'Côn Đảo'];
+    if (beachPlaces.some(place => schedule.address.includes(place))) {
+      tags.add('biển');
+      tags.add('nghỉ dưỡng');
+    }
+  }
+
+  // 2. Tag số ngày
+  if (schedule.numDays) {
+    const nights = schedule.numDays - 1;
+    tags.add(`${schedule.numDays} ngày`);
+    tags.add(`${nights} đêm`);
+    tags.add(`${schedule.numDays}N${nights}Đ`);
+  }
+
+  // 3. Hoạt động trong lịch trình
+  const activityTypes = new Set();
+  let hasSeafood = false;
+  let hasCafe = false;
+  let hasResort = false;
+
+  for (const day of schedule.activities || []) {
+    for (const activity of day.activity || []) {
+      activityTypes.add(activity.activityType);
+
+      const lowerName = activity.name?.toLowerCase() || '';
+      const lowerDesc = activity.description?.toLowerCase() || '';
+
+      if (lowerName.includes('hải sản') || lowerDesc.includes('hải sản')) {
+        hasSeafood = true;
+      }
+
+      if (lowerName.includes('cà phê') || lowerDesc.includes('view đẹp')) {
+        hasCafe = true;
+      }
+
+      if (lowerName.includes('resort') || lowerDesc.includes('hồ bơi')) {
+        hasResort = true;
+      }
+    }
+  }
+
+  activityTypes.forEach(type => {
+    switch (type) {
+      case 'Accommodation':
+        tags.add('khách sạn');
+        tags.add('chỗ ở');
+        break;
+      case 'Attraction':
+        tags.add('địa điểm');
+        tags.add('tham quan');
+        break;
+      case 'FoodService':
+        tags.add('ẩm thực');
+        tags.add('ăn uống');
+        break;
+      case 'Other':
+        tags.add('hoạt động khác');
+        break;
+      default:
+        tags.add(type.toLowerCase());
+    }
+  });
+
+  // 4. Từ khóa bổ sung
+  tags.add('du lịch');
+  tags.add('phượt');
+  tags.add('lịch trình');
+
+  // 5. Gợi ý thêm theo cảm xúc/xu hướng
+  if (hasSeafood) tags.add('ẩm thực');
+  if (hasCafe) tags.add('sống ảo');
+  if (hasResort) tags.add('nghỉ dưỡng');
+
+  if (schedule.numDays <= 3 && (hasCafe || hasResort)) {
+    tags.add('giới trẻ');
+  }
+
+  // 6. Tag từ người dùng (tuổi + giới tính)
+  if (schedule.idUser.date_of_birth) {
+    const age = calculateAge(schedule.idUser.date_of_birth);
+    const gender = schedule.idUser.gender; // "male" | "female" | "other"
+
+    // Giới tính
+    if (gender === 'male' || gender === 'female') {
+      tags.add(gender); // thêm "male" hoặc "female"
+    }
+
+    // Nhóm tuổi
+    if (age <= 25) tags.add('trẻ');
+    else if (age <= 50) tags.add('trung niên');
+    else tags.add('cao tuổi');
+  }
+  const nameTags = extractTagsFromName(schedule.scheduleName);
+  nameTags.forEach(tag => tags.add(tag));
+
+  const descriptionTags = extractTagsFromName(schedule.description);
+  descriptionTags.forEach(tag => tags.add(tag));
+  console.log(tags);
+  return Array.from(tags);
+};
+
+// Hàm tính tuổi từ ngày sinh
+const calculateAge = (dob) => {
+  const birthDate = new Date(dob);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+};
+
+const extractTagsFromName = (name) => {
+  const keywords = keyword_extractor.extract(name, {
+    language: "vi", // hoặc "english" nếu cần
+    remove_digits: true,
+    return_changed_case: true,
+    remove_duplicates: true
+  });
+
+  return keywords; // Trả về mảng các từ khóa
 };
 
 export const getFollowingSchedules = async (req, res) => {

@@ -7,24 +7,30 @@ import { StoreContext } from '../../Context/StoreContext';
 
 const HomeAttractions = () => {
     const { url } = useContext(StoreContext);
-    const [location, setLocation] = useState("");
+    const [location, setLocation] = useState('');
     const [attractionsFound, setAttractionsFound] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [filters, setFilters] = useState({
+        priceRange: { min: 0, max: 700000 },
+        minRating: '',
+        selectedAmenities: [],
+    });
 
-    const fetchAttractions = async (searchLocation = location, pageNum = 1, filters = {}) => {
+    const fetchAttractions = async (searchLocation = location, pageNum = 1, customFilters = filters) => {
         setLoading(true);
         try {
             const params = new URLSearchParams({
                 keyword: searchLocation,
                 page: pageNum,
                 limit: 6,
-                minPrice: filters.priceRange?.min || 0,
-                maxPrice: filters.priceRange?.max || 700000,
-                rating: filters.rating || '',
-                amenities: filters.selectedAmenities?.join(',') || ''
+                minPrice: customFilters.priceRange?.min || 0,
+                maxPrice: customFilters.priceRange?.max || 700000,
+                minRating: customFilters.minRating || '',
+                amenities: customFilters.selectedAmenities?.join(',') || '',
             });
+
             const response = await fetch(`${url}/api/attractions/search?${params.toString()}`);
             const data = await response.json();
             if (data.success) {
@@ -33,40 +39,34 @@ const HomeAttractions = () => {
                 setTotalPages(data.totalPages);
             }
         } catch (error) {
-            console.error("Lỗi khi lấy dữ liệu attractions:", error);
+            console.error('Lỗi khi lấy dữ liệu attractions:', error);
         }
         setLoading(false);
     };
 
-
-    // Gọi API khi component mount hoặc thay đổi trang
+    // Khi location hoặc page thay đổi, gọi lại API
     useEffect(() => {
-        fetchAttractions();
-    }, [page]);
+        fetchAttractions(location, page);
+    }, [location, page, filters]);
 
-    // Xử lý khi nhấn nút tìm kiếm
     const handleSearch = () => {
-        setPage(1); // Reset về trang đầu tiên khi tìm kiếm
-        fetchAttractions(location, 1);
+        setPage(1); // Reset lại trang đầu tiên
+        // fetchAttractions sẽ được gọi tự động qua useEffect
     };
 
-    // Chuyển trang
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
-            setPage(newPage);
-            fetchAttractions(location, newPage);
+            setPage(newPage); // Gọi API sẽ được tự động qua useEffect
         }
     };
-    useEffect(() => {
-        if (location) { // Chỉ fetch nếu có location
-            fetchAttractions(location, page);
-        }
-    }, [page]);
+
+    const handleFilterChange = (newFilters) => {
+        setPage(1); // Reset lại trang đầu tiên
+        setFilters(newFilters); // Trigger useEffect
+    };
 
     return (
-
         <div className="home-attractions-container">
-
             {/* Form tìm kiếm */}
             <form className="attractions-search-form" onSubmit={(e) => e.preventDefault()}>
                 <div className="attractions-search-item">
@@ -86,7 +86,7 @@ const HomeAttractions = () => {
 
             {/* Danh sách attraction */}
             <div className="attractions-content-container">
-                <LeftSideBar onFilterChange={filters => fetchAttractions(location, 1, filters)} />
+                <LeftSideBar onFilterChange={handleFilterChange} />
                 {loading ? <p>Đang tải...</p> : <AttractionsCards attractionsFound={attractionsFound} />}
             </div>
 

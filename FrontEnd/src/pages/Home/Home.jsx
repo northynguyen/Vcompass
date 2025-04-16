@@ -58,7 +58,7 @@ const Home = () => {
         // Fetch user schedules (to get cities)
         const userScheduleResponse = await axios.get(
           `${url}/api/schedule/user/getSchedules`,
-          { headers: { token }  }
+          { headers: { token } }
         );
         
         // Extract unique cities from user schedules
@@ -137,6 +137,30 @@ const Home = () => {
       fetchData2();
     }
   }, [url, token]);
+
+  //gửi yêu cầu lấy lịch trình phù hợp với người dùng
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${url}/api/schedule/scheduleforuser`,
+          {
+            headers: {
+              token: `${token}`,
+            },
+          }
+        );
+        if (response.data.success) {
+          console.log(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData(); // Đừng quên gọi hàm này
+  }, [url, token, user._id]); // Đảm bảo thêm `user._id` vào dependency nếu bạn sử dụng nó trong useEffect
+
 
   const handleScheduleClick = (id) => {
     navigate(`/schedule-view/${id}`);
