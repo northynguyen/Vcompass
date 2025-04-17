@@ -72,20 +72,22 @@ const Home = () => {
         console.log("User cities:", userCities);
         
         // If we have cities from user schedules, get schedules for those cities
-        if (userCities.length > 0) {
-          const scheduleResponse = await axios.get(
-            `${url}/api/schedule/getAllSchedule?cities=${userCities.join(",")}&forHomePage=true&userId=${user._id}`
-          );
-          console.log("scheduleResponse", scheduleResponse);
-          if (scheduleResponse.data.success) {
-            const publicSchedules = scheduleResponse.data.schedules;
-            setSchedules(publicSchedules);
-            console.log("publicSchedules for user cities", publicSchedules);
-          }
-        } else {
-          // If no user cities, set schedules to empty array
-          setSchedules([]);
-        }
+        // if (userCities.length > 0) {
+        //   const scheduleResponse = await axios.get(
+        //     `${url}/api/schedule/getAllSchedule?cities=${userCities.join(",")}&forHomePage=true&userId=${user._id}`
+        //   );
+        //   console.log("scheduleResponse", scheduleResponse);
+        //   if (scheduleResponse.data.success) {
+        //     const publicSchedules = scheduleResponse.data.schedules;
+        //     setSchedules(publicSchedules);
+        //     console.log("publicSchedules for user cities", publicSchedules);
+        //   }
+        // } else {
+        //   // If no user cities, set schedules to empty array
+        //   setSchedules([]);
+        // }
+
+        const scheduleResponse = await axios.get(
 
         const scheduleResponse2 = await axios.get(
           user? 

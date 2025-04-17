@@ -79,6 +79,22 @@ const Comment = ({ schedule }) => {
     const [comments, setComments] = useState(schedule?.comments || []);
     const [likes, setLikes] = useState(schedule?.likes || []);
     const [newComment, setNewComment] = useState('');
+    const logActivity = async (actionType, content) => {
+        try {
+          await axios.post(
+            `${url}/api/logs/create`,
+            {
+              userId: user._id,
+              scheduleId: schedule._id,
+              actionType,
+              content
+            },
+            { headers: { token } }
+          );
+        } catch (error) {
+          console.error('Error logging activity:', error);
+        }
+      };
 
     useEffect(() => {
         // Load comments from server to update view after a reply
@@ -110,6 +126,11 @@ const Comment = ({ schedule }) => {
                 action: isLike() ? 'unlike' : 'like',
             }, { headers: { token } });
             if (response.data.success) {
+                if (isLike()) {
+                    await logActivity('unlike', 'Đã bỏ thích lịch trình');
+                } else {
+                    await logActivity('like', 'Đã thích lịch trình');
+                }
                 console.log("data", response.data)
                 setLikes(response.data.schedule.likes);
             } else {
@@ -134,6 +155,7 @@ const Comment = ({ schedule }) => {
                 content: newComment,
             }, { headers: { token } });
             if (response.data.success) {
+                await logActivity('comment', `Đã bình luận: ${newComment}`);
                 setComments(response.data.schedule.comments);
                 setNewComment('');
             } else {
@@ -172,6 +194,7 @@ const Comment = ({ schedule }) => {
                             updateComments={setComments}
                             url={url}
                             user={user}
+                            logActivity={logActivity}
                         />
                     </div>
                 ))}
@@ -190,7 +213,7 @@ const Comment = ({ schedule }) => {
     );
 };
 
-const CommentContent = ({ comment, scheduleId, token, updateComments, url, user }) => {
+const CommentContent = ({ comment, scheduleId, token, updateComments, url, user, logActivity }) => {
     const [replyText, setReplyText] = useState('');
     const [showReplies, setShowReplies] = useState(false);
     const [replyInputVisible, setReplyInputVisible] = useState(false);
@@ -221,6 +244,7 @@ const CommentContent = ({ comment, scheduleId, token, updateComments, url, user 
                 commentId: comment._id,
             }, { headers: { token } });
             if (response.data.success) {
+                await logActivity('reply', `Đã trả lời bình luận: ${replyText}`);
                 updateComments(response.data.schedule.comments);
                 setReplyText('');
                 setReplyInputVisible(false);

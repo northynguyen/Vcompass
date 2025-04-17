@@ -67,15 +67,17 @@ const PostCard = ({ schedule, handleScheduleClick, style }) => {
         console.log("data", response.data);
         setLikes(response.data.schedule.likes);
 
-        // Thêm activity log khi like/unlike
-        await axios.post(`${url}/api/activity-logs`, {
-          idUser: user._id,
-          action: isLike() ? 'UNLIKE_SCHEDULE' : 'LIKE_SCHEDULE',
-          metadata: {
+        // Log activity khi like/unlike
+        await axios.post(
+          `${url}/api/logs/create`,
+          {
+            userId: user._id,
             scheduleId: schedule._id,
-            scheduleName: schedule.scheduleName
-          }
-        });
+            actionType: isLike() ? 'unlike' : 'like',
+            content: isLike() ? 'Đã bỏ thích lịch trình' : 'Đã thích lịch trình'
+          },
+          { headers: { token } }
+        );
 
       } else {
         console.error("Error liking schedule:", response.data.message);
@@ -196,16 +198,17 @@ const PostCard = ({ schedule, handleScheduleClick, style }) => {
         console.log("data", response.data);
         setIsFavorite(!isFavorite);
 
-        // Thêm activity log khi thêm/xóa khỏi wishlist
-        await axios.post(`${url}/api/activity-logs`, {
-          idUser: user._id,
-          action: isFavorite ? 'REMOVE_FROM_WISHLIST' : 'ADD_TO_WISHLIST',
-          metadata: {
-            scheduleId: schedule._id,
-            scheduleName: schedule.scheduleName,
-            type: 'schedule'
-          }
-        });
+        // Log activity khi thêm/xóa khỏi favorite
+        await axios.post(
+          `${url}/api/logs/create`,
+          {
+            userId: user._id,
+            scheduleId: id,
+            actionType: 'save',
+            content: isFavorite ? 'Đã xóa khỏi danh sách yêu thích' : 'Đã thêm vào danh sách yêu thích'
+          },
+          { headers: { token } }
+        );
 
       } else {
         console.error("Error liking schedule:");
