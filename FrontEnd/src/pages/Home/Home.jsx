@@ -88,9 +88,6 @@ const Home = () => {
         //   // If no user cities, set schedules to empty array
         //   setSchedules([]);
         // }
-
-        const scheduleResponse = await axios.get(
-
         const scheduleResponse2 = await axios.get(
           user ?
             `${url}/api/schedule/getAllSchedule?forHomePage=true&userId=${user._id}`

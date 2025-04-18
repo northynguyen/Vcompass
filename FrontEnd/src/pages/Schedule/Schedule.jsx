@@ -1141,7 +1141,7 @@ const Schedule = ({ mode }) => {
 
   const fetchSchedule = async () => {
     try {
-      const response = await axios.get(`${url}/api/schedule/mobile/${id}`);
+      const response = await axios.get(`${url}/api/schedule/${id}`);
       setInforSchedule(response.data.schedule);
       setLoading(false);
     } catch (error) {
