@@ -5,7 +5,11 @@ const ActivitySchema = new Schema({
   activity: [
     {
       activityType: { type: String, required: true },
-      idDestination: { type: String, required: true },
+      idDestination: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        refPath: 'activity.activityType',
+      },
       name: { type: String },
       address: { type: String },
       imgSrc: [{ type: String }],

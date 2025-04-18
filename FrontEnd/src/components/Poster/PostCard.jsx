@@ -363,7 +363,7 @@ const PostCard = ({ schedule, handleScheduleClick, style }) => {
           </div>
         </div>
       )}
-
+      <div className="spacer-weight"></div>
       <div className="pricing-box">
         <h3 className="pricing-title">Chi phí</h3>
         <div className="cost-actions">
@@ -428,7 +428,7 @@ const PostCard = ({ schedule, handleScheduleClick, style }) => {
       </div>
 
       <footer className="card-footer">
-        <div className="actions">
+        <div className="schedule-actions">
           <i
             className={`fa-solid fa-heart favorite-icon ${isLike() ? "enabled" : ""
               }`}

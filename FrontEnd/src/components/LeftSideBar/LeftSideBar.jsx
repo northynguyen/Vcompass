@@ -31,15 +31,15 @@ const LeftSideBar = () => {
         <MdOutlineRecommend className="left-side-bar-icon" />
         <span>Dành cho bạn</span>
       </Link>
-      
-      <Link to="/searchSchedule" className={`left-side-bar-item ${isActive('/searchSchedule') ? 'active' : ''}`}>
-        <MdTravelExplore className="left-side-bar-icon" />
-        <span>Khám phá</span>
-      </Link>
 
       <Link to="/schedules/follow" className={`left-side-bar-item ${isActive('/schedules/follow') ? 'active' : ''}`}>
         <FaRegBookmark className="left-side-bar-icon" />
-        <span>Theo dõi</span>
+        <span>Đang theo dõi</span>
+      </Link>
+
+      <Link to="/short-video" className={`left-side-bar-item ${isActive('/short-video') ? 'active' : ''}`}>
+        <MdTravelExplore className="left-side-bar-icon" />
+        <span>Khám phá</span>
       </Link>
 
       <Link to="/create-schedule/manual" className={`left-side-bar-item ${isActive('/create-schedule') ? 'active' : ''}`}>
@@ -47,10 +47,7 @@ const LeftSideBar = () => {
         <span>Tạo lịch trình</span>
       </Link>
 
-      <Link to="/short-video" className={`left-side-bar-item ${isActive('/short-video') ? 'active' : ''}`}>
-        <FaPhotoVideo className="left-side-bar-icon" />
-        <span>Video</span>
-      </Link>
+      
       
     </div>
   );

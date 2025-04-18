@@ -94,17 +94,17 @@
 button.btn-save-schedule {
   width: 200px;
   padding: 15px 20px;
-  background-color: #a5f97b;
+  background-color: #009688;
   border-radius: 10px;
+  color: white;
   cursor: pointer;
   font-weight: 500;
   font-size: 18px;
-  border: solid 3px #13d102;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .btn-save-schedule:hover {
-  background-color: rgba(30, 219, 12, 0.831);
+  background-color: #016d62;
   color: white;
 }
 
@@ -205,7 +205,7 @@ p.des-schedule {
 }
 
 .header-container {
-  margin: 150px 10% 0px 10%;
+  margin: 100px 10% 0px 10%;
   box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
 }
 
@@ -343,12 +343,13 @@ p.des-schedule {
 }
 
 .date-actions button {
-  width: 100px;
+  width: 120px;
   border-radius: 99px;
   padding: 5px 10px;
   background-color: #7BBCB0;
   color: white;
   border: none;
+  font-size: 16px;
   cursor: pointer;
 }
 
@@ -411,17 +412,17 @@ i.fa-solid.fa-plus.add-icon {
 }
 
 .time-schedule-image {
-  width: 100%;
+  width: 200px;
   object-fit: cover;
   object-position: center;
   border-radius: 4px;
-  height: 200px;
+  height: 220px;
 }
-
+.tour-facilities-span{
+  margin-right: 8px !important;
+}
 .time-schedule-details {
-  padding-top: 35px;
   flex-grow: 1;
-  padding-left: 15px;
   display: flex;
   flex-direction: column;
   margin-left: 15px;
@@ -563,7 +564,7 @@ i.fa-solid.fa-plus.add-icon {
   flex-direction: column;
   align-items: left;
   border-radius: 8px;
-  padding: 10px 15px;
+  padding: 0px 15px;
   font-size: 16px;
   color: #333;
   margin: 5px 0px;
@@ -604,19 +605,18 @@ i.fa-solid.fa-plus.add-icon {
     margin: 0;
   }
 
-  /* Mỗi mục hoạt động */
   .activity-overview-list li {
     background-color: #f9f9f9;
     margin: 12px 0;
     padding: 12px;
     border-radius: 8px;
     display: grid;
-    grid-template-columns: 1fr 2fr 3fr 1fr;
-    /* Chia các cột: thời gian, loại, mô tả, chi phí */
+    grid-template-columns: 2fr 2fr 6fr 2fr;
     align-items: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
-  }
+    gap: 5px;
+}
 
   .activity-overview-list li:hover {
     background-color: #e9f5ff;
@@ -635,14 +635,14 @@ i.fa-solid.fa-plus.add-icon {
   .activity-type {
     font-weight: 600;
     color: #007bff;
-    font-size: 1.1rem;
+    font-size: 1rem;
     text-align: center;
   }
 
   /* Cột Mô tả */
   .activity-description {
-    font-size: 0.8rem;
-    color: #666;
+    font-size: 0.75rem;
+    color: #9a9a9a;
     padding: 0 10px;
     font-weight: 400;
     word-wrap: break-word;
@@ -652,9 +652,8 @@ i.fa-solid.fa-plus.add-icon {
   .activity-cost {
     font-weight: bold;
     color: #e63946;
-    font-size: 1.1rem;
+    font-size: 1rem;
     text-align: right;
-    padding-right: 10px;
   }
 
   /* Tiêu đề cột */
@@ -1340,13 +1339,6 @@ i.fa-solid.fa-plus.add-icon {
 
   .modal-overlay {
     width: 100vw;
-  }
-
-  .add-activity-modal {
-    padding: 10px 0px 10px 10px;
-    width: 100%;
-    max-width: 100%;
-    margin: 0px 10px;
   }
 
   .list-accom__container {

@@ -29,7 +29,7 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    flex: 2;
+    flex: 7;
 }
 .fanpage-header-container {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -37,7 +37,7 @@
 }
 .fanpage-introduce {
   display: flex;
-  flex: 1;
+  flex: 4;
   flex-direction: column;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 15px ;

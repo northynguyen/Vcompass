@@ -68,7 +68,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px;
+  padding: 10px;
   margin-bottom: 20px;
   background-color: white;
   border-radius: 10px;
@@ -86,10 +86,10 @@
 .list-accom__tour-item-image {
   width: 100%;
   height: auto;
-  max-height: 200px;
+  max-height: 150px;
   object-fit: cover;
   border-radius: 8px;
-  padding-bottom: 10px;
+  flex: 2;
 }
 
 /* Tour Item Details */
@@ -104,10 +104,11 @@
 }
 
 .list-accom__tour-details span {
-  font-size: 0.9rem;
+  font-size: 0.7rem;
+  color: #292929;
 }
 .list-accom__tour-location a {
-  font-size: 1rem;
+  font-size: 0.8rem;
   color: #0071c2;
   text-decoration: none;
 }
@@ -127,25 +128,23 @@
   padding: 5px 10px;
   background-color: #f1f1f1;
   border-radius: 12px;
-  font-size: 0.9rem !important;
+  font-size: 0.6rem !important;
 }
 
 .list-accom__tour-rating {
   font-size: 14px;
   font-weight: bold;
-  margin-top: 10px;
   color: #ffea00;
 }
 
 /* Tour Price Section */
 .list-accom__tour-price {
   display: flex;
-  flex-direction: column;  
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 10px;
   min-width: 120px;
-  margin-left: 20px;
+  width: 100%;
 }
 
 .list-accom__show-prices-button {
@@ -186,4 +185,14 @@
 .list-accom__pagination span {
   font-size: 16px;
   margin: 0 10px;
+}
+.accom-card-header {
+  display: flex;
+  gap: 10px;
+}
+.accom-card-header-right {
+  display: flex;
+  flex-direction: column;
+  flex: 3;
+  justify-content: space-evenly;
 }

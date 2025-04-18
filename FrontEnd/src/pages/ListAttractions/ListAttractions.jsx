@@ -1,9 +1,9 @@
 import CryptoJS from "crypto-js";
-import  { useContext, useEffect, useState } from "react";
+import PropTypes from 'prop-types';
+import { useContext, useEffect, useState } from "react";
+import { Range } from 'react-range';
 import { StoreContext } from "../../Context/StoreContext";
 import "./ListAttractions.css";
-import { Range } from 'react-range';
-import PropTypes from 'prop-types';
 
 export const calculateTotalRate = (ratings) => {
   const totalReviews = ratings.length;
@@ -30,18 +30,23 @@ const AttractionItem = ({ attraction, status, setCurDes }) => {
 
   return (
     <div className="list-accom__tour-item" onClick={onNavigateToDetails}>
-      <img src={`${url}/images/${attraction.images[0]}`} alt={attraction.attractionName} className="list-accom__tour-item-image" />
-      <div className="list-accom__tour-details">
-        <h3>{attraction.attractionName}</h3>
-        <div className="list-accom__tour-location">
-          <a
-            href={`https://www.google.com/maps/?q=${attraction.location.latitude},${attraction.location.longitude}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {attraction.location.address}
-          </a>
+      <div className="accom-card-header">
+        <img src={`${url}/images/${attraction.images[0]}`} alt={attraction.attractionName} className="list-accom__tour-item-image" />
+        <div className="accom-card-header-right">
+          <h3>{attraction.attractionName}</h3>
+          <div className="list-accom__tour-location">
+            <a
+              href={`https://www.google.com/maps/?q=${attraction.location.latitude},${attraction.location.longitude}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {attraction.location.address}
+            </a>
+          </div>
+          <div className="list-accom__tour-rating">{calculateTotalRate(attraction.ratings)}</div>
         </div>
+      </div>
+      <div className="list-accom__tour-details">
         <div className="list-accom__tour-facilities">
           {attraction.amenities.slice(0, 6).map((facility, index) => (
             <span key={index}>{facility}</span>
@@ -49,11 +54,11 @@ const AttractionItem = ({ attraction, status, setCurDes }) => {
           {attraction.amenities.length > 6 && <span>...</span>}
         </div>
         <span>{attraction.description.length > 150 ? attraction.description.substring(0, 150) + "..." : attraction.description}</span>
-        <div className="list-accom__tour-rating">{calculateTotalRate(attraction.ratings)}</div>
+
       </div>
       <div className="list-accom__tour-price">
         <div className="price-container">
-          <p className="price-text">{attraction.price}đ</p>
+          <p className="price-text">{attraction.price} ₫</p>
         </div>
         {
           (status === "Schedule" || status === "WishList") && <SelectButton onClick={handleSelect} />
@@ -148,8 +153,8 @@ const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
 };
 
 // Component cho Filtersconst Filters = ({ 
-  const Filters = ({  setNameFilter, setMinPrice, setMaxPrice, 
-  nameFilter, minPrice, maxPrice, fetchAccommodations, isLoading 
+const Filters = ({ setNameFilter, setMinPrice, setMaxPrice,
+  nameFilter, minPrice, maxPrice, fetchAccommodations, isLoading
 }) => {
   const handleFilterChange = () => {
     fetchAccommodations(); // Trigger fetch when filters are changed
@@ -158,16 +163,14 @@ const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
   return (
     <div className="list-accom__filters">
       {/* Name Filter */}
-      <h4>Lọc theo tên</h4>
-      <input 
-        type="text" 
-        placeholder="Tên điểm đến" 
-        value={nameFilter} 
-        onChange={(e) => setNameFilter(e.target.value)} 
+      <input
+        type="text"
+        placeholder="Tên điểm đến"
+        value={nameFilter}
+        onChange={(e) => setNameFilter(e.target.value)}
       />
-      
+
       {/* Price Range Filter */}
-      <h4>Lọc theo giá</h4>
       <div className="price-range-slider">
         <Range
           step={100000}
@@ -197,8 +200,8 @@ const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
               {...props}
               style={{
                 ...props.style,
-                height: '20px',
-                width: '20px',
+                height: '16px',
+                width: '16px',
                 borderRadius: '50%',
                 backgroundColor: '#007bff',
                 boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.3)',
@@ -208,7 +211,7 @@ const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
           )}
         />
         <div className="price-range-value">
-         {minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - {maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          {minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ₫ - {maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ₫
         </div>
       </div>
 
@@ -280,7 +283,7 @@ const ListAccom = ({ status, setCurDes, city, setListData }) => {
     try {
       let response;
       let result;
-  
+
       if (status === "WishList") {
         // Fetch wishList từ user
         response = await fetch(`${url}/api/user/user/favorites-with-details?userId=${user._id}&type=attraction`);
@@ -294,20 +297,20 @@ const ListAccom = ({ status, setCurDes, city, setListData }) => {
           ...(city && { city }),
           sortOption,
         });
-  
+
         response = await fetch(`${url}/api/attractions?${queryParams}`);
         result = await response.json();
       }
-  
+
       setIsLoading(false);
-  
+
       if (!response.ok) {
         throw new Error(result.message || "Error fetching data");
       }
-  
+
       if (status === "WishList") {
         // Gán dữ liệu wishList
-       setAttractions( result.favorites.filter((favorite) => favorite.city === city))
+        setAttractions(result.favorites.filter((favorite) => favorite.city === city))
       } else {
         // Gán dữ liệu attractions
         setAttractions(result.attractions || []);
@@ -317,7 +320,7 @@ const ListAccom = ({ status, setCurDes, city, setListData }) => {
       setIsLoading(false);
     }
   };
-  
+
 
   useEffect(() => {
     fetchAccommodations();
@@ -336,19 +339,19 @@ const ListAccom = ({ status, setCurDes, city, setListData }) => {
   return (
     <div className="list-accom__container">
       {status === "Schedule" &&
-      <Filters
-        sortOption={sortOption}
-        setSortOption={setSortOption}
-        setNameFilter={setNameFilter}
-        setMinPrice={setMinPrice}
-        setMaxPrice={setMaxPrice}
-        nameFilter={nameFilter}
-        minPrice={minPrice}
-        maxPrice={maxPrice}
-        fetchAccommodations={fetchAccommodations}
-        isLoading={isLoading}
-      />
-}
+        <Filters
+          sortOption={sortOption}
+          setSortOption={setSortOption}
+          setNameFilter={setNameFilter}
+          setMinPrice={setMinPrice}
+          setMaxPrice={setMaxPrice}
+          nameFilter={nameFilter}
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+          fetchAccommodations={fetchAccommodations}
+          isLoading={isLoading}
+        />
+      }
       <AttractionList attractions={attractions} sortOption={sortOption} status={status} setCurDes={setCurDes} />
     </div>
   );
@@ -363,3 +366,4 @@ ListAccom.propTypes = {
 
 export default ListAccom;
 export { AttractionItem, SelectButton };
+

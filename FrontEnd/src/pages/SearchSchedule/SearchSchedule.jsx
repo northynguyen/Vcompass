@@ -24,7 +24,16 @@ const SearchSchedule = () => {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [schedulesPerPage] = useState(4); // Number of schedules per page
+  const [schedulesPerPage] = useState(4);
+  const [debouncedPriceRange, setDebouncedPriceRange] = useState(priceRange);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedPriceRange(priceRange);
+    }, 1000); // 1 giây
+
+    return () => clearTimeout(timeout);
+  }, [priceRange]);
 
   const city = location.state?.city || "";
   const name = location.state?.name || "";
@@ -174,7 +183,7 @@ const SearchSchedule = () => {
   // Re-run search whenever filters change
   useEffect(() => {
     handleSearch();
-  }, [priceRange, filters]);
+  }, [debouncedPriceRange, filters]);
 
   return (
     <div className="search-schedule">
@@ -315,7 +324,7 @@ const SearchSchedule = () => {
                   {...props}
                   style={{
                     ...props.style,
-                    height: "8px",
+                    height: "6px",
                     background: "#ddd",
                     position: "relative",
                   }}
@@ -323,7 +332,7 @@ const SearchSchedule = () => {
                   <div
                     style={{
                       position: "absolute",
-                      height: "8px",
+                      height: "6px",
                       background: "#007bff",
                       left: `${(priceRange[0] / 10000000) * 100}%`,
                       right: `${100 - (priceRange[1] / 10000000) * 100}%`,
@@ -337,8 +346,8 @@ const SearchSchedule = () => {
                   {...props}
                   style={{
                     ...props.style,
-                    height: "16px",
-                    width: "16px",
+                    height: "12px",
+                    width: "12px",
                     backgroundColor: "#007bff",
                     borderRadius: "50%",
                     border: "2px solid white",
@@ -347,8 +356,8 @@ const SearchSchedule = () => {
               )}
             />
             <div className="price-range">
-              <span>{priceRange[0].toLocaleString("vi-VN")}đ</span>
-              <span>{priceRange[1].toLocaleString("vi-VN")}đ</span>
+              <span>{priceRange[0].toLocaleString("vi-VN")} ₫</span>
+              <span>{priceRange[1].toLocaleString("vi-VN")} ₫</span>
             </div>
           </div>
         </div>

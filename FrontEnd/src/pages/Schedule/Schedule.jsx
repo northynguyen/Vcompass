@@ -1087,7 +1087,7 @@ const Schedule = ({ mode }) => {
 
   const fetchSchedule = async () => {
     try {
-      const response = await axios.get(`${url}/api/schedule/${id}`);
+      const response = await axios.get(`${url}/api/schedule/mobile/${id}`);
       setInforSchedule(response.data.schedule);
       setLoading(false);
     } catch (error) {
@@ -1630,7 +1630,7 @@ const Schedule = ({ mode }) => {
                   <div className="title-button" onClick={openInforSchedule}>
                     <i className="fa-solid fa-pen schedule-icon"></i>
                     <button className="save-and-share-btn">
-                      Chỉnh sửa thông tin
+                      Chỉnh sửa
                     </button>
                   </div>
                 ) : (

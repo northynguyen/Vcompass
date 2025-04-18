@@ -250,9 +250,6 @@ const Header = ({ setShowLogin }) => {
           <Link to="/partnership" className="header-menu-page">
             Quan hệ đối tác
           </Link>
-          <Link to="/help" className="header-menu-page">
-            Trợ giúp
-          </Link>
         </ul>
 
 
@@ -331,7 +328,7 @@ const Header = ({ setShowLogin }) => {
               <img
                 src={user && user.avatar && user.avatar.includes('http') ? `${user.avatar}` : user && user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                 alt="Profile"
-                className="user-avatar"
+                className="header-user-avatar"
               />
             </div>
 
