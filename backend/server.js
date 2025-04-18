@@ -19,9 +19,9 @@ import userRoutes from "./routes/userRoute.js";
 import videoRouter from "./routes/videoRoutes.js";
 import extensionRouter from "./routes/extensionRoutes.js";
 import reportRouter from "./routes/reportRoutes.js";
-import activityLogRouter from "./routes/activityLogRoutes.js";
 import { setupScheduleSocket } from './socket/scheduleSocket.js';
 import shortVideoRoutes from "./routes/ShortVideoRoutes.js";
+import logActivityRouter from "./routes/logActivity.js";
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -101,8 +101,8 @@ app.use("/api/ai", aiRoute);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/extensions", extensionRouter);
 app.use("/api/reports", reportRouter);
-app.use("/api/activitylog", activityLogRouter);
 app.use('/api/shortvideo', shortVideoRoutes);
+app.use('/api/logs', logActivityRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
