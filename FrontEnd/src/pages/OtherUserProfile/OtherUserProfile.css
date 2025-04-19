@@ -3,10 +3,12 @@
     width: 70%;
     max-width: 1200px;
     margin: 0px auto;
+    margin-top: 70px;
     padding: 20px;
     font-family: Arial, sans-serif;
     background-color: #fff;
     border-radius: 8px;
+    margin-top: 65px !important;
   }
   
   /* Header styles */

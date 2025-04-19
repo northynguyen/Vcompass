@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
-import { toast as Toast, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { StoreContext } from '../../Context/StoreContext';
 import { FaRegClock, FaTicketAlt   } from "react-icons/fa";
 import ImagesModal from '../ImagesModal/ImagesModal';
@@ -32,14 +32,13 @@ const AttractionDetailsInfo = ({ serviceId }) => {
     useEffect(() => {
         const fetchAttraction = async () => {
             try {
-                const response = await axios.get(`${url}/api/attractions/`);
-                console.log("API Response:", response.data); // Log the entire response for debugging
+                const response = await axios.get(`${url}/api/attractions/${serviceId}`);
                 if (response.data.success) {
-                    setAttraction(response.data.attractions.find((attraction) => attraction._id === serviceId));
-                    Toast.success(response.data.message);
+                    setAttraction(response.data.attraction);
+                    toast.success(response.data.message);
                 } else {
                     console.error('Attraction not found for serviceId:', serviceId);
-                    Toast.error(response.data.message);
+                    toast.error(response.data.message);
                 }
             } catch (error) {
                 console.error('Error fetching attraction:', error);
@@ -87,12 +86,12 @@ const AttractionDetailsInfo = ({ serviceId }) => {
                     <p className="place-header-rating"><StarRating rating={Math.round(totalRating)}  />  {totalRating.toFixed(1)} / 5.0 ( {attraction.ratings.length} đánh giá)</p>
                 </div>
                 <div className="gallery">
-                    <img src={`${url}/images/${attraction.images[0]}`} alt="Main" className="main-img" />
+                    <img src={ attraction.images[0].includes("http") ? attraction.images[0] : `${url}/images/${attraction.images[0]}`} alt="Main" className="main-img" />
                     <div className="thumbnails">
                         {attraction.images.map((image, index) => (
                             <img
                                 key={index}
-                                src={`${url}/images/${image}`}
+                                src={ image.includes("http") ? image : `${url}/images/${image}`}
                                 alt={`Thumb ${index + 1}`}
                                 onClick={() => openModal(index + 1)}
                             />

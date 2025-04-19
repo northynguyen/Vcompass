@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import axios from "axios";
 import CryptoJS from "crypto-js";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiOutlineMore } from "react-icons/ai";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { FaHeart } from "react-icons/fa";
@@ -10,13 +11,13 @@ import { FiFlag } from "react-icons/fi";
 import "./PostCard.css";
 import ReportForm from "../Report/ReportForm";
 
-
-const PostCard = ({ schedule, handleScheduleClick }) => {
+const PostCard = ({ schedule, handleScheduleClick, style }) => {
   const { url, user, token } = useContext(StoreContext);
   const [likes, setLikes] = useState(schedule?.likes || []);
   const [isFavorite, setIsFavorite] = useState(false);
   const [openScheduleMenu, setOpenScheduleMenu] = useState(null);
   const [showReport, setShowReport] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
   const activityCosts = {
     Accommodation: 0,
@@ -66,15 +67,17 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
         console.log("data", response.data);
         setLikes(response.data.schedule.likes);
 
-        // Thêm activity log khi like/unlike
-        await axios.post(`${url}/api/activity-logs`, {
-          idUser: user._id,
-          action: isLike() ? 'UNLIKE_SCHEDULE' : 'LIKE_SCHEDULE',
-          metadata: {
+        // Log activity khi like/unlike
+        await axios.post(
+          `${url}/api/logs/create`,
+          {
+            userId: user._id,
             scheduleId: schedule._id,
-            scheduleName: schedule.scheduleName
-          }
-        });
+            actionType: isLike() ? 'unlike' : 'like',
+            content: isLike() ? 'Đã bỏ thích lịch trình' : 'Đã thích lịch trình'
+          },
+          { headers: { token } }
+        );
 
       } else {
         console.error("Error liking schedule:", response.data.message);
@@ -195,16 +198,17 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
         console.log("data", response.data);
         setIsFavorite(!isFavorite);
 
-        // Thêm activity log khi thêm/xóa khỏi wishlist
-        await axios.post(`${url}/api/activity-logs`, {
-          idUser: user._id,
-          action: isFavorite ? 'REMOVE_FROM_WISHLIST' : 'ADD_TO_WISHLIST',
-          metadata: {
-            scheduleId: schedule._id,
-            scheduleName: schedule.scheduleName,
-            type: 'schedule'
-          }
-        });
+        // Log activity khi thêm/xóa khỏi favorite
+        await axios.post(
+          `${url}/api/logs/create`,
+          {
+            userId: user._id,
+            scheduleId: id,
+            actionType: 'save',
+            content: isFavorite ? 'Đã xóa khỏi danh sách yêu thích' : 'Đã thêm vào danh sách yêu thích'
+          },
+          { headers: { token } }
+        );
 
       } else {
         console.error("Error liking schedule:");
@@ -219,11 +223,26 @@ const PostCard = ({ schedule, handleScheduleClick }) => {
     navigate(`/otherUserProfile/${id}`);
   };
 
+  // Track window width for responsive design
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Determine responsive styles
+
+
   return (
-    <div className="card-container">
+    <div className="card-container" style={style}>
       <header className="card-header">
         {
-          schedule.idUser && <div className="user-info" onClick={() => { handleUserClick(schedule.idUser._id) }}>
+          schedule.idUser && <div className="user-info-img" onClick={() => { handleUserClick(schedule.idUser._id) }}>
             <img
               className="user-avatar"
               src={schedule.idUser.avatar && schedule.idUser.avatar.includes("http") ? schedule.idUser.avatar : schedule.idUser.avatar ? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}

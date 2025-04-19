@@ -6,6 +6,11 @@ import multer from 'multer';
 import { createNotification } from "./notiController.js";
 import { ObjectId } from "mongodb";
 import keyword_extractor from "keyword-extractor";
+import { uploadToCloudinaryV2 } from './videoController.js';
+import Log from "../models/logActivity.js";
+import fs from 'fs';
+import { exec } from 'child_process';
+import path from "path";
 export const addSchedule = async (req, res) => {
   try {
     const { userId, schedule } = req.body;
@@ -218,16 +223,24 @@ export const getAllSchedule = async (req, res) => {
     // Lấy các query từ request
     const {
       cities, // Danh sách thành phố (truyền dưới dạng mảng hoặc chuỗi phân tách bởi dấu phẩy)
-      sortBy, // "likes", "comments"
+      sortBy = "likes", // Default to "likes"
       page = 1, // Trang hiện tại
       limit = 10, // Số lượng mỗi trang
+      forHomePage = false, // Cờ chỉ định request đến từ trang Home
+      userId = null, // ID của user hiện tại để loại trừ
     } = req.query;
 
     // Xử lý cities thành mảng nếu được truyền dưới dạng chuỗi
     const cityList = cities ? cities.split(",") : [];
 
-    // Tạo điều kiện tìm kiếm
-    const query = {};
+    // Tạo điều kiện tìm kiếm - luôn lấy isPublic=true
+    const query = { isPublic: true };
+
+    // Loại bỏ lịch trình của user hiện tại nếu có userId được cung cấp
+    if (userId) {
+      query.idUser = { $ne: userId }; // Không lấy lịch trình của user hiện tại
+    }
+
     if (cityList.length > 0) {
       query.address = { $in: cityList }; // Tìm kiếm lịch trình có địa chỉ thuộc danh sách thành phố
     }
@@ -242,34 +255,100 @@ export const getAllSchedule = async (req, res) => {
       sortOptions = { createdAt: -1 }; // Mặc định sắp xếp theo ngày tạo mới nhất
     }
 
-    // Phân trang
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    // Nếu request từ trang Home, xử lý theo yêu cầu đặc biệt
+    if (forHomePage === 'true') {
+      if (cityList.length > 0) {
+        // Lấy schedule được like nhiều nhất cho mỗi thành phố
+        const schedulesByCity = [];
 
-    // Tìm kiếm với điều kiện và phân trang
-    const schedules = await Schedule.find(query)
-      .populate("idUser") // Populate thông tin người dùng
-      .sort(sortOptions) // Sắp xếp
-      .skip(skip) // Bỏ qua các bản ghi trước đó
-      .limit(parseInt(limit)); // Giới hạn số bản ghi trả về
+        // Lấy schedule phổ biến nhất cho mỗi thành phố
+        for (const city of cityList) {
+          const cityQuery = { address: city, isPublic: true };
 
-    // Đếm tổng số lịch trình
-    const total = await Schedule.countDocuments(query);
+          // Loại bỏ lịch trình của user hiện tại
+          if (userId) {
+            cityQuery.idUser = { $ne: userId };
+          }
 
-    if (!schedules || schedules.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "Không tìm thấy lịch trình phù hợp.",
+          const citySchedule = await Schedule.findOne(cityQuery)
+            .populate("idUser")
+            .sort(sortOptions)
+            .limit(1);
+
+          if (citySchedule) {
+            schedulesByCity.push(citySchedule);
+          }
+        }
+
+        if (schedulesByCity.length === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "Không tìm thấy lịch trình phù hợp.",
+          });
+        }
+
+        return res.json({
+          success: true,
+          message: "Lấy danh sách lịch trình thành công.",
+          schedules: schedulesByCity,
+        });
+      } else {
+        // Nếu không có danh sách thành phố, lấy 6 lịch trình được like nhiều nhất
+        const homeQuery = { isPublic: true };
+
+        // Loại bỏ lịch trình của user hiện tại
+        if (userId) {
+          homeQuery.idUser = { $ne: userId };
+        }
+
+        const schedules = await Schedule.find(homeQuery)
+          .populate("idUser")
+          .sort(sortOptions)
+          .limit(6);
+
+        if (!schedules || schedules.length === 0) {
+          return res.status(404).json({
+            success: false,
+            message: "Không tìm thấy lịch trình phù hợp.",
+          });
+        }
+
+        return res.json({
+          success: true,
+          message: "Lấy danh sách lịch trình thành công.",
+          schedules,
+        });
+      }
+    } else {
+      // Phân trang như cũ nếu không phải request từ trang Home
+      const skip = (parseInt(page) - 1) * parseInt(limit);
+
+      // Tìm kiếm với điều kiện và phân trang
+      const schedules = await Schedule.find(query)
+        .populate("idUser") // Populate thông tin người dùng
+        .sort(sortOptions) // Sắp xếp
+        .skip(skip) // Bỏ qua các bản ghi trước đó
+        .limit(parseInt(limit)); // Giới hạn số bản ghi trả về
+
+      // Đếm tổng số lịch trình
+      const total = await Schedule.countDocuments(query);
+
+      if (!schedules || schedules.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Không tìm thấy lịch trình phù hợp.",
+        });
+      }
+
+      res.json({
+        success: true,
+        message: "Lấy danh sách lịch trình thành công.",
+        total, // Tổng số lịch trình
+        currentPage: parseInt(page), // Trang hiện tại
+        totalPages: Math.ceil(total / limit), // Tổng số trang
+        schedules, // Dữ liệu lịch trình
       });
     }
-
-    res.json({
-      success: true,
-      message: "Lấy danh sách lịch trình thành công.",
-      total, // Tổng số lịch trình
-      currentPage: parseInt(page), // Trang hiện tại
-      totalPages: Math.ceil(total / limit), // Tổng số trang
-      schedules, // Dữ liệu lịch trình
-    });
   } catch (error) {
     console.error("Error retrieving schedule:", error);
     res.status(500).json({
@@ -475,35 +554,42 @@ export const deleteActivity = async (req, res) => {
   }
 };
 
-export const uploadFiles = (req, res) => {
-  // Sử dụng middleware multer để xử lý
-  upload.array('images', 5)(req, res, (err) => {
-    if (err instanceof multer.MulterError) {
-      // Xử lý lỗi từ multer (ví dụ: vượt kích thước file)
-      return res.status(400).json({ success: false, message: err.message });
-    } else if (err) {
-      // Xử lý lỗi khác (ví dụ: loại file không hợp lệ)
-      return res.status(400).json({ success: false, message: err.message });
-    }
-
-    // Kiểm tra nếu không có file nào được tải lên
+export const uploadFiles = async (req, res) => {
+  try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ success: false, message: 'No files uploaded!' });
     }
 
-    // Trả về thông tin file đã tải lên
-    const uploadedFiles = req.files.map((file) => ({
-      filename: file.filename,
-      path: `/uploads/${file.filename}`,
-      size: file.size,
-    }));
+    const uploadPromises = req.files.map(async (file) => {
+      try {
+        const result = await uploadToCloudinaryV2(file.buffer, 'schedule_images');
+        return {
+          filename: file.originalname,
+          path: result.secure_url,
+          size: file.size,
+          public_id: result.public_id
+        };
+      } catch (error) {
+        console.error('Error uploading file to Cloudinary:', error);
+        throw error;
+      }
+    });
+
+    const uploadedFiles = await Promise.all(uploadPromises);
 
     res.status(200).json({
       success: true,
       message: 'Files uploaded successfully!',
       files: uploadedFiles,
     });
-  });
+  } catch (error) {
+    console.error('Error in uploadFiles:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error uploading files',
+      error: error.message
+    });
+  }
 };
 
 export const deleteSchedule = async (req, res) => {
@@ -651,4 +737,193 @@ const extractTagsFromName = (name) => {
   });
 
   return keywords; // Trả về mảng các từ khóa
+};
+
+export const getFollowingSchedules = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 4; // Default to 4 items per page
+    const skip = (page - 1) * limit;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required",
+      });
+    }
+
+    // Find the user to get their following list
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Get total count for pagination
+    const totalSchedules = await Schedule.countDocuments({
+      idUser: { $in: user.following },
+      isPublic: true
+    });
+
+    // Get paginated schedules from followed users
+    const schedules = await Schedule.find({
+      idUser: { $in: user.following },
+      isPublic: true // Only get public schedules
+    })
+      .populate("idUser", "name avatar")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    if (!schedules.length) {
+      return res.json({
+        success: true,
+        message: "No schedules found from followed users",
+        schedules: [],
+        pagination: {
+          currentPage: page,
+          totalPages: Math.ceil(totalSchedules / limit),
+          totalItems: totalSchedules,
+          itemsPerPage: limit
+        }
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Schedules retrieved successfully",
+      schedules,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(totalSchedules / limit),
+        totalItems: totalSchedules,
+        itemsPerPage: limit
+      }
+    });
+  } catch (error) {
+    console.error("Error retrieving following schedules:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving following schedules",
+      error,
+    });
+  }
+};
+
+export const scheduleAI = async (req, res) => {
+  try {
+    let user = {};
+    let schedules = [];
+    let interactionSummary = [];
+
+    // ✅ Nếu có userId, lấy lịch trình và logs theo user
+    if (req.params.userId) {
+      schedules = await Schedule.find({ idUser: req.params.userId });
+      const logsUser = await Log.find({ userId: req.params.userId });
+
+      // Đếm view & edit theo scheduleId
+      const countBySchedule = {};
+      logsUser.forEach(log => {
+        const id = log.scheduleId.toString();
+        if (!countBySchedule[id]) {
+          countBySchedule[id] = { viewCount: 0, editCount: 0 };
+        }
+        if (log.actionType === 'view') countBySchedule[id].viewCount++;
+        if (log.actionType === 'edit') countBySchedule[id].editCount++;
+      });
+
+      const scheduleIds = Object.keys(countBySchedule);
+
+      const interactedSchedules = await Schedule.find(
+        { _id: { $in: scheduleIds } },
+        { tags: 1, address: 1 }
+      );
+
+      interactedSchedules.forEach(schedule => {
+        const id = schedule._id.toString();
+        if (countBySchedule[id]) {
+          countBySchedule[id].tags = schedule.tags || [];
+          countBySchedule[id].address = schedule.address || '';
+        }
+      });
+
+      interactionSummary = scheduleIds.map(id => ({
+        scheduleId: id,
+        viewCount: countBySchedule[id].viewCount,
+        editCount: countBySchedule[id].editCount,
+        tags: countBySchedule[id].tags || [],
+        address: countBySchedule[id].address || ''
+      }));
+    } else {
+      schedules = await Schedule.find();
+    }
+
+    const exportData = {
+      user,
+      schedules: schedules || [],
+      interactionSummary
+    };
+
+    fs.writeFileSync('../Schedule_AI/user.json', JSON.stringify(exportData, null, 2));
+
+    const allSchedules = await Schedule.find().populate("idUser", "name avatar");
+    const shouldTrain = allSchedules.length % 10 === 0; // giữ nguyên điều kiện của bạn
+
+    if (shouldTrain) {
+      const exportSchedules = JSON.stringify(allSchedules, null, 2);
+      fs.writeFileSync('../Schedule_AI/All_schedules.json', exportSchedules);
+
+      exec('python ../Schedule_AI/train.py', (trainError, trainStdout, trainStderr) => {
+        console.log("Đã train AI");
+        if (trainError) {
+          console.error(`Lỗi train AI: ${trainError.message}`);
+          return res.status(500).json({ success: false, message: "AI training error" });
+        }
+        if (trainStderr) console.error(`Train stderr: ${trainStderr}`);
+        console.log("Train output:", trainStdout);
+
+        callPredictAndRespond(res);
+      });
+    } else {
+      callPredictAndRespond(res);
+    }
+  } catch (error) {
+    console.error("Error saving data:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error saving data",
+      error: error.message
+    });
+  }
+};
+
+// Hàm tách riêng xử lý predict và trả kết quả
+const callPredictAndRespond = (res) => {
+  exec('python ../Schedule_AI/predict.py', (predictError, _, predictStderr) => {
+    if (predictError) {
+      console.error(`Lỗi predict AI: ${predictError.message}`);
+      return res.status(500).json({ success: false, message: "AI prediction error" });
+    }
+    if (predictStderr) console.error(`Predict stderr: ${predictStderr}`);
+    fs.readFile('recommend.json', 'utf-8', (err, data) => {
+      if (err) {
+        console.error("Lỗi đọc file kết quả predict:", err);
+        return res.status(500).json({ success: false, message: "Lỗi đọc kết quả AI" });
+      }
+      try {
+        const result = JSON.parse(data);
+        res.status(200).json({
+          success: true,
+          message: "Gợi ý lịch trình thành công",
+          recommendedSchedules: result
+        });
+      } catch (parseError) {
+        console.error("Lỗi phân tích JSON:", parseError);
+        res.status(500).json({ success: false, message: "Lỗi phân tích kết quả AI" });
+      }
+    });
+  });
 };

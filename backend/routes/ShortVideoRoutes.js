@@ -18,7 +18,9 @@ import {
   toggleCommentLike,
   toggleReplyLike,
   removeReply,
-  increaseViews
+  increaseViews,
+  getTrendingVideos,
+  getFollowingVideos
 } from '../controllers/ShortVideoController.js';
 
 // Cấu hình middleware upload file
@@ -37,7 +39,7 @@ router.use(fileUpload({
 // Routes không cần xác thực
 router.get('/videos',   getShortVideos);
 router.get('/videos/:id', getShortVideoById);
-router.get('/popular', getPopularShortVideos);
+router.get('/all/trending', getTrendingVideos);
 router.get('/user/:userId', getUserShortVideos);
 
 // Routes cần xác thực
@@ -53,5 +55,6 @@ router.post('/videos/:id/share', authMiddleware, increaseShares);
 router.post('/videos/:id/pin', authMiddleware, togglePin);
 router.delete('/videos/:videoId/comment/:commentId/reply/:replyId', authMiddleware, removeReply);
 router.post('/videos/:id/view', increaseViews);
+router.get('/all/following', authMiddleware, getFollowingVideos);
 
 export default router; 

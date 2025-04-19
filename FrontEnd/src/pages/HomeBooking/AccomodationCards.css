@@ -10,7 +10,8 @@
     overflow: hidden;
     background-color: #ffffff;
     transition: box-shadow 0.3s ease-in-out;
-}
+    /* Thêm con trỏ chỉ tay khi hover lên card */
+
 
 .card-content-container:hover {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
@@ -22,11 +23,14 @@
     font-weight: bold;
     color: #333;
     transition: color 0.3s ease-in-out;
+    /* Thêm hiệu ứng chuyển màu mượt */
     cursor: pointer;
+    /* Con trỏ chỉ tay khi hover tên */
 }
 
 .card-content h3:hover {
     color: #007bff;
+    /* Thay đổi màu chữ khi hover */
 }
 
 .card-content-img {
@@ -37,12 +41,13 @@
 .card-content-img img {
     width: 100%;
     height: 200px;
+    /* Định nghĩa chiều cao cố định */
     object-fit: cover;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
 }
 
-.card-content-container.card-content {
+.card-content {
     width: 50%;
     display: flex;
     flex-direction: column;
@@ -74,120 +79,18 @@
     color: #333;
     width: 20%;
     align-self: center;
-
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
 }
 
 .card-content-price p {
     margin: 0;
 }
-
-@media (max-width: 768px) {
-    .card-content-container {
-        flex-direction: column !important;
-    }
-
-    .card-content-img {
-        width: 100% !important;
-        height: auto !important;
-    }
-
-    .card-content {
-        width: 100% !important;
-    }
-
-    .card-content-price {
-        flex-direction: row !important;
-        font-size: 15px !important;
-        align-items: center !important;
-        width: 100% !important;
-        justify-content: center !important;
-    }
 }
-
-.card-content-container {
-    margin-top: 10px;
-    padding: 10px;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    background-color: #ffffff;
-    transition: box-shadow 0.3s ease-in-out;
-    /* Thêm con trỏ chỉ tay khi hover lên card */
-
-
-    .card-content-container:hover {
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-    }
-
-    .card-content h3 {
-        font-size: 1.3em;
-        margin-bottom: 5px;
-        font-weight: bold;
-        color: #333;
-        transition: color 0.3s ease-in-out;
-        /* Thêm hiệu ứng chuyển màu mượt */
-        cursor: pointer;
-        /* Con trỏ chỉ tay khi hover tên */
-    }
-
-    .card-content h3:hover {
-        color: #007bff;
-        /* Thay đổi màu chữ khi hover */
-    }
-
-    .card-content-img {
-        width: 30%;
-        overflow: hidden;
-    }
-
-    .card-content-img img {
-        width: 100%;
-        height: 200px;
-        /* Định nghĩa chiều cao cố định */
-        object-fit: cover;
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
-    }
-
-    .card-content {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        overflow: hidden;
-    }
-
-    .card-content a {
-        font-size: 0.9em;
-        margin-bottom: 20px;
-    }
-
-    .card-content p {
-        color: #666;
-        font-size: 0.9em;
-        margin: 0 0 10px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: normal;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;
-    }
-
-    .card-content-price {
-        padding: 10px;
-        text-align: right;
-        font-size: 1.1em;
-        color: #333;
-        width: 20%;
-        align-self: center;
-    }
-
-    .card-content-price p {
-        margin: 0;
-    }
+p.card-range-price {
+    color: #038819;
+    font-size: 20px;
+    font-weight: 500;
 }

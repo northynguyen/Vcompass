@@ -1,0 +1,137 @@
+.left-side-bar {
+  position: fixed;
+  left: 0;
+  top: 75px; /* Chiều cao của header */
+  width: 250px;
+  height: calc(100vh - 75px); /* Chỉ trừ chiều cao của header */
+  background-color: #ffffff;
+  padding: 8px 4px;
+  overflow-y: auto;
+  z-index: 99;
+  /* Thêm thuộc tính để scroll mượt hơn */
+  scroll-behavior: smooth;
+  /* Thêm thuộc tính để dừng lại khi đến footer */
+  bottom: 75px; /* Chiều cao của footer */
+  /* Thêm thuộc tính để cuộn theo */
+  position: sticky;
+  top: 75px;
+  max-height: calc(100vh - 150px); /* Trừ chiều cao của header và footer */
+}
+
+.left-side-bar-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 8px;
+  margin: 2px 0;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #050505;
+  transition: all 0.2s ease;
+}
+
+.left-side-bar-item:hover {
+  background-color: #f0f2f5;
+}
+
+.left-side-bar-icon {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  color: #65676b;
+  background-color: transparent;
+}
+
+/* Individual icon styles */
+.left-side-bar-item:nth-child(1) .left-side-bar-icon {
+  color: #1877f2; /* Facebook blue */
+}
+
+.left-side-bar-item:nth-child(2) .left-side-bar-icon {
+  color: #ff7043; /* Orange - for recommendations */
+}
+
+.left-side-bar-item:nth-child(3) .left-side-bar-icon {
+  color: #00b0ff; /* Light blue - for explore */
+}
+
+.left-side-bar-item:nth-child(4) .left-side-bar-icon {
+  color: #8e24aa; /* Purple - for follow */
+}
+
+.left-side-bar-item:nth-child(5) .left-side-bar-icon {
+  color: #4caf50; /* Green - for create */
+}
+
+.left-side-bar-item:nth-child(6) .left-side-bar-icon {
+  color: #f44336; /* Red - for video */
+}
+
+.left-side-bar-item:nth-child(7) .left-side-bar-icon {
+  color: #ff9800; /* Orange - for marketplace */
+}
+
+/* Hover effect for just the icon */
+.left-side-bar-item:hover .left-side-bar-icon {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Active state */
+.left-side-bar-item.active {
+  background-color: #e7f3ff;
+}
+
+.left-side-bar-item.active .left-side-bar-icon {
+  background-color: #e7f3ff;
+}
+
+.left-side-bar-item span {
+  font-size: 15px;
+  font-weight: 500;
+  color: #050505;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Custom scrollbar */
+.left-side-bar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.left-side-bar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.left-side-bar::-webkit-scrollbar-thumb {
+  background: #bcc0c4;
+  border-radius: 4px;
+}
+
+.left-side-bar::-webkit-scrollbar-thumb:hover {
+  background: #a8abaf;
+}
+
+/* Responsive */
+
+
+/* Xem thêm button */
+.left-side-bar-item.see-more {
+  background-color: #e4e6eb;
+  margin-top: 8px;
+}
+
+.left-side-bar-item.see-more:hover {
+  background-color: #d8dadf;
+}
+
+.left-side-bar-item.see-more .left-side-bar-icon {
+  background-color: #e4e6eb;
+  color: #050505;
+}

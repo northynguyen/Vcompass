@@ -10,6 +10,7 @@ import Footer from './components/Footer/Footer';
 import ChatBox from "./components/ChatBox/ChatBox";
 import ShortVideo from './pages/ShortVideo/ShortVideo';
 import SignIn from './components/SignIn/SignIn';
+import PageSchedules from './pages/PageSchedules/PageSchedules';
 
 const Page404 = lazy(() => import('./components/Page404/Page404'));
 const AuthRedirect = lazy(() => import('./pages/AuthRedirect/AuthRedirect'));
@@ -28,7 +29,6 @@ const OtherUserProfile = lazy(() => import("./pages/OtherUserProfile/OtherUserPr
 const SearchSchedule = lazy(() => import('./pages/SearchSchedule/SearchSchedule'));
 const ValidateEmail = lazy(() => import("./components/ValidateEmail/ValidateEmail"));
 const MapTest = lazy(() => import("./components/MapTest"));
-
 // Component wrapper để kiểm tra route hiện tại
 const AppContent = () => {
   const location = useLocation();
@@ -44,13 +44,10 @@ const AppContent = () => {
   }, [showLogin]);
   
   return (
-    <>
-      {/* Luôn hiển thị Header nhưng thêm class khi ở trang ShortVideo */}
-      <div className={`app-header ${isShortVideoPage ? 'short-video-header' : ''}`}>
-        <Header setShowLogin={setShowLogin} />
-      </div>
-      
-      <div className="app">
+    <div className="app-container">
+      {/* Only show Header if not on ShortVideo page */}
+      {!isShortVideoPage && <Header setShowLogin={setShowLogin} />}
+      <div className="app-content">
         <ToastContainer
           position="top-right"
           autoClose={2000}
@@ -84,6 +81,7 @@ const AppContent = () => {
             <Route path="/otherUserProfile/:id" element={<OtherUserProfile setCurrentConversation={setCurrentConversation} />} />
             <Route path="/booking-process/finalstep" element={<BookingProcess />} />
             <Route path="/short-video" element={<ShortVideo />} />
+            <Route path="/schedules/:type" element={<PageSchedules />} />
             <Route path="*" element={<Page404 />} />
             <Route path="/404" element={<Page404 />} />
             <Route path="/mapplace" element={<MapTest />} />
@@ -91,12 +89,12 @@ const AppContent = () => {
           </Routes>
         </Suspense>
         <ChatBox currentConversation={currentConversation} setCurrentConversation={setCurrentConversation} />
-        {!isShortVideoPage && <Footer />}
       </div>
-      
+      {/* Only show Footer if not on ShortVideo page */}
+      {!isShortVideoPage && <Footer />}
       {/* Hiển thị SignIn khi showLogin = true */}
       {showLogin && <SignIn setShowLogin={setShowLogin} />}
-    </>
+    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './PostCard.css';
+import './AccommodationBanner.css';
 
 const AccommodationBanner = ({ cityName }) => {
     const navigate = useNavigate();

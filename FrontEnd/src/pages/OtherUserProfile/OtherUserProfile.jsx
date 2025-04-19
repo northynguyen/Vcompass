@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import { StoreContext } from "../../Context/StoreContext";
 import ImagesModal from '../../components/ImagesModal/ImagesModal';
 import PostCard from "../../components/Poster/PostCard";
-import UserShortVideos from "../ShortVideo/UserShortVideos/UserShortVideos";
+import ProfileShortVideos from "../../components/ProfileShortVideos/ProfileShortVideos";
 import "./OtherUserProfile.css";
 
 export default function OtherUserProfile({setCurrentConversation}) {
@@ -110,8 +110,10 @@ export default function OtherUserProfile({setCurrentConversation}) {
     const imageList = [];
 
     const collectImages = (imgSrcArray) => {
-      imgSrcArray?.forEach(img => {
-        if (allowedExtensions.some(ext => img.endsWith(ext))) {
+      if (!imgSrcArray) return;
+      
+      imgSrcArray.forEach(img => {
+        if (img && typeof img === 'string' && allowedExtensions.some(ext => img.endsWith(ext))) {
           imageList.push(img);
         }
       });
@@ -201,6 +203,7 @@ export default function OtherUserProfile({setCurrentConversation}) {
       }
 
     } catch (error) {
+      console.error("Error toggling follow:", error);
     }
   };
   useEffect(() => {
@@ -507,7 +510,7 @@ export default function OtherUserProfile({setCurrentConversation}) {
                 ))}
             </div>}
           {currentTab === "Video ngắn" &&
-            <UserShortVideos currentUserId={currentUser._id} />
+            <ProfileShortVideos currentUserId={currentUser._id} />
           }
         </div>
       </div>

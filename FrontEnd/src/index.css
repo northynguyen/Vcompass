@@ -94,7 +94,7 @@ body::-webkit-scrollbar-thumb:hover {
 
 /* Style cho header khi ở trang ShortVideo */
 .short-video-header {
-  position: fixed;
+  position: fixed  ;
   top: -60px; /* Giả sử header cao 60px, điều chỉnh cho phù hợp */
   left: 0;
   right: 0;

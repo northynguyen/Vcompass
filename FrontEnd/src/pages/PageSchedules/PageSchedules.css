@@ -1,0 +1,195 @@
+/* Tổng thể */
+.search-schedule {
+  max-width: 80%;
+  margin: 20px auto;
+  margin-top: 75px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Bố cục chính */
+.main-content {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  margin: 20px auto;
+}
+
+/* Sidebar (lọc và khoảng giá) */
+.filters-container {
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.filters,
+  .price-slider {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    width: 100%;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filters h3,
+  .price-slider h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #333;
+  }
+  
+.filters {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  width: 100%;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filters h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #333;
+}
+
+.filters label {
+  display: block;
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+.filters label span {
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
+.filters select,
+.filters input[type="checkbox"] {
+  font-size: 14px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 5px;
+}
+
+/* Danh sách PostCard */
+.schedule-list {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.schedule-list .post-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.schedule-list .post-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.no-schedule {
+  font-size: 20px;
+  text-align: center;
+  width: 800px;
+  margin: 10px auto;
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.pagination-container button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  width: 100px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.pagination-container button:hover {
+  background-color: #0056b3;
+}
+
+.pagination-container button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Loading spinner */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .search-schedule {
+    max-width: 90%;
+  }
+
+  .schedule-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-schedule {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .main-content {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .filters-container {
+    width: 100%;
+  }
+
+  .schedule-list {
+    grid-template-columns: 1fr;
+  }
+
+  .no-schedule {
+    width: auto;
+    font-size: 16px;
+  }
+} 

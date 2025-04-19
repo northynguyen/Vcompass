@@ -1,5 +1,7 @@
 import ShortVideo from '../models/ShortVideoModel.js';
 import cloudinary from 'cloudinary';
+import userModel from "../models/user.js";
+import Schedule from '../models/schedule.js';
 
 // Cấu hình Cloudinary
 cloudinary.config({
@@ -55,7 +57,7 @@ const createShortVideo = async (req, res) => {
     console.log('req.body:', req.body);
     console.log('req.files:', req.files);
     
-    const { title, description, tags, category, isPublic } = req.body;
+    const { title, description, tags, category, isPublic, scheduleId } = req.body;
     const userId = req.body.userId || (req.user && req.user._id);
     
     if (!userId) {
@@ -71,6 +73,25 @@ const createShortVideo = async (req, res) => {
         success: false,
         message: 'Vui lòng upload video'
       });
+    }
+
+    // Kiểm tra scheduleId nếu có
+    if (scheduleId) {
+      const schedule = await Schedule.findById(scheduleId);
+      if (!schedule) {
+        return res.status(404).json({
+          success: false,
+          message: 'Không tìm thấy lịch trình'
+        });
+      }
+      
+      // Kiểm tra quyền sở hữu schedule
+      if (schedule.idUser.toString() !== userId.toString()) {
+        return res.status(403).json({
+          success: false,
+          message: 'Bạn không có quyền liên kết video với lịch trình này'
+        });
+      }
     }
 
     const videoFile = req.files.video;
@@ -134,7 +155,8 @@ const createShortVideo = async (req, res) => {
           tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
           category,
           isPublic: isPublic === 'true' || isPublic === true,
-          duration: result.duration || 0
+          duration: result.duration || 0,
+          scheduleId: scheduleId || null
         });
 
         await newShortVideo.save();
@@ -175,7 +197,6 @@ const createShortVideo = async (req, res) => {
 const getShortVideos = async (req, res) => {
   try {
     const { page = 1, limit = 10, category, userId, search } = req.query;
-    
     const query = {};
     
     // Lọc theo category nếu có
@@ -216,6 +237,7 @@ const getShortVideos = async (req, res) => {
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
       .populate('userId', 'name avatar')
+      .populate('scheduleId', 'scheduleName description address dateStart dateEnd')
       .populate('comments.userId', 'name avatar')
       .populate('comments.replies.userId', 'name avatar');
     
@@ -866,6 +888,130 @@ const increaseViews = async (req, res) => {
   }
 };
 
+// Lấy video ngắn theo xu hướng
+const getTrendingVideos = async (req, res) => {
+  try {
+    const { category, page = 1, limit = 10 } = req.query;
+    
+    // Xây dựng query cơ bản
+    let query = { isPublic: true };
+    
+    // Thêm điều kiện category nếu có
+    if (category && category !== 'all') {
+      query.category = category;
+    }
+    
+    // Tính điểm tương tác cho mỗi video
+    const videos = await ShortVideo.find(query)
+      .populate('userId', 'name avatar')
+      .populate('likes', 'name avatar')
+      .populate('comments.userId', 'name avatar')
+      .sort({ createdAt: -1 });
+    
+    // Tính điểm tương tác cho mỗi video
+    const scoredVideos = videos.map(video => {
+      const now = new Date();
+      const videoAge = (now - video.createdAt) / (1000 * 60 * 60); // Tuổi video tính bằng giờ
+      
+      // Tính điểm tương tác
+      const engagementScore = (
+        (video.likes.length * 2) + // Mỗi like = 2 điểm
+        (video.comments.length * 3) + // Mỗi comment = 3 điểm
+        (video.views * 0.1) + // Mỗi view = 0.1 điểm
+        (video.shares * 4) // Mỗi share = 4 điểm
+      );
+      
+      // Giảm điểm theo thời gian (video càng cũ điểm càng thấp)
+      const timeDecay = Math.exp(-videoAge / 24); // Giảm 50% mỗi 24 giờ
+      
+      // Tính điểm cuối cùng
+      const finalScore = engagementScore * timeDecay;
+      
+      return {
+        ...video.toObject(),
+        score: finalScore
+      };
+    });
+    
+    // Sắp xếp theo điểm
+    scoredVideos.sort((a, b) => b.score - a.score);
+    
+    // Phân trang
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    const paginatedVideos = scoredVideos.slice(startIndex, endIndex);
+    
+    res.status(200).json({
+      success: true,
+      videos: paginatedVideos,
+      total: scoredVideos.length,
+      totalPages: Math.ceil(scoredVideos.length / limit),
+      currentPage: parseInt(page)
+    });
+  } catch (error) {
+    console.error('Error getting trending videos:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Lỗi khi lấy video theo xu hướng'
+    });
+  }
+};
+
+const getFollowingVideos = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    
+    // Lấy danh sách người dùng đang follow
+    const user = await userModel.findById(userId).select('following');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Lấy tất cả video của những người đang follow
+    const followingVideos = await ShortVideo.find({
+      userId: { $in: user.following },
+      isPublic: true
+    })
+    .populate('userId', 'name avatar verified')
+    .sort({ createdAt: -1 });
+
+    // Tính điểm tương tác cho mỗi video
+    const videosWithScore = followingVideos.map(video => {
+      // Tính điểm dựa trên các yếu tố tương tác
+      const likesScore = video.likes.length * 2;
+      const commentsScore = video.comments.length * 1.5;
+      const viewsScore = video.views * 0.1;
+      const sharesScore = video.shares * 2;
+      
+      // Tính thời gian decay (video cũ hơn sẽ có điểm thấp hơn)
+      const hoursSinceCreation = (Date.now() - video.createdAt) / (1000 * 60 * 60);
+      const timeDecay = Math.exp(-hoursSinceCreation / 24); // Decay trong 24 giờ
+      
+      // Tính tổng điểm
+      const totalScore = (likesScore + commentsScore + viewsScore + sharesScore) * timeDecay;
+      
+      return {
+        ...video.toObject(),
+        interactionScore: totalScore
+      };
+    });
+
+    // Sắp xếp video theo điểm tương tác
+    const sortedVideos = videosWithScore.sort((a, b) => b.interactionScore - a.interactionScore);
+
+    res.status(200).json({
+      success: true,
+      videos: sortedVideos
+    });
+  } catch (error) {
+    console.error('Error getting following videos:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error getting following videos'
+    });
+  }
+};
+
 export {
   createShortVideo,
   getShortVideos,
@@ -883,5 +1029,7 @@ export {
   increaseShares,
   getUserShortVideos,
   getPopularShortVideos,
-  togglePin
+  togglePin,
+  getTrendingVideos,
+  getFollowingVideos
 };

@@ -7,11 +7,18 @@ const LOCATION = { lat: 10.3465, lng: 107.0843 }; // Toạ độ Vũng Tàu
 const SEARCH_RADIUS = 5000; // Bán kính tìm kiếm (mét)
 const PLACE_TYPES = ["lodging", "restaurant", "tourist_attraction"]; // Loại địa điểm
 
+const libraries = ["places"]; // Thêm thư viện Places API
+
 const MapTest = () => {
-  const { isLoaded } = useLoadScript({ googleMapsApiKey: API_KEY });
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: API_KEY,
+    libraries,
+  });
+
   const [places, setPlaces] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPlaces = async () => {
@@ -28,13 +35,17 @@ const MapTest = () => {
           }
         );
         setPlaces(response.data.results);
+        setError(null);
       } catch (error) {
         console.error("Error fetching places:", error);
+        setError("Không thể tải dữ liệu địa điểm. Vui lòng thử lại sau.");
       }
     };
 
-    fetchPlaces();
-  }, []);
+    if (isLoaded) {
+      fetchPlaces();
+    }
+  }, [isLoaded]);
 
   const nextPlace = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % places.length);
@@ -48,11 +59,38 @@ const MapTest = () => {
     setSelectedPlace(places[currentIndex === 0 ? places.length - 1 : currentIndex - 1]);
   };
 
-  if (!isLoaded) return <p>Loading Maps...</p>;
+  if (loadError) {
+    return (
+      <div className="container">
+        <div className="error-message">
+          <h2>⚠️ Lỗi tải bản đồ</h2>
+          <p>Không thể tải Google Maps. Vui lòng kiểm tra kết nối internet và thử lại.</p>
+          <p>Chi tiết lỗi: {loadError.message}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="container">
+        <div className="loading-message">
+          <h2>Đang tải bản đồ...</h2>
+          <div className="loading-spinner"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container">
       <h2>📍 Danh sách địa điểm</h2>
+
+      {error && (
+        <div className="error-message">
+          <p>{error}</p>
+        </div>
+      )}
 
       {places.length > 0 && (
         <div className="details-card">
@@ -73,41 +111,57 @@ const MapTest = () => {
         </div>
       )}
 
-      <GoogleMap
-        center={LOCATION}
-        zoom={14}
-        mapContainerStyle={{ height: "500px", width: "100%", borderRadius: "10px" }}
-      >
-        {places.map((place, index) => (
-          <Marker
-            key={index}
-            position={{
-              lat: place.geometry.location.lat,
-              lng: place.geometry.location.lng,
-            }}
-            label={{ text: (index + 1).toString(), color: "white" }}
-            onClick={() => setSelectedPlace(place)}
-          />
-        ))}
+      <div className="map-container">
+        <GoogleMap
+          center={LOCATION}
+          zoom={14}
+          mapContainerStyle={{ height: "100%", width: "100%", borderRadius: "12px" }}
+          options={{
+            styles: [
+              {
+                featureType: "all",
+                elementType: "labels.text.fill",
+                stylers: [{ color: "#ffffff" }]
+              },
+              {
+                featureType: "all",
+                elementType: "labels.text.stroke",
+                stylers: [{ color: "#000000" }]
+              }
+            ]
+          }}
+        >
+          {places.map((place, index) => (
+            <Marker
+              key={index}
+              position={{
+                lat: place.geometry.location.lat,
+                lng: place.geometry.location.lng,
+              }}
+              label={{ text: (index + 1).toString(), color: "white" }}
+              onClick={() => setSelectedPlace(place)}
+            />
+          ))}
 
-        {selectedPlace && (
-          <InfoWindow
-            position={{
-              lat: selectedPlace.geometry.location.lat,
-              lng: selectedPlace.geometry.location.lng,
-            }}
-            onCloseClick={() => setSelectedPlace(null)}
-          >
-            <div>
-              <h4>{selectedPlace.name}</h4>
-              <p>{selectedPlace.vicinity}</p>
-              <p>Đánh giá: {selectedPlace.rating || "Chưa có"} / 5 ⭐</p>
-            </div>
-          </InfoWindow>
-        )}
-      </GoogleMap>
+          {selectedPlace && (
+            <InfoWindow
+              position={{
+                lat: selectedPlace.geometry.location.lat,
+                lng: selectedPlace.geometry.location.lng,
+              }}
+              onCloseClick={() => setSelectedPlace(null)}
+            >
+              <div>
+                <h4>{selectedPlace.name}</h4>
+                <p>{selectedPlace.vicinity}</p>
+                <p>Đánh giá: {selectedPlace.rating || "Chưa có"} / 5 ⭐</p>
+              </div>
+            </InfoWindow>
+          )}
+        </GoogleMap>
+      </div>
     </div>
   );
 };
 
-export default MapTest ;
+export default MapTest;

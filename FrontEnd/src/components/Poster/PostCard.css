@@ -1,5 +1,3 @@
-
-
 .card-container {
   background-color: white;
   border-radius: 4px;
@@ -10,7 +8,14 @@
   gap: 5px;
   margin-bottom: 30px;
   margin-left: 10px;
-  padding-top:10px;
+  padding-top: 10px;
+}
+
+@media (max-width: 768px) {
+  .card-container {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 .card-header {
@@ -30,14 +35,14 @@
 .post-more-infor:hover{
   background: #e7e6e6;
 }
-.user-info {
+.user-info-img {
   display: flex;
   align-items: center;
-  padding: 10px 20px;
+  padding-left: 10px;
   cursor: pointer;
 }
 
-.user-info h5 {
+.user-info-img h5 {
   margin-bottom: 5px;
 }
 
@@ -58,7 +63,12 @@
 
 .pricing-box h3 {
   color: #007AFF;
-  font-size: 20px;
+  font-size: 1.1rem;
+}
+@media (max-width: 768px) {
+  .pricing-box h3 {
+    font-size: 1rem;
+  }
 }
 
 .pricing-box .total {
@@ -99,8 +109,20 @@
   font-size: 20px;
 }
 
+@media (max-width: 768px) {
+  .card-content h2 {
+    font-size: 18px;
+  }
+}
+
 .card-content span {
   font-size: 17px;
+}
+
+@media (max-width: 768px) {
+  .card-content span {
+    font-size: 14px;
+  }
 }
 
 .details {
@@ -119,11 +141,18 @@
   text-align: justify;
 }
 
+@media (max-width: 768px) {
+  .details p {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+}
+
 .pricing-box {
   width: 95%;
   background-color: #fafafa;
   border-radius: 10px;
-  padding: 15px;
+  padding: 0px 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -137,6 +166,12 @@
   justify-content: space-between;
   margin-bottom: 8px;
   font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .pricing-box ul li {
+    font-size: 12px;
+  }
 }
 
 .discount {
@@ -186,7 +221,13 @@
   cursor: pointer;
   font-weight: bold;
   margin-right: 10px;
+}
 
+@media (max-width: 768px) {
+  .custom-now {
+    padding: 8px 15px;
+    font-size: 12px;
+  }
 }
 
 .content-container {
@@ -221,6 +262,13 @@
   font-weight: 500;
   padding: 10px 20px;
   justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .post-location {
+    font-size: 13px;
+    padding: 8px 15px;
+  }
 }
 
 .location-text {
@@ -258,88 +306,6 @@ label.action-text {
   height: 100%;
 }
 
-.accommodation-banner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  position: relative;
-  color: #fff;
-  height: 400px;
-  margin: 0 auto;
-  margin-bottom: 50px;
-}
-
-.banner-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Vung_Tau_mount_Nho_panorama.jpg/1920px-Vung_Tau_mount_Nho_panorama.jpg');
-  /* Thay bằng đường dẫn ảnh của bạn */
-  background-size: cover;
-  background-position: center;
-  filter: blur(8px);
-  /* Làm mờ ảnh */
-  z-index: 1;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  /* Màu sắc của lớp phủ với độ trong suốt */
-  z-index: 2;
-  /* Đặt lớp phủ lên trên ảnh */
-}
-
-.banner-content {
-  position: relative;
-  z-index: 3;
-  color: #fff;
-  width: 40%;
-  margin-right: 150px;
-}
-
-.image-container {
-  position: relative;
-  width: 45%;
-  height: 90%;
-  margin-bottom: 20px;
-  margin-right: 100px;
-  z-index: 100;
-}
-
-.banner-image {
-  width: 500px;
-  height: 350px;
-  margin-left: 100px;
-  border-radius: 9999px;
-}
-
-.custom-shape-divider {
-  position: relative;
-  width: 100%;
-}
-
-.custom-shape-divider::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
-  z-index: 1;
-  clip-path: circle(50% at 50% 50%);
-}
-
-
-
 .trending {
   font-size: 14px;
   background-color: #60D394;
@@ -366,34 +332,11 @@ label.action-text {
   font-weight: bold;
 }
 
-.description {
-  font-size: 16px;
-  line-height: 1.5;
-  margin: 15px 0;
-}
-
 .actions {
   display: flex;
   align-items: center;
 }
 
-.book-now {
-  background-color: #FFD700;
-  color: #000;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.icon {
-  font-size: 24px;
-  margin-left: 15px;
-  cursor: pointer;
-}
-
-.book-now:hover,
 .custom-now:hover {
   background-color: #1DA1F2;
   transition: all 0.3s ease-in-out;
@@ -439,13 +382,12 @@ label.action-text {
 
 /* Container for the title and button */
 .pricing-box {
-  margin-top: auto;
   width: 95%;
   background-color: #fafafa;
   border-radius: 10px;
-  padding: 15px;
+  padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
+}
 
 /* Adjust the title and button container layout */
 .pricing-title {
@@ -503,41 +445,40 @@ label.action-text {
 .hidden-costs span {
   font-weight: bold;
 }
-}
 
 .attractions-box {
-  margin-top: auto;
   padding: 0 10px 0 10px;
   border-radius: 8px;
-  margin-bottom: 10px;
   width: 95%;
 }
 
 .attractions-title {
-  font-size: 1rem;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #333;
+  font-size: 18px;
+  color: #007AFF;
+  margin-bottom: 10px;
+  padding-left: 5px;
+}
+
+@media (max-width: 768px) {
+  .attractions-title {
+    font-size: 16px;
+  }
 }
 
 .attractions-list {
-  display: flex; /* Sử dụng flexbox để sắp xếp các phần tử theo hàng ngang */
-  flex-wrap: nowrap; /* Ngăn không cho phần tử bị gãy dòng */
-  gap: 10px; /* Khoảng cách giữa các phần tử */
-  overflow-x: auto; /* Kích hoạt cuộn ngang */
-  -webkit-overflow-scrolling: touch; /* Tăng trải nghiệm cuộn mượt mà trên thiết bị di động */
-  padding: 10px 0; /* Thêm padding để khoảng cách giữa các phần tử tốt hơn */
+  display: flex;
+  overflow-x: auto;
+  padding: 10px 5px;
+  gap: 15px;
 }
 
 .attractions-list::-webkit-scrollbar {
   display: none; 
-
 }
 
 .attractions-list:hover {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 10px 0;
   cursor: grab;
 }
 .attraction-item {
@@ -554,7 +495,6 @@ label.action-text {
   min-width: 150px; /* Đảm bảo mỗi item có độ rộng tối thiểu */
 }
 
-
 .attraction-item:hover {
   background-color: #f0f0f0;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
@@ -570,11 +510,18 @@ label.action-text {
 }
 
 .attraction-item p {
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #555;
-  margin: 0;
-  word-break: break-word;
+  font-size: 14px;
+  margin-top: 5px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .attraction-item p {
+    font-size: 12px;
+  }
 }
 
 .heart-container {
@@ -644,3 +591,4 @@ label.action-text {
 .follower-menu-button:hover {
   background: #f3f3f3;
 }
+

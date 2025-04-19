@@ -403,7 +403,7 @@ const ActivityItem = ({
               mode={mode}
             />
           )}
-          {activity.activityType === "Attraction" && (
+          {activity.activityType === "Attraction" && data.attraction && (
             <AttractionActivity
               data={data.attraction}
               activity={activity}
@@ -1052,16 +1052,71 @@ const Schedule = ({ mode }) => {
   const [totalActivities, setTotalActivities] = useState(0);
   const [cursors, setCursors] = useState(new Map());
   const [inactiveUsers, setInactiveUsers] = useState(new Set());
+  const [viewTimer, setViewTimer] = useState(null);
+  const [hasLoggedView, setHasLoggedView] = useState(false);
   
   // Thêm socket ref vào đây
   const socket = useRef(null);
 
+  // Add log activity function
+  const logActivity = async (actionType, content) => {
+    try {
+      await axios.post(
+        `${url}/api/logs/create`,
+        {
+          userId: user._id,
+          scheduleId: id,
+          actionType,
+          content
+        },
+        { headers: { token } }
+      );
+    } catch (error) {
+      console.error('Error logging activity:', error);
+    }
+  };
+
+  // Add view timer effect
+  useEffect(() => {
+    if (mode === "view" && inforSchedule && user && !hasLoggedView) {
+      // Clear any existing timer
+      if (viewTimer) {
+        clearTimeout(viewTimer);
+      }
+
+      // Set new timer for 30 seconds
+      const timer = setTimeout(async () => {
+        await logActivity('view', 'Đã xem lịch trình trên 30 giây');
+        setHasLoggedView(true);
+      }, 30000);
+
+      setViewTimer(timer);
+
+      // Cleanup on unmount
+      return () => {
+        if (timer) {
+          clearTimeout(timer);
+        }
+      };
+    }
+  }, [mode, inforSchedule, user, hasLoggedView]);
+
+  // Reset view logging when component unmounts or schedule changes
+  useEffect(() => {
+    return () => {
+      setHasLoggedView(false);
+      if (viewTimer) {
+        clearTimeout(viewTimer);
+      }
+    };
+  }, [id]);
+
   const toggleWishlist = async () => {
     try {
-      const newStatus = !isSaved; // Determine the new state
+      const newStatus = !isSaved;
       setIsSaved(newStatus);
 
-      const action = newStatus ? "add" : "remove"; // Define the action
+      const action = newStatus ? "add" : "remove";
       const response = await fetch(
         `${url}/api/user/user/${user._id}/addtoWishlist?type=schedule&itemId=${id}&action=${action}`,
         {
@@ -1071,16 +1126,15 @@ const Schedule = ({ mode }) => {
       );
 
       const result = await response.json();
-      if (!result.success) {
+      if (result.success) {
+        // Log like action
+        await logActivity('save', newStatus ? 'Đã lưu lịch trình' : 'Đã bỏ lưu lịch trình');
+        toast.success(result.message);
+      } else {
         toast.error(result.message);
       }
-      else {
-        toast.success(result.message);
-      }
-
     } catch (error) {
       console.error("Failed to update wishlist:", error.message);
-      // Optionally revert the `isSaved` state if the request fails
       setIsSaved((prevState) => !prevState);
     }
   };
@@ -1184,28 +1238,35 @@ const Schedule = ({ mode }) => {
     toast.success("Chỉnh sửa hoàn tất");
   };
   const onEdit = async () => {
-    const newSchedule = {
-      ...inforSchedule,
-      status: "Draft",
-      likes: [],
-      comments: [],
-      createdAt: new Date(),
-    };
-    delete newSchedule._id;
-    console.log("New Schedule", newSchedule);
-    const response = await axios.post(
-      url + "/api/schedule/addNew",
-      { schedule: newSchedule },
-      {
-        headers: { token },
+    try {
+      const newSchedule = {
+        ...inforSchedule,
+        status: "Draft",
+        likes: [],
+        comments: [],
+        createdAt: new Date(),
+      };
+      delete newSchedule._id;
+      
+      const response = await axios.post(
+        url + "/api/schedule/addNew",
+        { schedule: newSchedule },
+        { headers: { token } }
+      );
+
+      if (response.data.success) {
+        // Log edit action
+        await logActivity('edit', 'Đã bắt đầu chỉnh sửa lịch trình');
+        
+        const scheduleId = response.data.schedule._id;
+        window.location.href = `/schedule-edit/${scheduleId}`;
+        toast.success("Lấy thành công");
+      } else {
+        toast.error(response.data.message);
       }
-    );
-    if (response.data.success) {
-      const scheduleId = response.data.schedule._id;
-      window.location.href = `/schedule-edit/${scheduleId}`;
-      toast.success("Lấy thành công");
-    } else {
-      toast.error(response.data.message);
+    } catch (error) {
+      console.error("Error in onEdit:", error);
+      toast.error("Có lỗi xảy ra khi chỉnh sửa");
     }
   };
   const extractExpenses = (tour) => {
@@ -1220,7 +1281,7 @@ const Schedule = ({ mode }) => {
           icon: activity.imgSrc,
         };
         expenses.push(expense);
-      });
+      });  
     });
     return expenses;
   };
@@ -1231,7 +1292,7 @@ const Schedule = ({ mode }) => {
       const additonExpense = {
         id: addExpense._id,
         name: addExpense.name,
-        cost: addExpense.cost,
+        cost: addExpense.cost,  
         description: addExpense.description,
       };
       additonExpenses.push(additonExpense);
@@ -1693,7 +1754,9 @@ const Schedule = ({ mode }) => {
         </div>
       )}
 
-      <Comment schedule={inforSchedule} />
+      <Comment 
+        schedule={inforSchedule}
+      />
       <InforScheduleMedal
         isOpen={isOpenInforSchedule}
         closeModal={closeInforSchedule}

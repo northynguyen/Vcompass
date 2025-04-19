@@ -4,7 +4,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    position: sticky;
+    position: fixed;
+    width: 100%;
     top: 0;
     z-index: 999;
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
@@ -277,7 +278,7 @@ img.logo-image {
     display: block;
     margin: 0;
     font-weight:300;
-    font-size: 1vw;
+    font-size: 1rem;
     text-overflow:inherit;
     overflow: hidden;
   }
@@ -440,7 +441,7 @@ img.logo-image {
   }
   .header-right-container .header-login {
     padding: 10px 20px;
-    font-size: 4vw;
+    font-size: 1rem ;
   }
 
   .notification-container {
@@ -477,11 +478,11 @@ img.logo-image {
   
   .notification-content p{
     font-weight:300;
-    font-size: 3.2vw;
+    font-size: 0.8rem;
   }
 
   .notification-time {
-    font-size: 3.2vw;
+    font-size: 0.8rem;
   }
   
   .header-profile .profile-menu {
@@ -492,13 +493,12 @@ img.logo-image {
 
   .header-profile .profile-name {
     padding: 10px;
-    font-size: 12px;  
+    font-size: 0.9rem;  
   }
 
   .profile-menu li {
-    padding: 5px !important;
-    font-size: 12px;
-    font-weight: bold;
+    padding: 5px !important;  
+    font-size: 0.9rem;
   }
 
 }

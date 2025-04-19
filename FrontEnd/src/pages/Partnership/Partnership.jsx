@@ -3,7 +3,7 @@ import HeaderPartner from '../../components/Partnership/HeaderPartner/HeaderPart
 import BodyPartner from '../../components/Partnership/BodyPartner/BodyPartner'
 const Partnership = () => {
   return (
-    <div>
+    <div style={{marginTop: '70px'}}>
       <HeaderPartner />
       <BodyPartner />
     </div>

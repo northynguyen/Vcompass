@@ -40,7 +40,14 @@ MapCenterSetter.propTypes = {
 const OtherItem = ({ setCurDes, curDes }) => {
   const [activityName, setActivityName] = useState(curDes?.name || "");
   const [images, setImages] = useState(
-    curDes?.imgSrc?.map((img) => (typeof img === "string" ? img : URL.createObjectURL(img))) || []
+    curDes?.imgSrc?.map((img) => {
+      if (typeof img === "string") {
+        return img;
+      } else if (img instanceof File) {
+        return URL.createObjectURL(img);
+      }
+      return "";
+    }) || []
   );
   const [address, setAddress] = useState(curDes?.address || "");
   const [searchResults, setSearchResults] = useState([]);
@@ -49,18 +56,29 @@ const OtherItem = ({ setCurDes, curDes }) => {
 
   // Hàm tìm kiếm địa chỉ
   const handleSearchAddress = async () => {
-    if (!address) return;
-
+    if (!address?.trim()) return;
+  
     try {
-      const response = await axios.get(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json`
-      );
+      const response = await axios.get("https://nominatim.openstreetmap.org/search", {
+        params: {
+          q: address,
+          format: "json",
+          addressdetails: 1, // lấy chi tiết địa chỉ
+          limit: 5,           // giới hạn số kết quả
+        },
+        headers: {
+          'Accept-Language': 'vi', // ưu tiên tiếng Việt
+          'User-Agent': 'Vcompass/1.0 (vcompass@gmail.com)' // bắt buộc theo chính sách Nominatim
+        },
+      });
+  
       setSearchResults(response.data);
       setShowResults(true);
     } catch (error) {
-      console.error("Lỗi khi tìm kiếm địa chỉ:", error);
+      console.error("Lỗi khi tìm kiếm địa chỉ (Nominatim):", error);
     }
   };
+  
 
   // Hàm chọn địa chỉ từ danh sách gợi ý
   const handleSelectAddress = (selected) => {
@@ -94,8 +112,47 @@ const OtherItem = ({ setCurDes, curDes }) => {
     }));
   };
 
+  const deleteOldMedia = async (media) => {
+    if (media && media.length > 0) {
+      try {
+        console.log("Media to delete:", media);
+        // Extract public_id from Cloudinary URL
+        const extractPublicId = (url) => {
+          if (!url) return null;
+          // Cloudinary URL pattern: .../upload/v1234567890/folder_name/public_id.extension
+          const matches = url.match(/\/upload\/v\d+\/(.+?)\.\w+$/);
+          if (matches && matches[1]) {
+            // Remove any folder prefix if present
+            const parts = matches[1].split('/');
+            return parts[parts.length - 1];
+          }
+          return null;
+        };
+
+        const publicId = extractPublicId(media);
+        console.log("Extracted public_id:", publicId);
+
+        if (!publicId) {
+          console.error("Could not extract public_id from URL:", media);
+          return;
+        }
+
+        const response = await axios.delete(`${url}/api/videos/delete-image`, {
+          data: { imagePath: publicId },
+        });
+
+        if (response.data.success) {
+          console.log("Deleted old media successfully:", response.data);
+        } else {
+          console.error("Error deleting old media:", response.data.message);
+        }
+      } catch (error) {
+        console.error("Error deleting old media:", error);
+      }
+    }
+  };
   const handleRemoveImage = async (index) => {
-    const imgToRemove = images[index];
+    // const imgToRemove = images[index];
     const newImages = images.filter((_, i) => i !== index);
 
     setImages(newImages);
@@ -104,16 +161,17 @@ const OtherItem = ({ setCurDes, curDes }) => {
       imgSrc: prev?.imgSrc?.filter((_, i) => i !== index),
     }));
 
-    if (!imgToRemove.startsWith("blob:")) {
-      try {
-        await axios.delete(`${url}/api/deleteImage`, {
-          data: { imagePath: imgToRemove },
-        });
-        console.log(`Đã xóa ảnh: ${imgToRemove}`);
-      } catch (error) {
-        console.error("Lỗi khi xóa ảnh:", error);
-      }
-    }
+    // if (!imgToRemove.startsWith("blob:")) {
+    //   try {
+    //     await axios.delete(`${url}/api/deleteImage`, {
+    //       data: { imagePath: imgToRemove },
+    //     });
+    //     console.log(`Đã xóa ảnh: ${imgToRemove}`);
+    //   } catch (error) {
+    //     console.error("Lỗi khi xóa ảnh:", error);
+    //   }
+    // }
+    deleteOldMedia(images[index]);
   };
 
   useEffect(() => {
@@ -183,7 +241,7 @@ const OtherItem = ({ setCurDes, curDes }) => {
           images.map((img, index) => (
             <div key={index} className="image-preview">
               <img
-                src={img.startsWith("blob:") ? img : `${url}/images/${img}`}
+                src={img.startsWith("blob:") ? img : img.includes("http") ? img : `${url}/images/${img}`}
                 alt={`Upload ${index + 1}`}
               />
               <button className="remove-btn" onClick={() => handleRemoveImage(index)}>
@@ -247,6 +305,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   const { url } = useContext(StoreContext);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [listData, setListData] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -307,26 +366,56 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
 
       // Kiểm tra nếu có ảnh mới
       if (curDes?.imgSrc && curDes.imgSrc.length > 0) {
+        console.log("Files to upload:", curDes.imgSrc);
+        let fileCount = 0;
         curDes.imgSrc.forEach((file) => {
           if (file instanceof File) {
-            formData.append("images", file); // 'images' là key backend mong đợi
+            console.log("Appending file:", file.name, file.type, file.size);
+            formData.append('files', file);
+            fileCount++;
+          } else if (typeof file === 'string') {
+            console.log("Skipping existing URL:", file);
           }
         });
+        console.log("Total files to upload:", fileCount);
       }
 
       // Gửi ảnh lên server nếu có
-      if (formData.has("images")) {
-        const uploadResponse = await axios.post(`${url}/api/schedule/upload`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+      if (formData.has("files")) {
+        try {
+          setIsUploading(true);
+          console.log("FormData contents:", Array.from(formData.entries()));
+          console.log("Sending upload request...");
+          const uploadResponse = await axios.post(`${url}/api/schedule/images/upload/new`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
 
-        if (uploadResponse.data.success) {
-          console.log("Thanh công khi upload ảnh:", uploadResponse.data);
-          curDes.imgSrc = (uploadResponse.data.files || []).map((file) => file.filename);
-        } else {
-          console.error("Lỗi khi upload ảnh:", uploadResponse.data.message);
+          console.log("Upload response:", uploadResponse.data);
+
+          if (uploadResponse.data.success) {
+            console.log("Upload successful:", uploadResponse.data);
+            // Combine existing string URLs with newly uploaded files
+            const existingUrls = curDes.imgSrc.filter(img => typeof img === 'string');
+            const newFiles = (uploadResponse.data.files || []).map(file => file.path);
+            console.log("Existing URLs:", existingUrls);
+            console.log("New files:", newFiles);
+            curDes.imgSrc = [...existingUrls, ...newFiles];
+          } else {
+            console.error("Upload failed:", uploadResponse.data.message);
+            throw new Error(uploadResponse.data.message || "Upload failed");
+          }
+        } catch (uploadError) {
+          console.error("Error during upload:", uploadError);
+          if (uploadError.response) {
+            console.error("Response data:", uploadError.response.data);
+            console.error("Response status:", uploadError.response.status);
+            console.error("Response headers:", uploadError.response.headers);
+          }
+          throw uploadError;
+        } finally {
+          setIsUploading(false);
         }
       }
 
@@ -335,7 +424,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         activityType: curDes?.activityType || "Other",
         idDestination: curDes?._id || uuidv4(),
         address: curDes.address || "default-address",
-        imgSrc: curDes.imgSrc || ["default-image"],
+        imgSrc: curDes.imgSrc ? curDes.imgSrc.filter(img => typeof img === 'string') : ["default-image"],
         name: curDes.name || "default-name",
         cost: parseInt(cost) || 0,
         costDescription: costDes ? costDes : "",
@@ -485,7 +574,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
               ) : (
                 <div className="form-page">
                   {option !== "Other" && (
-                    <button className="back-btn" onClick={handleBack}>
+                    <button className="back-btn-add-activity" onClick={handleBack}>
                       <i className="fas fa-arrow-left"></i> Quay lại
                     </button>
                   )}
@@ -552,7 +641,19 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
                   </div>
                   
                   <div className="modal-footer">
-                    <button className="save-btn" onClick={handleSave}>Lưu</button>
+                    <button 
+                      className="save-btn" 
+                      onClick={handleSave}
+                      disabled={isUploading}
+                    >
+                      {isUploading ? (
+                        <>
+                          <i className="fas fa-spinner fa-spin"></i> Đang tải lên...
+                        </>
+                      ) : (
+                        "Lưu"
+                      )}
+                    </button>
                   </div>
                 </div>
               )}

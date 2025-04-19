@@ -24,7 +24,7 @@ const ImagesModal = ({ isOpen, images, selectedIndex, onClose }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {/* Ảnh đang hiển thị */}
         <div className="image-display">
-          <img src={`${url}/images/${images[currentIndex]}`} alt={`Image ${currentIndex + 1}`} className="main-image" />
+          <img src={images[currentIndex].includes("http") ? images[currentIndex] : `${url}/images/${images[currentIndex]}`} alt={`Image ${currentIndex + 1}`} className="main-image" />
           <button className="close-btn" onClick={onClose}>
             &times;
           </button>
@@ -44,7 +44,7 @@ const ImagesModal = ({ isOpen, images, selectedIndex, onClose }) => {
           {images.map((img, index) => (
             <img
               key={index}
-              src={`${url}/images/${img}`}
+              src={img.includes("http") ? img : `${url}/images/${img}`}
               alt={`Thumbnail ${index + 1}`}
               className={`thumbnail ${index === currentIndex ? 'active' : ''}`}
               onClick={() => setCurrentIndex(index)}

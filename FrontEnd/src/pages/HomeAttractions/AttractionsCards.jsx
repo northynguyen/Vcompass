@@ -41,7 +41,7 @@ const AttractionsCards = ({ attractionsFound }) => {
                         <div key={item._id} className="accomodation-card-home">
                             <div className="card-content-container">
                                 <div className="card-content-img" onClick={() => onClick(item._id)}>
-                                    <img src={`${url}/images/${item.images[0]}`} alt={item.attractionName} />
+                                    <img src={item.images[0]?.includes("http") ? item.images[0] : `${url}/images/${item.images[0]}`} alt={item.attractionName} />
                                 </div>
                                 <div className="card-content">
                                     <h3 onClick={() => onClick(item._id)}>{item.attractionName}</h3>

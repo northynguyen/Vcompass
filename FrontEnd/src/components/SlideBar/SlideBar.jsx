@@ -84,49 +84,67 @@ const SlideBar = ({ type }) => {
     const renderCardContent = (service) => {
         //console.log(service);
         switch (type) {
-            case 'accommodation':
+            case 'accommodation': {
                 return (
                     <>
-
                         <h3 className="card-title">{service.name}</h3>
                         <p className="card-facilities">
-                            {service.amenities?.join(' • ')}
+                            {service.amenities && service.amenities.length > 5 
+                              ? service.amenities.slice(0, 5).join(' • ') + ' • ...'
+                              : service.amenities?.join(' • ')}
                         </p>
                         <p className="card-price">{service.roomTypes[0]?.pricePerNight.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} / đêm</p>
                     </>
                 );
-            case 'food':
+            }
+            case 'food': {
+                const foodHours = service.operatingHours.slice(0, 2); // Limit to first 2 operating hours
+                const foodAmenitiesLimit = foodHours.length > 1 ? 3 : 5; // Fewer amenities if showing 2 operating hours
+                
                 return (
                     <>
                         <h3 className="card-title">{service.foodServiceName}</h3>
-                        {service.operatingHours.map((hour, index) => (
+                        {foodHours.map((hour, index) => (
                             <p className="card-duration" key={index}>
                                 {hour.openTime} - {hour.closeTime} &nbsp; | &nbsp; {hour.startDay} - {hour.endDay}
                             </p>
-
                         ))}
+                        {service.operatingHours.length > 2 && (
+                            <p className="card-duration-more">+{service.operatingHours.length - 2} giờ khác</p>
+                        )}
                         <p className="card-facilities">
-                            {service.amenities?.join(' • ')}
+                            {service.amenities && service.amenities.length > foodAmenitiesLimit 
+                              ? service.amenities.slice(0, foodAmenitiesLimit).join(' • ') + ' • ...'
+                              : service.amenities?.join(' • ')}
                         </p>
                         <p className="card-price">{service.price.minPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} - {service.price.maxPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}/ người</p>
                     </>
                 );
-            case 'attraction':
+            }
+            case 'attraction': {
+                const attractionHours = service.operatingHours.slice(0, 2); // Limit to first 2 operating hours
+                const attractionAmenitiesLimit = attractionHours.length > 1 ? 3 : 5; // Fewer amenities if showing 2 operating hours
+                
                 return (
                     <>
                         <h3 className="card-title">{service.attractionName}</h3>
-                        {service.operatingHours.map((hour, index) => (
+                        {attractionHours.map((hour, index) => (
                             <p className="card-duration" key={index}>
                                 {hour.openTime} - {hour.closeTime} &nbsp; | &nbsp; {hour.startDay} - {hour.endDay}
                             </p>
-
                         ))}
+                        {service.operatingHours.length > 2 && (
+                            <p className="card-duration-more">+{service.operatingHours.length - 2} giờ khác</p>
+                        )}
                         <p className="card-facilities">
-                            {service.amenities?.join(' • ')}
+                            {service.amenities && service.amenities.length > attractionAmenitiesLimit 
+                              ? service.amenities.slice(0, attractionAmenitiesLimit).join(' • ') + ' • ...'
+                              : service.amenities?.join(' • ')}
                         </p>
                         <p className="card-price">{service.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} / người</p>
                     </>
                 );
+            }
             default:
                 return null;
         }
@@ -156,10 +174,12 @@ const SlideBar = ({ type }) => {
             {popularServices.length === 0 && <p>No {type} services found.</p>}
             <Swiper
                 modules={[Navigation]}
-                spaceBetween={0}
-                slidesPerView={2}
+                spaceBetween={10}
+                slidesPerView={1}
                 breakpoints={{
-                    768: { slidesPerView: 4, spaceBetween: 20 }
+                    480: { slidesPerView: 2, spaceBetween: 10 },
+                    768: { slidesPerView: 3, spaceBetween: 15 },
+                    1024: { slidesPerView: 4, spaceBetween: 20 }
                 }}
                 navigation
                 className="custom-swiper"
