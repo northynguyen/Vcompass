@@ -120,21 +120,26 @@
     margin-bottom: 15px;
     font-size: 18px;
     color: #333;
+    text-align: center;
+    padding-bottom: 5px;
+    border-bottom: #dadee1 solid 1px;
   }
   .video-option-label{
     display: inline-block !important;
   }
   .filters label {
-    display: block;
     margin-bottom: 15px;
     font-size: 14px;
     color: #555;
+    display: flex;
+    align-items: center;
   }
   
   .filters label span {
     margin-bottom: 5px;
     display: inline-block;
-  }
+    flex: 1;
+}
   .filters {
     margin: 0px 15px;
   }

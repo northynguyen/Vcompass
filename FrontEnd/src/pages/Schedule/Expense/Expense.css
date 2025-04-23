@@ -52,6 +52,8 @@
   label.expense-sub-title {
     font-size: 15px;
     color: #545353;
+    margin-top: 16px;
+    margin-bottom: 4px;
 }
   .add-expense-modal {
     background-color: white;
@@ -104,6 +106,7 @@
     background-color: #f8f8f8;
     padding: 20px;
     border-radius: 8px;
+    margin-top: 20px;
   }
   
   .expense-container h1 {
@@ -143,6 +146,9 @@
     border-radius: 4px;
     cursor: pointer;
   }
+  .add-new {
+    margin-top: 8px;
+}
   
   .action-buttons .add-budget-btn {
     background-color: #ccc;

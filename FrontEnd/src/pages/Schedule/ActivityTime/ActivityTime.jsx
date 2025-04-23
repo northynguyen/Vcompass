@@ -1,14 +1,13 @@
 /* eslint-disable react/prop-types */
 import CryptoJS from "crypto-js";
 import { useContext, useEffect, useState } from "react";
-import { FaEdit, FaRegClock, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaEdit, FaHeart, FaRegClock, FaRegHeart } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import { toast } from "react-toastify";
 import { SlNotebook } from "react-icons/sl";
+import { toast } from "react-toastify";
+import ImagesModal from "../../../components/ImagesModal/ImagesModal";
 import { StoreContext } from "../../../Context/StoreContext";
 import "./ActivityTime.css";
-import ImagesModal from "../../../components/ImagesModal/ImagesModal";
-import { use } from "react";
 const ActivityTime = ({ activity, setInforSchedule, mode, socket, inforSchedule }) => {
   const timeStart = activity.timeStart;
   const timeEnd = activity.timeEnd;
@@ -240,10 +239,10 @@ export const AccomActivity = ({
         </div>
         <div className="time-schedule-details">
           <div className="time-schedule-header">
+            <h3>{data.name}</h3>
             <span className="time-schedule-rating">
               ★★★★☆ ({data?.ratings?.length || 0} reviews)
             </span>
-            <h3>{data.name}</h3>
             <div className="time-schedule-location">
               <i className="fa-solid fa-location-dot"></i>
               <a
@@ -263,9 +262,10 @@ export const AccomActivity = ({
               </span>
             </div>
             <div className="list-accom__tour-facilities">
-              {data.amenities.map((facility, index) => (
-                <span key={index}>{facility}</span>
+              {data.amenities.slice(0, 8).map((facility, index) => (
+                <span className="tour-facilities-span" key={index}>{facility}</span>
               ))}
+              {data.amenities.length > 8 && <span>...</span>}
             </div>
           </div>
         </div>
@@ -418,10 +418,10 @@ export const FoodServiceActivity = ({
         </div>
         <div className="time-schedule-details">
           <div className="time-schedule-header">
+            <h3>{data.foodServiceName}</h3>
             <span className="time-schedule-rating">
               ★★★★☆ ({data?.ratings?.length || 0} reviews)
             </span>
-            <h3>{data.foodServiceName}</h3>
             <div className="time-schedule-location">
               <i className="fa-solid fa-location-dot"></i>
               <a
@@ -439,9 +439,10 @@ export const FoodServiceActivity = ({
               </span>
             </div>
             <div className="list-accom__tour-facilities">
-              {data.amenities.map((facility, index) => (
-                <span key={index}>{facility}</span>
+              {data.amenities.slice(0, 8).map((facility, index) => (
+                <span className="tour-facilities-span" key={index}>{facility}</span>
               ))}
+              {data.amenities.length > 8 && <span>...</span>}
             </div>
           </div>
         </div>
@@ -596,10 +597,10 @@ export const AttractionActivity = ({
 
         <div className="time-schedule-details">
           <div className="time-schedule-header">
+            <h3>{data.attractionName}</h3>
             <span className="time-schedule-rating">
               ★★★★☆ ({data?.ratings?.length || 0} reviews)
             </span>
-            <h3>{data.attractionName}</h3>
             <div className="time-schedule-location">
               <i className="fa-solid fa-location-dot"></i>
               <a
@@ -618,9 +619,10 @@ export const AttractionActivity = ({
             </div>
           </div>
           <div className="list-accom__tour-facilities">
-            {data.amenities.map((facility, index) => (
+            {data.amenities.slice(0, 8).map((facility, index) => (
               <span key={index}>{facility}</span>
             ))}
+            {data.amenities.length > 8 && <span>...</span>}
           </div>
         </div>
 

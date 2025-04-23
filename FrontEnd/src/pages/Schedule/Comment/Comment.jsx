@@ -3,10 +3,7 @@ import moment from 'moment';
 import "moment/locale/vi";
 import React, { useContext, useEffect, useState } from 'react';
 import { FaCommentAlt, FaHeart, FaRegPaperPlane, FaShare } from 'react-icons/fa';
-import { AiOutlineMore } from "react-icons/ai";
-import { FiFlag } from "react-icons/fi";
 import { StoreContext } from '../../../Context/StoreContext';
-import ReportForm from '../../../components/Report/ReportForm';
 import './Comment.css';
 // Post actions for liking, commenting, and sharing
 export const PostActions = ({ handleLike, likeCount, commentCount, replyCount, isLike, postUrl }) => {
@@ -206,6 +203,11 @@ const Comment = ({ schedule }) => {
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     className="input-comment-field"
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            handleNewCommentSubmit();
+                        }
+                    }}
                 />
                 <FaRegPaperPlane onClick={handleNewCommentSubmit} className="send-icon" />
             </div>
@@ -215,39 +217,34 @@ const Comment = ({ schedule }) => {
 
 const CommentContent = ({ comment, scheduleId, token, updateComments, url, user, logActivity }) => {
     const [replyText, setReplyText] = useState('');
+    const [activeReplyInputId, setActiveReplyInputId] = useState(null);
     const [showReplies, setShowReplies] = useState(false);
-    const [replyInputVisible, setReplyInputVisible] = useState(false);
 
-    const [openCommentMenuId, setOpenCommentMenuId] = useState(null);
-    const [openReplyMenuId, setOpenReplyMenuId] = useState(null);
-    // Toggle menu cho comment chính
-    const toggleCommentMenu = (commentId) => {
-        setOpenCommentMenuId(openCommentMenuId === commentId ? null : commentId);
-    };
-
-    // Toggle menu cho từng reply
-    const toggleReplyMenu = (replyId) => {
-        setOpenReplyMenuId(openReplyMenuId === replyId ? null : replyId);
-    };
     const handleReplySubmit = async () => {
         if (!user) {
-            alert("Vui lòng đăng nhập trước");
+            alert("Vui lòng đăng nhập trước");
             return;
         }
         if (!replyText.trim()) return;
+
         try {
-            const response = await axios.post(`${url}/api/schedule/user/updateLikeComment`, {
-                scheduleId,
-                userId: user._id,
-                action: 'reply',
-                content: replyText,
-                commentId: comment._id,
-            }, { headers: { token } });
+            const response = await axios.post(
+                `${url}/api/schedule/user/updateLikeComment`,
+                {
+                    scheduleId,
+                    userId: user._id,
+                    action: 'reply',
+                    content: replyText,
+                    commentId: activeReplyInputId, // <-- quan trọng
+                },
+                { headers: { token } }
+            );
+
             if (response.data.success) {
                 await logActivity('reply', `Đã trả lời bình luận: ${replyText}`);
                 updateComments(response.data.schedule.comments);
                 setReplyText('');
-                setReplyInputVisible(false);
+                setActiveReplyInputId(null);
             } else {
                 console.error("Error submitting reply:", response.data.message);
             }
@@ -258,70 +255,127 @@ const CommentContent = ({ comment, scheduleId, token, updateComments, url, user,
 
     return (
         <div className="comment-container">
-
+            {/* Comment chính */}
             <div className="user-avatar">
-                <img src={comment.avatar && comment.avatar.includes('http') ? comment.avatar : `${url}/images/${comment.avatar}` || "https://cdn-icons-png.flaticon.com/512/149/149071.png  "} alt="avatar" className="avatar-image" />
+                <img
+                    src={
+                        comment.avatar?.includes('http')
+                            ? comment.avatar
+                            : `${url}/images/${comment.avatar}` ||
+                            "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                    }
+                    alt="avatar"
+                    className="avatar-image"
+                />
             </div>
+
             <div className="comment-content">
                 <div className="comment-line">
                     <div className="comment-text">
                         <span className="user-name">{comment.userName}</span>
                         <p>{comment.content}</p>
                     </div>
-
                 </div>
+
                 <div className="comment-actions">
                     <span>{formatDate(comment.createdAt)}</span>
-                    <span className="link" onClick={() => setReplyInputVisible(!replyInputVisible)}>Trả lời</span>
+                    <span
+                        className="link"
+                        onClick={() => setActiveReplyInputId(comment._id)}
+                    >
+                        Trả lời
+                    </span>
                 </div>
 
-                {comment.replies.length > 0 && (
-                    <div className="view-replies-container">
-                        <span className="view-replies" onClick={() => setShowReplies(!showReplies)}>
-                            {showReplies ? 'Ẩn phản hồi' : `Xem ${comment.replies.length} phản hồi`}
-                        </span>
-                    </div>
-                )}
-
-                {showReplies && comment.replies.map((reply) => (
-                    <div key={reply._id} className="reply-container">
-                        <div className="user-avatar">
-                            <img src={reply.avatar && reply.avatar.includes('https') ? reply.avatar : `${url}/images/${reply.avatar}` || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDLxQhCB-aYA9ieFW-Rkd0TMKzG6FNflehVA&s"} alt="avatar" className="avatar-image" />
-                        </div>
-                        <div>
-                            <div className="comment-line">
-                                <div className="reply-content">
-                                    <span className="reply-user-name">{reply.userName}</span>
-                                    <p className="reply-text">{reply.content}</p>
-                                </div>
-
-                            </div>
-                            <div className="comment-actions">
-                                <span>{formatDate(reply.createdAt)}</span>
-                                <span className="link" onClick={() => setReplyInputVisible(!replyInputVisible)}>Trả lời</span>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-
-                {replyInputVisible && (
+                {/* Input reply cho comment chính */}
+                {activeReplyInputId === comment._id && (
                     <div className="reply-input-container">
                         <input
                             type="text"
                             placeholder="Trả lời..."
                             value={replyText}
                             onChange={(e) => setReplyText(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") handleReplySubmit();
+                            }}
                             className="input-comment-field"
                         />
                         <FaRegPaperPlane onClick={handleReplySubmit} className="send-icon" />
                     </div>
                 )}
 
+                {/* Xem/ẩn replies */}
+                {comment.replies.length > 0 && (
+                    <div className="view-replies-container">
+                        <span
+                            className="view-replies"
+                            onClick={() => setShowReplies(!showReplies)}
+                        >
+                            {showReplies
+                                ? 'Ẩn phản hồi'
+                                : `Xem ${comment.replies.length} phản hồi`}
+                        </span>
+                    </div>
+                )}
 
+                {/* Danh sách reply */}
+                {showReplies &&
+                    comment.replies.map((reply) => (
+                        <div key={reply._id} className="reply-container">
+                            <div className="user-avatar">
+                                <img
+                                    src={
+                                        reply.avatar?.includes('http')
+                                            ? reply.avatar
+                                            : `${url}/images/${reply.avatar}` ||
+                                            "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                                    }
+                                    alt="avatar"
+                                    className="avatar-image"
+                                />
+                            </div>
+
+                            <div>
+                                <div className="comment-line">
+                                    <div className="reply-content">
+                                        <span className="reply-user-name">{reply.userName}</span>
+                                        <p className="reply-text">{reply.content}</p>
+                                    </div>
+                                </div>
+
+                                <div className="comment-actions">
+                                    <span>{formatDate(reply.createdAt)}</span>
+                                    <span
+                                        className="link"
+                                        onClick={() => setActiveReplyInputId(reply._id)}
+                                    >
+                                        Trả lời
+                                    </span>
+                                </div>
+
+                                {/* Input reply cho từng reply */}
+                                {activeReplyInputId === reply._id && (
+                                    <div className="reply-input-container">
+                                        <input
+                                            type="text"
+                                            placeholder="Trả lời..."
+                                            value={replyText}
+                                            onChange={(e) => setReplyText(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") handleReplySubmit();
+                                            }}
+                                            className="input-comment-field"
+                                        />
+                                        <FaRegPaperPlane onClick={handleReplySubmit} className="send-icon" />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ))}
             </div>
-
         </div>
     );
 };
+
 
 export default Comment;

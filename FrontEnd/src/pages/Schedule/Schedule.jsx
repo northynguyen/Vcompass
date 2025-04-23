@@ -1734,7 +1734,7 @@ const Schedule = ({ mode }) => {
                   <div className="title-button" onClick={openInforSchedule}>
                     <i className="fa-solid fa-pen schedule-icon"></i>
                     <button className="save-and-share-btn">
-                      Chỉnh sửa thông tin
+                      Chỉnh sửa
                     </button>
                   </div>
                 ) : (

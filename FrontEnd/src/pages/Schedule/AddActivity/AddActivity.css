@@ -22,9 +22,8 @@
   padding: 0;
   outline: none;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 90vw;
-  height: 90vh;
+  width: 92%;
+  height: 92vh;
   max-height: 800px;
   overflow: hidden;
 }
@@ -39,11 +38,11 @@
 
 .modal-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
   border-bottom: 1px solid #eaeaea;
   background-color: #f9f9f9;
+  margin-bottom: 5px;
 }
 
 .modal-header h2 {
@@ -84,12 +83,15 @@
 
 .filter-row {
   display: flex;
-  gap: 15px;
+  gap: 300px;
   align-items: center;
 }
 
 .filter-group {
   flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .filter-group label {
@@ -98,6 +100,7 @@
   margin-bottom: 5px;
   font-size: 0.9rem;
   color: #555;
+  width: 200px;
 }
 
 .filter-group select {
@@ -120,7 +123,7 @@
 
 /* Left Panel Styles */
 .modal-left-panel {
-  flex: 1;
+  flex: 7;
   overflow-y: auto;
   border-right: 1px solid #eaeaea;
   padding: 0;
@@ -133,7 +136,7 @@
 
 /* Right Panel Styles */
 .modal-right-panel {
-  flex: 1;
+  flex: 4;
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -326,6 +329,9 @@ textarea.input-field {
   gap: 15px;
   flex-wrap: wrap;
   margin-top: 10px;
+}
+.list-accom__container {
+  max-width: 100%;
 }
 
 .image-preview {
@@ -547,8 +553,8 @@ textarea.input-field {
   .modal-left-panel {
     border-right: none;
     border-bottom: 1px solid #eaeaea;
-    max-height: 50%;
     overflow-y: auto;
+
   }
   
   .modal-right-panel {
@@ -563,6 +569,7 @@ textarea.input-field {
   .filter-row {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
   }
 }
 
@@ -583,6 +590,15 @@ textarea.input-field {
   .add-schedule-img {
     max-width: 100%;
     height: 180px;
+  }
+  .modal-right-panel{
+    display: none;
+  }
+  .modal-left-panel{
+    flex: 1;
+  }
+  .accom-card-header {
+    flex-direction: column;
   }
 }
 

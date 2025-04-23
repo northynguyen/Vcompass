@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaAngleDown, FaAngleUp } from "react-icons/fa"; // Import icon xổ xuống và thu gọn
+import { FaEdit, FaAngleDown, FaAngleLeft } from "react-icons/fa"; // Import icon xổ xuống và thu gọn
 import Modal from "react-modal";
 import ConfirmDialog from "../../../components/Dialog/ConfirmDialog";
 import "./Expense.css";
@@ -179,7 +179,7 @@ const AddExpense = ({ isOpen, closeModal, selectedExpense, setInforSchedule, soc
 const Expense = ({ expenses, additionExpenses, setInforSchedule, mode, socket, inforSchedule }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const openModalForAdd = () => {
     setSelectedExpense(null);
@@ -244,7 +244,7 @@ const Expense = ({ expenses, additionExpenses, setInforSchedule, mode, socket, i
       <h1>
         Chi phí
         <button className="expand-toggle" onClick={toggleExpand} aria-label="Toggle expenses">
-          {isExpanded ? <FaAngleUp /> : <FaAngleDown />} {/* Chỉ hiển thị icon xổ xuống/thu gọn */}
+          {!isExpanded ? <FaAngleLeft /> : <FaAngleDown />}
         </button>
       </h1>
 
@@ -257,18 +257,11 @@ const Expense = ({ expenses, additionExpenses, setInforSchedule, mode, socket, i
                 <img src="https://png.pngtree.com/png-clipart/20230504/original/pngtree-money-flat-icon-png-image_9138340.png" alt={expense.name} />
               </div>
               <div className="expense-details">
-                <h3>{expense.costDescription}</h3>
+                <h3>{expense.costDescription?.trim() || "Không có mô tả chi phí"}</h3>
               </div>
               <div className="expense-cost">
                 <p>{expense.cost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
               </div>
-              {mode === "edit" && (
-                <div className="expense-actions">
-                  <button className="edit-btn">
-                    <FaEdit />
-                  </button>
-                </div>
-              )}
             </div>
           ))}
 
@@ -305,18 +298,11 @@ const Expense = ({ expenses, additionExpenses, setInforSchedule, mode, socket, i
           </button>
         </div>
       )}
-
-      <h1>Ngân sách</h1>
       <div className="expense-summary">
         <div className="total-cost">
           <h3>Tổng chi phí thực tế</h3>
           <h1>{totalCost.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</h1>
         </div>
-        {mode === "edit" && (
-          <button className="add-expense-btn" onClick={openModalForAdd}>
-            Thêm chi phí
-          </button>
-        )}
       </div>
 
       <AddExpense 

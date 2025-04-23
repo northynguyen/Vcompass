@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 import Schedule from "../models/schedule.js";
 import User from "../models/user.js";
-import { upload } from '../middleware/upload.js'
-import multer from 'multer';
+import Accommodation from "../models/accommodation.js"
+import FoodService from "../models/foodService.js"
+import Attraction from "../models/attraction.js"
 import { createNotification } from "./notiController.js";
 import { ObjectId } from "mongodb";
 import keyword_extractor from "keyword-extractor";
@@ -132,7 +133,6 @@ export const updateSchedule = async (req, res) => {
     });
   }
 };
-
 
 export const getSchedulesByIdUser = async (req, res) => {
   const { userId } = req.body; // Replace with user ID extraction from token, if needed.
@@ -356,7 +356,6 @@ export const getAllSchedule = async (req, res) => {
   }
 };
 
-
 export const getTopAddressSchedule = async (req, res) => {
   try {
     const result = await Schedule.aggregate([
@@ -520,7 +519,6 @@ export const updateLikeComment = async (req, res) => {
       .json({ success: false, message: "Failed to update schedule" });
   }
 };
-
 
 export const deleteActivity = async (req, res) => {
   const { id, activityId } = req.params; // Lấy scheduleId và activityId từ params
@@ -712,7 +710,6 @@ const generateTagsFromSchedule = (schedule) => {
   console.log(tags);
   return Array.from(tags);
 };
-
 // Hàm tính tuổi từ ngày sinh
 const calculateAge = (dob) => {
   const birthDate = new Date(dob);
@@ -805,6 +802,103 @@ export const getFollowingSchedules = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error retrieving following schedules",
+      error,
+    });
+  }
+};
+
+
+//// Application
+
+const models = {
+  Accommodation,
+  Attraction,
+  FoodService,
+};
+
+
+export const getScheduleByIdForMobile = async (req, res) => {
+  const { id } = req.params;
+  const { activityId } = req.query;
+  const userId = req.user?._id;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid ID format" });
+    }
+
+    // Lấy schedule gốc (không populate idDestination ở đây)
+    const schedule = await Schedule.findById(id)
+      .populate("idUser")
+      .populate("idInvitee", "name avatar email")
+      .lean(); // dùng lean để thao tác dễ hơn
+
+    if (!schedule) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Schedule not found" });
+    }
+
+    // ✅ Populate thủ công cho từng activity nếu cần
+    await Promise.all(
+      schedule.activities.map(async (day) => {
+        await Promise.all(
+          day.activity.map(async (act) => {
+            if (
+              act.activityType !== "Other" &&
+              models[act.activityType] &&
+              mongoose.Types.ObjectId.isValid(act.idDestination)
+            ) {
+              const doc = await models[act.activityType]
+                .findById(act.idDestination)
+                .lean();
+              act.destination = doc || null; // thêm field mới
+            }
+          })
+        );
+      })
+    );
+
+    // ✅ Check quyền chỉnh sửa
+    const canEdit =
+      schedule.idUser.toString() === userId ||
+      (schedule.idInvitee || []).some((invitee) =>
+        invitee._id.toString() === userId
+      );
+
+    // ✅ Nếu có activityId: trả về activity cụ thể
+    if (activityId) {
+      const activity = schedule.activities
+        .flatMap((day) => day.activity)
+        .find((act) => act._id.toString() === activityId);
+
+      if (!activity) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Activity not found" });
+      }
+
+      return res.json({
+        success: true,
+        message: "Activity retrieved successfully",
+        other: activity,
+      });
+    }
+
+    // ✅ Trả toàn bộ schedule
+    return res.json({
+      success: true,
+      message: "Get schedule success",
+      schedule,
+      canEdit,
+    });
+  } catch (error) {
+    console.error("Error retrieving schedule:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving schedule",
       error,
     });
   }

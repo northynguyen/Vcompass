@@ -1,15 +1,17 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
+import { FaBars } from "react-icons/fa";
+import { FiPlus } from "react-icons/fi";
+import { VscCopilot } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
+import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
 import AccommodationBanner from "../../components/Poster/AccommodationBanner ";
 import PostCard from "../../components/Poster/PostCard";
 import SlideBar from "../../components/SlideBar/SlideBar";
 import { StoreContext } from "../../Context/StoreContext";
-import { FaBars } from "react-icons/fa";
-import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
 import "./Home.css";
 
 const Home = () => {
@@ -29,9 +31,9 @@ const Home = () => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
-    
+
     window.addEventListener('resize', handleResize);
-    
+
     // Clean up
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -60,7 +62,7 @@ const Home = () => {
           `${url}/api/schedule/user/getSchedules`,
           { headers: { token } }
         );
-        
+
         // Extract unique cities from user schedules
         let userCities = [];
         if (userScheduleResponse.data.success && userScheduleResponse.data.schedules.length > 0) {
@@ -70,61 +72,29 @@ const Home = () => {
         }
 
         console.log("User cities:", userCities);
-        
+
         // If we have cities from user schedules, get schedules for those cities
-        // if (userCities.length > 0) {
-        //   const scheduleResponse = await axios.get(
-        //     `${url}/api/schedule/getAllSchedule?cities=${userCities.join(",")}&forHomePage=true&userId=${user._id}`
-        //   );
-        //   console.log("scheduleResponse", scheduleResponse);
-        //   if (scheduleResponse.data.success) {
-        //     const publicSchedules = scheduleResponse.data.schedules;
-        //     setSchedules(publicSchedules);
-        //     console.log("publicSchedules for user cities", publicSchedules);
-        //   }
-        // } else {
-        //   // If no user cities, set schedules to empty array
-        //   setSchedules([]);
-        // }
-        const allSchedules = await axios.get(`${url}/api/schedule/getAllSchedule?limit=100`);
-        console.log("allSchedules", allSchedules.data.schedules);
-        console.log("user", user);
-
-        try {
-          const recommendResponse = await axios.post('http://localhost:8000/predict', {
-            user,
-            schedules: allSchedules.data.schedules,
-          });
-          
-          const recommendedIds = recommendResponse.data.recommendations.map(
-            (rec) => rec.schedule_id
+        if (userCities.length > 0) {
+          const scheduleResponse = await axios.get(
+            `${url}/api/schedule/getAllSchedule?cities=${userCities.join(",")}&forHomePage=true&userId=${user._id}`
           );
-
-          // 2. Fetch thông tin chi tiết của các schedules được recommend
-          const schedulesData = await Promise.all(
-            recommendedIds.map(async (id) => {
-              const response = await axios.get(`${url}/api/schedule/${id}`);
-              if (!response.data.success || !response.data.schedule.isPublic || response.data.schedule.idUser === user._id) {
-                return null;
-              }
-              return response.data.schedule;
-            })
-          );
-          setSchedules(schedulesData);
-        } catch (error) {
-          console.error("Error fetching recommendations:", error);
-          // Fallback: Just use some random schedules from allSchedules
-          const randomSchedules = allSchedules.data.schedules
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 10);
-          setSchedules(randomSchedules);
+          console.log("scheduleResponse", scheduleResponse);
+          if (scheduleResponse.data.success) {
+            const publicSchedules = scheduleResponse.data.schedules;
+            setSchedules(publicSchedules);
+            console.log("publicSchedules for user cities", publicSchedules);
+          }
+        } else {
+          // If no user cities, set schedules to empty array
+          setSchedules([]);
         }
 
+
         const scheduleResponse2 = await axios.get(
-          user? 
-          `${url}/api/schedule/getAllSchedule?forHomePage=true&userId=${user._id}`
-          :
-          `${url}/api/schedule/getAllSchedule?forHomePage=true`
+          user ?
+            `${url}/api/schedule/getAllSchedule?forHomePage=true&userId=${user._id}`
+            :
+            `${url}/api/schedule/getAllSchedule?forHomePage=true`
         );
         if (scheduleResponse2.data.success) {
           const publicSchedules = scheduleResponse2.data.schedules;
@@ -132,8 +102,8 @@ const Home = () => {
           console.log("Most liked schedules", publicSchedules);
         }
 
-      
-       
+
+
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -152,11 +122,11 @@ const Home = () => {
         const scheduleResponse2 = await axios.get(
           `${url}/api/schedule/getAllSchedule?forHomePage=true`
         );
-      if (scheduleResponse2.data.success) {
-        const publicSchedules = scheduleResponse2.data.schedules;
-        setFilteredSchedules(publicSchedules);
-        console.log("Most liked schedules", publicSchedules);
-      }
+        if (scheduleResponse2.data.success) {
+          const publicSchedules = scheduleResponse2.data.schedules;
+          setFilteredSchedules(publicSchedules);
+          console.log("Most liked schedules", publicSchedules);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -274,87 +244,97 @@ const Home = () => {
           <FaBars />
         </button>
       </div>
-      
+
       {sidebarOpen && <div className="sidebar-overlay" onClick={toggleSidebar}></div>}
-      
+
       <div className={`sidebar-container ${sidebarOpen ? 'open' : ''}`}>
         <LeftSideBar />
-      </div>
-      
+      </div> 
+
       <div className="home-main-content">
         <div className="home-container">
-          <div className="tour-search-container">
+          <header className="hero-section">
+            <h1 className="create-schedule-title">Tạo lịch trình du lịch dễ dàng cho chuyến đi của bạn</h1>
+            <p className="create-schedule-description">Chỉ mất 3-5 phút, bạn có thể tạo ngay cho mình lịch trình du lịch</p>
+            <div className="create-schedule-btn-container">
+              <div className="create-schedule-btn" onClick={() => navigate("/create-schedule/manual")}>
+                <FiPlus style={{ marginRight: "6px" }} />
+                <p>Tạo lịch trình</p>
+              </div>
+              <div className="create-schedule-btn" onClick={() => navigate("/create-schedule/ai")}>
+                <VscCopilot style={{ marginRight: "6px" }} />
+                <p>Tạo lịch trình với AI</p>
+              </div>
+            </div>
+          </header>
             <div className="tour-search">
-              <div className="hero-section">
-                <div className="search-container">
-                  <div className="search-title">
-                    <div style={{ position: "relative", width: "300px" }}>
-                      <i className="fa fa-map-marker search-icon"  aria-hidden="true"></i>
-                      <input
-                        type="text"
-                        placeholder="Tìm kiếm theo địa điểm"
-                        className="search-input"
-                        id="destination"
-                        value={address}
-                        onChange={handleAddressChange}
-                        autoComplete="off"
-                      />
-                      {/* Hiển thị gợi ý */}
-                      {suggestions.length > 0 && (
-                        <ul
-                          style={{
-                            position: "absolute",
-                            top: "100%",
-                            left: 0,
-                            right: 0,
-                            listStyleType: "none",
-                            margin: 0,
-                            padding: "5px",
-                            background: "white",
-                            border: "1px solid #ddd",
-                            zIndex: 10,
-                            maxHeight: "200px",
-                            overflowY: "auto",
-                            cursor: "pointer",
-                          }}
-                        >
-                          {suggestions.map((city, index) => (
-                            <li
-                              key={index}
-                              onClick={() => handleSuggestionClick(city)}
-                              style={{
-                                padding: "8px",
-                                borderBottom: "1px solid #f1f1f1",
-                              }}
-                              onMouseEnter={(e) =>
-                                (e.target.style.background = "#f0f0f0")
-                              }
-                              onMouseLeave={(e) =>
-                                (e.target.style.background = "white")
-                              }
-                            >
-                              {city}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
+              <div className="search-container">
+                <div className="search-title">
+                  <div style={{ position: "relative", width: "300px" }}>
+                    <i className="fa fa-map-marker search-icon" aria-hidden="true"></i>
+                    <input
+                      type="text"
+                      placeholder="Tìm kiếm theo địa điểm"
+                      className="search-input"
+                      id="destination"
+                      value={address}
+                      onChange={handleAddressChange}
+                      autoComplete="off"
+                    />
+                    {/* Hiển thị gợi ý */}
+                    {suggestions.length > 0 && (
+                      <ul
+                        style={{
+                          position: "absolute",
+                          top: "100%",
+                          left: 0,
+                          right: 0,
+                          listStyleType: "none",
+                          margin: 0,
+                          padding: "5px",
+                          background: "white",
+                          border: "1px solid #ddd",
+                          zIndex: 10,
+                          maxHeight: "200px",
+                          overflowY: "auto",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {suggestions.map((city, index) => (
+                          <li
+                            key={index}
+                            onClick={() => handleSuggestionClick(city)}
+                            style={{
+                              padding: "8px",
+                              borderBottom: "1px solid #f1f1f1",
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.target.style.background = "#f0f0f0")
+                            }
+                            onMouseLeave={(e) =>
+                              (e.target.style.background = "white")
+                            }
+                          >
+                            {city}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
-              
-                  <button
-                    className="search-button"
-                    onClick={() =>
-                      navigate(`/searchSchedule`, {
-                        state: {
-                          city: address,
-                          name: "",
-                        },
-                      })
-                    }
-                  >
-                    Tìm kiếm
-                  </button>
                 </div>
+                <button
+                  className="search-button"
+                  onClick={() =>
+                    navigate(`/searchSchedule`, {
+                      state: {
+                        city: address,
+                        name: "",
+                      },
+                    })
+                  }
+                >
+                  Tìm kiếm
+                </button>
               </div>
 
               {/* Popular Cities Section */}
@@ -388,7 +368,6 @@ const Home = () => {
                 </div>
               </section>
             </div>
-          </div>
 
           <div className="city-slider">
             <Swiper
@@ -427,7 +406,7 @@ const Home = () => {
                         disableOnInteraction: true,
                       }}
                       breakpoints={{
-                        768: { slidesPerView: 1 }, 
+                        768: { slidesPerView: 1 },
                       }}
                     >
                       {!isLoading &&

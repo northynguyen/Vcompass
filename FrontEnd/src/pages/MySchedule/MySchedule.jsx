@@ -1,10 +1,12 @@
 import axios from "axios";
 import React, { useContext, useEffect, useRef, useState } from "react";
+import { FaGlobe, FaTrash, FaUserSecret } from "react-icons/fa";
+import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { StoreContext } from "../../Context/StoreContext";
-import "./MySchedule.css";
-import { FaTrash, FaGlobe, FaUserSecret } from "react-icons/fa";
 import ConfirmDialog from "../../components/Dialog/ConfirmDialog";
+import { StoreContext } from "../../Context/StoreContext";
+import { VscCopilot } from "react-icons/vsc";
+import "./MySchedule.css";
 
 const MySchedule = ({ setShowLogin }) => {
   const { url, token, user } = useContext(StoreContext);
@@ -19,7 +21,7 @@ const MySchedule = ({ setShowLogin }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [action, setAction] = useState("");
   const [scheduleType, setScheduleType] = useState("my-schedule");
-  const [listRender , setListRender] = useState([]);
+  const [listRender, setListRender] = useState([]);
   const navigate = useNavigate();
   const popupRef = useRef(null);
 
@@ -48,47 +50,47 @@ const MySchedule = ({ setShowLogin }) => {
 
   useEffect(() => {
     const fetchSchedulesData = async () => {
-     
-    
-        try {
-          const schedulesResponse = await axios.get(
-            `${url}/api/schedule/user/getSchedules`,
-            { headers: { token } }
-          );
 
-          const groupSchedulesResponse = await axios.get(
-            `${url}/api/schedule/user/getSchedules?type=group`,
-            { headers: { token } }
-          );
 
-          const wishlistsResponse = await axios.get(
-            `${url}/api/schedule/user/getSchedules?type=wishlist`,
-            { headers: { token } }
-          );
-          if (groupSchedulesResponse.data.success) {
-            setGroupSchedules(groupSchedulesResponse.data.schedules);
-          } else {
-            setGroupSchedules([]);
-            console.error("Failed to fetch group schedules:", groupSchedulesResponse.data.message);
-          }
+      try {
+        const schedulesResponse = await axios.get(
+          `${url}/api/schedule/user/getSchedules`,
+          { headers: { token } }
+        );
 
-          if (schedulesResponse.data.success) {
-            setSchedules(schedulesResponse.data.schedules);
-          } else {
-            console.error("Failed to fetch schedules:", schedulesResponse.data.message);
-          }
+        const groupSchedulesResponse = await axios.get(
+          `${url}/api/schedule/user/getSchedules?type=group`,
+          { headers: { token } }
+        );
 
-          if (wishlistsResponse.data.success) {
-            setWishlists(wishlistsResponse.data.schedules);
-          } else {
-            console.error("Failed to fetch wishlists:", wishlistsResponse.data.message);
-          }
-        } catch (error) {
-          console.error("Error fetching schedules or wishlists:", error);
-        } finally {
-          setIsLoading(false);
+        const wishlistsResponse = await axios.get(
+          `${url}/api/schedule/user/getSchedules?type=wishlist`,
+          { headers: { token } }
+        );
+        if (groupSchedulesResponse.data.success) {
+          setGroupSchedules(groupSchedulesResponse.data.schedules);
+        } else {
+          setGroupSchedules([]);
+          console.error("Failed to fetch group schedules:", groupSchedulesResponse.data.message);
         }
-      
+
+        if (schedulesResponse.data.success) {
+          setSchedules(schedulesResponse.data.schedules);
+        } else {
+          console.error("Failed to fetch schedules:", schedulesResponse.data.message);
+        }
+
+        if (wishlistsResponse.data.success) {
+          setWishlists(wishlistsResponse.data.schedules);
+        } else {
+          console.error("Failed to fetch wishlists:", wishlistsResponse.data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching schedules or wishlists:", error);
+      } finally {
+        setIsLoading(false);
+      }
+
     };
 
     if (token) fetchSchedulesData();
@@ -198,7 +200,8 @@ const MySchedule = ({ setShowLogin }) => {
 
   useEffect(() => {
     if (scheduleType === "my-schedule") {
-      setListRender(schedules);}
+      setListRender(schedules);
+    }
     else if (scheduleType === "group-schedule") {
       setListRender(groupSchedules);
       console.log("groupSchedules", groupSchedules);
@@ -210,33 +213,31 @@ const MySchedule = ({ setShowLogin }) => {
       <header className="hero-section">
         <h1>Tạo lịch trình du lịch dễ dàng cho chuyến đi của bạn</h1>
         <p>Chỉ mất 3-5 phút, bạn có thể tạo ngay cho mình lịch trình du lịch</p>
-        <button
-          className="create-schedule-btn"
-          onClick={() => navigate("/create-schedule/manual")}
-        >
-          Tạo lịch trình
-        </button>
-        <button
-          className="create-schedule-btn"
-          onClick={() => navigate("/create-schedule/ai")}
-        >
-          Tạo lịch trình với AI
-        </button>
+        <div className="create-schedule-btn-container">
+          <div className="create-schedule-btn" onClick={() => navigate("/create-schedule/manual")}>
+            <FiPlus style={{ marginRight: "6px" }} />
+            <p>Tạo lịch trình</p>
+          </div>
+          <div className="create-schedule-btn" onClick={() => navigate("/create-schedule/ai")}>
+            <VscCopilot style={{ marginRight: "6px" }} />
+            <p>Tạo lịch trình với AI</p>
+          </div>
+        </div>
       </header>
 
       <section className="my-schedule-section">
         <div className="schedule-type-buttons">
           <button
-            className={ scheduleType === "my-schedule" ? "active" : ""}
-            onClick ={() => setScheduleType("my-schedule")}
+            className={scheduleType === "my-schedule" ? "active" : ""}
+            onClick={() => setScheduleType("my-schedule")}
           >
-            Lịch trình của bạn 
+            Lịch trình của bạn
           </button>
           <button
             className={scheduleType === "group-schedule" ? "active" : ""}
             onClick={() => setScheduleType("group-schedule")}
           >
-            Lịch trình nhóm 
+            Lịch trình nhóm
           </button>
 
         </div>
@@ -258,7 +259,7 @@ const MySchedule = ({ setShowLogin }) => {
                   {schedule.dateStart} - {schedule.dateEnd}
                 </p>
               </div>
-              <button
+              <div
                 className="action-toggle-btn"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -266,7 +267,7 @@ const MySchedule = ({ setShowLogin }) => {
                 }}
               >
                 <span className="vertical-dots">⋮</span>
-              </button>
+              </div>
               {activeScheduleId === schedule._id && (
                 <div className="action-buttons" ref={popupRef}>
                   <button
