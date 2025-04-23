@@ -964,7 +964,6 @@ i.fa-solid.fa-plus.add-icon {
 
 
 .add-activity .close-btn {
-  position: absolute;
   top: 10px;
   right: 10px;
   font-size: 24px;
@@ -1571,4 +1570,332 @@ i.fa-solid.fa-plus.add-icon {
 
 .unactive_avatar {
   opacity: 0.5;
+}
+
+.travel-types-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.travel-types-container .type-button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.travel-types-container .type-button.selected {
+  border: 2px solid #7BBCB0;
+  background: #e8f8f6;
+  font-weight: 500;
+}
+
+.travel-types-container .type-button:hover {
+  background: #f5f5f5;
+  border-color: #7BBCB0;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .travel-types-container {
+    justify-content: center;
+  }
+  
+  .travel-types-container .type-button {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
+
+/* Modern Modal Styles for InforScheduleMedal */
+.add-expense-modal {
+  height: 800px;
+  width: 800px;
+  max-width: 90%;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 0;
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  animation: modalFadeIn 0.3s ease-out;
+  overflow: hidden;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlayFadeIn 0.3s ease-out;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.add-activity {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.modal-header {
+  background: linear-gradient(to right, #7BBCB0, #60a095);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-header h4 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.modal-header .close-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.modal-header .close-btn:hover {
+  transform: scale(1.1);
+}
+
+.modal-body {
+  padding: 25px 30px;
+  max-height: 80vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #7BBCB0;
+  border-radius: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.expense-sub-title {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+  letter-spacing: 0.2px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  margin-bottom: 15px;
+}
+
+.input-field:focus {
+  border-color: #7BBCB0;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(123, 188, 176, 0.1);
+  outline: none;
+}
+
+textarea.input-field {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.radio-group {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.radio-group div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.radio-group input[type="radio"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #7BBCB0;
+  border-radius: 50%;
+  margin: 0;
+  position: relative;
+  cursor: pointer;
+}
+
+.radio-group input[type="radio"]:checked::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background-color: #7BBCB0;
+  border-radius: 50%;
+}
+
+.radio-group label {
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* Updated Travel Types Container Styles */
+.travel-types-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.travel-types-container .type-button {
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 50px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.travel-types-container .type-button.selected {
+  border: 2px solid #7BBCB0;
+  background: linear-gradient(45deg, #f0fffc, #e5f8f5);
+  font-weight: 500;
+  box-shadow: 0 3px 8px rgba(123, 188, 176, 0.2);
+  transform: translateY(-1px);
+}
+
+.travel-types-container .type-button:hover {
+  background: #f8f8f8;
+  border-color: #7BBCB0;
+  transform: translateY(-1px);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 30px 25px;
+}
+
+.modal-footer .btn-cancel {
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #f3f3f3;
+  color: #555;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-right: 15px;
+}
+
+.modal-footer .btn-cancel:hover {
+  background-color: #e6e6e6;
+}
+
+.modal-footer .btn-submit {
+  padding: 12px 25px;
+  border: none;
+  background: linear-gradient(to right, #7BBCB0, #60a095);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(123, 188, 176, 0.2);
+}
+
+.modal-footer .btn-submit:hover {
+  background: linear-gradient(to right, #6aa99e, #548a80);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(123, 188, 176, 0.3);
+}
+
+/* Image and Video Preview Styling */
+.modal-body img[alt="Image Preview"] {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+  transition: transform 0.3s ease;
+}
+
+.modal-body img[alt="Image Preview"]:hover {
+  transform: scale(1.01);
+}
+
+.modal-body video {
+  width: 100%;
+  max-height: 200px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+}
+
+/* Custom File Input */
+.input-field[type="file"] {
+  padding: 10px;
+  border: 2px dashed #ddd;
+  background: #f9f9f9;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.input-field[type="file"]:hover {
+  border-color: #7BBCB0;
+  background: #f3f9f8;
 }

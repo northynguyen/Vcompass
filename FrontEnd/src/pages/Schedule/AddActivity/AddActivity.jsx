@@ -22,20 +22,6 @@ L.Icon.Default.mergeOptions({
 
 Modal.setAppElement("#root");
 
-// Component to recenter map when coordinates change
-const MapCenterSetter = ({ center }) => {
-  const map = useMap();
-  useEffect(() => {
-    if (center) {
-      map.setView(center, map.getZoom());
-    }
-  }, [center, map]);
-  return null;
-};
-
-MapCenterSetter.propTypes = {
-  center: PropTypes.array
-};
 
 const OtherItem = ({ setCurDes, curDes }) => {
   const [activityName, setActivityName] = useState(curDes?.name || "");
@@ -160,17 +146,6 @@ const OtherItem = ({ setCurDes, curDes }) => {
       ...prev,
       imgSrc: prev?.imgSrc?.filter((_, i) => i !== index),
     }));
-
-    // if (!imgToRemove.startsWith("blob:")) {
-    //   try {
-    //     await axios.delete(`${url}/api/deleteImage`, {
-    //       data: { imagePath: imgToRemove },
-    //     });
-    //     console.log(`Đã xóa ảnh: ${imgToRemove}`);
-    //   } catch (error) {
-    //     console.error("Lỗi khi xóa ảnh:", error);
-    //   }
-    // }
     deleteOldMedia(images[index]);
   };
 
@@ -306,6 +281,11 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [listData, setListData] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [errors, setErrors] = useState({
+    costName: false,
+    cost: false,
+    description: false
+  });
 
   useEffect(() => {
     if (isOpen) {
@@ -357,11 +337,40 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   }, [ listData, option]);
 
   const handleBack = () => {
+    setErrors({
+      costName: false,
+      cost: false,
+      description: false
+    });
+    setCostDes("");
+    setCost("");
+    setDescription("");
     setCurDes(null);
   };
 
   const handleSave = async () => {
     try {
+      // Kiểm tra các trường bắt buộc
+      const newErrors = {
+        costName: !costDes.trim(),
+        cost: !cost.trim(),
+        description: !description.trim()
+      };
+      
+      setErrors(newErrors);
+      
+      // Focus vào input đầu tiên có lỗi
+      if (newErrors.costName) {
+        document.getElementById('name-expense').focus();
+        return;
+      } else if (newErrors.cost) {
+        document.getElementById('expense').focus();
+        return;
+      } else if (newErrors.description) {
+        document.getElementById('des').focus();
+        return;
+      }
+
       const formData = new FormData();
 
       // Kiểm tra nếu có ảnh mới
@@ -637,6 +646,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
                       setDescription={setDescription}
                       option={option}
                       curDes={curDes}
+                      errors={errors}
                     />
                   </div>
                   
@@ -687,6 +697,51 @@ AddActivity.propTypes = {
   inforSchedule: PropTypes.object.isRequired
 };
 
+// Component to control the map zoom
+const MapController = ({ locations, selectedLocation }) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    // Check if we have a red marker (selected location)
+    const hasRedMarker = selectedLocation !== null;
+    
+    if (hasRedMarker) {
+      // Zoom to the selected location
+      const position = selectedLocation?.location?.latitude && selectedLocation?.location?.longitude 
+        ? [selectedLocation.location.latitude, selectedLocation.location.longitude] 
+        : selectedLocation?.latitude && selectedLocation?.longitude
+        ? [selectedLocation.latitude, selectedLocation.longitude]
+        : null;
+      
+      if (position) {
+        map.setView(position, 15);
+      }
+    } else if (locations && locations.length > 0) {
+      // No red marker, fit bounds to show all markers
+      const bounds = L.latLngBounds([]);
+      let hasValidLocations = false;
+      
+      locations.forEach(location => {
+        if (location.latitude && location.longitude) {
+          bounds.extend([location.latitude, location.longitude]);
+          hasValidLocations = true;
+        }
+      });
+      
+      if (hasValidLocations) {
+        map.fitBounds(bounds, { padding: [50, 50] });
+      }
+    }
+  }, [map, locations, selectedLocation]);
+  
+  return null;
+};
+
+MapController.propTypes = {
+  locations: PropTypes.array,
+  selectedLocation: PropTypes.object
+};
+
 // New component for displaying multiple locations on map
 const LocationsMapView = ({ locations, selectedLocation, onSelectLocation }) => {
   const defaultPosition = [10.762622, 106.660172]; // Ho Chi Minh City coordinates
@@ -696,9 +751,7 @@ const LocationsMapView = ({ locations, selectedLocation, onSelectLocation }) => 
     ? [selectedLocation.latitude, selectedLocation.longitude]
     : defaultPosition;
   
-  const handleMarkerClick = (location) => {
-    onSelectLocation(location);
-  };
+
 
   console.log("selectedLocation",selectedLocation);
 
@@ -713,6 +766,8 @@ const LocationsMapView = ({ locations, selectedLocation, onSelectLocation }) => 
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
+        
+        <MapController locations={locations} selectedLocation={selectedLocation} />
       
         {locations && locations.length > 0 && locations.map((location, index) => {
           console.log(location);
@@ -727,6 +782,7 @@ const LocationsMapView = ({ locations, selectedLocation, onSelectLocation }) => 
               <Marker 
                 key={location._id || index} 
                 position={position}
+                
                 icon={isSelected ? 
                   new L.Icon({
                     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
@@ -798,8 +854,18 @@ LocationsMapView.propTypes = {
   onSelectLocation: PropTypes.func.isRequired
 };
 
-const FormAddActivity = ({ images, cost, setCost, description, setDescription, option, costDes, setCostDes, curDes }) => {
+const FormAddActivity = ({ images, cost, setCost, description, setDescription, option, costDes, setCostDes, curDes, errors }) => {
   const { url } = useContext(StoreContext);
+  const formatNumber = (value) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  };
+  
+  const handleCostChange = (e) => {
+    const rawValue = e.target.value.replace(/\./g, ""); // Xoá dấu chấm cũ
+    if (!/^\d*$/.test(rawValue)) return; // Chỉ chấp nhận số
+  
+    setCost(rawValue); // Lưu số gốc (không format)
+  };
   
   return (
     <div className="form-container">
@@ -819,29 +885,39 @@ const FormAddActivity = ({ images, cost, setCost, description, setDescription, o
         <div className="info-container">
           <div className="title-container">
             <label className="expense-sub-title" htmlFor="name-expense">Tên chi phí</label>
-            <input className="input-field"
+            <input className={`input-field ${errors?.costName ? 'error-input' : ''}`}
               id="name-expense" required
               name="name"
               placeholder="Nhập tên chi phí"
               value={costDes}
               onChange={(e) => setCostDes(e.target.value)}
             />
-            <label className="expense-sub-title" htmlFor="des">Chi phí</label>
-            <input className="input-field"
-              id="name-expense" required
+            {errors?.costName && <span className="error-message-add">Vui lòng nhập tên chi phí.</span>}
+            
+            <label className="expense-sub-title" htmlFor="expense">Chi phí</label>
+            <input
+              className={`input-field ${errors?.cost ? 'error-input' : ''}`}
+              id="expense"
+              required
               name="name"
               placeholder="Nhập chi phí"
-              value={cost}
-              onChange={(e) => setCost(e.target.value)}
+              value={formatNumber(cost)} // Hiển thị có format
+              onChange={handleCostChange}
+              type="text" // Phải dùng text để hiển thị dấu chấm
+              inputMode="numeric" // Để vẫn hiện bàn phím số trên mobile
             />
+            {errors?.cost && <span className="error-message-add ">Vui lòng nhập chi phí.</span>}
+            
             <label className="expense-sub-title" htmlFor="des">Ghi chú</label>
             <textarea
               placeholder="Nhập ghi chú chi tiết"
-              className="input-field" id="des"
+              className={`input-field ${errors?.description ? 'error-input' : ''}`}
+              id="des"
               name="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             ></textarea>
+            {errors?.description && <span className="error-message-add ">Vui lòng nhập ghi chú.</span>}
           </div>
         </div>
       </div>
@@ -858,7 +934,8 @@ FormAddActivity.propTypes = {
   option: PropTypes.string.isRequired,
   costDes: PropTypes.string.isRequired,
   setCostDes: PropTypes.func.isRequired,
-  curDes: PropTypes.object
+  curDes: PropTypes.object,
+  errors: PropTypes.object
 };
 
 export default AddActivity;

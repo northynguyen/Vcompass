@@ -86,8 +86,39 @@ const Home = () => {
         //   // If no user cities, set schedules to empty array
         //   setSchedules([]);
         // }
+        const allSchedules = await axios.get(`${url}/api/schedule/getAllSchedule?limit=100`);
+        console.log("allSchedules", allSchedules.data.schedules);
+        console.log("user", user);
 
-        const scheduleResponse = await axios.get(
+        try {
+          const recommendResponse = await axios.post('http://localhost:8000/predict', {
+            user,
+            schedules: allSchedules.data.schedules,
+          });
+          
+          const recommendedIds = recommendResponse.data.recommendations.map(
+            (rec) => rec.schedule_id
+          );
+
+          // 2. Fetch thông tin chi tiết của các schedules được recommend
+          const schedulesData = await Promise.all(
+            recommendedIds.map(async (id) => {
+              const response = await axios.get(`${url}/api/schedule/${id}`);
+              if (!response.data.success || !response.data.schedule.isPublic || response.data.schedule.idUser === user._id) {
+                return null;
+              }
+              return response.data.schedule;
+            })
+          );
+          setSchedules(schedulesData);
+        } catch (error) {
+          console.error("Error fetching recommendations:", error);
+          // Fallback: Just use some random schedules from allSchedules
+          const randomSchedules = allSchedules.data.schedules
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 10);
+          setSchedules(randomSchedules);
+        }
 
         const scheduleResponse2 = await axios.get(
           user? 
@@ -140,28 +171,7 @@ const Home = () => {
     }
   }, [url, token]);
 
-  //gửi yêu cầu lấy lịch trình phù hợp với người dùng
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${url}/api/schedule/scheduleforuser`,
-          {
-            headers: {
-              token: `${token}`,
-            },
-          }
-        );
-        if (response.data.success) {
-          console.log(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData(); // Đừng quên gọi hàm này
-  }, [url, token, user._id]); // Đảm bảo thêm `user._id` vào dependency nếu bạn sử dụng nó trong useEffect
+  
 
 
   const handleScheduleClick = (id) => {
