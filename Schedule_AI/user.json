@@ -7,7 +7,9 @@
       "scheduleName": "Tour Bà Rịa - Vũng Tàu 2 ngày 1 đêm",
       "description": "Tour Bà Rịa - Vũng Tàu 2 ngày 1 đêm ăn uống thả ga a",
       "address": "Bà Rịa - Vũng Tàu",
-      "imgSrc": [],
+      "imgSrc": [
+        "https://res.cloudinary.com/dmdzku5og/image/upload/v1745247680/images/c0cq2ohjqvqu7bhl3x8r.jpg"
+      ],
       "numDays": 2,
       "dateStart": "15-11-2024",
       "dateEnd": "17-11-2024",
@@ -51,6 +53,21 @@
               "timeStart": "16:30",
               "timeEnd": "18:00",
               "_id": "67e23f110e0e27ac383b765b"
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "name": "Paradise Home Ton Duc Thang",
+              "address": "default-address",
+              "imgSrc": [
+                "default-image"
+              ],
+              "cost": 0,
+              "costDescription": "",
+              "description": "",
+              "timeStart": "00:00",
+              "timeEnd": "00:30",
+              "_id": "6806608e5e8ff2b80c5580fe"
             }
           ],
           "_id": "673721fe8199a5bb3cc3c7ee"
@@ -102,10 +119,11 @@
             },
             {
               "activityType": "Other",
+              "idDestination": "67f52a6751fa385a61820c56",
               "name": "Về nhà",
               "address": "default-address",
               "imgSrc": [
-                "default-image"
+                "https://res.cloudinary.com/dmdzku5og/image/upload/v1745247865/nnyoc7c2gmmkv10q8z4f.jpg"
               ],
               "cost": 300000,
               "costDescription": "Tiền xăng",
@@ -373,7 +391,6 @@
             },
             {
               "activityType": "Other",
-              "idDestination": "45882a67-d193-46c4-8c00-70dbe472fd9b",
               "name": "Về khách sạn tắm rửa nghỉ ngơi",
               "address": "default-address",
               "imgSrc": [
@@ -1288,7 +1305,6 @@
             },
             {
               "activityType": "Other",
-              "idDestination": "default-id",
               "name": "Ăn sáng",
               "address": "12B Lương Văn Can, Phường 2, Vũng Tàu, Bà Rịa - Vũng Tàu, Việt Nam",
               "imgSrc": [
@@ -1304,7 +1320,6 @@
             },
             {
               "activityType": "Other",
-              "idDestination": "default-id",
               "name": "Check out phòng",
               "address": "Khách sạn",
               "imgSrc": [
@@ -1319,7 +1334,6 @@
             },
             {
               "activityType": "Other",
-              "idDestination": "default-id",
               "name": "Mua bánh bông lan trứng muối ",
               "address": "17B Nguyễn Trường Tộ, Phường 2, Vũng Tàu, Bà Rịa - Vũng Tàu, Việt Nam",
               "imgSrc": [
@@ -1349,7 +1363,6 @@
             },
             {
               "activityType": "Other",
-              "idDestination": "default-id",
               "name": "Ghé bò sữa Long Thành",
               "address": "Bò Sữa Long Thành",
               "imgSrc": [
@@ -2421,7 +2434,6 @@
           "activity": [
             {
               "activityType": "Other",
-              "idDestination": "default-id",
               "name": "Ăn sáng",
               "address": "Christ of Vung Tau, Hạ Long, Bãi Dứa, Ward 2, Vũng Tàu, Bà Rịa - Vũng Tàu Province, 78225, Vietnam",
               "imgSrc": [
@@ -2436,7 +2448,6 @@
             },
             {
               "activityType": "Other",
-              "idDestination": "default-id",
               "name": "Đi đến trường học",
               "address": "Bãi Sau, Thang Tam Ward, Vũng Tàu, Bà Rịa - Vũng Tàu Province, 78207, Vietnam",
               "imgSrc": [
@@ -2484,7 +2495,7 @@
       "description": "Chuẩn bị lên đồ và sạc pin, chuyến du lịch Vũng Tàu 3 ngày 2 đêm hứa hẹn sẽ làm bạn ‘bùng nổ’ với lịch trình ăn uống cực đã, bãi biển xanh mướt, và loạt địa điểm check-in hot trend. Từ hải sản tươi ngon, những góc sống ảo đẹp mê hồn đến các trải nghiệm thú vị như leo núi, ngắm hoàng hôn hay dạo biển đêm, đây sẽ là hành trình bạn không thể bỏ lỡ! Đi thôi nào, Vũng Tàu đang chờ bạn!",
       "address": "Bà Rịa - Vũng Tàu",
       "imgSrc": [
-        "https://res.cloudinary.com/dmdzku5og/image/upload/v1742968502/images/rya7e3xpuhj9eltt7ifq.jpg"
+        "https://res.cloudinary.com/dmdzku5og/image/upload/v1745305319/images/nbgqjxejqeiwkfsp7cbn.jpg"
       ],
       "numDays": 4,
       "dateStart": "24-12-2024",
@@ -2599,10 +2610,15 @@
           "idUser": "67128427a9cdb6c151e91e14",
           "createdAt": "2025-04-17T08:10:46.203Z",
           "_id": "6800b786b370f3607a2df90c"
+        },
+        {
+          "idUser": "675fb2a89efd41573be29524",
+          "createdAt": "2025-04-24T05:26:27.600Z",
+          "_id": "6809cb83e9195bd986132a44"
         }
       ],
       "createdAt": "2024-12-17T18:01:53.817Z",
-      "__v": 2,
+      "__v": 3,
       "videoSrc": null,
       "idInvitee": [],
       "type": [],
@@ -2683,7 +2699,6 @@
       ]
     },
     {
-      "tags": [],
       "_id": "6761c82276de7ada521d6026",
       "idUser": "675fb2a89efd41573be29524",
       "scheduleName": "Tour Hà Nội của Phạm Thành",
@@ -2806,8 +2821,8 @@
         },
         {
           "idUser": "67128427a9cdb6c151e91e14",
-          "_id": "67f778f028d7c7e34f0d5cef",
-          "createdAt": "2025-04-10T07:53:20.415Z"
+          "createdAt": "2025-04-10T07:53:20.415Z",
+          "_id": "67f778f028d7c7e34f0d5cef"
         }
       ],
       "createdAt": "2024-12-17T18:51:15.764Z",
@@ -2815,7 +2830,30 @@
       "__v": 3,
       "videoSrc": null,
       "idInvitee": [],
-      "type": []
+      "type": [],
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "địa điểm",
+        "tham quan",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "trẻ",
+        "tour",
+        "hà",
+        "nội",
+        "phạm",
+        "thành",
+        "đêm",
+        "hấp"
+      ]
     },
     {
       "idInvitee": [],
@@ -3146,7 +3184,6 @@
             },
             {
               "activityType": "Other",
-              "idDestination": "27848e27-d6bf-4a56-927d-17903362c6ef",
               "name": "Nghỉ ngơi tại khách sạn",
               "address": "default-address",
               "imgSrc": [
@@ -3160,7 +3197,6 @@
             },
             {
               "activityType": "Other",
-              "idDestination": "f8433860-bf9a-4313-a4e6-620c39800c20",
               "name": "Tắm biển",
               "address": "default-address",
               "imgSrc": [
@@ -3624,17 +3660,6 @@
             },
             {
               "activityType": "Attraction",
-              "idDestination": "67407405a908719dec998c70",
-              "imgSrc": [],
-              "cost": 10000,
-              "costDescription": "Chi phí vé vào cửa",
-              "description": "Tham quan Ngọn Hải đăng Vũng Tàu",
-              "timeStart": "15:30",
-              "timeEnd": "17:00",
-              "_id": "67f53de77a7d2fbcc4934dc2"
-            },
-            {
-              "activityType": "Attraction",
               "idDestination": "67e519ebfd28456dcbaf6937",
               "imgSrc": [],
               "cost": 10000,
@@ -3686,39 +3711,6 @@
               "timeStart": "12:30",
               "timeEnd": "13:30",
               "_id": "67f53de77a7d2fbcc4934dc7"
-            },
-            {
-              "activityType": "Attraction",
-              "idDestination": "67e538d277a3301c455bdc44",
-              "imgSrc": [],
-              "cost": 270000,
-              "costDescription": "Chi phí tham quan",
-              "description": "Tham quan Bến thuyền Marina",
-              "timeStart": "14:00",
-              "timeEnd": "16:00",
-              "_id": "67f53de77a7d2fbcc4934dc8"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "67e92dca301957bd5c62b850",
-              "imgSrc": [],
-              "cost": 100000,
-              "costDescription": "Chi phí ăn tối",
-              "description": "Ăn ốc tại Ốc Tự Nhiên Vũng Tàu 3",
-              "timeStart": "18:00",
-              "timeEnd": "20:00",
-              "_id": "67f53de77a7d2fbcc4934dc9"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86affe137be97dd5e67d",
-              "imgSrc": [],
-              "cost": 0,
-              "costDescription": "Check out",
-              "description": "Trả phòng khách sạn",
-              "timeStart": "11:00",
-              "timeEnd": "12:00",
-              "_id": "67f53de77a7d2fbcc4934dca"
             }
           ],
           "_id": "67f53de77a7d2fbcc4934dc5"
@@ -4754,7 +4746,6 @@
           "activity": [
             {
               "activityType": "Other",
-              "idDestination": "b932a22e-3632-45b3-95ba-bcc56146e99b",
               "name": "Check in, gửi đồ",
               "address": "Gành Đá Đĩa, Tuy An District, Phú Yên Province, Vietnam",
               "imgSrc": [

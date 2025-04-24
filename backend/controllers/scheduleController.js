@@ -238,7 +238,7 @@ export const getAllSchedule = async (req, res) => {
     // Tạo điều kiện tìm kiếm - luôn lấy isPublic=true
     const query = { isPublic: true };
 
-    
+
 
     // Loại bỏ lịch trình của user hiện tại nếu có userId được cung cấp
     if (userId) {
@@ -265,11 +265,11 @@ export const getAllSchedule = async (req, res) => {
         // Lấy schedule được like nhiều nhất cho mỗi thành phố
         const schedulesByCity = [];
 
-        
+
         // Lấy schedule phổ biến nhất cho mỗi thành phố
         for (const city of cityList) {
           const cityQuery = { address: city, isPublic: true };
-          
+
 
           // Loại bỏ lịch trình của user hiện tại
           if (userId) {
@@ -302,12 +302,12 @@ export const getAllSchedule = async (req, res) => {
         // Nếu không có danh sách thành phố, lấy 6 lịch trình được like nhiều nhất
         const homeQuery = { isPublic: true };
 
-        
+
         // Loại bỏ lịch trình của user hiện tại
         if (userId) {
           homeQuery.idUser = { $ne: userId };
         }
-        
+
         const schedules = await Schedule.find(homeQuery)
           .populate("idUser")
           .sort(sortOptions)
@@ -880,7 +880,7 @@ export const scheduleAI = async (req, res) => {
     fs.writeFileSync('../Schedule_AI/user.json', JSON.stringify(exportData, null, 2));
 
     const allSchedules = await Schedule.find().populate("idUser", "name avatar");
-    const shouldTrain = allSchedules.length % 10 === 0; // giữ nguyên điều kiện của bạn
+    const shouldTrain = allSchedules.length % 1 === 0; // giữ nguyên điều kiện của bạn
 
     if (shouldTrain) {
       const exportSchedules = JSON.stringify(allSchedules, null, 2);
