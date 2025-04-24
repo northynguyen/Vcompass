@@ -146,6 +146,7 @@ const OtherItem = ({ setCurDes, curDes }) => {
       ...prev,
       imgSrc: prev?.imgSrc?.filter((_, i) => i !== index),
     }));
+
     deleteOldMedia(images[index]);
   };
 
@@ -281,11 +282,13 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [listData, setListData] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
+
   const [errors, setErrors] = useState({
     costName: false,
     cost: false,
     description: false
   });
+
 
   useEffect(() => {
     if (isOpen) {

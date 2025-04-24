@@ -3,7 +3,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     padding: 6px;
+
     position: fixed;
     width: 100%;
     top: 0;
@@ -280,7 +282,9 @@ img.logo-image {
     display: block;
     margin: 0;
     font-weight:300;
+
     font-size: 0.7rem;
+
     text-overflow:inherit;
     overflow: hidden;
   }
