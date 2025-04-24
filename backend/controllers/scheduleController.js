@@ -1,16 +1,19 @@
 import mongoose from "mongoose";
 import Schedule from "../models/schedule.js";
 import User from "../models/user.js";
-import { upload } from '../middleware/upload.js'
-import multer from 'multer';
+import Accommodation from "../models/accommodation.js"
+import FoodService from "../models/foodService.js"
+import Attraction from "../models/attraction.js"
 import { createNotification } from "./notiController.js";
 import { ObjectId } from "mongodb";
 import keyword_extractor from "keyword-extractor";
 import { uploadToCloudinaryV2 } from './videoController.js';
+
 import Log from "../models/logActivity.js";
 import fs from 'fs';
 import { exec } from 'child_process';
 import path from "path";
+
 export const addSchedule = async (req, res) => {
   try {
     const { userId, schedule } = req.body;
@@ -136,7 +139,6 @@ export const updateSchedule = async (req, res) => {
   }
 };
 
-
 export const getSchedulesByIdUser = async (req, res) => {
   const { userId } = req.body; // Replace with user ID extraction from token, if needed.
   const { type, id } = req.query;
@@ -236,6 +238,8 @@ export const getAllSchedule = async (req, res) => {
     // Tạo điều kiện tìm kiếm - luôn lấy isPublic=true
     const query = { isPublic: true };
 
+    
+
     // Loại bỏ lịch trình của user hiện tại nếu có userId được cung cấp
     if (userId) {
       query.idUser = { $ne: userId }; // Không lấy lịch trình của user hiện tại
@@ -261,9 +265,11 @@ export const getAllSchedule = async (req, res) => {
         // Lấy schedule được like nhiều nhất cho mỗi thành phố
         const schedulesByCity = [];
 
+        
         // Lấy schedule phổ biến nhất cho mỗi thành phố
         for (const city of cityList) {
           const cityQuery = { address: city, isPublic: true };
+          
 
           // Loại bỏ lịch trình của user hiện tại
           if (userId) {
@@ -296,11 +302,12 @@ export const getAllSchedule = async (req, res) => {
         // Nếu không có danh sách thành phố, lấy 6 lịch trình được like nhiều nhất
         const homeQuery = { isPublic: true };
 
+        
         // Loại bỏ lịch trình của user hiện tại
         if (userId) {
           homeQuery.idUser = { $ne: userId };
         }
-
+        
         const schedules = await Schedule.find(homeQuery)
           .populate("idUser")
           .sort(sortOptions)
@@ -330,6 +337,7 @@ export const getAllSchedule = async (req, res) => {
         .skip(skip) // Bỏ qua các bản ghi trước đó
         .limit(parseInt(limit)); // Giới hạn số bản ghi trả về
 
+
       // Đếm tổng số lịch trình
       const total = await Schedule.countDocuments(query);
 
@@ -358,7 +366,6 @@ export const getAllSchedule = async (req, res) => {
     });
   }
 };
-
 
 export const getTopAddressSchedule = async (req, res) => {
   try {
@@ -524,7 +531,6 @@ export const updateLikeComment = async (req, res) => {
   }
 };
 
-
 export const deleteActivity = async (req, res) => {
   const { id, activityId } = req.params; // Lấy scheduleId và activityId từ params
 
@@ -584,10 +590,12 @@ export const uploadFiles = async (req, res) => {
     });
   } catch (error) {
     console.error('Error in uploadFiles:', error);
+
     res.status(500).json({
       success: false,
       message: 'Error uploading files',
       error: error.message
+
     });
   }
 };
@@ -715,7 +723,6 @@ const generateTagsFromSchedule = (schedule) => {
   console.log(tags);
   return Array.from(tags);
 };
-
 // Hàm tính tuổi từ ngày sinh
 const calculateAge = (dob) => {
   const birthDate = new Date(dob);
@@ -774,7 +781,9 @@ export const getFollowingSchedules = async (req, res) => {
       isPublic: true // Only get public schedules
     })
       .populate("idUser", "name avatar")
+
       .sort({ createdAt: -1 })
+
       .skip(skip)
       .limit(limit);
 
@@ -812,6 +821,7 @@ export const getFollowingSchedules = async (req, res) => {
     });
   }
 };
+
 
 export const scheduleAI = async (req, res) => {
   try {
@@ -927,3 +937,101 @@ const callPredictAndRespond = (res) => {
     });
   });
 };
+
+
+//// Application
+
+const models = {
+  Accommodation,
+  Attraction,
+  FoodService,
+};
+
+
+export const getScheduleByIdForMobile = async (req, res) => {
+  const { id } = req.params;
+  const { activityId } = req.query;
+  const userId = req.user?._id;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid ID format" });
+    }
+
+    // Lấy schedule gốc (không populate idDestination ở đây)
+    const schedule = await Schedule.findById(id)
+      .populate("idUser")
+      .populate("idInvitee", "name avatar email")
+      .lean(); // dùng lean để thao tác dễ hơn
+
+    if (!schedule) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Schedule not found" });
+    }
+
+    // ✅ Populate thủ công cho từng activity nếu cần
+    await Promise.all(
+      schedule.activities.map(async (day) => {
+        await Promise.all(
+          day.activity.map(async (act) => {
+            if (
+              act.activityType !== "Other" &&
+              models[act.activityType] &&
+              mongoose.Types.ObjectId.isValid(act.idDestination)
+            ) {
+              const doc = await models[act.activityType]
+                .findById(act.idDestination)
+                .lean();
+              act.destination = doc || null; // thêm field mới
+            }
+          })
+        );
+      })
+    );
+
+    // ✅ Check quyền chỉnh sửa
+    const canEdit =
+      schedule.idUser.toString() === userId ||
+      (schedule.idInvitee || []).some((invitee) =>
+        invitee._id.toString() === userId
+      );
+
+    // ✅ Nếu có activityId: trả về activity cụ thể
+    if (activityId) {
+      const activity = schedule.activities
+        .flatMap((day) => day.activity)
+        .find((act) => act._id.toString() === activityId);
+
+      if (!activity) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Activity not found" });
+      }
+
+      return res.json({
+        success: true,
+        message: "Activity retrieved successfully",
+        other: activity,
+      });
+    }
+
+    // ✅ Trả toàn bộ schedule
+    return res.json({
+      success: true,
+      message: "Get schedule success",
+      schedule,
+      canEdit,
+    });
+  } catch (error) {
+    console.error("Error retrieving schedule:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving schedule",
+      error,
+    });
+  }
+};
+

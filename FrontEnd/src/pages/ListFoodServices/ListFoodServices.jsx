@@ -1,13 +1,13 @@
 import CryptoJS from "crypto-js";
-import  { useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types';
+import { useContext, useEffect, useState } from "react";
+import { Range } from 'react-range';
 import { StoreContext } from "../../Context/StoreContext";
 import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import "./ListFoodServices.css";
-import { Range } from 'react-range';
 
 // TourItem Component
-const FoodServiceItem = ({ foodService, status, setCurDes}) => {
+const FoodServiceItem = ({ foodService, status, setCurDes }) => {
   const { url } = useContext(StoreContext);
   const handleSelect = (e) => {
     e.stopPropagation();
@@ -23,18 +23,23 @@ const FoodServiceItem = ({ foodService, status, setCurDes}) => {
   };
   return (
     <div className="list-accom__tour-item" onClick={onNavigateToDetails}>
-      <img src={`${url}/images/${foodService.images[0]}`} alt={foodService.name} className="list-accom__tour-item-image" />
-      <div className="list-accom__tour-details">
-        <h3>{foodService.foodServiceName}</h3>
-        <div className="list-accom__tour-location">
-          <a
-            href={`https://www.google.com/maps/?q=${foodService.location.latitude},${foodService.location.longitude}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {foodService.location.address}
-          </a>
+      <div className="accom-card-header">
+        <img src={`${url}/images/${foodService.images[0]}`} alt={foodService.name} className="list-accom__tour-item-image" />
+        <div className="accom-card-header-right">
+          <h3>{foodService.foodServiceName}</h3>
+          <div className="list-accom__tour-location">
+            <a
+              href={`https://www.google.com/maps/?q=${foodService.location.latitude},${foodService.location.longitude}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {foodService.location.address}
+            </a>
+          </div>
+          <div className="list-accom__tour-rating">{calculateTotalRate(foodService.ratings)}</div>
         </div>
+      </div>
+      <div className="list-accom__tour-details">
         <div className="list-accom__tour-facilities">
           {foodService.amenities.slice(0, 6).map((facility, index) => (
             <span key={index}>{facility}</span>
@@ -42,11 +47,10 @@ const FoodServiceItem = ({ foodService, status, setCurDes}) => {
           {foodService.amenities.length > 6 && <span>...</span>}
         </div>
         <span>{foodService.description.length > 150 ? foodService.description.substring(0, 150) + "..." : foodService.description}</span>
-        <div className="list-accom__tour-rating">{calculateTotalRate(foodService.ratings)}</div>
       </div>
       <div className="list-accom__tour-price">
         <div className="price-container">
-          <p className="price-text">{foodService.price.minPrice} - {foodService.price.maxPrice}₫</p>
+          <p className="price-text">{foodService.price.minPrice} - {foodService.price.maxPrice} ₫</p>
         </div>
         {
           (status === "Schedule" || status === "WishList") && <SelectButton onClick={handleSelect} />
@@ -101,7 +105,7 @@ const TourList = ({ foodServices, sortOption, status, setCurDes }) => {
 
   return (
     <div className="list-accom__tour-list">
-          {currentTours.map((tour) => (
+      {currentTours.map((tour) => (
         <FoodServiceItem key={tour._id} foodService={tour}
           status={status} setCurDes={setCurDes} />
       ))}
@@ -118,8 +122,8 @@ TourList.propTypes = {
 };
 
 // Filters Component
-const Filters = ({ 
-  setNameFilter, setMinPrice, setMaxPrice, 
+const Filters = ({
+  setNameFilter, setMinPrice, setMaxPrice,
   nameFilter, minPrice, maxPrice, fetchAccommodations, isLoading
 }) => {
   const handleFilterChange = () => {
@@ -129,17 +133,15 @@ const Filters = ({
   return (
     <div className="list-accom__filters">
       {/* Name Filter */}
-      <h4>Lọc theo tên</h4>
-      <input 
-        type="text" 
-        placeholder="Accommodation Name" 
-        value={nameFilter} 
-        onChange={(e) => setNameFilter(e.target.value)} 
+      <input
+        type="text"
+        placeholder="Tên nhà hàng, quán ăn"
+        value={nameFilter}
+        onChange={(e) => setNameFilter(e.target.value)}
       />
-      
+
 
       {/* Price Range Filter */}
-      <h4>Lọc theo giá</h4>
       <div className="price-range-slider">
         <Range
           values={[minPrice, maxPrice]} // Current min and max price
@@ -163,13 +165,13 @@ const Filters = ({
               {children}
             </div>
           )}
-          renderThumb={({ props}) => (
+          renderThumb={({ props }) => (
             <div
               {...props}
               style={{
                 ...props.style,
-                height: '20px',
-                width: '20px',
+                height: '16px',
+                width: '16px',
                 borderRadius: '50%',
                 backgroundColor: '#007BFF',
                 cursor: 'pointer',
@@ -179,8 +181,8 @@ const Filters = ({
           )}
         />
         <div className="price-range-value">
-          {minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} 
-          -  {maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          {minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ₫
+          -  {maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ₫
         </div>
       </div>
 
@@ -239,7 +241,7 @@ const ListFoodServices = ({ status, setCurDes, city, setListData }) => {
     try {
       let response;
       let result;
-  
+
       if (status === "WishList") {
         // Fetch wishList từ user
         response = await fetch(`${url}/api/user/user/favorites-with-details?userId=${user._id}&type=foodService`);
@@ -253,20 +255,20 @@ const ListFoodServices = ({ status, setCurDes, city, setListData }) => {
           ...(city && { city }),
           sortOption,
         });
-  
-       response = await fetch(`${url}/api/foodservices?${queryParams}`);
+
+        response = await fetch(`${url}/api/foodservices?${queryParams}`);
         result = await response.json();
       }
-  
+
       setIsLoading(false);
-  
+
       if (!response.ok) {
         throw new Error(result.message || "Error fetching data");
       }
-  
+
       if (status === "WishList") {
         // Gán dữ liệu wishList
-        setFoodServices(result.favorites );
+        setFoodServices(result.favorites);
       } else {
         // Gán dữ liệu attractions
         setFoodServices(result.foodService || []);
@@ -276,13 +278,13 @@ const ListFoodServices = ({ status, setCurDes, city, setListData }) => {
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchFoodServices();
   }, [url]);
 
   useEffect(() => {
-    if ( foodServices.length > 0) {
+    if (foodServices.length > 0) {
       setListData(foodServices);
     }
   }, [foodServices, setListData]);
@@ -319,3 +321,4 @@ ListFoodServices.propTypes = {
 
 export default ListFoodServices;
 export { FoodServiceItem };
+

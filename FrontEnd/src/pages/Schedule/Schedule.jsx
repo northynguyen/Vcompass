@@ -462,7 +462,17 @@ const InforScheduleMedal = ({
   const [imagePreview, setImagePreview] = useState(null); // Preview ảnh
   const [videoPreview, setVideoPreview] = useState(null); // Preview video
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedTypes, setSelectedTypes] = useState([]);
   const { url } = useContext(StoreContext);
+  
+  const travelTypes = [
+    'Du lịch vui chơi',
+    'Du lịch học tập',
+    'Du lịch nghỉ dưỡng',
+    'Du lịch thương mại',
+    'Du lịch văn hóa',
+    'Du lịch ẩm thực'
+  ];
 
   useEffect(() => {
     if (inforSchedule) {
@@ -476,6 +486,7 @@ const InforScheduleMedal = ({
       setDescription(inforSchedule.description || "");
       setImgSrc(inforSchedule.imgSrc || []);
       setVideoPreview(inforSchedule.videoSrc || null);
+      setSelectedTypes(inforSchedule.type || []);
     }
   }, [inforSchedule, isOpen]);
 
@@ -641,6 +652,16 @@ const InforScheduleMedal = ({
     }
   };
 
+  const handleTypeSelection = (selectedType) => {
+    setSelectedTypes(prev => {
+      if (prev.includes(selectedType)) {
+        return prev.filter(type => type !== selectedType);
+      } else {
+        return [...prev, selectedType];
+      }
+    });
+  };
+
   const handleSubmit = async () => {
     if (isNaN(startDay)) {
       console.error("Invalid start date");
@@ -659,7 +680,7 @@ const InforScheduleMedal = ({
       if (mediaType === 'video' && videoFile) {
         const uploadResponse = await uploadVideo(videoFile);
         videoSrc = uploadResponse;
-        await deleteOldMedia(inforSchedule.imgSrc[0]);
+        await deleteOldMedia(inforSchedule.imgSrc?.[0]);
         await deleteVideo(inforSchedule.videoSrc);
       }
 
@@ -667,9 +688,15 @@ const InforScheduleMedal = ({
       else if (mediaType === 'image' && imgSrc.length > 0 && imgSrc[0] instanceof File) {
         const uploadedFiles = await uploadImages(imgSrc[0]);
         uploadedImgSrc = uploadedFiles;
-        await deleteOldMedia(inforSchedule.imgSrc[0]);
+        console.log("uploadedImgSrc", uploadedImgSrc);
+        await deleteOldMedia(inforSchedule.imgSrc?.[0]);
         await deleteVideo(inforSchedule.videoSrc);
       }
+
+      // Tạo một biến để lưu giá trị cuối cùng của imgSrc
+      const finalImgSrc = mediaType === 'image' 
+        ? (imgSrc[0] instanceof File ? [uploadedImgSrc] : inforSchedule.imgSrc) 
+        : null;
 
       // Cập nhật thông tin lịch trình
       setInforSchedule((prev) => ({
@@ -678,14 +705,15 @@ const InforScheduleMedal = ({
         description,
         dateStart: startDayString,
         dateEnd: endDateString,
-        imgSrc: mediaType === 'image' && imgSrc[0] instanceof File ? uploadedImgSrc : inforSchedule.imgSrc,
+        imgSrc: finalImgSrc,
         videoSrc,
+        type: selectedTypes,
       }));
 
       toast.success("Lịch trình đã được cập nhật thành công!");
       closeModal();
 
-      // Emit sự kiện để update real-time
+      // Sử dụng giá trị finalImgSrc trong socket.emit
       if (socket) {
         socket.current.emit('updateScheduleInfo', {
           scheduleId: inforSchedule._id,
@@ -694,8 +722,9 @@ const InforScheduleMedal = ({
             description,
             dateStart: startDayString,
             dateEnd: endDateString,
-            imgSrc: mediaType === 'image' ? uploadedImgSrc : inforSchedule.imgSrc,
-            videoSrc
+            imgSrc: finalImgSrc, // Sử dụng giá trị đã tính toán
+            videoSrc,
+            type: selectedTypes,
           }
         });
       }
@@ -767,6 +796,20 @@ const InforScheduleMedal = ({
               onChange={handleChange}
               placeholder="Nhập ghi chú chi tiết"
             ></textarea>
+            
+            <label className="expense-sub-title">Loại hình du lịch</label>
+            <div className="travel-types-container">
+              {travelTypes.map((travelType, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`type-button ${selectedTypes.includes(travelType) ? 'selected' : ''}`}
+                  onClick={() => handleTypeSelection(travelType)}
+                >
+                  {travelType}
+                </button>
+              ))}
+            </div>
 
             <label className="expense-sub-title">Chọn loại tệp</label>
             <div className="radio-group">
@@ -808,7 +851,9 @@ const InforScheduleMedal = ({
                   onChange={handleImageChange}
                   multiple
                 />
-                <img src={imagePreview} alt="Image Preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />
+                {(imagePreview || inforSchedule.imgSrc?.[0]) && (
+                  <img src={imagePreview ? imagePreview : inforSchedule.imgSrc?.[0]} alt="Image Preview" />
+                )}
               </div>
             )}
 
@@ -1157,8 +1202,6 @@ const Schedule = ({ mode }) => {
 
   useEffect(() => {
     if (inforSchedule) {
-      console.log("inforSchedule", inforSchedule);
-      console.log("mode:", mode);
       setDateStart(convertDateFormat(inforSchedule.dateStart));
       setDateEnd(convertDateFormat(inforSchedule.dateEnd));
 
@@ -1691,7 +1734,7 @@ const Schedule = ({ mode }) => {
                   <div className="title-button" onClick={openInforSchedule}>
                     <i className="fa-solid fa-pen schedule-icon"></i>
                     <button className="save-and-share-btn">
-                      Chỉnh sửa thông tin
+                      Chỉnh sửa
                     </button>
                   </div>
                 ) : (

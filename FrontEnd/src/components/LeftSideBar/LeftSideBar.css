@@ -1,21 +1,29 @@
 .left-side-bar {
   position: fixed;
   left: 0;
-  top: 75px; /* Chiều cao của header */
+
+  top: 55px; /* Chiều cao của header */
+
   width: 250px;
   height: calc(100vh - 75px); /* Chỉ trừ chiều cao của header */
   background-color: #ffffff;
   padding: 8px 4px;
   overflow-y: auto;
   z-index: 99;
-  /* Thêm thuộc tính để scroll mượt hơn */
+
+
   scroll-behavior: smooth;
-  /* Thêm thuộc tính để dừng lại khi đến footer */
-  bottom: 75px; /* Chiều cao của footer */
-  /* Thêm thuộc tính để cuộn theo */
+  bottom: 75px;
   position: sticky;
-  top: 75px;
-  max-height: calc(100vh - 150px); /* Trừ chiều cao của header và footer */
+  max-height: 100%;
+}
+.sidebar-toggle-container {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+
 }
 
 .left-side-bar-item {

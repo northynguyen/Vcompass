@@ -1,10 +1,10 @@
-import  { useContext, useEffect, useState } from "react";
+import CryptoJS from "crypto-js";
+import PropTypes from 'prop-types';
+import { useContext, useEffect, useState } from "react";
+import { Range } from 'react-range';
 import { StoreContext } from "../../Context/StoreContext";
 import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
-import CryptoJS from "crypto-js";
 import "./ListAccommodation.css";
-import { Range } from 'react-range';
-import PropTypes from 'prop-types';
 // Accommodation Item Component
 const AccomItem = ({ accommodation, status, setCurDes }) => {
   const handleSelect = (e) => {
@@ -23,29 +23,34 @@ const AccomItem = ({ accommodation, status, setCurDes }) => {
 
   return (
     <div className="list-accom__tour-item" onClick={onNavigateToDetails}>
-      <img src={`${url}/images/${accommodation.images[0]}`} alt={accommodation.name} className="list-accom__tour-item-image" />
-      <div className="list-accom__tour-details">
-        <h3>{accommodation.name}</h3>
-        <div className="list-accom__tour-location">
-          <a 
-            href={`https://www.google.com/maps/?q=${accommodation.location.latitude},${accommodation.location.longitude}`} 
-            target="_blank" 
-            rel="noopener noreferrer"
-          >
-            {accommodation.location.address}
-          </a>
+      <div className="accom-card-header">
+        <img src={`${url}/images/${accommodation.images[0]}`} alt={accommodation.name} className="list-accom__tour-item-image" />
+        <div className="accom-card-header-right">
+          <h3>{accommodation.name}</h3>
+          <div className="list-accom__tour-location">
+            <a
+              href={`https://www.google.com/maps/?q=${accommodation.location.latitude},${accommodation.location.longitude}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {accommodation.location.address}
+            </a>
+          </div>
+          <div className="list-accom__tour-rating">{calculateTotalRate(accommodation.ratings)}</div>
         </div>
+      </div>
+      <div className="list-accom__tour-details">
+
         <div className="list-accom__tour-facilities">
-          {accommodation.amenities.slice(0, 8).map((facility, index) => (
+          {accommodation.amenities.slice(0, 5).map((facility, index) => (
             <span key={index}>{facility}</span>
           ))}
           {accommodation.amenities.length > 8 && <span>...</span>}
         </div>
         <span>{accommodation.description.length > 150 ? accommodation.description.substring(0, 160) + "..." : accommodation.description}</span>
-        <div className="list-accom__tour-rating">{calculateTotalRate(accommodation.ratings)}</div>
       </div>
       <div className="list-accom__tour-price">
-        {(status === "Schedule" || status ==="WishList")  && <SelectButton onClick={handleSelect} />}
+        {(status === "Schedule" || status === "WishList") && <SelectButton onClick={handleSelect} />}
       </div>
     </div>
   );
@@ -55,7 +60,7 @@ AccomItem.propTypes = {
   accommodation: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    images: PropTypes.arrayOf(PropTypes.string).isRequired, 
+    images: PropTypes.arrayOf(PropTypes.string).isRequired,
     location: PropTypes.shape({
       address: PropTypes.string.isRequired,
       latitude: PropTypes.number.isRequired,
@@ -124,8 +129,8 @@ Pagination.propTypes = {
 };
 
 // Filters Component with a single range slider for both min and max price
-const Filters = ({ 
-   setNameFilter, setMinPrice, setMaxPrice, 
+const Filters = ({
+  setNameFilter, setMinPrice, setMaxPrice,
   nameFilter, minPrice, maxPrice, fetchAccommodations, isLoading
 }) => {
   const handleFilterChange = () => {
@@ -135,13 +140,11 @@ const Filters = ({
   return (
     <div className="list-accom__filters">
       {/* Name Filter */}
-      <h4>Lọc theo tên</h4>
-      <input type="text" placeholder="Tên khách sạn" value={nameFilter} 
+      <input type="text" placeholder="Tên khách sạn" value={nameFilter}
         onChange={(e) => setNameFilter(e.target.value)} />
-      
+
 
       {/* Price Range Filter */}
-      <h4>Lọc theo giá</h4>
       <div className="price-range-slider">
         <Range
           step={100000}
@@ -171,8 +174,8 @@ const Filters = ({
               {...props}
               style={{
                 ...props.style,
-                height: '20px',
-                width: '20px',
+                height: '16px',
+                width: '16px',
                 borderRadius: '50%',
                 backgroundColor: '#007bff',
                 boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.3)',
@@ -182,7 +185,7 @@ const Filters = ({
           )}
         />
         <div className="price-range-value">
-         {minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - {maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          {minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ₫ - {maxPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ₫
         </div>
       </div>
       <button onClick={handleFilterChange} disabled={isLoading}>
@@ -192,13 +195,13 @@ const Filters = ({
       <hr />
     </div>
   );
-};  
+};
 
 Filters.propTypes = {
   sortOption: PropTypes.string.isRequired,
   setSortOption: PropTypes.func.isRequired,
   setNameFilter: PropTypes.func.isRequired,
-  setMinPrice: PropTypes.func.isRequired, 
+  setMinPrice: PropTypes.func.isRequired,
   setMaxPrice: PropTypes.func.isRequired,
   nameFilter: PropTypes.string.isRequired,
   minPrice: PropTypes.number.isRequired,
@@ -209,15 +212,15 @@ Filters.propTypes = {
 };
 
 // Main ListAccom Component
-const ListAccom = ({ status, setCurDes ,city, setListData}) => {
-  const { url , user} = useContext(StoreContext);
+const ListAccom = ({ status, setCurDes, city, setListData }) => {
+  const { url, user } = useContext(StoreContext);
   const [accommodations, setAccommodations] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // Track loading state
   const [sortOption, setSortOption] = useState("Popularity");
   const [nameFilter, setNameFilter] = useState("");
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(1000000);
- 
+
 
   const fetchAccommodations = async () => {
     console.log("city", city);
@@ -225,7 +228,7 @@ const ListAccom = ({ status, setCurDes ,city, setListData}) => {
     try {
       let response;
       let result;
-  
+
       if (status === "WishList") {
         console.log(`${url}/api/user/user/favorites-with-details?userId=${user._id}&type=attraction`);
         response = await fetch(`${url}/api/user/user/favorites-with-details?userId=${user._id}&type=accommodation`);
@@ -239,17 +242,17 @@ const ListAccom = ({ status, setCurDes ,city, setListData}) => {
           ...(city && { city }),
           sortOption,
         });
-  
-       response = await fetch(`${url}/api/accommodations?${queryParams}`);
+
+        response = await fetch(`${url}/api/accommodations?${queryParams}`);
         result = await response.json();
       }
-  
+
       setIsLoading(false);
-  
+
       if (!response.ok) {
         throw new Error(result.message || "Error fetching data");
       }
-  
+
       if (status === "WishList") {
         // Gán dữ liệu wishList
         setAccommodations(result.favorites.filter((favorite) => favorite.city === city));
@@ -262,13 +265,13 @@ const ListAccom = ({ status, setCurDes ,city, setListData}) => {
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchAccommodations();
   }, [url]);
 
   useEffect(() => {
-    if ( accommodations.length > 0) {
+    if (accommodations.length > 0) {
       setListData(accommodations);
     }
   }, [accommodations, setListData]);
@@ -280,21 +283,21 @@ const ListAccom = ({ status, setCurDes ,city, setListData}) => {
   return (
     <div className="list-accom__container">
       {status === "Schedule" && (
-        
-      
-      <Filters
-        sortOption={sortOption}
-        setSortOption={setSortOption}
-        setNameFilter={setNameFilter}
-        setMinPrice={setMinPrice}
-        setMaxPrice={setMaxPrice}
-        nameFilter={nameFilter}
-        minPrice={minPrice}
-        maxPrice={maxPrice}
-        fetchAccommodations={fetchAccommodations}
-        isLoading={isLoading}
-      />
-    )}
+
+
+        <Filters
+          sortOption={sortOption}
+          setSortOption={setSortOption}
+          setNameFilter={setNameFilter}
+          setMinPrice={setMinPrice}
+          setMaxPrice={setMaxPrice}
+          nameFilter={nameFilter}
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+          fetchAccommodations={fetchAccommodations}
+          isLoading={isLoading}
+        />
+      )}
       <AccomList accommodations={accommodations} sortOption={sortOption} status={status} setCurDes={setCurDes} />
     </div>
   );
@@ -310,3 +313,4 @@ ListAccom.propTypes = {
 export default ListAccom;
 
 export { AccomItem };
+

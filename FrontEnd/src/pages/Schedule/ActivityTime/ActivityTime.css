@@ -1,17 +1,15 @@
 .time-select-wrapper {
   position: relative;
-  display: inline-block;
+  display: flex;
   margin: 10px;
 }
 
 .time-select-wrapper .icon {
   position: absolute;
-  left: 0px;
-  /* Căn chỉnh biểu tượng bên trái */
+  left: 10px !important;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-45%) !important;
   color: #171515;
-  /* Màu của biểu tượng */
   font-size: 20px;
 }
 

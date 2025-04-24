@@ -2,7 +2,7 @@
   display: flex;
   min-height: 100vh;
   position: relative;
-  padding-bottom: 75px; /* Thêm padding bottom bằng chiều cao của footer */
+
   background-color: #f0f2f5;
   transition: all 0.3s ease;
 }
@@ -42,6 +42,7 @@
   border-radius: 50%;
   width: 45px;
   height: 45px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -80,10 +81,6 @@
 
 /* Media Query for screens smaller than 1200px */
 @media (max-width: 1200px) {
-  .search-container {
-    width: 85%;
-    left: 7.5%;
-  }
 
   .post-card-recommendations__container {
     width: 90%;
@@ -126,23 +123,9 @@
     transform: translateX(0);
   }
 
-  .search-container {
-    width: 90%;
-    left: 5%;
-    flex-direction: column;
-    gap: 15px;
-    padding: 18px;
-    margin-top: 5rem;
-  }
 
   .search-title {
     width: 100%;
-  }
-
-  .search-button {
-    width: 100%;
-    margin-left: 0;
-    margin-top: 15px;
   }
 
   .post-card-recommendations__container {
@@ -159,113 +142,9 @@
   }
 }
 
-/* Media Query for screens smaller than 768px */
-@media (max-width: 768px) {
-  .city-buttons {
-    gap: 10px;
-  }
-
-  .city-button {
-    padding: 8px 18px;
-    font-size: 0.95rem;
-  }
-
-  .hero-title {
-    font-size: 1.4rem;
-  }
-
-  .hero-subtitle {
-    font-size: 0.95rem;
-  }
-
-  .search-container {
-    margin-top: 4rem;
-    padding: 15px;
-  }
-
-  .search-input {
-    font-size: 15px;
-  }
-
-  .post-card-header h3 {
-    font-size: 1.3rem;
-  }
-  
-  .cities-title {
-    font-size: 1.4rem;
-  }
-  
-  .cities-description {
-    max-width: 95%;
-    font-size: 0.9rem;
-  }
-}
-
-/* Media Query for screens smaller than 480px */
-@media (max-width: 480px) {
-  .home-main-content {
-    width: 100%;
-    padding: 0;
-  }
-
-  .sidebar-toggle {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-  }
-
-  .search-container {
-    padding: 15px;
-    margin-top: 3.5rem;
-  }
-
-  .search-input {
-    font-size: 14px;
-    margin-left: 10px;
-  }
-
-  .search-button {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
-
-  .city-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  .city-button {
-    width: 100%;
-    padding: 8px 10px;
-    font-size: 0.85rem;
-  }
-
-  .post-card-recommendations__container {
-    width: 100% !important;
-  }
-
-  .swiper-button-next,
-  .swiper-button-prev {
-    
-  }
-  
-  .post-card-header h3 {
-    font-size: 1.2rem;
-  }
-  
-  .post-card-header h3::after {
-    width: 40%;
-    left: 30%;
-  }
-  
-  .cities-title {
-    font-size: 1.3rem;
-  }
-}
-
 .home-page {
   display: flex;
+
   flex-direction: row;
   height: 100%;
   width: 100%;
@@ -377,11 +256,45 @@
 }
 
 .hero-section {
-  position: relative;
+  margin-top: 30px;
   text-align: center;
-  padding: 10px;
-  width: 100%;
+
+  background-color: #fff;
+  padding: 60px;
+  min-height: 250px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  background-image: url('https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/full-shot-travel-concept-with-landmarks.jpg');
+  background-size: cover;
+  background-position: center;
+
 }
+.create-schedule-btn {
+  display: flex;
+  padding: 12px 30px;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff5722;
+  color:white;
+  border-radius: 99px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  width: fit-content;
+}
+.create-schedule-btn p {
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  margin: 0;
+}
+.create-schedule-btn-container {
+  margin-top: 15px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
 
 .hero-title {
   margin-top: 40px;
@@ -421,7 +334,9 @@
 .search-container {
   width: 70%;
   position: relative;
-  margin: 3rem auto;
+
+  margin: 1.5rem auto;
+
   margin-bottom: 10px;
   display: flex;
   align-items: center;
@@ -447,7 +362,7 @@
 .search-title > div {
   position: relative;
   width: 100% !important;
-  max-width: 500px !important;
+
 }
 
 
@@ -530,51 +445,7 @@
   box-shadow: 0 2px 8px rgba(0, 150, 136, 0.2);
 }
 
-/* Responsive Styles */
-@media (max-width: 1024px) {
-  .search-container {
-    width: 85%;
-    padding: 20px 25px;
-  }
-}
 
-@media (max-width: 768px) {
-  .search-container {
-    width: 90%;
-    flex-direction: column;
-    gap: 15px;
-    padding: 20px;
-  }
-
-  .search-title > div {
-    width: 100%;
-  }
-
-  .search-button {
-    width: 100%;
-    margin-left: 0;
-  }
-}
-
-@media (max-width: 480px) {
-  .search-container {
-    width: 95%;
-    padding: 15px;
-    margin-top: 2rem;
-  }
-
-  .search-input {
-    font-size: 14px;
-    padding: 10px 10px 10px 35px;
-  }
-
-
-
-  .search-button {
-    padding: 10px 20px;
-    font-size: 14px;
-  }
-}
 
 .name_label {
   margin-left: 10px;
@@ -582,7 +453,10 @@
 
 .popular-cities {
   text-align: center;
-  padding: 20px;
+
+
+  padding: 0px;
+
 }
 
 .cities-title {
@@ -718,6 +592,7 @@
   border-radius: 50%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
+
 }
 
 .swiper-button-next:hover,
@@ -759,90 +634,6 @@
   --font-size-4xl: 2rem;     /* 32px */
 }
 
-/* Cities Section */
-.cities-title {
-  font-size: var(--font-size-3xl);
-  font-weight: bold;
-  margin-bottom: 15px;
-  color: #333;
-}
-
-.cities-description {
-  font-weight: 400;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #555;
-  max-width: 80%;
-  margin: 0 auto;
-  line-height: 1.5;
-  font-size: var(--font-size-base);
-}
-
-.city-button {
-  padding: 10px 22px;
-  border: 1px solid #ddd;
-  border-radius: 25px;
-  background: white;
-  color: #333;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  font-size: var(--font-size-base);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-/* Post Card Headers */
-.post-card-header h3 {
-  font-size: var(--font-size-2xl);
-  color: #333;
-  position: relative;
-  display: inline-block;
-  margin: 0;
-  padding-bottom: 10px;
-}
-
-.post-card-recommendations__message {
-  text-align: center;
-  color: #777;
-  font-size: var(--font-size-lg);
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Media Query for screens smaller than 1200px */
-@media (max-width: 1200px) {
-  :root {
-    --font-size-3xl: 1.625rem;  /* 26px */
-    --font-size-2xl: 1.375rem;  /* 22px */
-  }
-}
-
-/* Media Query for screens smaller than 900px */
-@media (max-width: 900px) {
-  :root {
-    --font-size-3xl: 1.5rem;    /* 24px */
-    --font-size-2xl: 1.25rem;   /* 20px */
-    --font-size-xl: 1.125rem;   /* 18px */
-    --font-size-lg: 1rem;       /* 16px */
-  }
-
-  .search-container {
-    margin-top: 5rem;
-  }
-
-  .search-subtitle {
-    font-size: var(--font-size-sm);
-  }
-
-  .search-input {
-    font-size: var(--font-size-sm);
-  }
-
-  .search-button {
-    font-size: var(--font-size-sm);
-  }
-}
 
 /* Media Query for screens smaller than 768px */
 @media (max-width: 768px) {
@@ -852,69 +643,136 @@
     --font-size-xl: 1rem;       /* 16px */
     --font-size-lg: 0.9375rem;  /* 15px */
   }
-
-  .search-container {
-    margin-top: 4rem;
-  }
-
-  .cities-title {
-    font-size: var(--font-size-2xl);
-  }
-
-  .cities-description {
-    font-size: var(--font-size-sm);
-  }
-
-  .city-button {
-    font-size: var(--font-size-sm);
-  }
-
-  .post-card-header h3 {
-    font-size: var(--font-size-2xl);
-  }
-}
-
-/* Media Query for screens smaller than 480px */
-@media (max-width: 480px) {
-  :root {
-    --font-size-3xl: 1.25rem;   /* 20px */
-    --font-size-2xl: 1.125rem;  /* 18px */
-    --font-size-xl: 0.9375rem;  /* 15px */
-    --font-size-lg: 0.875rem;   /* 14px */
-    --font-size-base: 0.8125rem;/* 13px */
-  }
-
   .search-title{
     width: 100%;
-  }
-
-
-  .search-container {
-    margin-top: 3.5rem;
   }
 
   .search-subtitle {
     font-size: var(--font-size-base);
   }
 
-  .search-input {
-    font-size: var(--font-size-base);
-  }
-
-  .search-button {
-    font-size: var(--font-size-base);
-  }
-
-  .city-button {
-    font-size: var(--font-size-base);
-  }
-
-  .post-card-header h3 {
-    font-size: var(--font-size-xl);
-  }
-
   .post-card-recommendations__message {
     font-size: var(--font-size-base);
   }
+  .hero-section {
+    margin-top: 50px;
+    text-align: center;
+    background-color: #fff;
+    padding: 10px;
+    width: 100%;
+    height: 100px;
+  }
+  .create-schedule-title{
+    font-size: 25px;
+  }
+  .create-schedule-description{
+    margin-top: 10px;
+    font-size: 15px;
+  }
+  .create-schedule-btn-container{
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .create-schedule-btn {
+    padding: 8px 16px;
+  }
+  .create-schedule-btn p {
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    margin: 0;
+  }
+  .popular-cities {
+    text-align: center;
+    padding: 0px;
 }
+  .home-main-content {
+    width: 100%;
+    padding: 0;
+  }
+
+  .sidebar-toggle {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .city-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .city-button {
+    width: 100%;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+
+  .post-card-recommendations__container {
+    width: 100% !important;
+  }
+
+  .post-card-header h3 {
+    font-size: 1.2rem;
+  }
+  
+  .post-card-header h3::after {
+    width: 40%;
+    left: 30%;
+  }
+  
+  .cities-title {
+    font-size: 1.3rem;
+  }
+  .search-container {
+    width: 100%;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    margin-top: 1.5rem;
+  }
+
+  .search-title > div {
+    width: 100%;
+  }
+
+  .search-button {
+    width: 100%;
+    margin-left: 0;
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .hero-title {
+    font-size: 1.4rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+  .search-input {
+    font-size: 15px;
+  }
+
+  .cities-description {
+    font-size: 0.8rem;
+    max-width: 100%;
+    margin-bottom: 5px;
+  }
+  .city-slider {
+    width: 100%;
+  }
+  .user-info-img h5 {
+    font-size: 13px;
+}
+.post-more-infor {
+  margin-right: 0px;
+}
+.sidebar-toggle-container {
+    top: 65px;
+}
+}
+
 

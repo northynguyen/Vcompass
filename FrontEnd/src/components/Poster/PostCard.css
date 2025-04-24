@@ -5,10 +5,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
   margin-bottom: 30px;
-  margin-left: 10px;
-  padding-top: 10px;
+
+  padding-top: 2px;
+  max-width: 650px;
+
 }
 
 @media (max-width: 768px) {
@@ -102,7 +103,7 @@
 .card-content {
   display: flex;
   justify-content: space-between;
-  padding: 10px 20px;
+  padding: 5px 15px;
 }
 
 .card-content h2 {
@@ -139,6 +140,18 @@
   line-height: 1.2;
   font-size: 14px;
   text-align: justify;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .details p {
+    font-size: 13px;
+    line-height: 1.3;
+  }
 }
 
 @media (max-width: 768px) {
@@ -149,10 +162,12 @@
 }
 
 .pricing-box {
-  width: 95%;
+  margin: 0px 10px;
   background-color: #fafafa;
   border-radius: 10px;
-  padding: 0px 15px;
+
+  padding: 8px 12px;
+
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -196,32 +211,38 @@
 }
 
 .card-footer {
+  margin-top: 5px;
   display: flex;
-  margin-top: auto;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 15px;
+  padding: 6px 15px;
   width: 100%;
 }
 
-.actions {
+.schedule-actions {
   display: flex;
+  gap: 2px;
   align-items: center;
 }
 
-.actions i {
+.schedule-actions i {
   margin-right: 5px;
 }
 
 .custom-now {
   color: #1DA1F2;
   border: solid 1px #1DA1F2;
-  padding: 10px 20px;
+  padding: 8px 20px;
   border-radius: 99px;
   cursor: pointer;
   font-weight: bold;
   margin-right: 10px;
 }
+
+.spacer-weight{
+  flex: 1;
+}
+
 
 @media (max-width: 768px) {
   .custom-now {
@@ -332,10 +353,6 @@ label.action-text {
   font-weight: bold;
 }
 
-.actions {
-  display: flex;
-  align-items: center;
-}
 
 .custom-now:hover {
   background-color: #1DA1F2;
@@ -419,20 +436,10 @@ label.action-text {
   transition: background-color 0.3s ease;
 }
 
-/* Pricing cost list, shown when 'showCosts' is true */
-.schedule-description {
-  list-style: none;
-  margin-bottom: 20px;
-}
-
 .schedule-description li {
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  font-size: 14px;
-}
-
-.schedule-description span {
   font-size: 14px;
 }
 
@@ -447,15 +454,17 @@ label.action-text {
 }
 
 .attractions-box {
-  padding: 0 10px 0 10px;
+
+  padding: 5px 10px;
   border-radius: 8px;
-  width: 95%;
+  width: 100%;
+
 }
 
 .attractions-title {
   font-size: 18px;
   color: #007AFF;
-  margin-bottom: 10px;
+
   padding-left: 5px;
 }
 
@@ -468,7 +477,9 @@ label.action-text {
 .attractions-list {
   display: flex;
   overflow-x: auto;
-  padding: 10px 5px;
+
+  padding: 8px 5px;
+
   gap: 15px;
 }
 
@@ -511,7 +522,8 @@ label.action-text {
 
 .attraction-item p {
   font-size: 14px;
-  margin-top: 5px;
+
+
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -530,8 +542,8 @@ label.action-text {
 
 .heart-container .heart-icon {
  position: absolute;
- top: 0;
- right: 0;
+ top: 5px;
+ right: 5px;
  font-size: 20px;
  color: red;
  cursor: pointer;
@@ -550,8 +562,8 @@ label.action-text {
 
 .heart-container .heart-icon-empty {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 5px;
+  right: 5px;
   font-size: 20px;
   color: rgb(255, 255, 255); /* White icon color */
   border: none;
