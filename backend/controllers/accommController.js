@@ -80,7 +80,13 @@ export const getAccommodationById = async (req, res) => {
         .json({ success: false, message: "Invalid ID format" });
     }
 
-    const accommodation = await Accommodation.findById(id); // Tìm accommodation theo id
+    // Tìm accommodation theo id và populate thông tin người dùng trong ratings
+    const accommodation = await Accommodation.findById(id)
+      .populate({
+        path: 'ratings.idUser',
+        model: 'user',
+        select: 'name avatar email' // Chỉ lấy các trường cần thiết của user
+      });
 
     // Nếu không tìm thấy accommodation, trả về thông báo lỗi
     if (!accommodation) {
@@ -558,7 +564,6 @@ export const deleteRoom = async (req, res) => {
   }
 };
 
-
 export const listRooms = async (req, res) => {
   const { accommodationId } = req.params;
   try {
@@ -711,15 +716,29 @@ export const addReview = async (req, res) => {
     const { id } = req.params; // ID of the accommodation
     const reviewData = req.body; // Data for the new review
     console.log(reviewData);
+    
     // Validate the required fields for the rating
-    if (!reviewData.idUser || !reviewData.userName || !reviewData.userImage || !reviewData.rate || !reviewData.content) {
+    if (!reviewData.idUser || !reviewData.rate || !reviewData.content) {
       return res.status(400).json({ success: false, message: "Required fields are missing." });
     }
+
+    // Create a complete rating object with all possible fields
+    const newRating = {
+      idUser: reviewData.idUser,
+      rate: reviewData.rate,
+      content: reviewData.content,
+      createdAt: new Date(),
+      roomRate: reviewData.roomRate || 0,
+      serviceRate: reviewData.serviceRate || 0,
+      duration: reviewData.duration,
+      roomType: reviewData.roomType,
+      numPeople: reviewData.numPeople
+    };
 
     // Find the accommodation by ID and add the review to the ratings array
     const accommodation = await Accommodation.findByIdAndUpdate(
       id,
-      { $push: { ratings: reviewData } },
+      { $push: { ratings: newRating } },
       { new: true }
     );
 
@@ -727,13 +746,19 @@ export const addReview = async (req, res) => {
       return res.status(404).json({ success: false, message: "Accommodation not found." });
     }
 
+    // Get user information for notification
+    const user = await userModel.findById(reviewData.idUser);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
+
     const notificationData = {
       idSender: reviewData.idUser,
       idReceiver: accommodation.idPartner,
       type: "partner",
-      nameSender: reviewData.userName,
-      imgSender: reviewData.userImage,
-      content: `${reviewData.userName} đã đánh giá khach san của bạn với điểm ${reviewData.rate} sao.`,
+      nameSender: user.name,
+      imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      content: `${user.name} đã đánh giá khách sạn của bạn với điểm ${reviewData.rate} sao.`,
     };
 
     await createNotification(global.io, notificationData);
@@ -744,6 +769,7 @@ export const addReview = async (req, res) => {
     res.status(500).json({ success: false, message: "An error occurred while adding the review." });
   }
 };
+
 export const updateRatingResponse = async (req, res) => {
   const { accommodationId, ratingId } = req.params; // Nhận accommodationId và ratingId từ URL
   const { response, responseTime } = req.body; // Nhận dữ liệu phản hồi từ body

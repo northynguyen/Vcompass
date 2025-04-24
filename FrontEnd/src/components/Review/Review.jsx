@@ -96,9 +96,11 @@ const Review = ({ type, id, booking, onClose }) => {
 
     return (
         <div className="review-container">
+            {type === "accommodation" && (
             <div>
-                <PlaceReview id={id} type={type} />
+                <PlaceReview id={id} type={type} isPopup= {true} />
             </div>
+            )}
             <h3>Đánh giá của bạn</h3>
             <form onSubmit={handleSubmit} ref={reviewsRef}>
                 <div className="rating-group">

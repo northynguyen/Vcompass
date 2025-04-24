@@ -2,9 +2,13 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const RatingSchema = new Schema({
-  idUser: { type: String, required: true },
-  userName: { type: String, required: true },
-  userImage: { type: String, required: true },
+  idUser: { 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+    required: true
+  },
+  // userName: { type: String, required: true },
+  // userImage: { type: String, required: true },
   rate: { type: Number, required: true },
   content: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
