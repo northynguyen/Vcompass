@@ -32,6 +32,7 @@ const LeftSideBar = () => {
         <span>Dành cho bạn</span>
       </Link>
 
+
       <Link to="/schedules/follow" className={`left-side-bar-item ${isActive('/schedules/follow') ? 'active' : ''}`}>
         <FaRegBookmark className="left-side-bar-icon" />
         <span>Đang theo dõi</span>
@@ -40,6 +41,7 @@ const LeftSideBar = () => {
       <Link to="/short-video" className={`left-side-bar-item ${isActive('/short-video') ? 'active' : ''}`}>
         <MdTravelExplore className="left-side-bar-icon" />
         <span>Khám phá</span>
+
       </Link>
 
       <Link to="/create-schedule/manual" className={`left-side-bar-item ${isActive('/create-schedule') ? 'active' : ''}`}>
@@ -47,7 +49,7 @@ const LeftSideBar = () => {
         <span>Tạo lịch trình</span>
       </Link>
 
-      
+
       
     </div>
   );

@@ -1,4 +1,5 @@
 /* Tổng thể */
+
 .schedule-for-you {
   max-width: 100%;
   font-family: Arial, sans-serif;
@@ -17,6 +18,7 @@
 .main-content {
   display: flex;
   justify-content: center;
+
   gap: 20px;
   width: 100%;
   margin: 20px auto;
@@ -29,11 +31,13 @@
   flex-direction: column;
   align-items: center;
   gap: 20px;
+
   margin-top: 20px;
   position: sticky;
   top: 70px;
   height: 100%;
   margin-bottom: 150px;
+
 }
 
 .filters,
@@ -51,9 +55,11 @@
     margin-bottom: 15px;
     font-size: 18px;
     color: #333;
+
     text-align: center;
     padding-bottom: 5px;
     border-bottom: #dadee1 solid 1px;
+
   }
   
 .filters {
@@ -65,18 +71,22 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+
 .filters label {
   display: flex;
   margin-bottom: 15px;
   font-size: 14px;
   color: #555;
   align-items: center;
+
 }
 
 .filters label span {
   margin-bottom: 5px;
   display: inline-block;
+
   flex: 1;
+
 }
 
 .filters select,
@@ -87,6 +97,7 @@
   border-radius: 5px;
   margin-right: 5px;
 }
+
 .price-range {
   font-size: 15px;
   display: flex;
@@ -99,6 +110,7 @@
   flex: 1;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
+
   gap: 20px;
 }
 
@@ -184,9 +196,11 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
   }
+
   .sidebar-toggle-container {
     display: block;
   }
+
 }
 
 @media (max-width: 768px) {
@@ -212,7 +226,9 @@
     width: auto;
     font-size: 16px;
   }
+
   .sidebar-toggle-container {
     top: 65px;
 }
+
 } 
