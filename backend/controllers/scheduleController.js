@@ -238,7 +238,7 @@ export const getAllSchedule = async (req, res) => {
     // Tạo điều kiện tìm kiếm - luôn lấy isPublic=true
     const query = { isPublic: true };
 
-    
+
 
     // Loại bỏ lịch trình của user hiện tại nếu có userId được cung cấp
     if (userId) {
@@ -265,11 +265,11 @@ export const getAllSchedule = async (req, res) => {
         // Lấy schedule được like nhiều nhất cho mỗi thành phố
         const schedulesByCity = [];
 
-        
+
         // Lấy schedule phổ biến nhất cho mỗi thành phố
         for (const city of cityList) {
           const cityQuery = { address: city, isPublic: true };
-          
+
 
           // Loại bỏ lịch trình của user hiện tại
           if (userId) {
@@ -302,12 +302,12 @@ export const getAllSchedule = async (req, res) => {
         // Nếu không có danh sách thành phố, lấy 6 lịch trình được like nhiều nhất
         const homeQuery = { isPublic: true };
 
-        
+
         // Loại bỏ lịch trình của user hiện tại
         if (userId) {
           homeQuery.idUser = { $ne: userId };
         }
-        
+
         const schedules = await Schedule.find(homeQuery)
           .populate("idUser")
           .sort(sortOptions)
@@ -617,6 +617,7 @@ export const deleteSchedule = async (req, res) => {
 };
 const generateTagsFromSchedule = (schedule) => {
   const tags = new Set();
+  const ignoredTags = new Set(['khách sạn', 'chỗ ở', 'địa điểm', 'tham quan', 'hoạt động khác']);
 
   // 1. Địa điểm
   if (schedule.address) {
@@ -629,99 +630,100 @@ const generateTagsFromSchedule = (schedule) => {
     }
   }
 
-  // 2. Tag số ngày
+  // 2. Thời lượng chuyến đi
   if (schedule.numDays) {
     const nights = schedule.numDays - 1;
     tags.add(`${schedule.numDays} ngày`);
     tags.add(`${nights} đêm`);
     tags.add(`${schedule.numDays}N${nights}Đ`);
+
+    if (schedule.numDays <= 2) tags.add('ngắn ngày');
+    else if (schedule.numDays >= 5) tags.add('dài ngày');
   }
 
   // 3. Hoạt động trong lịch trình
-  const activityTypes = new Set();
   let hasSeafood = false;
   let hasCafe = false;
   let hasResort = false;
+  let hasStreetFood = false;
+  let hasBuffet = false;
 
   for (const day of schedule.activities || []) {
     for (const activity of day.activity || []) {
-      activityTypes.add(activity.activityType);
-
       const lowerName = activity.name?.toLowerCase() || '';
       const lowerDesc = activity.description?.toLowerCase() || '';
 
-      if (lowerName.includes('hải sản') || lowerDesc.includes('hải sản')) {
-        hasSeafood = true;
-      }
+      // Loại hoạt động cụ thể
+      if (lowerName.includes('hải sản') || lowerDesc.includes('hải sản')) hasSeafood = true;
+      if (lowerName.includes('cà phê') || lowerDesc.includes('view đẹp') || lowerDesc.includes('sống ảo')) hasCafe = true;
+      if (lowerName.includes('resort') || lowerDesc.includes('hồ bơi')) hasResort = true;
+      if (lowerName.includes('đường phố') || lowerDesc.includes('đường phố')) hasStreetFood = true;
+      if (lowerName.includes('buffet') || lowerDesc.includes('buffet')) hasBuffet = true;
 
-      if (lowerName.includes('cà phê') || lowerDesc.includes('view đẹp')) {
-        hasCafe = true;
-      }
-
-      if (lowerName.includes('resort') || lowerDesc.includes('hồ bơi')) {
-        hasResort = true;
+      // Gợi ý tag từ loại activity
+      switch (activity.activityType) {
+        case 'Accommodation':
+        case 'Other':
+          break; // bỏ qua
+        case 'Attraction':
+          tags.add('check-in');
+          break;
+        case 'FoodService':
+          tags.add('ẩm thực');
+          break;
+        default:
+          tags.add(activity.activityType.toLowerCase());
       }
     }
   }
 
-  activityTypes.forEach(type => {
-    switch (type) {
-      case 'Accommodation':
-        tags.add('khách sạn');
-        tags.add('chỗ ở');
-        break;
-      case 'Attraction':
-        tags.add('địa điểm');
-        tags.add('tham quan');
-        break;
-      case 'FoodService':
-        tags.add('ẩm thực');
-        tags.add('ăn uống');
-        break;
-      case 'Other':
-        tags.add('hoạt động khác');
-        break;
-      default:
-        tags.add(type.toLowerCase());
-    }
-  });
-
-  // 4. Từ khóa bổ sung
-  tags.add('du lịch');
-  tags.add('phượt');
-  tags.add('lịch trình');
-
-  // 5. Gợi ý thêm theo cảm xúc/xu hướng
-  if (hasSeafood) tags.add('ẩm thực');
-  if (hasCafe) tags.add('sống ảo');
+  // 4. Từ khóa bổ sung theo đặc điểm
+  if (hasSeafood) tags.add('hải sản');
+  if (hasCafe) {
+    tags.add('view đẹp');
+    tags.add('cafe chill');
+    tags.add('sống ảo');
+  }
   if (hasResort) tags.add('nghỉ dưỡng');
+  if (hasStreetFood) tags.add('ẩm thực đường phố');
+  if (hasBuffet) tags.add('buffet');
 
-  if (schedule.numDays <= 3 && (hasCafe || hasResort)) {
-    tags.add('giới trẻ');
-  }
+  // 5. Gợi ý kiểu chuyến đi từ tên lịch trình
+  const lowerName = schedule.scheduleName?.toLowerCase() || '';
+  if (lowerName.includes('team')) tags.add('team building');
+  if (lowerName.includes('family') || lowerName.includes('gia đình')) tags.add('gia đình');
+  if (lowerName.includes('honey moon') || lowerName.includes('trăng mật')) tags.add('honey moon');
+  if (lowerName.includes('một mình') || lowerName.includes('solo')) tags.add('du lịch một mình');
 
-  // 6. Tag từ người dùng (tuổi + giới tính)
-  if (schedule.idUser.date_of_birth) {
+  // 6. Gợi ý theo người dùng (tuổi và giới tính)
+  if (schedule.idUser?.date_of_birth) {
     const age = calculateAge(schedule.idUser.date_of_birth);
-    const gender = schedule.idUser.gender; // "male" | "female" | "other"
+    const gender = schedule.idUser.gender;
 
-    // Giới tính
-    if (gender === 'male' || gender === 'female') {
-      tags.add(gender); // thêm "male" hoặc "female"
-    }
+    if (gender === 'male' || gender === 'female') tags.add(gender);
 
-    // Nhóm tuổi
     if (age <= 25) tags.add('trẻ');
     else if (age <= 50) tags.add('trung niên');
     else tags.add('cao tuổi');
+
+    if (age <= 30 && hasCafe) tags.add('giới trẻ');
   }
+
+  // 7. Trích xuất từ tên và mô tả
   const nameTags = extractTagsFromName(schedule.scheduleName);
   nameTags.forEach(tag => tags.add(tag));
 
   const descriptionTags = extractTagsFromName(schedule.description);
   descriptionTags.forEach(tag => tags.add(tag));
-  console.log(tags);
-  return Array.from(tags);
+
+  // 8. Bắt buộc tag nền tảng
+  tags.add('du lịch');
+  tags.add('lịch trình');
+
+  // 9. Lọc bỏ tag quá phổ thông
+  const filteredTags = Array.from(tags).filter(tag => !ignoredTags.has(tag));
+
+  return filteredTags;
 };
 // Hàm tính tuổi từ ngày sinh
 const calculateAge = (dob) => {
@@ -822,31 +824,53 @@ export const getFollowingSchedules = async (req, res) => {
   }
 };
 
+// 🔧 Hàm tính top tags từ cả lịch trình cá nhân và lịch trình đã tương tác
+const getTopTags = (personalSchedules, interactedSchedules, limit = 10) => {
+  const tagFrequency = {};
+
+  // Tags từ lịch trình người dùng tạo
+  personalSchedules.forEach(schedule => {
+    (schedule.tags || []).forEach(tag => {
+      tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
+    });
+  });
+
+  // Tags từ lịch trình người dùng đã tương tác
+  interactedSchedules.forEach(item => {
+    (item.tags || []).forEach(tag => {
+      tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
+    });
+  });
+
+  return Object.entries(tagFrequency)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([tag]) => tag);
+};
 
 export const scheduleAI = async (req, res) => {
   try {
-    let user = {};
+    const { userId } = req.params;
     let schedules = [];
     let interactionSummary = [];
+    let user = {};
+    let topTags = [];
 
-    // ✅ Nếu có userId, lấy lịch trình và logs theo user
-    if (req.params.userId) {
-      schedules = await Schedule.find({ idUser: req.params.userId });
-      const logsUser = await Log.find({ userId: req.params.userId });
+    if (userId) {
+      schedules = await Schedule.find({ idUser: userId });
+      const logs = await Log.find({ userId });
+      user = await User.findById(userId);
 
-      // Đếm view & edit theo scheduleId
-      const countBySchedule = {};
-      logsUser.forEach(log => {
+      // Tính thống kê tương tác
+      const logStats = {};
+      logs.forEach(log => {
         const id = log.scheduleId.toString();
-        if (!countBySchedule[id]) {
-          countBySchedule[id] = { viewCount: 0, editCount: 0 };
-        }
-        if (log.actionType === 'view') countBySchedule[id].viewCount++;
-        if (log.actionType === 'edit') countBySchedule[id].editCount++;
+        if (!logStats[id]) logStats[id] = { viewCount: 0, editCount: 0 };
+        if (log.actionType === 'view') logStats[id].viewCount++;
+        if (log.actionType === 'edit') logStats[id].editCount++;
       });
 
-      const scheduleIds = Object.keys(countBySchedule);
-
+      const scheduleIds = Object.keys(logStats);
       const interactedSchedules = await Schedule.find(
         { _id: { $in: scheduleIds } },
         { tags: 1, address: 1 }
@@ -854,70 +878,72 @@ export const scheduleAI = async (req, res) => {
 
       interactedSchedules.forEach(schedule => {
         const id = schedule._id.toString();
-        if (countBySchedule[id]) {
-          countBySchedule[id].tags = schedule.tags || [];
-          countBySchedule[id].address = schedule.address || '';
+        if (logStats[id]) {
+          logStats[id].tags = schedule.tags || [];
+          logStats[id].address = schedule.address || '';
         }
       });
 
       interactionSummary = scheduleIds.map(id => ({
         scheduleId: id,
-        viewCount: countBySchedule[id].viewCount,
-        editCount: countBySchedule[id].editCount,
-        tags: countBySchedule[id].tags || [],
-        address: countBySchedule[id].address || ''
+        ...logStats[id],
       }));
-    } else {
-      schedules = await Schedule.find();
-    }
 
+      // ✅ Tính topTags từ cả lịch trình cá nhân và tương tác
+      topTags = getTopTags(schedules, interactionSummary);
+    }
+    // Huấn luyện nếu đủ điều kiện
+    const allSchedules = await Schedule.find().populate("idUser", "name avatar");
+    topTags = getTopTags(allSchedules, []);
+
+    // ✅ Chuẩn hóa thông tin người dùng
     const exportData = {
       user,
-      schedules: schedules || [],
-      interactionSummary
+      schedules,
+      interactionSummary,
+      topTags,
     };
 
     fs.writeFileSync('../Schedule_AI/user.json', JSON.stringify(exportData, null, 2));
 
-    const allSchedules = await Schedule.find().populate("idUser", "name avatar");
-    const shouldTrain = allSchedules.length % 10 === 0; // giữ nguyên điều kiện của bạn
+
+
+    const shouldTrain = allSchedules.length % 1 === 0;
 
     if (shouldTrain) {
-      const exportSchedules = JSON.stringify(allSchedules, null, 2);
-      fs.writeFileSync('../Schedule_AI/All_schedules.json', exportSchedules);
-
-      exec('python ../Schedule_AI/train.py', (trainError, trainStdout, trainStderr) => {
-        console.log("Đã train AI");
-        if (trainError) {
-          console.error(`Lỗi train AI: ${trainError.message}`);
+      fs.writeFileSync('../Schedule_AI/All_schedules.json', JSON.stringify(allSchedules, null, 2));
+      exec('python ../Schedule_AI/train.py', (err, stdout, stderr) => {
+        if (err) {
+          console.error("Lỗi khi train AI:", err.message);
           return res.status(500).json({ success: false, message: "AI training error" });
         }
-        if (trainStderr) console.error(`Train stderr: ${trainStderr}`);
-        console.log("Train output:", trainStdout);
-
+        if (stderr) console.warn("Train stderr:", stderr);
         callPredictAndRespond(res);
       });
     } else {
       callPredictAndRespond(res);
     }
+
   } catch (error) {
-    console.error("Error saving data:", error);
+    console.error("Lỗi trong scheduleAI:", error);
     res.status(500).json({
       success: false,
-      message: "Error saving data",
-      error: error.message
+      message: "Lỗi khi xử lý dữ liệu lịch trình",
+      error: error.message,
     });
   }
 };
 
+
 // Hàm tách riêng xử lý predict và trả kết quả
 const callPredictAndRespond = (res) => {
-  exec('python ../Schedule_AI/predict.py', (predictError, _, predictStderr) => {
+  exec('python ../Schedule_AI/predict.py', (predictError, _, predictStderr, stdout) => {
     if (predictError) {
       console.error(`Lỗi predict AI: ${predictError.message}`);
       return res.status(500).json({ success: false, message: "AI prediction error" });
     }
     if (predictStderr) console.error(`Predict stderr: ${predictStderr}`);
+    console.log("Predict output:", stdout);
     fs.readFile('recommend.json', 'utf-8', (err, data) => {
       if (err) {
         console.error("Lỗi đọc file kết quả predict:", err);

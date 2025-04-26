@@ -3,6 +3,7 @@ import mongoose from "mongoose"; // Import mongoose (though it's not used here)
 import userModel from "../models/user.js";
 import fs from "fs";
 import { uploadToCloudinaryV2, deleteImage } from './videoController.js';
+import { createNotification } from "./notiController.js";
 
 // Controller function to get all attractions
 const getAttractions = async (req, res) => {
@@ -67,7 +68,13 @@ const getAttractionById = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid ID format' });
         }
 
-        const attraction = await Attraction.findById(id); // Tìm attraction theo id
+        // Tìm attraction theo id và populate user info trong ratings
+        const attraction = await Attraction.findById(id)
+            .populate({
+                path: 'ratings.idUser',
+                model: 'user',
+                select: 'name avatar email'
+            });
 
         // Nếu không tìm thấy attraction, trả về thông báo lỗi
         if (!attraction) {
@@ -248,20 +255,53 @@ const addReview = async (req, res) => {
     try {
         const reviewData = req.body; // Data for the new review
         console.log(reviewData);
+        
         // Validate the required fields for the rating
-        if (!reviewData.idUser || !reviewData.userName || !reviewData.userImage || !reviewData.rate || !reviewData.content) {
+        if (!reviewData.idUser || !reviewData.rate || !reviewData.content) {
             return res.status(400).json({ success: false, message: "Required fields are missing." });
         }
 
-        // Find the accommodation by ID and add the review to the ratings array
+        // Get user information from database
+        const user = await userModel.findById(reviewData.idUser);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found." });
+        }
+
+        // Create a complete rating object with all fields
+        const newRating = {
+            idUser: reviewData.idUser,
+            rate: reviewData.rate,
+            content: reviewData.content,
+            createdAt: new Date(),
+            serviceRate: reviewData.serviceRate || 0,
+            attractionRate: reviewData.attractionRate || 0,
+        };
+
+        // Find the attraction by ID and add the review to the ratings array
         const attraction = await Attraction.findByIdAndUpdate(
             id,
-            { $push: { ratings: reviewData } },
+            { $push: { ratings: newRating } },
             { new: true }
         );
 
         if (!attraction) {
-            return res.status(404).json({ success: false, message: "Accommodation not found." });
+            return res.status(404).json({ success: false, message: "Attraction not found." });
+        }
+
+        // Create notification if needed
+        if (attraction.idPartner) {
+            const notificationData = {
+                idSender: reviewData.idUser,
+                idReceiver: attraction.idPartner,
+                type: "partner",
+                nameSender: user.name,
+                imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+                content: `${user.name} đã đánh giá địa điểm của bạn với điểm ${reviewData.rate} sao.`,
+            };
+
+            if (global.io) {
+                await createNotification(global.io, notificationData);
+            }
         }
 
         res.status(200).json({ success: true, message: "Review added successfully.", attraction });

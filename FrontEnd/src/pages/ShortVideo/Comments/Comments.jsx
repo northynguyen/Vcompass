@@ -54,7 +54,9 @@ const Comments = ({ videoId, commentsData = [], onCommentAdded }) => {
       setLoading(true);
       const response = await axios.post(
         `${url}/api/shortvideo/videos/${videoId}/comment`,
-        { text: newComment },
+        { text: newComment,
+           userId : user._id
+         },
         { headers: { token } }
       );
       

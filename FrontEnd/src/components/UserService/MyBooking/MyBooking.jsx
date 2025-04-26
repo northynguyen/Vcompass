@@ -179,18 +179,18 @@ const MyBooking = ({ send }) => {
             </div>
 
             {showReviewPopup && selectedBooking && (
-                <div className="popup">
+                <div className="popup-review ">
                     <div className="popup-content" ref={reviewPopupRef}>
-                        <button className="close-popup" onClick={handleCloseReviewPopup}>×</button>
+                        <button className="close-popup-review " onClick={handleCloseReviewPopup}>×</button>
                         <Review type="accommodation" booking={selectedBooking} onClose={handleCloseReviewPopup}  id={selectedBooking.accommodationId}  />
                     </div>
                 </div>
             )}
 
             {showCancelPopup && selectedBooking && (
-                <div className="popup">
+                <div className="popup-review">
                     <div className="popup-content" ref={cancelPopupRef}>
-                        <button className="close-popup" onClick={handleCloseCancelPopup}>×</button>
+                        <button className="close-popup-review" onClick={handleCloseCancelPopup}>×</button>
                         <CancelBooking booking={selectedBooking} onClose={handleCloseCancelPopup}/>
                     </div>
                 </div>

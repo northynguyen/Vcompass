@@ -1,29 +1,29 @@
 import numpy as np
 from collections import defaultdict
 class ScheduleAnalyzer:
-    def __init__(self, schedules, favorites=None, following=None, interaction_summary=None):
+    def __init__(self, schedules, favorites=None, following=None, interaction_summary=None, topTags=None):
         self.schedules = schedules
         self.favorites = favorites or {}
         self.following = following or []
         self.interaction_summary = interaction_summary or []
+        self.topTags = topTags or []
         self.behavior = self._analyze_behavior()
-        self.tag_scores = self._calculate_tag_scores()
 
     def _analyze_behavior(self):
         if not self.schedules:
             return {
-                'averageCost': 800000,
+                'averageCost': 0,
                 'frequentAttractions': [],
                 'frequentFoods': [],
                 'frequentAccommodations': [],
-                'cities': set() # Mới thêm: Lưu trữ các thành phố đã đi qua
+                'cities': set()
             }
         total_cost, count = 0, 0
         attraction_count, food_count, accommodation_count = {}, {}, {}
-        cities = set()  # Mới thêm: Để lưu trữ các thành phố đã xuất hiện
+        cities = set()
 
         for s in self.schedules:
-            cities.add(s.get('city', ''))  # Lưu thành phố trong lịch trình
+            cities.add(s.get('city', ''))
             for item in s.get('activities', []):
                 for act in item.get('activity', []):
                     total_cost += act.get('cost', 0)
@@ -44,19 +44,8 @@ class ScheduleAnalyzer:
             'frequentAttractions': sorted(attraction_count, key=attraction_count.get, reverse=True),
             'frequentFoods': sorted(food_count, key=food_count.get, reverse=True),
             'frequentAccommodations': sorted(accommodation_count, key=accommodation_count.get, reverse=True),
-            'cities': cities  # Thêm cities vào kết quả
+            'cities': cities
         }
-
-    def _calculate_tag_scores(self):
-        scores = defaultdict(int)
-        for entry in self.interaction_summary:
-            tags = entry.get("tags", [])
-            view_count = entry.get("viewCount", 0)
-            edit_count = entry.get("editCount", 0)
-
-            for tag in tags:
-                scores[tag] += view_count * 2 + edit_count * 5
-        return dict(scores)
 
     def calculate_reward(self, schedule):
         reward = 0
@@ -105,23 +94,23 @@ class ScheduleAnalyzer:
             if not item.get('activity'):
                 reward -= 10
 
-        # Reward thêm nếu lịch trình có nhiều tag trùng với sở thích interactionSummary
+        # Cộng điểm theo số tag trùng topTags
         schedule_tags = schedule.get('tags', [])
-        for tag in schedule_tags:
-            reward += self.tag_scores.get(tag, 0)
+        matched_tags = set(schedule_tags) & set(self.topTags)
+        reward += 2 * len(matched_tags)
 
         return reward
 
     def user_to_vector(self):
         avg_cost = self.behavior['averageCost'] / 1e6 if self.behavior['averageCost'] else 0
         return np.array([
-            avg_cost,  # Giá trung bình
-            len(self.behavior['frequentAttractions']),  # Số nhà hàng
-            len(self.behavior['frequentFoods']),  # Số khách sạn
-            len(self.behavior['frequentAccommodations']),  # Số điểm đến
-            len(self.behavior['cities']),  # Số thành phố đã đi qua
-            len(self.tag_scores),  # Số tag đã cộng điểm
+            avg_cost,
+            len(self.behavior['frequentAttractions']),
+            len(self.behavior['frequentFoods']),
+            len(self.behavior['frequentAccommodations']),
+            len(self.behavior['cities']),
         ])
+
 
     def schedule_to_vector(self, schedule):
         totalCost = sum(
