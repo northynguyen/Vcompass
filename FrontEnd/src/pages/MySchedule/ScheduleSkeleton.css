@@ -1,0 +1,67 @@
+@keyframes schedule-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.skeleton-schedule-card {
+    display: flex;
+    align-items: center;      
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    width: 80%;
+    margin: 0 auto;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    height: 90px; /* Adjust height to match original cards */
+    gap: 16px;
+    position: relative;
+}
+
+.skeleton-schedule-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: schedule-shimmer 1.5s infinite;
+}
+
+.skeleton-schedule-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.skeleton-schedule-title {
+    height: 20px;
+    width: 60%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: schedule-shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+.skeleton-schedule-dates {
+    height: 16px;
+    width: 40%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: schedule-shimmer 1.5s infinite;
+    border-radius: 4px;
+}
+
+.skeleton-schedule-dots {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: schedule-shimmer 1.5s infinite;
+    border-radius: 50%;
+    margin-left: auto; /* Push dots to the right */
+} 

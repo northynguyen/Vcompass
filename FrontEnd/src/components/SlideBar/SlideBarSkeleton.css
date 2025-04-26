@@ -1,0 +1,74 @@
+/* Base animation for all skeleton elements */
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.skeleton-card {
+  cursor: default;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-image {
+  width: 100%;
+  height: 200px;
+  min-height: 200px;
+  background-color: #e0e0e0;
+  border-radius: 8px 8px 0 0;
+  animation: pulse 1.5s infinite ease-in-out;
+  object-fit: cover;
+  object-position: center;
+}
+
+.skeleton-title {
+  height: 22px;
+  width: 80%;
+  background-color: #e0e0e0;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-duration {
+  height: 14px;
+  width: 70%;
+  background-color: #e0e0e0;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-facilities {
+  height: 14px;
+  width: 90%;
+  background-color: #e0e0e0;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-price {
+  height: 18px;
+  width: 60%;
+  background-color: #e0e0e0;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeleton-reviews {
+  height: 14px;
+  width: 50%;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+} 

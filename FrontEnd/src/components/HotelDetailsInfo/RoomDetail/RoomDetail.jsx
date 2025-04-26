@@ -6,7 +6,7 @@ import { StoreContext } from '../../../Context/StoreContext';
 
 const RoomDetail = ({ room, onClose,handleRoomSelect }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const {url} = useContext(StoreContext)
+  const {url,getImageUrl} = useContext(StoreContext)
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
   };
@@ -28,7 +28,7 @@ const RoomDetail = ({ room, onClose,handleRoomSelect }) => {
         <div className="room-detail-image">
             
                 <button className="back-btn" onClick={handleBackClick}><IoIosArrowDropleft/></button>
-                <img src={`${url}/images/${room.images[selectedImageIndex]}`} alt={room.nameRoomType} className="main-room-image" />
+                <img src={getImageUrl(room,selectedImageIndex )} alt={room.nameRoomType} className="main-room-image" />
                 <button className="next-btn" onClick={handleNextClick}><IoIosArrowDropright/></button>
             
          
@@ -36,7 +36,7 @@ const RoomDetail = ({ room, onClose,handleRoomSelect }) => {
             {room.images.map((image, index) => (
               <img
                 key={index}
-                src={`${url}/images/${image}`}
+                src={getImageUrl(room, index)}
                 alt={`Thumbnail ${index + 1}`}
                 className={`thumbnail ${index === selectedImageIndex ? 'active' : ''}`}
                 onClick={() => handleImageClick(index)}

@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 
-const RoomCard = ({ room, handleRoomClick ,url, handleRoomSelect }) => {
+const RoomCard = ({ room, handleRoomClick , handleRoomSelect,getImageUrl }) => {
   return (
     <div className="room-card">
       <div className="room-image">
         {room.images.length > 0 ? (
-          <img src={`${url}/images/${room.images[0]}`} alt={room.nameRoomType} className="room-image" />
+          <img src={getImageUrl(room)} alt={room.nameRoomType} className="room-image" />
         ) : (
           <p>Chưa có ảnh</p>
         )}

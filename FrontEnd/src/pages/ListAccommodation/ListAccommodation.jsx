@@ -12,6 +12,19 @@ const AccomItem = ({ accommodation, status, setCurDes }) => {
     accommodation.activityType = "Accommodation";
     setCurDes(accommodation);
   };
+  const getImageUrl = (place) => {
+    if (!place.images || !place.images.length) {
+      return 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+    }
+
+    const image = place.images[0];
+    if (image.includes('http')) {
+      return image;
+    }
+
+    return `${url}/images/${image}`;
+  };
+
 
   const onNavigateToDetails = () => {
     const encryptedServiceId = CryptoJS.AES.encrypt(accommodation._id, 'mySecretKey').toString();
@@ -24,7 +37,15 @@ const AccomItem = ({ accommodation, status, setCurDes }) => {
   return (
     <div className="list-accom__tour-item" onClick={onNavigateToDetails}>
       <div className="accom-card-header">
-        <img src={`${url}/images/${accommodation.images[0]}`} alt={accommodation.name} className="list-accom__tour-item-image" />
+        <img
+          src={getImageUrl(accommodation)}
+          alt={accommodation.name}
+          className="list-accom__tour-item-image"
+          onError={(e) => {
+            e.target.onerror = null; // Prevent infinite loop
+            e.target.src = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+          }}
+        />
         <div className="accom-card-header-right">
           <h3>{accommodation.name}</h3>
           <div className="list-accom__tour-location">

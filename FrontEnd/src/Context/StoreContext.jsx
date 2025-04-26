@@ -22,6 +22,20 @@ const StoreContextProvider = (props) => {
     fetchUser(token);
   }, [])
 
+  const getImageUrl = (place, index ) => {
+    if (!place.images || !place.images.length) {
+      return 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+    }
+    
+    const image = index ? place.images[index] : place.images[0];
+    if (image.includes('http')) {
+      return image;
+    }
+    
+    return `${url}/images/${image}`;
+  };
+
+
   const fetchAccommodation = async () => {
     try {
       const response = await axios.get(`${url}/api/accommodations/`);
@@ -46,7 +60,9 @@ const StoreContextProvider = (props) => {
     setToken,
     user,
     setUser,
-    accommodations
+    accommodations,
+    getImageUrl
+
   }
 
   return (

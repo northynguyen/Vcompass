@@ -9,21 +9,19 @@ import { useNavigate } from "react-router-dom";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
-
+import PostCardSkeleton from "../../components/Poster/PostCardSkeleton";
 import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
 
 import AccommodationBanner from "../../components/Poster/AccommodationBanner ";
 import PostCard from "../../components/Poster/PostCard";
 import SlideBar from "../../components/SlideBar/SlideBar";
 import { StoreContext } from "../../Context/StoreContext";
-import { FaBars } from "react-icons/fa";
-import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
 import "./Home.css";
 
 
 const Home = () => {
   const { url, token, user } = useContext(StoreContext);
-  const [schedules, setSchedules] = useState(null);
+  const [schedules, setSchedules] = useState([]);                                       
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [topCity, setTopCity] = useState([]);
   const [address, setAddress] = useState("");
@@ -32,26 +30,6 @@ const Home = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState([]);
-  const [scheduleAI, setScheduleAI] = useState([]);
-
-  // Update window width on resize
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    // Clean up
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  // Toggle sidebar function
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
 
   // Update window width on resize
   useEffect(() => {
@@ -125,35 +103,6 @@ const Home = () => {
         );
         if (scheduleResponse2.data.success) {
           const publicSchedules = scheduleResponse2.data.schedules;
-// <<<<<<< THOAI
-//           setFilteredSchedules(publicSchedules);
-//           console.log("Most liked schedules", publicSchedules);
-//         }
-
-
-
-//       } catch (error) {
-//         console.error("Error fetching data:", error);
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     };
-
-//     const fetchData2 = async () => {
-//       try {
-//         const cityResponse = await axios.get(
-//           `${url}/api/schedule/getByCity/Top`
-//         );
-//         if (cityResponse.data.success) {
-//           setTopCity(cityResponse.data.addresses);
-//         }
-//         const scheduleResponse2 = await axios.get(
-//           `${url}/api/schedule/getAllSchedule?forHomePage=true`
-//         );
-//         if (scheduleResponse2.data.success) {
-//           const publicSchedules = scheduleResponse2.data.schedules;
-// =======
-// >>>>>>> main
           setFilteredSchedules(publicSchedules);
           console.log("Most liked schedules", publicSchedules);
         }
@@ -171,6 +120,33 @@ const Home = () => {
     if (user) {
       fetchData();
     } else {
+      // Define a separate function for fetching data when user is not logged in
+      const fetchData2 = async () => {
+        try {
+          setIsLoading(true);
+          
+          const cityResponse = await axios.get(
+            `${url}/api/schedule/getByCity/Top`
+          );
+          if (cityResponse.data.success) {
+            setTopCity(cityResponse.data.addresses);
+          }
+          
+          const scheduleResponse = await axios.get(
+            `${url}/api/schedule/getAllSchedule?forHomePage=true`
+          );
+          if (scheduleResponse.data.success) {
+            const publicSchedules = scheduleResponse.data.schedules;
+            setFilteredSchedules(publicSchedules);
+            console.log("Most liked schedules", publicSchedules);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
       fetchData2();
     }
   }, [url, token]);
@@ -185,24 +161,9 @@ const Home = () => {
 
         if (data.success) {
           console.log("Recommended schedules by AI:", data.recommendedSchedules);
-          setScheduleAI(data.recommendedSchedules);
-// =======
-//     const fetchData2 = async () => {
-//       try {
-//         const cityResponse = await axios.get(
-//           `${url}/api/schedule/getByCity/Top`
-//         );
-//         if (cityResponse.data.success) {
-//           setTopCity(cityResponse.data.addresses);
-//         }
-//         const scheduleResponse2 = await axios.get(
-//           `${url}/api/schedule/getAllSchedule?forHomePage=true`
-//         );
-//         if (scheduleResponse2.data.success) {
-//           const publicSchedules = scheduleResponse2.data.schedules;
-//           setFilteredSchedules(publicSchedules);
-//           console.log("Most liked schedules", publicSchedules);
-// >>>>>>> main
+          // Commenting out the setState since it's not currently used
+          // The data is being logged for debugging purposes
+          // setScheduleAI(data.recommendedSchedules);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -214,17 +175,8 @@ const Home = () => {
 
     fetchData();
   }, [url, user]);
-// =======
-//     if (user) {
-//       fetchData();
-//     } else {
-//       fetchData2();
-//     }
-//   }, [url, token]);
 
   
-// >>>>>>> main
-
 
   const handleScheduleClick = (id) => {
     navigate(`/schedule-view/${id}`);
@@ -326,230 +278,8 @@ const Home = () => {
           <FaBars />
         </button>
       </div>
-// <<<<<<< THOAI
 
-//       {sidebarOpen && <div className="sidebar-overlay" onClick={toggleSidebar}></div>}
-
-//       <div className={`sidebar-container ${sidebarOpen ? 'open' : ''}`}>
-//         <LeftSideBar />
-//       </div>
-
-//       <div className="home-main-content">
-//         <div className="home-container">
-//           <div className="tour-search-container">
-//             <div className="tour-search">
-//               <div className="hero-section">
-//                 <div className="search-container">
-//                   <div className="search-title">
-//                     <div style={{ position: "relative", width: "300px" }}>
-//                       <i className="fa fa-map-marker search-icon" aria-hidden="true"></i>
-//                       <input
-//                         type="text"
-//                         placeholder="Tìm kiếm theo địa điểm"
-//                         className="search-input"
-//                         id="destination"
-//                         value={address}
-//                         onChange={handleAddressChange}
-//                         autoComplete="off"
-//                       />
-//                       {/* Hiển thị gợi ý */}
-//                       {suggestions.length > 0 && (
-//                         <ul
-//                           style={{
-//                             position: "absolute",
-//                             top: "100%",
-//                             left: 0,
-//                             right: 0,
-//                             listStyleType: "none",
-//                             margin: 0,
-//                             padding: "5px",
-//                             background: "white",
-//                             border: "1px solid #ddd",
-//                             zIndex: 10,
-//                             maxHeight: "200px",
-//                             overflowY: "auto",
-//                             cursor: "pointer",
-//                           }}
-//                         >
-//                           {suggestions.map((city, index) => (
-//                             <li
-//                               key={index}
-//                               onClick={() => handleSuggestionClick(city)}
-//                               style={{
-//                                 padding: "8px",
-//                                 borderBottom: "1px solid #f1f1f1",
-//                               }}
-//                               onMouseEnter={(e) =>
-//                                 (e.target.style.background = "#f0f0f0")
-//                               }
-//                               onMouseLeave={(e) =>
-//                                 (e.target.style.background = "white")
-//                               }
-//                             >
-//                               {city}
-//                             </li>
-//                           ))}
-//                         </ul>
-//                       )}
-//                     </div>
-//                   </div>
-
-//                   <button
-//                     className="search-button"
-//                     onClick={() =>
-//                       navigate(`/searchSchedule`, {
-//                         state: {
-//                           city: address,
-//                           name: "",
-//                         },
-//                       })
-//                     }
-//                   >
-//                     Tìm kiếm
-//                   </button>
-//                 </div>
-//               </div>
-
-//               {/* Popular Cities Section */}
-//               <section className="popular-cities">
-//                 <h2 className="cities-title">Khám phá các thành phố nổi tiếng</h2>
-//                 <p className="cities-description">
-//                   Trải nghiệm chân thực, tận hưởng từng khoảnh khắc trong hành trình
-//                   của bạn
-//                 </p>
-//                 <p className="cities-description">
-//                   Mọi điểm đến trong tầm tay, lên kế hoạch cho chuyến đi trong mơ
-//                   ngay hôm nay!
-//                 </p>
-
-//                 {/* City Buttons */}
-//                 <div className="city-buttons">
-//                   {topCity.map((city, index) => (
-//                     <button
-//                       key={index}
-//                       className="city-button"
-//                       onClick={() => navigate(`/searchSchedule`, {
-//                         state: {
-//                           city: city.name,
-//                           name: "",
-//                         },
-//                       })}
-//                     >
-//                       {city.name}
-//                     </button>
-//                   ))}
-//                 </div>
-//               </section>
-//             </div>
-//           </div>
-
-//           <div className="city-slider">
-//             <Swiper
-//               modules={[Navigation, Pagination, Autoplay]}
-//               spaceBetween={30}
-//               slidesPerView={1}
-//               navigation
-//               pagination={{ clickable: true }}
-//               autoplay={{ delay: 4000 }}
-//             >
-//               {topCity.map((city, index) => (
-//                 <SwiperSlide key={index}>
-//                   <AccommodationBanner cityName={city.name} />
-//                 </SwiperSlide>
-//               ))}
-//             </Swiper>
-//           </div>
-
-//           {scheduleAI && scheduleAI.length > 0 &&
-//             (//console.log(schedules),
-//               (
-//                 <div className="post-card-recommendations">
-//                   <div className="post-card-header">
-//                     <h3>Lịch trình dành cho bạn </h3>
-//                   </div>
-//                   <div className="post-card-recommendations__container">
-//                     <Swiper
-//                       modules={[Navigation, Pagination, Autoplay]}
-//                       spaceBetween={30}
-//                       slidesPerView={1} // Mặc định hiển thị 1 slide
-//                       navigation
-//                       pagination={{ clickable: true }}
-//                       autoplay={{
-//                         delay: 4000,
-//                         pauseOnMouseEnter: true,
-//                         disableOnInteraction: true,
-//                       }}
-//                       breakpoints={{
-//                         768: { slidesPerView: 1 },
-//                       }}
-//                     >
-//                       {!isLoading &&
-//                         scheduleAI?.map((schedule, index) => (
-//                           <SwiperSlide key={index}>
-//                             <PostCard
-//                               key={schedule._id}
-//                               schedule={schedule}
-//                               handleScheduleClick={handleScheduleClick}
-//                               style={{ width: windowWidth < 780 ? "100%" : "80%" }}
-//                             />
-//                           </SwiperSlide>
-//                         ))}
-//                       {isLoading && <div className="spinner"> </div>}
-//                       {scheduleAI?.length === 0 && !isLoading && (
-//                         <p className="post-card-recommendations__message">
-//                           Không có lịch trình phù hợp.
-//                         </p>
-//                       )}
-//                     </Swiper>
-//                   </div>
-//                 </div>
-//               ))}
-
-//           <div className="post-card-recommendations">
-//             <div className="post-card-header">
-//               <h3>Lịch trình nổi bật </h3>
-//             </div>
-//             <div className="post-card-recommendations__container">
-//               <Swiper
-//                 modules={[Navigation, Pagination, Autoplay]}
-//                 spaceBetween={30}
-//                 slidesPerView={1}
-//                 navigation
-//                 breakpoints={{
-//                   768: { slidesPerView: 1 },
-//                 }}
-//                 pagination={{ clickable: true }}
-//                 autoplay={{
-//                   delay: 3000,
-//                   pauseOnMouseEnter: true,
-//                   disableOnInteraction: true,
-//                 }}
-//               >
-//                 {!isLoading &&
-//                   filteredSchedules?.map((schedule, index) => (
-//                     <SwiperSlide key={index}>
-//                       <PostCard
-//                         key={schedule._id}
-//                         schedule={schedule}
-//                         handleScheduleClick={handleScheduleClick}
-//                         style={{ width: windowWidth < 780 ? "100%" : "80%" }}
-//                       />
-//                     </SwiperSlide>
-//                   ))}
-//                 {isLoading && <div className="spinner"> </div>}
-//                 {filteredSchedules?.length === 0 && !isLoading && (
-//                   <p className="post-card-recommendations__message">
-//                     {" "}
-//                     Không có lịch trình phù hợp.
-//                   </p>
-//                 )}
-//               </Swiper>
-//             </div>
-//           </div>
-
-// =======
-
-      {sidebarOpen && <div className="sidebar-overlay" onClick={toggleSidebar}></div>}
+      {sidebarOpen && ( <div className="sidebar-overlay" onClick={toggleSidebar}></div>)}
 
       <div className={`sidebar-container ${sidebarOpen ? 'open' : ''}`}>
         <LeftSideBar />
@@ -690,31 +420,38 @@ const Home = () => {
             </Swiper>
           </div>
 
-          {schedules && schedules.length > 0 &&
-            (//console.log(schedules),
-              (
+          {schedules && schedules.length > 0 && (
                 <div className="post-card-recommendations">
                   <div className="post-card-header">
                     <h3>Lịch trình dành cho bạn </h3>
                   </div>
                   <div className="post-card-recommendations__container">
-                    <Swiper
-                      modules={[Navigation, Pagination, Autoplay]}
-                      spaceBetween={30}
-                      slidesPerView={1} // Mặc định hiển thị 1 slide
-                      navigation
-                      pagination={{ clickable: true }}
-                      autoplay={{
-                        delay: 4000,
-                        pauseOnMouseEnter: true,
-                        disableOnInteraction: true,
-                      }}
-                      breakpoints={{
-                        768: { slidesPerView: 1 },
-                      }}
-                    >
-                      {!isLoading &&
-                        schedules?.map((schedule, index) => (
+                    {isLoading ? (
+                      <div className="skeleton-container" style={{ 
+                        display: "flex", 
+                        justifyContent: "center", 
+                        alignItems: "center", 
+                        width: "100%" 
+                      }}>
+                        <PostCardSkeleton count={1} />
+                      </div>
+                    ) : (
+                      <Swiper
+                        modules={[Navigation, Pagination, Autoplay]}
+                        spaceBetween={30}
+                        slidesPerView={1}
+                        navigation
+                        pagination={{ clickable: true }}
+                        autoplay={{
+                          delay: 4000,
+                          pauseOnMouseEnter: true,
+                          disableOnInteraction: true,
+                        }}
+                        breakpoints={{
+                          768: { slidesPerView: 1 },
+                        }}
+                      >
+                        {schedules?.map((schedule, index) => (
                           <SwiperSlide key={index}>
                             <PostCard
                               key={schedule._id}
@@ -724,39 +461,50 @@ const Home = () => {
                             />
                           </SwiperSlide>
                         ))}
-                      {isLoading && <div className="spinner"> </div>}
-                      {schedules?.length === 0 && !isLoading && (
-                        <p className="post-card-recommendations__message">
-                          Không có lịch trình phù hợp.
-                        </p>
-                      )}
-                    </Swiper>
+                        {schedules?.length === 0 && (
+                          <SwiperSlide>
+                            <p className="post-card-recommendations__message">
+                              Không có lịch trình phù hợp.
+                            </p>
+                          </SwiperSlide>
+                        )}
+                      </Swiper>
+                    )}
                   </div>
                 </div>
-              ))}
+              )}
 
           <div className="post-card-recommendations">
             <div className="post-card-header">
               <h3>Lịch trình nổi bật </h3>
             </div>
             <div className="post-card-recommendations__container">
-              <Swiper
-                modules={[Navigation, Pagination, Autoplay]}
-                spaceBetween={30}
-                slidesPerView={1}
-                navigation
-                breakpoints={{
-                  768: { slidesPerView: 1 },
-                }}
-                pagination={{ clickable: true }}
-                autoplay={{
-                  delay: 3000,
-                  pauseOnMouseEnter: true,
-                  disableOnInteraction: true,
-                }}
-              >
-                {!isLoading &&
-                  filteredSchedules?.map((schedule, index) => (
+              {isLoading ? (
+                <div className="skeleton-container" style={{ 
+                  display: "flex", 
+                  justifyContent: "center", 
+                  alignItems: "center", 
+                  width: "100%" 
+                }}>
+                  <PostCardSkeleton count={1} />
+                </div>
+              ) : (
+                <Swiper
+                  modules={[Navigation, Pagination, Autoplay]}
+                  spaceBetween={30}
+                  slidesPerView={1}
+                  navigation
+                  breakpoints={{
+                    768: { slidesPerView: 1 },
+                  }}
+                  pagination={{ clickable: true }}
+                  autoplay={{
+                    delay: 3000,
+                    pauseOnMouseEnter: true,
+                    disableOnInteraction: true,
+                  }}
+                >
+                  {filteredSchedules?.map((schedule, index) => (
                     <SwiperSlide key={index}>
                       <PostCard
                         key={schedule._id}
@@ -766,14 +514,15 @@ const Home = () => {
                       />
                     </SwiperSlide>
                   ))}
-                {isLoading && <div className="spinner"> </div>}
-                {filteredSchedules?.length === 0 && !isLoading && (
-                  <p className="post-card-recommendations__message">
-                    {" "}
-                    Không có lịch trình phù hợp.
-                  </p>
-                )}
-              </Swiper>
+                  {filteredSchedules?.length === 0 && (
+                    <SwiperSlide>
+                      <p className="post-card-recommendations__message">
+                        Không có lịch trình phù hợp.
+                      </p>
+                    </SwiperSlide>
+                  )}
+                </Swiper>
+              )}
             </div>
           </div>
 

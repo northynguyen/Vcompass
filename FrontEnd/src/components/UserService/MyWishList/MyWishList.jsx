@@ -8,7 +8,7 @@ import { FaHeart } from "react-icons/fa";
 
 const MyWishList = () => {
     const navigate = useNavigate();
-    const { url, token, user } = useContext(StoreContext);
+    const { url, token, user,getImageUrl } = useContext(StoreContext);
     const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('schedule');
     const [scheduleData, setScheduleData] = useState([]);
@@ -227,9 +227,13 @@ const MyWishList = () => {
                             <div className="card" key={service._id} onClick={() => onClick(service._id)}>
                                 <div className="image-container">
                                     <img
-                                        src={`${url}/images/${service.images[0]}`}
+                                        src={getImageUrl(service)}
                                         alt={service.name}
                                         className="card-image"
+                                        onError={(e) => {
+                                            e.target.onerror = null; // Prevent infinite loop
+                                            e.target.src = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+                                        }}
                                     />
                                     <button
                                         className="heart-icon"
@@ -265,9 +269,13 @@ const MyWishList = () => {
                             <div className="card" key={service._id} onClick={() => onClick(service._id)}>
                                 <div className="image-container">
                                     <img
-                                        src={`${url}/images/${service.images[0]}`}
+                                        src={getImageUrl(service)}
                                         alt={service.name}
                                         className="card-image"
+                                        onError={(e) => {
+                                            e.target.onerror = null; // Prevent infinite loop
+                                            e.target.src = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+                                        }}
                                     />
                                     <button
                                         className="heart-icon"
@@ -304,9 +312,13 @@ const MyWishList = () => {
                             <div className="card" key={service._id} onClick={() => onClick(service._id)}>
                                <div className="image-container">
                                     <img
-                                        src={`${url}/images/${service.images[0]}`}
+                                        src={getImageUrl(service)}
                                         alt={service.name}
                                         className="card-image"
+                                        onError={(e) => {
+                                            e.target.onerror = null; // Prevent infinite loop
+                                            e.target.src = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+                                        }}
                                     />
                                     <button
                                         className="heart-icon"

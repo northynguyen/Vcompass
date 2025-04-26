@@ -10,7 +10,7 @@
     overflow: hidden;
     background-color: #ffffff;
     transition: box-shadow 0.3s ease-in-out;
-    /* Thêm con trỏ chỉ tay khi hover lên card */
+    animation: fadeIn 0.5s ease-in-out;
 
 
 .card-content-container:hover {

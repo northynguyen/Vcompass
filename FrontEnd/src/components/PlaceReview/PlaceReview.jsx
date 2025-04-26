@@ -27,9 +27,7 @@ const ReviewCard = ({ review, type }) => (
             <p><strong>Loại phòng:</strong> {review.roomType}</p>
             <p><strong>Số lượng người:</strong> {review.numPeople}</p>
           </div>
-        )}
-
-        
+        )}   
       </div>
       <div className="review-content">
         <div className="review-header">

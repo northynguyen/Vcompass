@@ -6,12 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 
 const AttractionsCards = ({ attractionsFound }) => {
-    const { url } = useContext(StoreContext);
+    const { url,getImageUrl } = useContext(StoreContext);
     const [attractions, setAttractions] = useState([]);
+    const [isInitialized, setIsInitialized] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         setAttractions(attractionsFound || []); // Cập nhật danh sách attractions
+        setIsInitialized(true); // Mark that we've received data at least once
     }, [attractionsFound]);
 
     const onClick = (serviceId) => {
@@ -34,14 +36,23 @@ const AttractionsCards = ({ attractionsFound }) => {
             <h2>Danh sách điểm đến</h2>
 
             <div className="card-list">
-                {attractions.length === 0 && <p>Không tìm thấy điểm đến</p>}
+                {/* Only show "Không tìm thấy điểm đến" if we've initialized and have no attractions */}
+                {isInitialized && attractions.length === 0 && <p>Không tìm thấy điểm đến</p>}
+                
                 {attractions.map((item) => {
                     const { totalReviews, averageRating } = getRatingInfo(item.ratings);
                     return (
                         <div key={item._id} className="accomodation-card-home">
                             <div className="card-content-container">
                                 <div className="card-content-img" onClick={() => onClick(item._id)}>
-                                    <img src={item.images[0]?.includes("http") ? item.images[0] : `${url}/images/${item.images[0]}`} alt={item.attractionName} />
+                                    <img 
+                                    src={getImageUrl(item)} 
+                                    alt={item.attractionName} 
+                                    onError={(e) => {
+                                        e.target.onerror = null; // Prevent infinite loop
+                                        e.target.src = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+                                    }}
+                                    />
                                 </div>
                                 <div className="card-content">
                                     <h3 onClick={() => onClick(item._id)}>{item.attractionName}</h3>

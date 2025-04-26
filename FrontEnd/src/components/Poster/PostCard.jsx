@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import axios from "axios";
 import CryptoJS from "crypto-js";
+import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from "react";
 import { AiOutlineMore } from "react-icons/ai";
 import { BsFillInfoCircleFill } from "react-icons/bs";
@@ -17,7 +18,6 @@ const PostCard = ({ schedule, handleScheduleClick, style }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [openScheduleMenu, setOpenScheduleMenu] = useState(null);
   const [showReport, setShowReport] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
   const activityCosts = {
     Accommodation: 0,
@@ -223,21 +223,6 @@ const PostCard = ({ schedule, handleScheduleClick, style }) => {
     navigate(`/otherUserProfile/${id}`);
   };
 
-  // Track window width for responsive design
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  // Determine responsive styles
-
-
   return (
     <div className="card-container" style={style}>
       <header className="card-header">
@@ -312,7 +297,8 @@ const PostCard = ({ schedule, handleScheduleClick, style }) => {
             // Hiển thị ảnh mặc định nếu không có cả imgSrc lẫn videoSrc
             <img
               className="content-image"
-              src="https://bazantravel.com/cdn/medias/uploads/83/83317-khu-nghi-duong-lan-rung-700x420.jpg"
+              src="https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg"
+              style = {{ width: "100%", height: "100%" }}
               alt="Default Image"
             />
           )}
@@ -460,6 +446,12 @@ const PostCard = ({ schedule, handleScheduleClick, style }) => {
     </div>
 
   );
+};
+
+PostCard.propTypes = {
+  schedule: PropTypes.object.isRequired,
+  handleScheduleClick: PropTypes.func.isRequired,
+  style: PropTypes.object
 };
 
 export default PostCard;
