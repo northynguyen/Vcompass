@@ -7,8 +7,8 @@ import { createContext, useEffect, useState } from "react";
 export const StoreContext = createContext(null)
 
 const StoreContextProvider = (props) => {
-  const url = "https://vcompass-backend.onrender.com"
-  //const url = "http://localhost:4000"
+  // const url = "https://vcompass-backend.onrender.com"
+  const url = "http://localhost:4000"
   const [token, setToken] = useState("")
   const [user, setUser] = useState({})
 
@@ -22,16 +22,16 @@ const StoreContextProvider = (props) => {
     fetchUser(token);
   }, [])
 
-  const getImageUrl = (place, index ) => {
+  const getImageUrl = (place, index) => {
     if (!place.images || !place.images.length) {
       return 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
     }
-    
+
     const image = index ? place.images[index] : place.images[0];
     if (image.includes('http')) {
       return image;
     }
-    
+
     return `${url}/images/${image}`;
   };
 

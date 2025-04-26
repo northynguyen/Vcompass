@@ -18,7 +18,7 @@ import "./Home.css";
 
 const Home = () => {
   const { url, token, user } = useContext(StoreContext);
-  const [schedules, setSchedules] = useState([]);                                       
+  const [schedules, setSchedules] = useState([]);
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [topCity, setTopCity] = useState([]);
   const [address, setAddress] = useState("");
@@ -43,10 +43,6 @@ const Home = () => {
     };
   }, []);
 
-  // Toggle sidebar function
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
 
   // Update window width on resize
   useEffect(() => {
@@ -161,14 +157,14 @@ const Home = () => {
       const fetchData2 = async () => {
         try {
           setIsLoading(true);
-          
+
           const cityResponse = await axios.get(
             `${url}/api/schedule/getByCity/Top`
           );
           if (cityResponse.data.success) {
             setTopCity(cityResponse.data.addresses);
           }
-          
+
           const scheduleResponse = await axios.get(
             `${url}/api/schedule/getAllSchedule?forHomePage=true`
           );
@@ -183,7 +179,7 @@ const Home = () => {
           setIsLoading(false);
         }
       };
-      
+
       fetchData2();
     }
   }, [url, token]);
@@ -309,7 +305,7 @@ const Home = () => {
         </button>
       </div>
 
-      {sidebarOpen && ( <div className="sidebar-overlay" onClick={toggleSidebar}></div>)}
+      {sidebarOpen && (<div className="sidebar-overlay" onClick={toggleSidebar}></div>)}
 
       <div className={`sidebar-container ${sidebarOpen ? 'open' : ''}`}>
         <LeftSideBar />
@@ -457,11 +453,11 @@ const Home = () => {
               </div>
               <div className="post-card-recommendations__container">
                 {isLoading ? (
-                  <div className="skeleton-container" style={{ 
-                    display: "flex", 
-                    justifyContent: "center", 
-                    alignItems: "center", 
-                    width: "100%" 
+                  <div className="skeleton-container" style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%"
                   }}>
                     <PostCardSkeleton count={1} />
                   </div>
@@ -511,11 +507,11 @@ const Home = () => {
             </div>
             <div className="post-card-recommendations__container">
               {isLoading ? (
-                <div className="skeleton-container" style={{ 
-                  display: "flex", 
-                  justifyContent: "center", 
-                  alignItems: "center", 
-                  width: "100%" 
+                <div className="skeleton-container" style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%"
                 }}>
                   <PostCardSkeleton count={1} />
                 </div>

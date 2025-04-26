@@ -823,30 +823,53 @@ export const getFollowingSchedules = async (req, res) => {
 };
 
 
+// 🔧 Hàm tính top tags từ cả lịch trình cá nhân và lịch trình đã tương tác
+const getTopTags = (personalSchedules, interactedSchedules, limit = 10) => {
+  const tagFrequency = {};
+
+  // Tags từ lịch trình người dùng tạo
+  personalSchedules.forEach(schedule => {
+    (schedule.tags || []).forEach(tag => {
+      tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
+    });
+  });
+
+  // Tags từ lịch trình người dùng đã tương tác
+  interactedSchedules.forEach(item => {
+    (item.tags || []).forEach(tag => {
+      tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
+    });
+  });
+
+  return Object.entries(tagFrequency)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([tag]) => tag);
+};
+
 export const scheduleAI = async (req, res) => {
   try {
-    let user = {};
+    const { userId } = req.params;
     let schedules = [];
     let interactionSummary = [];
+    let user = {};
+    let topTags = [];
 
-    // ✅ Nếu có userId, lấy lịch trình và logs theo user
-    if (req.params.userId) {
-      schedules = await Schedule.find({ idUser: req.params.userId });
-      const logsUser = await Log.find({ userId: req.params.userId });
+    if (userId) {
+      schedules = await Schedule.find({ idUser: userId });
+      const logs = await Log.find({ userId });
+      user = await User.findById(userId);
 
-      // Đếm view & edit theo scheduleId
-      const countBySchedule = {};
-      logsUser.forEach(log => {
+      // Tính thống kê tương tác
+      const logStats = {};
+      logs.forEach(log => {
         const id = log.scheduleId.toString();
-        if (!countBySchedule[id]) {
-          countBySchedule[id] = { viewCount: 0, editCount: 0 };
-        }
-        if (log.actionType === 'view') countBySchedule[id].viewCount++;
-        if (log.actionType === 'edit') countBySchedule[id].editCount++;
+        if (!logStats[id]) logStats[id] = { viewCount: 0, editCount: 0 };
+        if (log.actionType === 'view') logStats[id].viewCount++;
+        if (log.actionType === 'edit') logStats[id].editCount++;
       });
 
-      const scheduleIds = Object.keys(countBySchedule);
-
+      const scheduleIds = Object.keys(logStats);
       const interactedSchedules = await Schedule.find(
         { _id: { $in: scheduleIds } },
         { tags: 1, address: 1 }
@@ -854,70 +877,72 @@ export const scheduleAI = async (req, res) => {
 
       interactedSchedules.forEach(schedule => {
         const id = schedule._id.toString();
-        if (countBySchedule[id]) {
-          countBySchedule[id].tags = schedule.tags || [];
-          countBySchedule[id].address = schedule.address || '';
+        if (logStats[id]) {
+          logStats[id].tags = schedule.tags || [];
+          logStats[id].address = schedule.address || '';
         }
       });
 
       interactionSummary = scheduleIds.map(id => ({
         scheduleId: id,
-        viewCount: countBySchedule[id].viewCount,
-        editCount: countBySchedule[id].editCount,
-        tags: countBySchedule[id].tags || [],
-        address: countBySchedule[id].address || ''
+        ...logStats[id],
       }));
-    } else {
-      schedules = await Schedule.find();
-    }
 
+      // ✅ Tính topTags từ cả lịch trình cá nhân và tương tác
+      topTags = getTopTags(schedules, interactionSummary);
+    }
+    // Huấn luyện nếu đủ điều kiện
+    const allSchedules = await Schedule.find().populate("idUser", "name avatar");
+    topTags = getTopTags(allSchedules, []);
+
+    // ✅ Chuẩn hóa thông tin người dùng
     const exportData = {
       user,
-      schedules: schedules || [],
-      interactionSummary
+      schedules,
+      interactionSummary,
+      topTags,
     };
 
     fs.writeFileSync('../Schedule_AI/user.json', JSON.stringify(exportData, null, 2));
 
-    const allSchedules = await Schedule.find().populate("idUser", "name avatar");
-    const shouldTrain = allSchedules.length % 1 === 0; // giữ nguyên điều kiện của bạn
+
+
+    const shouldTrain = allSchedules.length % 1 === 0;
 
     if (shouldTrain) {
-      const exportSchedules = JSON.stringify(allSchedules, null, 2);
-      fs.writeFileSync('../Schedule_AI/All_schedules.json', exportSchedules);
-
-      exec('python ../Schedule_AI/train.py', (trainError, trainStdout, trainStderr) => {
-        console.log("Đã train AI");
-        if (trainError) {
-          console.error(`Lỗi train AI: ${trainError.message}`);
+      fs.writeFileSync('../Schedule_AI/All_schedules.json', JSON.stringify(allSchedules, null, 2));
+      exec('python ../Schedule_AI/train.py', (err, stdout, stderr) => {
+        if (err) {
+          console.error("Lỗi khi train AI:", err.message);
           return res.status(500).json({ success: false, message: "AI training error" });
         }
-        if (trainStderr) console.error(`Train stderr: ${trainStderr}`);
-        console.log("Train output:", trainStdout);
-
+        if (stderr) console.warn("Train stderr:", stderr);
         callPredictAndRespond(res);
       });
     } else {
       callPredictAndRespond(res);
     }
+
   } catch (error) {
-    console.error("Error saving data:", error);
+    console.error("Lỗi trong scheduleAI:", error);
     res.status(500).json({
       success: false,
-      message: "Error saving data",
-      error: error.message
+      message: "Lỗi khi xử lý dữ liệu lịch trình",
+      error: error.message,
     });
   }
 };
 
+
 // Hàm tách riêng xử lý predict và trả kết quả
 const callPredictAndRespond = (res) => {
-  exec('python ../Schedule_AI/predict.py', (predictError, _, predictStderr) => {
+  exec('python ../Schedule_AI/predict.py', (predictError, _, predictStderr, stdout) => {
     if (predictError) {
       console.error(`Lỗi predict AI: ${predictError.message}`);
       return res.status(500).json({ success: false, message: "AI prediction error" });
     }
     if (predictStderr) console.error(`Predict stderr: ${predictStderr}`);
+    console.log("Predict output:", stdout);
     fs.readFile('recommend.json', 'utf-8', (err, data) => {
       if (err) {
         console.error("Lỗi đọc file kết quả predict:", err);
