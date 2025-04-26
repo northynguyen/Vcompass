@@ -2,6 +2,7 @@
   display: flex;
   min-height: 100vh;
   position: relative;
+
   background-color: #f0f2f5;
   transition: all 0.3s ease;
 }
@@ -41,6 +42,7 @@
   border-radius: 50%;
   width: 45px;
   height: 45px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -142,6 +144,7 @@
 
 .home-page {
   display: flex;
+
   flex-direction: row;
   height: 100%;
   width: 100%;
@@ -255,6 +258,7 @@
 .hero-section {
   margin-top: 30px;
   text-align: center;
+
   background-color: #fff;
   padding: 60px;
   min-height: 250px;
@@ -263,6 +267,7 @@
   background-image: url('https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/full-shot-travel-concept-with-landmarks.jpg');
   background-size: cover;
   background-position: center;
+
 }
 .create-schedule-btn {
   display: flex;
@@ -329,7 +334,9 @@
 .search-container {
   width: 70%;
   position: relative;
+
   margin: 1.5rem auto;
+
   margin-bottom: 10px;
   display: flex;
   align-items: center;
@@ -355,6 +362,7 @@
 .search-title > div {
   position: relative;
   width: 100% !important;
+
 }
 
 
@@ -438,13 +446,17 @@
 }
 
 
+
 .name_label {
   margin-left: 10px;
 }
 
 .popular-cities {
   text-align: center;
+
+
   padding: 0px;
+
 }
 
 .cities-title {
@@ -580,6 +592,7 @@
   border-radius: 50%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
+
 }
 
 .swiper-button-next:hover,

@@ -504,7 +504,8 @@ const ShortVideo = () => {
   
   // Kiểm tra xem đã follow người dùng chưa
   const isFollowing = (userId) => {
-    return followingUsers.includes(userId);
+    return followingUsers.includes(userId) || userId === user._id;
+  // Kiểm tra nếu người dùng là chính mình
   };
   
   const handleScheduleClick = async (scheduleId) => {

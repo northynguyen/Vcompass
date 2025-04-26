@@ -8,7 +8,6 @@ import { createNotification } from "./notiController.js";
 import { uploadToCloudinaryV2, deleteImage } from './videoController.js';
 
 const getListFoodService = async (req, res) => {
-
   try {
     const { name, minPrice, maxPrice, city, status } = req.query;
     // Build query object
@@ -28,7 +27,6 @@ const getListFoodService = async (req, res) => {
       query["price.maxPrice"] = maxPrice ? { $lte: Number(maxPrice) } : undefined;
     }
 
-
     // Add city filter if provided
     if (city) {
       query.city = { $regex: city, $options: "i" };
@@ -36,8 +34,14 @@ const getListFoodService = async (req, res) => {
     if (status) {
       query.status = status.toLowerCase();
     }
-    // Execute query
-    const foodService = await FoodService.find(query);
+    
+    // Execute query with population
+    const foodService = await FoodService.find(query)
+      .populate({
+        path: 'ratings.idUser',
+        model: 'user',
+        select: 'name avatar email'
+      });
 
     res.status(200).json({
       success: true,
@@ -62,7 +66,13 @@ export const getFoodServiceById = async (req, res) => {
         .json({ success: false, message: "Invalid ID format" });
     }
 
-    const foodService = await FoodService.findById(id); // Tìm food service theo id
+    // Tìm food service theo id và populate thông tin người dùng trong ratings
+    const foodService = await FoodService.findById(id)
+      .populate({
+        path: 'ratings.idUser',
+        model: 'user',
+        select: 'name avatar email'
+      });
 
     // Nếu không tìm thấy food service, trả về thông báo lỗi
     if (!foodService) {
@@ -88,7 +98,6 @@ export const getFoodServiceById = async (req, res) => {
 };
 
 const getListByPartner = async (req, res) => {
-
   const partnerId = req.params.partnerId;
   try {
     const foodService = await FoodService.find({ idPartner: partnerId });
@@ -99,8 +108,8 @@ const getListByPartner = async (req, res) => {
           success: false,
           message: "Food service not found or partner mismatch",
         });
-
     }
+    
     res
       .status(200)
       .json({
@@ -533,38 +542,50 @@ const addReview = async (req, res) => {
   try {
     const reviewData = req.body; // Data for the new review
     console.log(reviewData);
+    
     // Validate the required fields for the rating
-    if (
-      !reviewData.idUser ||
-      !reviewData.userName ||
-      !reviewData.userImage ||
-      !reviewData.rate ||
-      !reviewData.content
-    ) {
+    if (!reviewData.idUser || !reviewData.rate || !reviewData.content) {
       return res
         .status(400)
         .json({ success: false, message: "Required fields are missing." });
     }
 
-    // Find the accommodation by ID and add the review to the ratings array
+    // Get user information from database
+    const user = await userModel.findById(reviewData.idUser);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
+
+    // Create a complete rating object with all fields
+    const newRating = {
+      idUser: reviewData.idUser,
+      rate: reviewData.rate,
+      content: reviewData.content,
+      createdAt: new Date(),
+      serviceRate: reviewData.serviceRate || 0,
+      foodRate: reviewData.foodRate || 0,
+    };
+
+    // Find the food service by ID and add the review to the ratings array
     const foodService = await FoodService.findByIdAndUpdate(
       id,
-      { $push: { ratings: reviewData } },
+      { $push: { ratings: newRating } },
       { new: true }
     );
 
     if (!foodService) {
       return res
         .status(404)
-        .json({ success: false, message: "Accommodation not found." });
+        .json({ success: false, message: "Food service not found." });
     }
+    
     const notificationData = {
       idSender: reviewData.idUser,
       idReceiver: foodService.idPartner,
-      nameSender: reviewData.userName,
+      nameSender: user.name,
       type: "partner",
-      imgSender: reviewData.userImage,
-      content: `${reviewData.userName} đã đánh giá dịch vụ của bạn với điểm ${reviewData.rate} sao.`,
+      imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+      content: `${user.name} đã đánh giá dịch vụ ăn uống của bạn với điểm ${reviewData.rate} sao.`,
     }
 
     await createNotification(global.io, notificationData);

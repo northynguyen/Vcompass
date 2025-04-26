@@ -25,6 +25,7 @@ const Home = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState([]);
+  const [scheduleAI, setScheduleAI] = useState([]);
 
   // Update window width on resize
   useEffect(() => {
@@ -139,29 +140,28 @@ const Home = () => {
     }
   }, [url, token]);
 
-  //gửi yêu cầu lấy lịch trình phù hợp với người dùng
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${url}/api/schedule/scheduleforuser`,
-          {
-            headers: {
-              token: `${token}`,
-            },
-          }
-        );
-        if (response.data.success) {
-          console.log(response.data);
+        const userId = user && user._id ? user._id : '';
+        const response = await fetch(`${url}/api/schedule/scheduleforuser/${userId}`);
+        const data = await response.json();
+
+        if (data.success) {
+          console.log("Recommended schedules by AI:", data.recommendedSchedules);
+          setScheduleAI(data.recommendedSchedules);
+
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchData(); // Đừng quên gọi hàm này
-  }, [url, token, user._id]); // Đảm bảo thêm `user._id` vào dependency nếu bạn sử dụng nó trong useEffect
 
+    fetchData();
+  }, [url, user]);
 
   const handleScheduleClick = (id) => {
     navigate(`/schedule-view/${id}`);
@@ -268,7 +268,7 @@ const Home = () => {
 
       <div className={`sidebar-container ${sidebarOpen ? 'open' : ''}`}>
         <LeftSideBar />
-      </div> 
+      </div>
 
       <div className="home-main-content">
         <div className="home-container">
@@ -286,107 +286,107 @@ const Home = () => {
               </div>
             </div>
           </header>
-            <div className="tour-search">
-              <div className="search-container">
-                <div className="search-title">
-                  <div style={{ position: "relative", width: "300px" }}>
-                    <i className="fa fa-map-marker search-icon" aria-hidden="true"></i>
-                    <input
-                      type="text"
-                      placeholder="Tìm kiếm theo địa điểm"
-                      className="search-input"
-                      id="destination"
-                      value={address}
-                      onChange={handleAddressChange}
-                      autoComplete="off"
-                    />
-                    {/* Hiển thị gợi ý */}
-                    {suggestions.length > 0 && (
-                      <ul
-                        style={{
-                          position: "absolute",
-                          top: "100%",
-                          left: 0,
-                          right: 0,
-                          listStyleType: "none",
-                          margin: 0,
-                          padding: "5px",
-                          background: "white",
-                          border: "1px solid #ddd",
-                          zIndex: 10,
-                          maxHeight: "200px",
-                          overflowY: "auto",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {suggestions.map((city, index) => (
-                          <li
-                            key={index}
-                            onClick={() => handleSuggestionClick(city)}
-                            style={{
-                              padding: "8px",
-                              borderBottom: "1px solid #f1f1f1",
-                            }}
-                            onMouseEnter={(e) =>
-                              (e.target.style.background = "#f0f0f0")
-                            }
-                            onMouseLeave={(e) =>
-                              (e.target.style.background = "white")
-                            }
-                          >
-                            {city}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+          <div className="tour-search">
+            <div className="search-container">
+              <div className="search-title">
+                <div style={{ position: "relative", width: "300px" }}>
+                  <i className="fa fa-map-marker search-icon" aria-hidden="true"></i>
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm theo địa điểm"
+                    className="search-input"
+                    id="destination"
+                    value={address}
+                    onChange={handleAddressChange}
+                    autoComplete="off"
+                  />
+                  {/* Hiển thị gợi ý */}
+                  {suggestions.length > 0 && (
+                    <ul
+                      style={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        right: 0,
+                        listStyleType: "none",
+                        margin: 0,
+                        padding: "5px",
+                        background: "white",
+                        border: "1px solid #ddd",
+                        zIndex: 10,
+                        maxHeight: "200px",
+                        overflowY: "auto",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {suggestions.map((city, index) => (
+                        <li
+                          key={index}
+                          onClick={() => handleSuggestionClick(city)}
+                          style={{
+                            padding: "8px",
+                            borderBottom: "1px solid #f1f1f1",
+                          }}
+                          onMouseEnter={(e) =>
+                            (e.target.style.background = "#f0f0f0")
+                          }
+                          onMouseLeave={(e) =>
+                            (e.target.style.background = "white")
+                          }
+                        >
+                          {city}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-                <button
-                  className="search-button"
-                  onClick={() =>
-                    navigate(`/searchSchedule`, {
+              </div>
+              <button
+                className="search-button"
+                onClick={() =>
+                  navigate(`/searchSchedule`, {
+                    state: {
+                      city: address,
+                      name: "",
+                    },
+                  })
+                }
+              >
+                Tìm kiếm
+              </button>
+            </div>
+
+            {/* Popular Cities Section */}
+            <section className="popular-cities">
+              <h2 className="cities-title">Khám phá các thành phố nổi tiếng</h2>
+              <p className="cities-description">
+                Trải nghiệm chân thực, tận hưởng từng khoảnh khắc trong hành trình
+                của bạn
+              </p>
+              <p className="cities-description">
+                Mọi điểm đến trong tầm tay, lên kế hoạch cho chuyến đi trong mơ
+                ngay hôm nay!
+              </p>
+
+              {/* City Buttons */}
+              <div className="city-buttons">
+                {topCity.map((city, index) => (
+                  <button
+                    key={index}
+                    className="city-button"
+                    onClick={() => navigate(`/searchSchedule`, {
                       state: {
-                        city: address,
+                        city: city.name,
                         name: "",
                       },
-                    })
-                  }
-                >
-                  Tìm kiếm
-                </button>
+                    })}
+                  >
+                    {city.name}
+                  </button>
+                ))}
               </div>
-
-              {/* Popular Cities Section */}
-              <section className="popular-cities">
-                <h2 className="cities-title">Khám phá các thành phố nổi tiếng</h2>
-                <p className="cities-description">
-                  Trải nghiệm chân thực, tận hưởng từng khoảnh khắc trong hành trình
-                  của bạn
-                </p>
-                <p className="cities-description">
-                  Mọi điểm đến trong tầm tay, lên kế hoạch cho chuyến đi trong mơ
-                  ngay hôm nay!
-                </p>
-
-                {/* City Buttons */}
-                <div className="city-buttons">
-                  {topCity.map((city, index) => (
-                    <button
-                      key={index}
-                      className="city-button"
-                      onClick={() => navigate(`/searchSchedule`, {
-                        state: {
-                          city: city.name,
-                          name: "",
-                        },
-                      })}
-                    >
-                      {city.name}
-                    </button>
-                  ))}
-                </div>
-              </section>
-            </div>
+            </section>
+          </div>
 
           <div className="city-slider">
             <Swiper
@@ -405,7 +405,7 @@ const Home = () => {
             </Swiper>
           </div>
 
-          {schedules && schedules.length > 0 &&
+          {scheduleAI && scheduleAI.length > 0 &&
             (//console.log(schedules),
               (
                 <div className="post-card-recommendations">
@@ -429,7 +429,7 @@ const Home = () => {
                       }}
                     >
                       {!isLoading &&
-                        schedules?.map((schedule, index) => (
+                        scheduleAI?.map((schedule, index) => (
                           <SwiperSlide key={index}>
                             <PostCard
                               key={schedule._id}
@@ -440,7 +440,7 @@ const Home = () => {
                           </SwiperSlide>
                         ))}
                       {isLoading && <div className="spinner"> </div>}
-                      {schedules?.length === 0 && !isLoading && (
+                      {scheduleAI?.length === 0 && !isLoading && (
                         <p className="post-card-recommendations__message">
                           Không có lịch trình phù hợp.
                         </p>

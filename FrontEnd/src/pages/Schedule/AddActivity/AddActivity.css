@@ -39,8 +39,7 @@
 .modal-header {
   display: flex;
   align-items: center;
-  padding: 15px 0px;
-  justify-content: center;
+  padding: 10px 20px;
   border-bottom: 1px solid #eaeaea;
   background-color: #f9f9f9;
   margin-bottom: 5px;
@@ -224,7 +223,6 @@
 }
 
 .form-container-single {
-  padding: 15px;
 }
 
 .form-container {
@@ -265,11 +263,12 @@ textarea.input-field {
 
 /* Other Item Component */
 .other-item-container {
-  margin-bottom: 20px;
 }
 
 .address-input-group {
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
 }
 
@@ -278,7 +277,7 @@ textarea.input-field {
 }
 
 .search-btn {
-  padding: 10px 15px;
+  padding: 10px 10px;
   background-color: #0071c2;
   color: white;
   border: none;
@@ -286,6 +285,7 @@ textarea.input-field {
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.2s ease;
+  margin-bottom: 10px;
 }
 
 .search-btn:hover {
@@ -304,12 +304,13 @@ textarea.input-field {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 10;
   position: absolute;
-  width: calc(100% - 40px);
+  width: calc(50% - 80px); /* Adjust width to fit the input */
 }
 
 .search-results li {
   padding: 10px 15px;
   cursor: pointer;
+  font-size: 14px;
   border-bottom: 1px solid #f0f0f0;
   transition: background-color 0.2s ease;
 }
@@ -382,8 +383,6 @@ textarea.input-field {
   background-color: #f5f5f5;
   border-bottom: 1px solid #eaeaea;
 }
-
-
 
 .destination-header h4 {
   margin: 0;
@@ -636,4 +635,18 @@ textarea.input-field {
 
 .search-results::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+.error-input {
+  border: 1px solid #e00 !important;
+  background-color: #fff6f6 !important;
+  margin-bottom: 5px !important;
+}
+
+.error-message-add {
+  color: #e00;
+  font-size: 13px;
+  display: block;
+  font-weight: normal;
+  margin-bottom: 10px;
 }

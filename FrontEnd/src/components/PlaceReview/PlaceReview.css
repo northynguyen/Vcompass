@@ -197,3 +197,46 @@
   align-items: center;
   gap: 5px;
 }
+
+.popup-review {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+
+
+
+.popup-content {
+  margin-top: 30px;
+  background-color: rgb(255, 255, 255);
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 1200px;
+  max-height: 78vh;
+  overflow-y: auto;
+  width: 100%;
+  position: relative;
+}
+
+.close-popup-review  {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #000000;
+  width: 30px;
+}
+
+.close-popup-review:hover {
+  color: #ffffff;
+  background-color: #b12727;
+  border: none;
+}
+}

@@ -425,8 +425,9 @@ const toggleLike = async (req, res) => {
 // Thêm comment vào video
 const addComment = async (req, res) => {
   try {
+    console.log('req.body:', req.body);
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.body.userId ;
     const { text } = req.body;
     
     if (!text) {
