@@ -33,7 +33,7 @@ const ReportManagement = () => {
     };
 
     useEffect(() => {
-        fetchReports(filterStatus); // Gọi API mỗi khi filterStatus thay đổi
+        fetchReports(filterStatus);
     }, [filterStatus]);
 
     // Xử lý cập nhật trạng thái
@@ -70,8 +70,8 @@ const ReportManagement = () => {
 
 
     return (
-        <div className="admin-container">
-            <h1>Quản lý Báo Cáo</h1>
+        <div className="report-container">
+            <h2 className="main-title">Quản lý Báo Cáo</h2>
 
             {/* Bộ lọc trạng thái */}
             <div className="filter-section">

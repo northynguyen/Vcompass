@@ -1,8 +1,8 @@
 // Users.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ProfileCards from '../../components/ProfileCards/ProfileCards';
-import './Users.css';
 import { StoreContext } from '../../Context/StoreContext';
+import './Users.css';
 const Users = () => {
     const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -16,20 +16,18 @@ const Users = () => {
             .catch(error => console.error('Error fetching users:', error));
     }, [url]);
 
-    const filteredUsers = searchTerm
+    const filteredUsers = searchTerm?.trim()
         ? users.filter(user =>
-            user.name?.toLowerCase() === searchTerm.toLowerCase()
+            user.name?.toLowerCase().includes(searchTerm.trim().toLowerCase())
         )
         : users;
 
-
-
-
     return (
         <div className="users-container1">
+            <h2 className="main-title">Quản lý người dùng</h2>
             <input
                 type="text"
-                placeholder="Search by profile name..."
+                placeholder="Tìm theo tên..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-input"
@@ -38,8 +36,8 @@ const Users = () => {
                 {filteredUsers.map((user, index) => (
                     <ProfileCards
                         key={index}
-                        profile={user} // Pass user as profile
-                        type="user" // Specify type as user
+                        profile={user}
+                        type="user"
                     />
                 ))}
             </div>

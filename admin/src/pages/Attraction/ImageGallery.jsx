@@ -9,7 +9,7 @@ const ImageGallery = ({ images, onImageUpload, onDeleteImage, title, url }) => (
         )}
         <div className="image-gallery">
             {images.map((image, index) => (
-                <div key={index} className="image-container">
+                <div key={index} className="image-container-details">
                     {/* Conditionally render image from local URL or server URL */}
                     <img src={image.startsWith('blob:') ? image : image.includes('http') ? image : `${url}/images/${image}`} alt={`Image ${index + 1}`} />
                     {onDeleteImage && (

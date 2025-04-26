@@ -1,35 +1,46 @@
 .extension-container {
     padding: 20px;
-    width: 100%;
-    margin: 0 auto;
-    background: #f9f9f9;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    margin-bottom: 100px;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-
+.service-details h1 {
+    font-size: 1.8rem;
+    text-align: center;
+    color: #444;
+    font-weight: bold;
+}
 /* Add button styling */
 .add-btn {
-    background-color: #4CAF50;
+    background-color: #184b7f;
     color: white;
-    padding: 10px 20px;
+    padding: 10px 40px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     transition: background-color 0.3s;
 }
 
 .add-btn:hover {
-    background-color: #45a049;
+    background-color: #133f6b;
 }
 
 /* Table styling */
 .extension-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
-    table-layout: fixed;
-    /* Ensure consistent column width */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+    font-size: 18px;
+}
+.extension-table tbody tr:hover {
+    background-color: #dbeeff;
+    transition: background-color 0.2s ease;
 }
 
 .extension-table th,
@@ -40,9 +51,35 @@
     width: 33.33%;
     /* Equal column width */
 }
+.extension-table th:nth-child(1),
+.extension-table td:nth-child(1) {
+    width: 45%;
+}
 
+.extension-table th:nth-child(2),
+.extension-table td:nth-child(2) {
+    width: 45%;
+}
+
+.extension-table th:nth-child(3),
+.extension-table td:nth-child(3) {
+    width: 15%;
+    text-align: center;
+}
+
+.extension-table .actions.button {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    background-color: white;
+}
+td.actions.button {
+    width: 100%;
+    padding: 0px;
+    margin: 0;
+}
 .extension-table th {
-    background-color: #4CAF50;
+    background-color: #184b7f;
     color: white;
 }
 
@@ -81,7 +118,7 @@
 }
 
 .pagination .active {
-    background-color: #4CAF50;
+    background-color: #184b7f;
     color: white;
 }
 

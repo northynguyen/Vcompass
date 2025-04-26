@@ -1,26 +1,13 @@
-.partner-details {
-    margin: 20px auto;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    gap: 10px;
-    min-height: 80vh;
-}
-
-.partner-info-container {
+.service-details {
     padding: 20px;
-    width: 1000px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    font-family: 'Arial', sans-serif;
-    /* Font cơ bản và dễ nhìn */
-    color: #333;
-    line-height: 1.6;
-    min-height: 80vh;
+    background-color: white;
+    margin-bottom: 100px;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Tiêu đề chính */
-.partner-details h1 {
+.service-details h1 {
     font-size: 1.8rem;
     text-align: center;
     color: #444;
@@ -95,7 +82,7 @@
 }
 
 /* Tabs Container Styling */
-.partner-details .react-tabs {
+.service-details .react-tabs {
     width: 100%;
     margin-top: 20px;
     font-size: 16px;
@@ -104,7 +91,7 @@
 }
 
 /* Tab List Styling */
-.partner-details .react-tabs__tab-list {
+.service-details .react-tabs__tab-list {
     display: flex;
     justify-content: flex-start;
     padding: 0;
@@ -113,7 +100,7 @@
     gap: 0;
 }
 
-.partner-details .react-tabs__tab {
+.service-details .react-tabs__tab {
     padding: 12px 20px;
     /* Khoảng cách lớn hơn cho cảm giác thoải mái */
     cursor: pointer;
@@ -126,14 +113,14 @@
     transition: color 0.3s, border-bottom-color 0.3s;
 }
 
-.partner-details .react-tabs__tab:hover {
+.service-details .react-tabs__tab:hover {
     color: #007bff;
     /* Đổi màu chữ khi hover */
     border-bottom-color: #007bff;
     /* Hiển thị viền khi hover */
 }
 
-.partner-details .react-tabs__tab--selected {
+.service-details .react-tabs__tab--selected {
     font-weight: bold;
     color: #333;
     /* Màu chữ chính */
@@ -142,7 +129,7 @@
 }
 
 /* Tab Panels */
-.partner-details .react-tabs__tab-panel {
+.service-details .react-tabs__tab-panel {
     margin-top: 10px;
     
     /* Viền bao quanh */
@@ -163,7 +150,7 @@
 }
 
 /* Phần tiêu đề tab */
-.partner-details h2 {
+.service-details h2 {
     font-size: 1.5rem;
     margin-bottom: 10px;
     color: #333;
@@ -201,3 +188,36 @@
     font-size: 20px;
     cursor: pointer;
 }
+/* Tab container */
+/* Tab container */
+.tab-list {
+    display: flex;
+    list-style: none;
+    gap: 5px;
+    border-bottom: 2px solid #ccc;
+}
+  /* Mỗi tab */
+  .tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    border: none;
+    background-color: transparent;
+    color: #184b7f;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+  }
+  
+  /* Tab hover */
+  .tab:hover {
+    background-color: rgba(24, 75, 127, 0.1);
+    color: #103a66;
+  }
+  
+  /* Tab active */
+  .tab[aria-selected="true"] {
+    border-bottom: 3px solid #184b7f;
+    color: #184b7f;
+    font-weight: 600;
+  }
+  

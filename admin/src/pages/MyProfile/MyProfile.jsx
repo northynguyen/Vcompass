@@ -1,11 +1,10 @@
-import React, { useState, useContext } from 'react';
-import './MyProfile.css';
-import edit_icon from '../../assets/edit-alt-regular-24.png';
-import default_avatar from '../../assets/profile_icon.png';
-import { StoreContext } from '../../Context/StoreContext';
 import axios from 'axios';
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Navigate, useNavigate } from 'react-router-dom';
+import edit_icon from '../../assets/edit-alt-regular-24.png';
+import { StoreContext } from '../../Context/StoreContext';
+import './MyProfile.css';
 export const MyProfileContainer = () => {
     const { admin, setAdmin } = useContext(StoreContext);
     const [activeTab, setActiveTab] = useState('profile');
@@ -137,7 +136,7 @@ const MyProfile = ({ admin, setAdmin }) => {
             </div>
             <div className="avatar-section">
                 <img
-                    src={selectedAvatar ? URL.createObjectURL(selectedAvatar) : admin.avatar &&  admin.avatar.includes("http") ? admin.avatar : `${url}/images/${admin.avatar}`}
+                    src={selectedAvatar ? URL.createObjectURL(selectedAvatar) : admin.avatar && admin.avatar.includes("http") ? admin.avatar : `${url}/images/${admin.avatar}`}
                     alt="Ảnh đại diện"
                     className="avatar-image"
                 />
@@ -157,6 +156,7 @@ const MyProfile = ({ admin, setAdmin }) => {
                         <input
                             type="text"
                             name="name"
+                            required
                             value={editedInfo.name || ''}
                             onChange={handleChange}
                             className="details-input"
@@ -167,13 +167,18 @@ const MyProfile = ({ admin, setAdmin }) => {
                 </p>
                 <p>
                     <strong>Email:</strong>{' '}
-                    <input
-                        type="email"
-                        name="email"
-                        value={admin.email || ''}
-                        readOnly
-                        className="readonly-input"
-                    />
+                    {isEditing ? (
+                        <input
+                            type="email"
+                            name="email"
+                            value={admin.email || ''}
+                            readOnly
+                            className="readonly-input"
+                        />
+                    ) : (
+                        admin.email
+                    )}
+
                 </p>
                 <p>
                     <strong>Số Điện Thoại:</strong>{' '}

@@ -1,216 +1,61 @@
-/* Attraction.css */
-
+/* Container */
 .time-schedule-list-container {
     display: flex;
     flex-direction: column;
-    /* Align items vertically */
     align-items: center;
-    /* Center items horizontally */
     margin: 20px;
 }
-
-.attraction-card {
-    width: 90%;
-    /* Set width to 90% of the container */
-    height: 300px;
-    /* Fixed height */
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin: 10px 0;
-    /* Space between cards */
-    display: flex;
-    /* Use flexbox for layout */
-    flex-direction: row;
-    /* Align children in a row */
-    overflow: hidden;
-    /* Hide overflow */
-    justify-content: space-between;
-}
-
-.image-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-
-}
-
-.image-container img {
-    width: 100% ;
-    /* Maintain aspect ratio */
-    max-width: 100%;
-    /* Responsive width */
-}
-
-.button-add {
-    padding: 0.75rem 1.5rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.2s;
-}
-
-.button-add:hover {
-    background-color: #45a049;
-}
-
-.content {
-    flex: 2;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 5px;
-}
-
-.content h3 {
-    cursor: pointer;
-}
-
-.content h3 :hover {
-    color: #e46a19;
-    transition: color 0.3s ease;
-
-}
-
-.info {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.attraction-card h3 {
-    font-size: 1.5rem;
-    color: #333;
-    margin: 0;
-    /* Remove default margin */
-}
-
-.attraction-card p {
-    font-size: 0.95rem;
-    color: #666;
-    line-height: 1.5;
-    flex-grow: 1;
-    /* Allow description to grow */
-}
-
-.actions {
-    display: flex;
-    justify-content: space-between;
-    /* Space out buttons */
-    margin-top: 10px;
-    gap: 5px;
-    margin-right: 10px;
-}
-
-.content strong {
-    font-weight: bold;
-    color: black;
-}
-
-.actions button {
-    background-color: #4CAF50;
-    /* Green */
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    height: 50px;
-    align-self: center;
-    width: 80px;
-}
-
-.actions button:hover {
-    background-color: #45a049;
-    /* Darker green */
-}
-
-.actions button:last-child {
-    background-color: #f44336;
-    /* Red */
-}
-
-.actions button:last-child:hover {
-    background-color: #d32f2f;
-    /* Darker red */
-}
-
 .attraction-list-container {
-    padding: 2rem;
-    background-color: #f5f7fa;
-    min-height: 100vh;
-}
-
-.attraction-list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding: 0 1rem;
-}
-
-.attraction-list-header h1 {
-    font-size: 2rem;
-    color: #2c3e50;
-    font-weight: 600;
-}
-
-.attractions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 2rem;
-    padding: 1rem;
-}
-
-.attraction-card {
+    padding: 20px;
     background-color: white;
+    margin-bottom: 100px;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Common card styles */
+.attraction-card {
+    width: 100%;
+    height: auto;
+    background-color: white;
+    border: 1px solid #ddd;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: auto;
-    width: 100%;
+    margin: 10px 0;
     display: flex;
-    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
 }
-
+.main-title{
+    text-align: center !important;
+    color: #444;
+    font-weight: bold;
+}
 .attraction-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Image */
 .image-container {
-    width: 100%;
-    height: 300px;
+    width: 250px;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
 .image-container img {
-    width: 100%;
-    height: 100%;
+    width: 250px;
+    height: 250px;
+    border-radius: 12px 0px 0px 12px;
     object-fit: cover;
     transition: transform 0.3s ease;
 }
 
-
-.content {
-    padding: 1.5rem;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.content h3 {
+/* Content */
+.attration-content h3 {
     font-size: 1.4rem;
     color: #2c3e50;
     margin: 0;
@@ -219,33 +64,39 @@
     transition: color 0.3s ease;
 }
 
-.content h3:hover {
+.attration-content h3:hover {
     color: #3498db;
 }
 
-.content p {
-    color: #666;
+.attration-content p {
+    color: #8b8b8b;
+    font-size: 18px;
     line-height: 1.6;
-    margin: 0.5rem 0;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-.info {
+.attration-content strong {
+    font-weight: bold;
+    color: black;
+}
+.attration-content {
+    margin-left: 15px;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    justify-content: space-evenly;
+    flex: 1;
 }
 
+/* Info section */
+
 .info p, .info a {
-    display: flex;
-    align-items: center;
     gap: 0.5rem;
     margin: 0;
     color: #555;
-    font-size: 0.9rem;
+    font-size: 18px;
 }
 
 .info strong {
@@ -263,16 +114,15 @@
     color: #2980b9;
 }
 
+/* Actions */
 .actions {
     display: flex;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
     background-color: #f8f9fa;
     border-top: 1px solid #eee;
+    flex-direction: column;
 }
 
 .actions button {
-    flex: 1;
     padding: 0.75rem;
     border: none;
     border-radius: 8px;
@@ -281,15 +131,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
     font-size: 0.9rem;
-    height: auto;
-    width: auto;
+    height: fit-content;
+    color: white;
 }
 
 .actions button:first-child {
-    background-color: #3498db;
-    color: white;
+    background-color: #184b7f;
 }
 
 .actions button:first-child:hover {
@@ -298,43 +146,55 @@
 
 .actions button:last-child {
     background-color: #e74c3c;
-    color: white;
 }
 
 .actions button:last-child:hover {
     background-color: #c0392b;
 }
 
-/* Loading and Error States */
+/* Add button */
+.button-add {
+    padding: 0.75rem 1.5rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+.button-add:hover {
+    background-color: #45a049;
+}
+
+/* Header */
+.attraction-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+.attraction-list-header h1 {
+    font-size: 2rem;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* Grid */
+.attractions-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+/* States */
 .loading-state, .error-state {
     text-align: center;
     padding: 2rem;
-    color: #666;
     font-size: 1.2rem;
+    color: #666;
 }
 
 .error-state {
     color: #e74c3c;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .attraction-list-container {
-        padding: 1rem;
-    }
-
-    .attractions-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .attraction-list-header {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-    }
-
-    .attraction-list-header h1 {
-        font-size: 1.5rem;
-    }
 }

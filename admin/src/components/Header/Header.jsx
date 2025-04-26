@@ -3,6 +3,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { CiLogout, CiSettings } from "react-icons/ci";
 import { FaBell } from "react-icons/fa"; // Importing Bell icon from react-icons
 import { MdManageAccounts } from "react-icons/md";
+import { TiArrowSortedDown } from "react-icons/ti";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { io } from 'socket.io-client';
@@ -11,8 +12,8 @@ import { StoreContext } from '../../Context/StoreContext';
 import './Header.css';
 const Header = () => {
   // State to handle the visibility of the profile popup
-  const [isProfilePopupVisible, setProfilePopupVisible] = useState(false);
-  const [isNotificationsVisible, setNotificationsVisible] = useState(false); // State for notifications dropdown
+  const [isProfilePopupVisible, setIsProfilePopupVisible] = useState(false);
+  const [isNotificationsVisible, setIsNotificationsVisible] = useState(false);
   const menuRef = useRef(null);
   const notificationRef = useRef(null); // Reference for the notifications dropdown
   const { token, setToken, admin, url } = useContext(StoreContext);
@@ -123,21 +124,21 @@ const Header = () => {
   }
   // Toggle profile popup visibility
   const toggleProfilePopup = () => {
-    setProfilePopupVisible(!isProfilePopupVisible);
+    setIsProfilePopupVisible(!isProfilePopupVisible);
   };
 
   // Toggle notifications dropdown
   const toggleNotifications = () => {
-    setNotificationsVisible(!isNotificationsVisible);
+    setIsNotificationsVisible(!isNotificationsVisible);
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setProfilePopupVisible(false);
+        setIsProfilePopupVisible(false);
       }
       if (notificationRef.current && !notificationRef.current.contains(event.target)) {
-        setNotificationsVisible(false);
+        setIsNotificationsVisible(false);
       }
     };
 
@@ -208,27 +209,26 @@ const Header = () => {
 
         {/* User Profile */}
         {admin &&
-          <div className="user-profile">
-            <img
-              src={admin.avatar && admin.avatar.includes('http') ? admin.avatar : admin.avatar ? `${url}/images/${admin.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-              alt="User Avatar"
-              className="user-avatar"
-              onClick={toggleProfilePopup} // Toggle profile popup on click
-            />
+          <div className="user-profile" onClick={toggleProfilePopup}>
             <div className="user-info">
               <p>{admin.name}</p>
-              <span>Admin</span>
             </div>
+            <img
+              src={admin.avatar && admin.avatar.includes('http') ? admin.avatar : admin.avatar ? `${url}/images/${admin.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+              alt="User Avatar" className="user-avatar"/>
+            <div className="arrow-down-infor">
+              <TiArrowSortedDown />
+            </div>
+
           </div>
         }
 
         {isProfilePopupVisible && (
           <div className="profile-popup" ref={menuRef}>
-            <ul className="menu">
-              <li><CiSettings /> My Settings</li>
-              <li onClick={handleMyProfile}><MdManageAccounts /> My Profile</li>
+            <ul className="profile-dropdown">
+              <li onClick={handleMyProfile}><MdManageAccounts />Thông tin cá nhân</li>
               <hr />
-              <li onClick={handleLogout}><CiLogout /> Log Out</li>
+              <li onClick={handleLogout}><CiLogout />Đăng xuất</li>
             </ul>
           </div>
         )}

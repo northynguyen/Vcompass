@@ -88,18 +88,20 @@ const Services = () => {
     }, [token, url]);
 
     return (
-        <div className="partner-details">
-            <div className="partner-info-container">
-                <h1>Quản lý dịch vụ</h1>
+        <div className="service-details">
+            <div className="service-container">
+                <h2 className='main-title'>Quản lý dịch vụ</h2>
                 {accommodations && foodservices &&
                     <Tabs onSelect={handleTabChange}>
                         {/* Tabs Header */}
-                        <TabList>
-                            <Tab>Chỗ ở chưa duyệt</Tab>
-                            <Tab>Dịch vụ ăn uống chưa duyệt</Tab>
-                            <Tab>Chỗ ở</Tab>
-                            <Tab>Dịch vụ ăn uống</Tab>
+
+                        <TabList className="tab-list">
+                            <Tab className="tab">Chỗ ở chưa duyệt</Tab>
+                            <Tab className="tab">Dịch vụ ăn uống chưa duyệt</Tab>
+                            <Tab className="tab">Chỗ ở</Tab>
+                            <Tab className="tab">Dịch vụ ăn uống</Tab>
                         </TabList>
+
 
                         {/* Tab Panels */}
                         <TabPanel>
@@ -142,7 +144,7 @@ const Services = () => {
                         userData={notificationData}
                         accommodationData={accommodationData}
                         foodserviceData={foodserviceData}
-                        hideName = {true}
+                        hideName={true}
                         onClose={closeModal}
                     />
                 </Modal>

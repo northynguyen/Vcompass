@@ -1,23 +1,20 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-
 import { FaBars } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
 import { VscCopilot } from "react-icons/vsc";
-
 import { useNavigate } from "react-router-dom";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 import PostCardSkeleton from "../../components/Poster/PostCardSkeleton";
-import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
 
+import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
 import AccommodationBanner from "../../components/Poster/AccommodationBanner ";
 import PostCard from "../../components/Poster/PostCard";
 import SlideBar from "../../components/SlideBar/SlideBar";
 import { StoreContext } from "../../Context/StoreContext";
 import "./Home.css";
-
 
 const Home = () => {
   const { url, token, user } = useContext(StoreContext);
@@ -30,6 +27,26 @@ const Home = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState([]);
+  const [scheduleAI, setScheduleAI] = useState([]);
+
+  // Update window width on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Clean up
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Toggle sidebar function
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
   // Update window width on resize
   useEffect(() => {
@@ -78,23 +95,21 @@ const Home = () => {
 
         console.log("User cities:", userCities);
 
-
-        if (userCities.length > 0) {
-          const scheduleResponse = await axios.get(
-            `${url}/api/schedule/getAllSchedule?cities=${userCities.join(",")}&forHomePage=true&userId=${user._id}`
-          );
-          console.log("scheduleResponse", scheduleResponse);
-          if (scheduleResponse.data.success) {
-            const publicSchedules = scheduleResponse.data.schedules;
-            setSchedules(publicSchedules);
-            console.log("publicSchedules for user cities", publicSchedules);
-          }
-        } else {
-          // If no user cities, set schedules to empty array
-          setSchedules([]);
-        }
-
-
+        // If we have cities from user schedules, get schedules for those cities
+        // if (userCities.length > 0) {
+        //   const scheduleResponse = await axios.get(
+        //     `${url}/api/schedule/getAllSchedule?cities=${userCities.join(",")}&forHomePage=true&userId=${user._id}`
+        //   );
+        //   console.log("scheduleResponse", scheduleResponse);
+        //   if (scheduleResponse.data.success) {
+        //     const publicSchedules = scheduleResponse.data.schedules;
+        //     setSchedules(publicSchedules);
+        //     console.log("publicSchedules for user cities", publicSchedules);
+        //   }
+        // } else {
+        //   // If no user cities, set schedules to empty array
+        //   setSchedules([]);
+        // }
         const scheduleResponse2 = await axios.get(
           user ?
             `${url}/api/schedule/getAllSchedule?forHomePage=true&userId=${user._id}`
@@ -116,6 +131,28 @@ const Home = () => {
       }
     };
 
+    const fetchData2 = async () => {
+      try {
+        const cityResponse = await axios.get(
+          `${url}/api/schedule/getByCity/Top`
+        );
+        if (cityResponse.data.success) {
+          setTopCity(cityResponse.data.addresses);
+        }
+        const scheduleResponse2 = await axios.get(
+          `${url}/api/schedule/getAllSchedule?forHomePage=true`
+        );
+        if (scheduleResponse2.data.success) {
+          const publicSchedules = scheduleResponse2.data.schedules;
+          setFilteredSchedules(publicSchedules);
+          console.log("Most liked schedules", publicSchedules);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
     if (user) {
       fetchData();
@@ -151,7 +188,6 @@ const Home = () => {
     }
   }, [url, token]);
 
-  //gửi yêu cầu lấy lịch trình phù hợp với người dùng
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -161,9 +197,24 @@ const Home = () => {
 
         if (data.success) {
           console.log("Recommended schedules by AI:", data.recommendedSchedules);
-          // Commenting out the setState since it's not currently used
-          // The data is being logged for debugging purposes
-          // setScheduleAI(data.recommendedSchedules);
+          setScheduleAI(data.recommendedSchedules);
+// =======
+//     const fetchData2 = async () => {
+//       try {
+//         const cityResponse = await axios.get(
+//           `${url}/api/schedule/getByCity/Top`
+//         );
+//         if (cityResponse.data.success) {
+//           setTopCity(cityResponse.data.addresses);
+//         }
+//         const scheduleResponse2 = await axios.get(
+//           `${url}/api/schedule/getAllSchedule?forHomePage=true`
+//         );
+//         if (scheduleResponse2.data.success) {
+//           const publicSchedules = scheduleResponse2.data.schedules;
+//           setFilteredSchedules(publicSchedules);
+//           console.log("Most liked schedules", publicSchedules);
+// >>>>>>> main
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -175,8 +226,17 @@ const Home = () => {
 
     fetchData();
   }, [url, user]);
+// =======
+//     if (user) {
+//       fetchData();
+//     } else {
+//       fetchData2();
+//     }
+//   }, [url, token]);
 
   
+// >>>>>>> main
+
 
   const handleScheduleClick = (id) => {
     navigate(`/schedule-view/${id}`);
@@ -283,7 +343,7 @@ const Home = () => {
 
       <div className={`sidebar-container ${sidebarOpen ? 'open' : ''}`}>
         <LeftSideBar />
-      </div> 
+      </div>
 
       <div className="home-main-content">
         <div className="home-container">
@@ -301,107 +361,107 @@ const Home = () => {
               </div>
             </div>
           </header>
-            <div className="tour-search">
-              <div className="search-container">
-                <div className="search-title">
-                  <div style={{ position: "relative", width: "300px" }}>
-                    <i className="fa fa-map-marker search-icon" aria-hidden="true"></i>
-                    <input
-                      type="text"
-                      placeholder="Tìm kiếm theo địa điểm"
-                      className="search-input"
-                      id="destination"
-                      value={address}
-                      onChange={handleAddressChange}
-                      autoComplete="off"
-                    />
-                    {/* Hiển thị gợi ý */}
-                    {suggestions.length > 0 && (
-                      <ul
-                        style={{
-                          position: "absolute",
-                          top: "100%",
-                          left: 0,
-                          right: 0,
-                          listStyleType: "none",
-                          margin: 0,
-                          padding: "5px",
-                          background: "white",
-                          border: "1px solid #ddd",
-                          zIndex: 10,
-                          maxHeight: "200px",
-                          overflowY: "auto",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {suggestions.map((city, index) => (
-                          <li
-                            key={index}
-                            onClick={() => handleSuggestionClick(city)}
-                            style={{
-                              padding: "8px",
-                              borderBottom: "1px solid #f1f1f1",
-                            }}
-                            onMouseEnter={(e) =>
-                              (e.target.style.background = "#f0f0f0")
-                            }
-                            onMouseLeave={(e) =>
-                              (e.target.style.background = "white")
-                            }
-                          >
-                            {city}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+          <div className="tour-search">
+            <div className="search-container">
+              <div className="search-title">
+                <div style={{ position: "relative", width: "300px" }}>
+                  <i className="fa fa-map-marker search-icon" aria-hidden="true"></i>
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm theo địa điểm"
+                    className="search-input"
+                    id="destination"
+                    value={address}
+                    onChange={handleAddressChange}
+                    autoComplete="off"
+                  />
+                  {/* Hiển thị gợi ý */}
+                  {suggestions.length > 0 && (
+                    <ul
+                      style={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        right: 0,
+                        listStyleType: "none",
+                        margin: 0,
+                        padding: "5px",
+                        background: "white",
+                        border: "1px solid #ddd",
+                        zIndex: 10,
+                        maxHeight: "200px",
+                        overflowY: "auto",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {suggestions.map((city, index) => (
+                        <li
+                          key={index}
+                          onClick={() => handleSuggestionClick(city)}
+                          style={{
+                            padding: "8px",
+                            borderBottom: "1px solid #f1f1f1",
+                          }}
+                          onMouseEnter={(e) =>
+                            (e.target.style.background = "#f0f0f0")
+                          }
+                          onMouseLeave={(e) =>
+                            (e.target.style.background = "white")
+                          }
+                        >
+                          {city}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-                <button
-                  className="search-button"
-                  onClick={() =>
-                    navigate(`/searchSchedule`, {
+              </div>
+              <button
+                className="search-button"
+                onClick={() =>
+                  navigate(`/searchSchedule`, {
+                    state: {
+                      city: address,
+                      name: "",
+                    },
+                  })
+                }
+              >
+                Tìm kiếm
+              </button>
+            </div>
+
+            {/* Popular Cities Section */}
+            <section className="popular-cities">
+              <h2 className="cities-title">Khám phá các thành phố nổi tiếng</h2>
+              <p className="cities-description">
+                Trải nghiệm chân thực, tận hưởng từng khoảnh khắc trong hành trình
+                của bạn
+              </p>
+              <p className="cities-description">
+                Mọi điểm đến trong tầm tay, lên kế hoạch cho chuyến đi trong mơ
+                ngay hôm nay!
+              </p>
+
+              {/* City Buttons */}
+              <div className="city-buttons">
+                {topCity.map((city, index) => (
+                  <button
+                    key={index}
+                    className="city-button"
+                    onClick={() => navigate(`/searchSchedule`, {
                       state: {
-                        city: address,
+                        city: city.name,
                         name: "",
                       },
-                    })
-                  }
-                >
-                  Tìm kiếm
-                </button>
+                    })}
+                  >
+                    {city.name}
+                  </button>
+                ))}
               </div>
-
-              {/* Popular Cities Section */}
-              <section className="popular-cities">
-                <h2 className="cities-title">Khám phá các thành phố nổi tiếng</h2>
-                <p className="cities-description">
-                  Trải nghiệm chân thực, tận hưởng từng khoảnh khắc trong hành trình
-                  của bạn
-                </p>
-                <p className="cities-description">
-                  Mọi điểm đến trong tầm tay, lên kế hoạch cho chuyến đi trong mơ
-                  ngay hôm nay!
-                </p>
-
-                {/* City Buttons */}
-                <div className="city-buttons">
-                  {topCity.map((city, index) => (
-                    <button
-                      key={index}
-                      className="city-button"
-                      onClick={() => navigate(`/searchSchedule`, {
-                        state: {
-                          city: city.name,
-                          name: "",
-                        },
-                      })}
-                    >
-                      {city.name}
-                    </button>
-                  ))}
-                </div>
-              </section>
-            </div>
+            </section>
+          </div>
 
           <div className="city-slider">
             <Swiper
@@ -420,13 +480,15 @@ const Home = () => {
             </Swiper>
           </div>
 
-          {schedules && schedules.length > 0 && (
+          {scheduleAI && scheduleAI.length > 0 &&
+            (//console.log(schedules),
+              (
                 <div className="post-card-recommendations">
                   <div className="post-card-header">
                     <h3>Lịch trình dành cho bạn </h3>
                   </div>
                   <div className="post-card-recommendations__container">
-                    {isLoading ? (
+                  {isLoading ? (
                       <div className="skeleton-container" style={{ 
                         display: "flex", 
                         justifyContent: "center", 
@@ -436,22 +498,23 @@ const Home = () => {
                         <PostCardSkeleton count={1} />
                       </div>
                     ) : (
-                      <Swiper
-                        modules={[Navigation, Pagination, Autoplay]}
-                        spaceBetween={30}
-                        slidesPerView={1}
-                        navigation
-                        pagination={{ clickable: true }}
-                        autoplay={{
-                          delay: 4000,
-                          pauseOnMouseEnter: true,
-                          disableOnInteraction: true,
-                        }}
-                        breakpoints={{
-                          768: { slidesPerView: 1 },
-                        }}
-                      >
-                        {schedules?.map((schedule, index) => (
+                    <Swiper
+                      modules={[Navigation, Pagination, Autoplay]}
+                      spaceBetween={30}
+                      slidesPerView={1} // Mặc định hiển thị 1 slide
+                      navigation
+                      pagination={{ clickable: true }}
+                      autoplay={{
+                        delay: 4000,
+                        pauseOnMouseEnter: true,
+                        disableOnInteraction: true,
+                      }}
+                      breakpoints={{
+                        768: { slidesPerView: 1 },
+                      }}
+                    >
+                      {!isLoading &&
+                         scheduleAI?.map((schedule, index) => (
                           <SwiperSlide key={index}>
                             <PostCard
                               key={schedule._id}
@@ -461,15 +524,13 @@ const Home = () => {
                             />
                           </SwiperSlide>
                         ))}
-                        {schedules?.length === 0 && (
+                      {scheduleAI?.length === 0 && (
                           <SwiperSlide>
                             <p className="post-card-recommendations__message">
                               Không có lịch trình phù hợp.
                             </p>
                           </SwiperSlide>
                         )}
-                      </Swiper>
-                    )}
                   </div>
                 </div>
               )}
@@ -525,7 +586,6 @@ const Home = () => {
               )}
             </div>
           </div>
-
 
           <SlideBar type="accommodation" />
           <span></span>

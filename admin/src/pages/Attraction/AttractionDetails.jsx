@@ -299,7 +299,7 @@ const AttractionDetails = () => {
     return (
         <div className="attraction-details">
             <button type="button" className="back-button" onClick={handleback}>
-                <FaArrowLeft /> Quay lại danh sách điểm tham quan
+                <FaArrowLeft /> Quay lại
             </button>
             {isEditing ? (
                 <>

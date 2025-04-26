@@ -1,13 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useContext, useState } from "react";
 import Modal from "react-modal";
 import { useLocation } from "react-router-dom";
-import "./PartnerDetails.css";
+import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
 import { StoreContext } from "../../Context/StoreContext";
 import Notification from "../../pages/Notification/Notification";
 import AccomodationCards from "../AccomodationCards/AccomodationCards";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
 import FoodServiceCards from "../FoodServiceCards/FoodServiceCard";
+import "./PartnerDetails.css";
 
 // Configure Modal
 Modal.setAppElement("#root"); // Ensure modal complies with accessibility
@@ -76,13 +76,13 @@ const PartnerDetails = () => {
   return (
     <div className="partner-details">
       <div className="partner-info-container">
-        <h1>{partner.name}</h1>
+        <h2 className="main-title">{partner.name}</h2>
         <Tabs onSelect={handleTabChange}>
           {/* Tabs Header */}
-          <TabList>
-            <Tab>Thông tin đối tác</Tab>
-            <Tab>Chỗ ở</Tab>
-            <Tab>Dịch vụ ăn uống</Tab>
+          <TabList className="tab-list">
+            <Tab className="tab">Thông tin đối tác</Tab>
+            <Tab className="tab">Chỗ ở</Tab>
+            <Tab className="tab">Dịch vụ ăn uống</Tab>
           </TabList>
 
           {/* Tab Panels */}
@@ -104,8 +104,8 @@ const PartnerDetails = () => {
                   {partner.gender === "male"
                     ? "Nam"
                     : partner.gender === "female"
-                    ? "Nữ"
-                    : "Khác"}
+                      ? "Nữ"
+                      : "Khác"}
                 </p>
                 <p>
                   <strong>Ngày sinh:</strong>{" "}
