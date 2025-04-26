@@ -150,7 +150,6 @@ const Home = () => {
         if (data.success) {
           console.log("Recommended schedules by AI:", data.recommendedSchedules);
           setScheduleAI(data.recommendedSchedules);
-
         }
       } catch (error) {
         console.error("Error fetching data:", error);

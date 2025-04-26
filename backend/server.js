@@ -1,30 +1,31 @@
 import cors from "cors";
 import "dotenv/config";
 import express from "express";
+import fs from "fs";
 import http from "http";
+import path from "path";
 import { Server } from "socket.io"; // Import Socket.IO
+import { fileURLToPath } from "url";
 import { connectDB } from "./config/connectDB.js";
 import { googleCallback } from "./controllers/userController.js";
 import deleteRouter from "./middleware/removeImage.js";
+import shortVideoRoutes from "./routes/ShortVideoRoutes.js";
 import accommRoutes from "./routes/accommRoutes.js";
 import aiRoute from "./routes/aiRoutes.js";
 import { Attractionrouter } from "./routes/attractionRoutes.js";
 import bookingRouter from "./routes/bookingRoutes.js";
 import conversationRoutes from "./routes/conversationRoutes.js";
 import emailRouter from "./routes/emailRoutes.js";
+import extensionRouter from "./routes/extensionRoutes.js";
 import foodServiceRoutes from "./routes/foodServiceRoutes.js";
+import logActivityRouter from "./routes/logActivity.js";
 import { notificationRoutes } from "./routes/notificationRoutes.js";
+import reportRouter from "./routes/reportRoutes.js";
 import scheduleRouter from "./routes/scheduleRoutes.js";
 import userRoutes from "./routes/userRoute.js";
+import userSatisRouter from "./routes/userSatisfactionRoutes.js";
 import videoRouter from "./routes/videoRoutes.js";
-import extensionRouter from "./routes/extensionRoutes.js";
-import reportRouter from "./routes/reportRoutes.js";
-import { setupScheduleSocket } from './socket/scheduleSocket.js';
-import shortVideoRoutes from "./routes/ShortVideoRoutes.js";
-import logActivityRouter from "./routes/logActivity.js";
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { setupScheduleSocket } from "./socket/scheduleSocket.js";
 
 // Tạo __dirname cho ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -37,23 +38,25 @@ const port = process.env.PORT || 4000;
 const server = http.createServer(app);
 
 // Cấu hình CORS
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:5175",
-    "https://vcompass-partner.onrender.com",
-    "https://vcompass.onrender.com",
-    "https://vcompass-admin.onrender.com",
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'token', 'Authorization']
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175",
+      "https://vcompass-partner.onrender.com",
+      "https://vcompass.onrender.com",
+      "https://vcompass-admin.onrender.com",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "token", "Authorization"],
+  })
+);
 
 // Tăng giới hạn kích thước body
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
 global.io = new Server(server, {
   cors: {
@@ -101,8 +104,9 @@ app.use("/api/ai", aiRoute);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/extensions", extensionRouter);
 app.use("/api/reports", reportRouter);
-app.use('/api/shortvideo', shortVideoRoutes);
-app.use('/api/logs', logActivityRouter);
+app.use("/api/shortvideo", shortVideoRoutes);
+app.use("/api/logs", logActivityRouter);
+app.use("/api/userSatisfaction", userSatisRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -133,12 +137,12 @@ server.listen(port, () => {
 });
 
 const uploadDirs = [
-  path.join(__dirname, 'public', 'uploads'),
-  path.join(__dirname, 'public', 'uploads', 'videos'),
-  path.join(__dirname, 'public', 'uploads', 'thumbnails')
+  path.join(__dirname, "public", "uploads"),
+  path.join(__dirname, "public", "uploads", "videos"),
+  path.join(__dirname, "public", "uploads", "thumbnails"),
 ];
 
-uploadDirs.forEach(dir => {
+uploadDirs.forEach((dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
