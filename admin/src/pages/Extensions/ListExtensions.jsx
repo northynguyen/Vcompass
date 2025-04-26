@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { FaEdit, FaTrash } from 'react-icons/fa';
 import { StoreContext } from "../../Context/StoreContext";
 import "./ListExtensions.css";
 
@@ -100,8 +101,8 @@ const ListExtensions = () => {
 
     return (
         <div className="extension-container">
+            <h2 className="main-title">Quản lý tiện ích</h2>
             <button onClick={() => openModal()} className="add-btn">+ Thêm</button>
-
             <table className="extension-table">
                 <thead>
                     <tr>
@@ -115,9 +116,13 @@ const ListExtensions = () => {
                         <tr key={ext._id}>
                             <td>{ext.name}</td>
                             <td>{ext.category}</td>
-                            <td>
-                                <button onClick={() => openModal(ext)}>✏️</button>
-                                <button onClick={() => handleDelete(ext._id)}>🗑️</button>
+                            <td className="actions button">
+                                <button onClick={() => openModal(ext)}>
+                                    <FaEdit />
+                                </button>
+                                <button onClick={() => handleDelete(ext._id)}>
+                                    <FaTrash />
+                                </button>
                             </td>
                         </tr>
                     ))}

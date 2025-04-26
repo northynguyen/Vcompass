@@ -87,6 +87,9 @@
   border-radius: 5px;
   margin-right: 5px;
 }
+.filters select{
+  width: 150px;
+}
 .price-range {
   font-size: 15px;
   display: flex;

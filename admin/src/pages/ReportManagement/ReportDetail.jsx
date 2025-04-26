@@ -1,11 +1,9 @@
-import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
+import Modal from "react-modal";
 import { StoreContext } from "../../Context/StoreContext";
 import Notification from "../Notification/Notification";
-import Modal from "react-modal";
 
 const ReportDetail = ({ report, onClose, onStatusChange }) => {
-    const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const { url } = useContext(StoreContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,21 +59,36 @@ const ReportDetail = ({ report, onClose, onStatusChange }) => {
                 <p><strong>Mô tả:</strong> {report.description || "Không có mô tả"}</p>
 
                 {report.targetType === "User" && (
-                    <a href={`http://localhost:5173/otherUserProfile/${report.targetId}`}>
+                    <a
+                        href={`${url}/otherUserProfile/${report.targetId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         <strong>Link:</strong> Click vào đây
                     </a>
                 )}
 
                 {report.targetType === "Schedule" && (
-                    <a href={`http://localhost:5173/schedule-view/${report.targetId}`}>
+                    <a
+                        href={`${url}/schedule-view/${report.targetId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         <strong>Link:</strong> Click vào đây
                     </a>
                 )}
 
+
                 {/* Nút hành động */}
                 <div className="actions">
-                    <button onClick={() => setIsModalOpen(true)}>Duyệt</button>
-                    <button onClick={() => handleUpdate("rejected")}>Từ chối</button>
+                    {report.status === "pending" ? (
+                        <>
+                            <button onClick={() => setIsModalOpen(true)}>Duyệt</button>
+                            <button onClick={() => handleUpdate("rejected")}>Từ chối</button>
+                        </>
+                    ) : (
+                        <p className="status-note">Báo cáo này đã được xử lý.</p>
+                    )}
                     <button onClick={onClose}>Đóng</button>
                 </div>
 

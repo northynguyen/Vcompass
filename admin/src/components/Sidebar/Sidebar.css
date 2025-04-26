@@ -1,38 +1,43 @@
 /* Sidebar styles */
 .menu {
-    width: 300px;
+    width: 250px;
     background-color: #fff;
-    padding: 20px;
-    height: 100%;
-    margin-top: 20px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    min-height: 100vh;
+    box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.1);
     transition: width 0.3s ease;
-    /* Smooth transition for width changes */
+    padding-top: 30px;
+    position: sticky;
 }
 
 /* Menu items */
 .menu ul li {
-    padding: 15px 15px;
+    padding: 15px 20px;
     display: flex;
     align-items: center;
-    font-size: 16px;
-    color: #333;
+    font-size: 14px;
+    color: #868686;
     cursor: pointer;
+    font-weight: 500;
     transition: background-color 0.3s ease;
 }
 
 .menu ul li svg {
-    margin-right: 10px;
+    margin-right: 18px;
     font-size: 18px;
+    color: #868686;
+}
+.active svg {
+    color: #184b7f !important;
+}
+.menu ul li.active {
+    background-color: #ecf4f3;
+    font-weight: bold;
+    color: #184b7f !important;
+}
+.menu ul li:hover {
+    background-color: #f0f0f0;
 }
 
-.menu ul li.active {
-    background-color: #f0f0f0;
-    font-weight: bold;
-    border-radius: 10px;
-}
 
 /* Badge for notifications */
 .notification-badge {

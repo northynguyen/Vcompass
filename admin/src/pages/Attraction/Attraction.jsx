@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { FaEdit, FaTrash } from 'react-icons/fa';
-import './Attraction.css';
-import { useNavigate } from 'react-router-dom';
-import { StoreContext } from '../../Context/StoreContext';
 import axios from 'axios';
-import Pagination from '../../components/Pagination/Pagination';
+import React, { useContext, useEffect, useState } from 'react';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Pagination from '../../components/Pagination/Pagination';
+import { StoreContext } from '../../Context/StoreContext';
+import './Attraction.css';
 
 const Attraction = ({ data }) => {
     const navigate = useNavigate();
@@ -43,15 +43,14 @@ const Attraction = ({ data }) => {
                         alt={data.attractionName}
                     />
                 )}
-
             </div>
-            <div className="content">
-                <h3 onClick={handleEdit}>{data.attractionName}</h3>
+            <div className="attration-content" onClick={handleEdit}>
+                <h4>{data.attractionName}</h4>
                 <p>{data.description}</p>
                 <div className="info">
                     <p>
                         <i className="fas fa-map-marker-alt"></i>
-                        <strong>Địa điểm:</strong> {data.location.address}
+                        <strong>Địa chỉ:</strong> {data.location.address}
                     </p>
                     <p>
                         <i className="fas fa-city"></i>
@@ -69,10 +68,10 @@ const Attraction = ({ data }) => {
             </div>
             <div className="actions">
                 <button onClick={handleEdit}>
-                    <FaEdit /> Chỉnh sửa
+                    <FaEdit />
                 </button>
                 <button onClick={handleDelete}>
-                    <FaTrash /> Xóa
+                    <FaTrash />
                 </button>
             </div>
         </div>
@@ -133,11 +132,9 @@ const AttractionList = () => {
 
     return (
         <div className="attraction-list-container">
+            <h2 className='main-title'>Quản lý điểm tham quan</h2>
             <div className="attraction-list-header">
-                <h1>Danh sách địa điểm tham quan</h1>
-                <button className='button-add' onClick={handleEdit}>
-                    Thêm địa điểm mới
-                </button>
+                <button onClick={handleEdit} className="add-btn">+ Thêm</button>
             </div>
 
             <div className="attractions-grid">

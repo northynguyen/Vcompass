@@ -10,12 +10,14 @@ import {
   Tooltip,
 } from 'chart.js'; // Import necessary chart components
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import { FaHotel, FaUmbrellaBeach, FaUsers } from 'react-icons/fa';
 import { FaBuildingUser } from "react-icons/fa6";
+import { IoIosArrowForward } from "react-icons/io";
 import { MdNoFood } from "react-icons/md";
+import { TbMessageReportFilled } from "react-icons/tb";
 import ReactLoading from 'react-loading';
+import { useNavigate } from 'react-router-dom';
 import { StoreContext } from "../../Context/StoreContext";
 import './Dashboard.css';
 
@@ -40,12 +42,13 @@ const DashBoard = () => {
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [isPartnerLoading, setIsPartnerLoading] = useState(true);
   const [chartData, setChartData] = useState();
+  const [reports, setReports] = useState([]);
   const navigate = useNavigate();
   const handleNavigation = (path) => {
     if (location.pathname !== path) {
-        navigate(path);
+      navigate(path);
     }
-};
+  };
   useEffect(() => {
     const fetchAccommodations = async () => {
       try {
@@ -118,15 +121,39 @@ const DashBoard = () => {
       } catch (error) {
       }
     };
+    const fetchReports = async (status) => {
+      try {
+        const query = status !== "All" ? `?status=${status}` : "";
+        const response = await fetch(`${url}/api/reports/${query}`, {
+          headers: { token: token },
+        });
+
+        if (!response.ok) {
+          throw new Error("Lỗi khi lấy báo cáo");
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          setReports(data.reports);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy báo cáo:", error);
+      }
+    };
     fetchAccommodations()
     fetchAttractions()
     fetchFoodServices()
     fetchUsers()
     fetchPartners()
+    fetchReports("All")
   }, [token, url]);
 
   const calculateUnAccept = () => {
     return accommodations.filter(accommodation => accommodation.status === 'pending').length + foodServices.filter(foodService => foodService.status === 'pending').length;
+  }
+  const calculateUnResolveReport = () => {
+    return reports.filter(report => report.status === 'pending').length;
   }
   const calculateMonthlyRegistrations = (data, labelName) => {
     if (!data || data.length === 0) return { labels: [], datasets: [] };
@@ -139,7 +166,7 @@ const DashBoard = () => {
 
     while (currentDate <= maxDate) {
       labels.push(
-        `${currentDate.toLocaleString("default", { month: "long" })} ${currentDate.getFullYear()}`
+        `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`
       );
       counts.push(0);
       currentDate.setMonth(currentDate.getMonth() + 1);
@@ -162,8 +189,9 @@ const DashBoard = () => {
           label: labelName,
           data: counts,
           fill: false,
-          backgroundColor: labelName === "Người dùng" ? "#4CAF50" : "#2196F3",
-          borderColor: labelName === "Người dùng" ? "#4CAF50" : "#2196F3",
+          tension: 0.4,
+          backgroundColor: labelName === "Người dùng" ? "#003bff" : "#ff9a00",
+          borderColor: labelName === "Người dùng" ? "#003bff" : "#ff9a00",
         },
       ],
     };
@@ -202,9 +230,7 @@ const DashBoard = () => {
           text: 'Tháng',
         },
         ticks: {
-          autoSkip: false, // Ngăn không cho tự động bỏ qua các tháng
-          maxRotation: 90, // Xoay nhãn trục x nếu cần
-          minRotation: 45, // Chỉ định góc quay tối thiểu
+          autoSkip: true,
         },
       },
       y: {
@@ -233,45 +259,35 @@ const DashBoard = () => {
     <div className="dashboard-container">
       {/* Header with Summary Cards */}
       <div className="summary-user-cards">
-        <div className="card">
+        <div className="card blue">
           <FaUsers className="card-icon" />
           <div className="card-details">
             <p>{users.length}</p>
             <h3>Người dùng</h3>
           </div>
         </div>
-        <div className="card">
+        <div className="card orange">
           <FaBuildingUser className="card-icon" />
           <div className="card-details">
             <p>{partners.length}</p>
             <h3>Nhà cung cấp</h3>
           </div>
         </div>
-      </div>
-      <div className="summary-cards">
-        <div className="card">
+        <div className="card pink">
           <FaHotel className="card-icon" />
           <div className="card-details">
             <p>{accommodations ? accommodations.length : "Đang tải"}</p>
             <h3>Khách sạn, Chỗ ở</h3>
           </div>
         </div>
-        <div className="card">
-          <FaHotel className="card-red-icon" />
-          <div className="card-details" >
-            <p className="red-card-content">{accommodations && foodServices ? calculateUnAccept() : "Đang tải"}</p>
-            <h3 className="red-card-title" onClick={() => handleNavigation('/services')}>Chưa xét duyệt</h3>
-          </div>
-        </div>
-        <div className="card">
+        <div className="card cyan">
           <MdNoFood className="card-icon" />
           <div className="card-details">
             <p>{foodServices ? foodServices.length : "Đang tải"}</p>
             <h3>Dịch vụ ăn uống</h3>
           </div>
         </div>
-
-        <div className="card">
+        <div className="card yellow">
           <FaUmbrellaBeach className="card-icon" />
           <div className="card-details">
             <p>{attractions ? attractions.length : "Đang tải"}</p>
@@ -280,13 +296,38 @@ const DashBoard = () => {
         </div>
       </div>
 
-      {/* Revenue Chart */}
-      {chartData &&
-        <div className="chart-section">
-          <h3>Biểu đồ thống kê người dùng theo tháng</h3>
-          <Line data={chartData} options={options} />
+      <div className="chart-container">
+        {/* Revenue Chart */}
+        {chartData &&
+          <div className="chart-section">
+            <h4>Thống kê người dùng mới</h4>
+            <Line data={chartData} options={options} />
+          </div>
+        }
+        <div className="left-chart-container">
+          <div className="title">
+            <h4>Nhiệm vụ</h4>
+          </div>
+          <div className="task-item" onClick={() => handleNavigation('/services')}>
+            <FaHotel className="card-red-icon" />
+            <div className="card-details" >
+              <p className="red-card-content">{accommodations && foodServices ? calculateUnAccept() : "Đang tải"}</p>
+              <h3 className="red-card-title">Dịch vụ chưa xét duyệt</h3>
+            </div>
+            <IoIosArrowForward />
+          </div>
+          <hr className="task-divider" />
+          {reports && <div className="task-item" onClick={() => handleNavigation('/reportmanagement')}>
+            <TbMessageReportFilled className="card-red-icon" />
+            <div className="card-details" >
+              <p className="red-card-content">{reports ? calculateUnResolveReport() : "Đang tải"}</p>
+              <h3 className="red-card-title">Báo cáo chưa xem xét</h3>
+            </div>
+            <IoIosArrowForward />
+          </div>}
+
         </div>
-      }
+      </div>
     </div>
   );
 };

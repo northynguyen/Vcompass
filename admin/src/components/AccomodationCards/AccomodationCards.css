@@ -98,3 +98,36 @@
 .status-select:hover {
     background: #e9e9e9;
 }
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem;
+  }
+  
+  .status-select {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+    min-width: 150px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .status-select:hover {
+    border-color: #888;
+  }
+  
+  .status-select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  }
+  
+  .status-select option:disabled {
+    color: #aaa;
+  }

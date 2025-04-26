@@ -2,12 +2,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 5px 20px !important;
   background-color: #fff;
   border-bottom: 1px solid #eaeaea;
   max-width: 100%;
   margin: 0 auto;
   padding-top: 10px;
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.1);
 
 }
 img.logo-image {
@@ -55,6 +56,7 @@ img.logo-image {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
+  margin-right: 10px;
 }
 
 .user-info span {
@@ -87,6 +89,9 @@ img.logo-image {
   margin: 0;
   width: 200px;
   border: none;
+
+}
+.profile-dropdown{
 
 }
 
