@@ -15,7 +15,20 @@ const FoodServiceItem = ({ foodService, status, setCurDes }) => {
     setCurDes(foodService);
     window.scrollTo(40, 0);
   };
+  const getImageUrl = (place) => {
+    if (!place.images || !place.images.length) {
+      return 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+    }
+    
+    const image = place.images[0];
+    if (image.includes('http')) {
+      return image;
+    }
+    
+    return `${url}/images/${image}`;
+  };
 
+  
   const onNavigateToDetails = () => {
     const encryptedServiceId = CryptoJS.AES.encrypt(foodService._id, 'mySecretKey').toString();
     const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
@@ -24,7 +37,15 @@ const FoodServiceItem = ({ foodService, status, setCurDes }) => {
   return (
     <div className="list-accom__tour-item" onClick={onNavigateToDetails}>
       <div className="accom-card-header">
-        <img src={`${url}/images/${foodService.images[0]}`} alt={foodService.name} className="list-accom__tour-item-image" />
+        <img 
+        src={getImageUrl(foodService)} 
+        alt={foodService.name} 
+        className="list-accom__tour-item-image" 
+        onError={(e) => {
+          e.target.onerror = null; // Prevent infinite loop if image fails to load
+          e.target.src = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+        }}
+        />
         <div className="accom-card-header-right">
           <h3>{foodService.foodServiceName}</h3>
           <div className="list-accom__tour-location">

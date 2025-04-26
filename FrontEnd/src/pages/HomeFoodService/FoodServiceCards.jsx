@@ -6,12 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 
 const FoodServiceCards = (foodServicesFound) => {
-    const { url } = useContext(StoreContext);
+    const { url, getImageUrl } = useContext(StoreContext);
     const [foodService, setFoodService] = useState([]);
+    const [isInitialized, setIsInitialized] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         setFoodService(foodServicesFound.foodServicesFound || []);
+        setIsInitialized(true); // Mark that we've received data at least once
     }, [foodServicesFound]);
 
     const onClick = (serviceId) => {
@@ -34,7 +36,7 @@ const FoodServiceCards = (foodServicesFound) => {
             <h2>Danh sách nhà hàng</h2>
 
             <div className="card-list">
-                {foodService.length === 0 && <p>Không tìm thấy nhà hàng</p>}
+                {isInitialized   && foodService.length === 0 && <p>Không tìm thấy nhà hàng</p>}
                 {foodService.map((item) => {
                     // Lấy giá thấp nhất và cao nhất từ dữ liệu
                     const minPrice = item.price?.minPrice || 0;
@@ -46,8 +48,13 @@ const FoodServiceCards = (foodServicesFound) => {
                                 {/* Hình ảnh */}
                                 <div className="card-content-img" onClick={() => onClick(item._id)}>
                                     <img
-                                        src={`${url}/images/${item.images[0]}`}
+                                        src={getImageUrl(item)}
                                         alt={item.foodServiceName}
+                                        
+                                        onError ={(e) => {
+                                            e.target.onerror = null; // Prevent infinite loop
+                                            e.target.src = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+                                        }}                                      
                                     />
                                 </div>
 

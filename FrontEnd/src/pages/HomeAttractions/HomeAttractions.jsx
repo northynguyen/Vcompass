@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import './HomeAttractions.css';
 import AttractionsCards from './AttractionsCards';
 import LeftSideBar from './LeftSideBar';
+import SkeletonLoading from './SkeletonLoading';
 import { StoreContext } from '../../Context/StoreContext';
 
 const HomeAttractions = () => {
@@ -40,8 +41,9 @@ const HomeAttractions = () => {
             }
         } catch (error) {
             console.error('Lỗi khi lấy dữ liệu attractions:', error);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     // Khi location hoặc page thay đổi, gọi lại API
@@ -87,7 +89,7 @@ const HomeAttractions = () => {
             {/* Danh sách attraction */}
             <div className="attractions-content-container">
                 <LeftSideBar onFilterChange={handleFilterChange} />
-                {loading ? <p>Đang tải...</p> : <AttractionsCards attractionsFound={attractionsFound} />}
+                {loading ? <SkeletonLoading type= "điểm đến"/> : <AttractionsCards attractionsFound={attractionsFound} />}
             </div>
 
             {/* Phân trang */}

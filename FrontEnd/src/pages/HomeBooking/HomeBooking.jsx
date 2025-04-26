@@ -5,6 +5,7 @@ import './HomeBooking.css';
 import AccomodationCards from './AccomodationCards';
 import LeftSideBar from './LeftSideBar';
 import { StoreContext } from '../../Context/StoreContext';
+import SkeletonLoading from '../HomeAttractions/SkeletonLoading';
 
 const HomeBooking = () => {
     const { url } = useContext(StoreContext);
@@ -133,13 +134,13 @@ const HomeBooking = () => {
 
             <div className='homeBooking-accomodations-container'>
                 <LeftSideBar onFilterChange={handleFilterChange} />
-                {loading ? <p>Đang tải...</p> : (
+                {loading ?<SkeletonLoading type ="khách sạn"></SkeletonLoading> : (
                     <AccomodationCards
                         accommodationsFound={accommodationsFound}
                         startDay={startDate}
                         endDay={endDate}
                         adults={adults}
-                        children={children}
+                        childrenCount={children}
                     />
                 )}
             </div>

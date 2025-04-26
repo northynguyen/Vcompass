@@ -4,6 +4,7 @@ import './HomeFoodService.css';
 import FoodServiceCards from './FoodServiceCards';
 import LeftSideBar from './LeftSideBar';
 import { StoreContext } from '../../Context/StoreContext';
+import SkeletonLoading from '../HomeAttractions/SkeletonLoading';
 
 const HomeFoodService = () => {
     const { url } = useContext(StoreContext);
@@ -81,7 +82,7 @@ const HomeFoodService = () => {
 
             <div className="attractions-content-container">
                 <LeftSideBar onFilterChange={handleFilterChange} />
-                {loading ? <p>Đang tải...</p> : <FoodServiceCards foodServicesFound={foodServicesFound} />}
+                {loading ? <SkeletonLoading type= "nhà hàng" /> : <FoodServiceCards foodServicesFound={foodServicesFound} />}
             </div>
 
             {totalPages > 1 && (

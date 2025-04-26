@@ -21,7 +21,20 @@ const AttractionItem = ({ attraction, status, setCurDes }) => {
     setCurDes(attraction);
     window.scrollTo(40, 0);
   };
+  const getImageUrl = (place) => {
+    if (!place.images || !place.images.length) {
+      return 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+    }
+    
+    const image = place.images[0];
+    if (image.includes('http')) {
+      return image;
+    }
+    
+    return `${url}/images/${image}`;
+  };
 
+  
   const onNavigateToDetails = () => {
     const encryptedServiceId = CryptoJS.AES.encrypt(attraction._id, 'mySecretKey').toString();
     const safeEncryptedServiceId = encodeURIComponent(encryptedServiceId);
@@ -31,7 +44,15 @@ const AttractionItem = ({ attraction, status, setCurDes }) => {
   return (
     <div className="list-accom__tour-item" onClick={onNavigateToDetails}>
       <div className="accom-card-header">
-        <img src={`${url}/images/${attraction.images[0]}`} alt={attraction.attractionName} className="list-accom__tour-item-image" />
+        <img 
+          src={getImageUrl(attraction)} 
+          alt={attraction.attractionName} 
+          className="list-accom__tour-item-image" 
+          onError={(e) => {
+            e.target.onerror = null; // Prevent infinite loop
+            e.target.src = 'https://t3.ftcdn.net/jpg/07/86/72/92/360_F_786729270_zRVnfyxvQgOIPrGYzCweGV1bi5X9fgSz.jpg';
+          }}
+        />
         <div className="accom-card-header-right">
           <h3>{attraction.attractionName}</h3>
           <div className="list-accom__tour-location">
@@ -105,7 +126,7 @@ SelectButton.propTypes = {
 const AttractionList = ({ attractions, sortOption, status, setCurDes }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [toursPerPage] = useState(status === "Schedule" ? 3 : 8);
-
+  
   const sortedTours = Object.values(attractions).sort((a, b) => {
     switch (sortOption) {
       case "PriceLowToHigh":

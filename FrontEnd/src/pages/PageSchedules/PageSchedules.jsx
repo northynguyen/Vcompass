@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { FaBars } from "react-icons/fa";
@@ -7,9 +6,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
 import PostCard from '../../components/Poster/PostCard';
+import PostCardSkeleton from '../../components/Poster/PostCardSkeleton';
 import { StoreContext } from '../../Context/StoreContext';
 import './PageSchedules.css';
 
+// Add this comment to disable prop-types validation for the Range component
+// since we're using an external library where we can't control the prop validation
+/* eslint-disable react/prop-types */
 
 const PageSchedules = () => {
   const { type } = useParams();
@@ -222,137 +225,6 @@ const PageSchedules = () => {
   const totalPages = Math.ceil(filteredSchedules.length / schedulesPerPage);
 
   return (
-    // <<<<<<< THOAI
-    //     <div className="search-schedule">
-    //       <div className="main-content">
-    //         <div className="filters-container">
-    //           <div className="filters">
-    //             <h3>Lọc & Sắp xếp</h3>
-    //             <label>
-    //               <span>Loại hoạt động</span>
-    //               <select
-    //                 value={filters.activityType}
-    //                 onChange={(e) =>
-    //                   setFilters({ ...filters, activityType: e.target.value })
-    //                 }
-    //               >
-    //                 <option value="">Tất cả</option>
-    //                 <option value="attraction">Attraction</option>
-    //                 <option value="accommodation">Accommodation</option>
-    //                 <option value="foodservice">FoodService</option>
-    //                 <option value="other">Other</option>
-    //               </select>
-    //             </label>
-
-    //             <label>
-    //               <span>Số ngày</span>
-    //               <select
-    //                 value={filters.days}
-    //                 onChange={(e) =>
-    //                   setFilters({ ...filters, days: parseInt(e.target.value, 10) })
-    //                 }
-    //               >
-    //                 <option value={0}>Tất cả</option>
-    //                 <option value={1}>1 ngày</option>
-    //                 <option value={2}>2 ngày 1 đêm</option>
-    //                 <option value={3}>3 ngày 2 đêm</option>
-    //                 <option value={4}>4 ngày 3 đêm</option>
-    //                 <option value={5}>5 ngày 4 đêm</option>
-    //                 <option value={6}>6 ngày 5 đêm</option>
-    //                 <option value={7}>7 ngày 6 đêm</option>
-    //               </select>
-    //             </label>
-
-    //             <label>
-    //               <span>Sắp xếp</span>
-    //               <select
-    //                 value={filters.sortBy}
-    //                 onChange={(e) =>
-    //                   setFilters({ ...filters, sortBy: e.target.value })
-    //                 }
-    //               >
-    //                 <option value="">Mặc định</option>
-    //                 <option value="likes">Nhiều lượt thích</option>
-    //                 <option value="comments">Nhiều bình luận</option>
-    //               </select>
-    //             </label>
-
-    //             <label>
-    //               <input
-    //                 type="checkbox"
-    //                 checked={filters.hasVideo}
-    //                 onChange={(e) =>
-    //                   setFilters({ ...filters, hasVideo: e.target.checked })
-    //                 }
-    //               />
-    //               <span>Có video</span>
-    //             </label>
-
-    //             <label>
-    //               <input
-    //                 type="checkbox"
-    //                 checked={filters.hasImage}
-    //                 onChange={(e) =>
-    //                   setFilters({ ...filters, hasImage: e.target.checked })
-    //                 }
-    //               />
-    //               <span>Có ảnh</span>
-    //             </label>
-    //           </div>
-
-    //           <div className="price-slider">
-    //             <Range
-    //               step={100000}
-    //               min={0}
-    //               max={10000000}
-    //               values={priceRange}
-    //               onChange={(values) => setPriceRange(values)}
-    //               renderTrack={({ props, children }) => (
-    //                 <div
-    //                   {...props}
-    //                   style={{
-    //                     ...props.style,
-    //                     height: "8px",
-    //                     background: "#ddd",
-    //                     position: "relative",
-    //                   }}
-    //                 >
-    //                   <div
-    //                     style={{
-    //                       position: "absolute",
-    //                       height: "8px",
-    //                       background: "#007bff",
-    //                       left: `${(priceRange[0] / 10000000) * 100}%`,
-    //                       right: `${100 - (priceRange[1] / 10000000) * 100}%`,
-    //                     }}
-    //                   ></div>
-    //                   {children}
-    //                 </div>
-    //               )}
-    //               renderThumb={({ props }) => (
-    //                 <div
-    //                   {...props}
-    //                   style={{
-    //                     ...props.style,
-    //                     height: "16px",
-    //                     width: "16px",
-    //                     backgroundColor: "#007bff",
-    //                     borderRadius: "50%",
-    //                     border: "2px solid white",
-    //                   }}
-    //                 />
-    //               )}
-    //             />
-    //             <div className="price-range">
-    //               <span>{priceRange[0].toLocaleString("vi-VN")}đ</span>
-    //               <span>{priceRange[1].toLocaleString("vi-VN")}đ</span>
-    //             </div>
-    //           </div>
-    //         </div>
-
-    //         <div>
-    //           <div className="schedule-list">
-    // =======
     <div className="schedule-for-you">
       <div className="left-side-bar-container">
         <div className="sidebar-toggle-container">
@@ -370,8 +242,9 @@ const PageSchedules = () => {
       <div className="main-content">
         <div>
           <div className="schedule-for-you-list">
-
-            {currentSchedules.length > 0 ? (
+            {loading ? (
+              <PostCardSkeleton count={schedulesPerPage} />
+            ) : currentSchedules.length > 0 ? (
               currentSchedules.map((schedule) => (
                 <PostCard
                   key={schedule._id}
@@ -386,7 +259,7 @@ const PageSchedules = () => {
             )}
           </div>
 
-          {totalPages > 1 && (
+          {!loading && totalPages > 1 && (
             <div className="pagination-container">
               <button
                 className="prev-button"

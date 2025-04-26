@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FaGlobe, FaTrash, FaUserSecret } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
@@ -7,9 +7,11 @@ import ConfirmDialog from "../../components/Dialog/ConfirmDialog";
 import { StoreContext } from "../../Context/StoreContext";
 import { VscCopilot } from "react-icons/vsc";
 import "./MySchedule.css";
+import ScheduleSkeleton from './ScheduleSkeleton';
+import PropTypes from 'prop-types';
 
 const MySchedule = ({ setShowLogin }) => {
-  const { url, token, user } = useContext(StoreContext);
+  const { url, token } = useContext(StoreContext);
   const [schedules, setSchedules] = useState([]);
   const [groupSchedules, setGroupSchedules] = useState([]);
   const [wishlists, setWishlists] = useState([]);
@@ -38,7 +40,9 @@ const MySchedule = ({ setShowLogin }) => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (popupRef.current && !popupRef.current.contains(event.target)) {
-        setActiveScheduleId(null);
+        if (!event.target.closest('.action-toggle-btn')) {
+          setActiveScheduleId(null);
+        }
       }
     };
 
@@ -50,8 +54,7 @@ const MySchedule = ({ setShowLogin }) => {
 
   useEffect(() => {
     const fetchSchedulesData = async () => {
-
-
+      setIsLoading(true);
       try {
         const schedulesResponse = await axios.get(
           `${url}/api/schedule/user/getSchedules`,
@@ -77,24 +80,39 @@ const MySchedule = ({ setShowLogin }) => {
         if (schedulesResponse.data.success) {
           setSchedules(schedulesResponse.data.schedules);
         } else {
+          setSchedules([]);
           console.error("Failed to fetch schedules:", schedulesResponse.data.message);
         }
 
         if (wishlistsResponse.data.success) {
           setWishlists(wishlistsResponse.data.schedules);
         } else {
+          setWishlists([]);
           console.error("Failed to fetch wishlists:", wishlistsResponse.data.message);
         }
       } catch (error) {
         console.error("Error fetching schedules or wishlists:", error);
+        setSchedules([]);
+        setGroupSchedules([]);
+        setWishlists([]);
       } finally {
         setIsLoading(false);
       }
-
     };
 
     if (token) fetchSchedulesData();
   }, [token, url, isConfirmOpen]);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (scheduleType === "my-schedule") {
+      setListRender(schedules);
+    }
+    else if (scheduleType === "group-schedule") {
+      setListRender(groupSchedules);
+    }
+  }, [scheduleType, schedules, groupSchedules, isLoading]);
 
   const calculateDaysAndNights = (startDateStr, endDateStr) => {
     const parseDate = (dateStr) => {
@@ -198,16 +216,6 @@ const MySchedule = ({ setShowLogin }) => {
     }
   };
 
-  useEffect(() => {
-    if (scheduleType === "my-schedule") {
-      setListRender(schedules);
-    }
-    else if (scheduleType === "group-schedule") {
-      setListRender(groupSchedules);
-      console.log("groupSchedules", groupSchedules);
-    }
-  }, [scheduleType, schedules, groupSchedules]);
-
   return (
     <div className="my-schedule-container">
       <header className="hero-section">
@@ -241,8 +249,13 @@ const MySchedule = ({ setShowLogin }) => {
           </button>
 
         </div>
-
-        {!isLoading && listRender.length > 0 ? (
+        {isLoading ? (
+          <>
+            <ScheduleSkeleton />
+            <ScheduleSkeleton />
+            <ScheduleSkeleton />
+          </>
+        ) : listRender.length > 0 ? (
           listRender.map((schedule) => (
             <div
               key={schedule._id}
@@ -304,6 +317,7 @@ const MySchedule = ({ setShowLogin }) => {
         ) : (
           <p>Không có lịch trình nào.</p>
         )}
+       
       </section>
 
       <section className="featured-schedules-section">
@@ -338,7 +352,7 @@ const MySchedule = ({ setShowLogin }) => {
                 <div className="schedule-user">
                   <img
                     className="avatar"
-                    src={schedule.idUser.avatar ? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                    src={schedule.idUser.avatar && schedule.idUser.avatar.includes("http") ?  schedule.idUser.avatar: schedule.idUser.avatar? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                     alt={schedule.userName}
                   />
                   <p>{schedule.idUser.name || "Unknown User"}</p>
@@ -348,8 +362,8 @@ const MySchedule = ({ setShowLogin }) => {
           </div>
         ) : (
           <>
-            <p>Không có lịch trình đã lưu.</p>
-            <a href="/searchSchedule">Tìm kiếm lịch trình </a>
+            {!isLoading && <p>Không có lịch trình đã lưu.</p>}
+            {!isLoading && <a href="/searchSchedule">Tìm kiếm lịch trình </a>}
           </>
         )}
       </section>
@@ -363,6 +377,10 @@ const MySchedule = ({ setShowLogin }) => {
       />
     </div>
   );
+};
+
+MySchedule.propTypes = {
+  setShowLogin: PropTypes.func
 };
 
 export default MySchedule;

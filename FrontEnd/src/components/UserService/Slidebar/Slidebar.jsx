@@ -18,7 +18,14 @@ const Sidebar = ({ activeTab, onTabChange, img }) => {
     return (
         <div className="my-account-sidebar">
             <div className="profile-section">
-                <img src={user.avatar && user.avatar.includes('http') ? user.avatar : user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt="Profile" className="profile-pic" />
+                <img 
+                    src={user.avatar && user.avatar.includes('http') ? user.avatar : user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
+                    alt="Profile" className="profile-pic" 
+                    onError={(e) => {
+                        e.target.onerror = null; // Prevent infinite loop
+                        e.target.src = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+                    }}
+                />
                 <div className="profile-name">{user.name}</div>
                 <div className="priority-status">Bronze Priority</div>
             </div>

@@ -23,7 +23,7 @@ const HotelDetailsInfo = ({ serviceId, filterData }) => {
   const [children, setChildren] = useState(filterData?.children ?? 0);
   const [numRooms, setNumRooms] = useState(1);
   const [isSave, setIsSave] = useState(false);
-  const { url, token, user } = React.useContext(StoreContext);
+  const { url, token, user,getImageUrl } = React.useContext(StoreContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -344,7 +344,7 @@ const HotelDetailsInfo = ({ serviceId, filterData }) => {
         {/* Image Gallery */}
         <div className="gallery">
           <div className="main-image">
-            <img src={`${url}/images/${accommodation.images[0]}`} alt="Main" className="main-img" />
+            <img src={getImageUrl(accommodation)} alt="Main" className="main-img" />
           </div>
           <div className="thumbnails">
             {accommodation.images.slice(1).map((img, index) => {
@@ -352,7 +352,7 @@ const HotelDetailsInfo = ({ serviceId, filterData }) => {
                 return (
                   <img
                     key={index}
-                    src={`${url}/images/${img}`}
+                    src={getImageUrl(accommodation, index+1)}
                     alt={`Thumb ${index + 1}`}
                     className="thumbnail-img"
                     onClick={() => openModal(index + 1)}
@@ -415,7 +415,7 @@ const HotelDetailsInfo = ({ serviceId, filterData }) => {
         <h2>Những phòng hiện có</h2>
         {accommodation.roomTypes.length === 0 && <p>Không có phòng nào phù hợp.</p>}
         {accommodation.roomTypes?.map((room, index) => (
-          <RoomCard key={index} room={room} handleRoomClick={handleRoomClick} url={url} handleRoomSelect={handleRoomSelect} />
+          <RoomCard key={index} room={room} handleRoomClick={handleRoomClick} url={url} handleRoomSelect={handleRoomSelect} getImageUrl={getImageUrl} />
         ))}
       </div>
 

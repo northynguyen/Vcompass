@@ -5,11 +5,11 @@ import { StoreContext } from "../../Context/StoreContext";
 import './ImagesModal.css';
 
 const ImagesModal = ({ isOpen, images, selectedIndex, onClose }) => {
-  const [currentIndex, setCurrentIndex] = useState(selectedIndex);
+  const [currentIndex, setCurrentIndex] = useState(Number(selectedIndex) );
   const { url } = useContext(StoreContext)
 
   useEffect(() => {
-    setCurrentIndex(selectedIndex)
+    setCurrentIndex(selectedIndex - 1)
   }, [isOpen, selectedIndex]);
   if (!isOpen) return null;
   const handlePrev = () => {
@@ -24,7 +24,7 @@ const ImagesModal = ({ isOpen, images, selectedIndex, onClose }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {/* Ảnh đang hiển thị */}
         <div className="image-display">
-          <img src={images[currentIndex].includes("http") ? images[currentIndex] : `${url}/images/${images[currentIndex]}`} alt={`Image ${currentIndex + 1}`} className="main-image" />
+          <img src={images[currentIndex]?.includes("http") ? images[currentIndex] : `${url}/images/${images[currentIndex]}`} alt={`Image ${currentIndex + 1}`} className="main-image" />
           <button className="close-btn" onClick={onClose}>
             &times;
           </button>

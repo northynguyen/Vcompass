@@ -9,14 +9,17 @@ import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { StoreContext } from '../../Context/StoreContext';
 import CryptoJS from 'crypto-js';
+import SlideBarSkeleton from './SlideBarSkeleton';
 
 const SlideBar = ({ type }) => {
     const [popularServices, setPopularServices] = useState([]);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const { url } = useContext(StoreContext);
 
     useEffect(() => {
         const fetchFoodServices = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get(`${url}/api/foodservices/`, {
                     params: {
@@ -25,12 +28,15 @@ const SlideBar = ({ type }) => {
                 });
                 const sortedServices = response.data.foodService.slice(0, 10);
                 setPopularServices(sortedServices);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching food services:', error);
+                setLoading(false);
             }
         };
 
         const fetchAccommodations = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get(`${url}/api/accommodations`, {
                     params: {
@@ -39,12 +45,15 @@ const SlideBar = ({ type }) => {
                 });
                 const sortedServices = response.data.accommodations.slice(0, 10);
                 setPopularServices(sortedServices);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching accommodations:', error);
+                setLoading(false);
             }
         };
 
         const fetchAttractions = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get(`${url}/api/attractions/`, {
                     params: {
@@ -54,12 +63,15 @@ const SlideBar = ({ type }) => {
                 if (response.data.success) {
                     const sortedServices = response.data.attractions.slice(0, 10);
                     setPopularServices(sortedServices);
+                    setLoading(false);
                 }
                 else {
                     console.error('Error fetching attractions:', response.data.message);
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error('Error fetching attractions:', error);
+                setLoading(false);
             }
         };
 
@@ -69,10 +81,13 @@ const SlideBar = ({ type }) => {
             fetchFoodServices();
         } else if (type === 'attraction') {
             fetchAttractions();
-           // console.log(popularServices);
         }
     }, [type, url]);
 
+    // If loading, show skeleton component
+    if (loading) {
+        return <SlideBarSkeleton type={type} />;
+    }
 
     const onClick = (serviceId) => {
         const encryptedServiceId = CryptoJS.AES.encrypt(serviceId, 'mySecretKey').toString();

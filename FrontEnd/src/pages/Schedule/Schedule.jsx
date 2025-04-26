@@ -25,6 +25,7 @@ import "./Schedule.css";
 import { Tooltip } from "react-tooltip";
 import InviteTripmatesModal from "./InviteTripmatesModal/InviteTripmatesModal";
 import _ from "lodash";
+import RecommendPlace from "./RecommendPlace/RecommendPlace";
 
 const MapViewWithRoute = ({ activities, scheduleID }) => {
   const [activitiesWithCoordinates, setActivitiesWithCoordinates] = useState([]);
@@ -1057,6 +1058,59 @@ const DateSchedule = ({
                     Thêm mới
                   </button>
                 </div>
+              )}
+
+              {isOpen && mode === "edit" && (
+                <RecommendPlace 
+                  city={city}
+                  onSelectPlace={(place) => {
+                    // Handle adding the selected place to the schedule
+                    if (mode === "edit") {
+                      // When a place is selected, we can open the add activity modal with prefilled data
+                      const placeData = place.data;
+                      
+                      // Ensure proper data formatting for different place types
+                      const newDestination = {
+                        _id: placeData._id,
+                        name: place.type === 'Attraction' ? placeData.attractionName : placeData.foodServiceName,
+                        type: place.type,
+                        location: placeData.location,
+                        images: placeData.images,
+                        activityType: place.type,
+                        // Add necessary properties based on type
+                        ...(place.type === 'Attraction' ? {
+                          attractionName: placeData.attractionName,
+                          price: placeData.price,
+                          amenities: placeData.amenities || [],
+                          ratings: placeData.ratings || [],
+                          description: placeData.description
+                        } : {
+                          foodServiceName: placeData.foodServiceName,
+                          price: placeData.price || { minPrice: 0, maxPrice: 0 },
+                          amenities: placeData.amenities || [],
+                          ratings: placeData.ratings || [],
+                          description: placeData.description,
+                          serviceType: placeData.serviceType
+                        })
+                      };
+                      
+                      // Create a minimal activity object to prefill the modal
+                      const prefillActivity = {
+                        activityType: place.type,
+                        idDestination: placeData._id,
+                        description: place.type === 'Attraction' ? placeData.attractionName : placeData.foodServiceName,
+                        cost: place.type === 'Attraction' ? placeData.price : placeData.price?.minPrice || 0,
+                        timeStart: "09:00",
+                        timeEnd: "11:00",
+                      };
+                      
+                      // Set current activity and destination for the modal
+                      setCurrentActivity(prefillActivity);
+                      setCurrentDestination(newDestination);
+                      openModal();
+                    }
+                  }}
+                />
               )}
 
               {provided.placeholder}

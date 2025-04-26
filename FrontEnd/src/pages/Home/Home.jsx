@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
+import PostCardSkeleton from "../../components/Poster/PostCardSkeleton";
+
 import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
 import AccommodationBanner from "../../components/Poster/AccommodationBanner ";
 import PostCard from "../../components/Poster/PostCard";
@@ -16,7 +18,7 @@ import "./Home.css";
 
 const Home = () => {
   const { url, token, user } = useContext(StoreContext);
-  const [schedules, setSchedules] = useState(null);
+  const [schedules, setSchedules] = useState([]);                                       
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [topCity, setTopCity] = useState([]);
   const [address, setAddress] = useState("");
@@ -26,6 +28,25 @@ const Home = () => {
   const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState([]);
   const [scheduleAI, setScheduleAI] = useState([]);
+
+  // Update window width on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Clean up
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Toggle sidebar function
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
 
   // Update window width on resize
   useEffect(() => {
@@ -136,6 +157,33 @@ const Home = () => {
     if (user) {
       fetchData();
     } else {
+      // Define a separate function for fetching data when user is not logged in
+      const fetchData2 = async () => {
+        try {
+          setIsLoading(true);
+          
+          const cityResponse = await axios.get(
+            `${url}/api/schedule/getByCity/Top`
+          );
+          if (cityResponse.data.success) {
+            setTopCity(cityResponse.data.addresses);
+          }
+          
+          const scheduleResponse = await axios.get(
+            `${url}/api/schedule/getAllSchedule?forHomePage=true`
+          );
+          if (scheduleResponse.data.success) {
+            const publicSchedules = scheduleResponse.data.schedules;
+            setFilteredSchedules(publicSchedules);
+            console.log("Most liked schedules", publicSchedules);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
       fetchData2();
     }
   }, [url, token]);
@@ -158,14 +206,12 @@ const Home = () => {
       }
     };
 
-
     fetchData();
   }, [url, user]);
 
   const handleScheduleClick = (id) => {
     navigate(`/schedule-view/${id}`);
   };
-
 
   // Xử lý sự kiện nhập liệu
   const handleAddressChange = (e) => {
@@ -263,7 +309,7 @@ const Home = () => {
         </button>
       </div>
 
-      {sidebarOpen && <div className="sidebar-overlay" onClick={toggleSidebar}></div>}
+      {sidebarOpen && ( <div className="sidebar-overlay" onClick={toggleSidebar}></div>)}
 
       <div className={`sidebar-container ${sidebarOpen ? 'open' : ''}`}>
         <LeftSideBar />
@@ -404,73 +450,92 @@ const Home = () => {
             </Swiper>
           </div>
 
-          {scheduleAI && scheduleAI.length > 0 &&
-            (//console.log(schedules),
-              (
-                <div className="post-card-recommendations">
-                  <div className="post-card-header">
-                    <h3>Lịch trình dành cho bạn </h3>
+          {scheduleAI && scheduleAI.length > 0 && (
+            <div className="post-card-recommendations">
+              <div className="post-card-header">
+                <h3>Lịch trình dành cho bạn </h3>
+              </div>
+              <div className="post-card-recommendations__container">
+                {isLoading ? (
+                  <div className="skeleton-container" style={{ 
+                    display: "flex", 
+                    justifyContent: "center", 
+                    alignItems: "center", 
+                    width: "100%" 
+                  }}>
+                    <PostCardSkeleton count={1} />
                   </div>
-                  <div className="post-card-recommendations__container">
-                    <Swiper
-                      modules={[Navigation, Pagination, Autoplay]}
-                      spaceBetween={30}
-                      slidesPerView={1} // Mặc định hiển thị 1 slide
-                      navigation
-                      pagination={{ clickable: true }}
-                      autoplay={{
-                        delay: 4000,
-                        pauseOnMouseEnter: true,
-                        disableOnInteraction: true,
-                      }}
-                      breakpoints={{
-                        768: { slidesPerView: 1 },
-                      }}
-                    >
-                      {!isLoading &&
-                        scheduleAI?.map((schedule, index) => (
-                          <SwiperSlide key={index}>
-                            <PostCard
-                              key={schedule._id}
-                              schedule={schedule}
-                              handleScheduleClick={handleScheduleClick}
-                              style={{ width: windowWidth < 780 ? "100%" : "80%" }}
-                            />
-                          </SwiperSlide>
-                        ))}
-                      {isLoading && <div className="spinner"> </div>}
-                      {scheduleAI?.length === 0 && !isLoading && (
+                ) : (
+                  <Swiper
+                    modules={[Navigation, Pagination, Autoplay]}
+                    spaceBetween={30}
+                    slidesPerView={1}
+                    navigation
+                    pagination={{ clickable: true }}
+                    autoplay={{
+                      delay: 4000,
+                      pauseOnMouseEnter: true,
+                      disableOnInteraction: true,
+                    }}
+                    breakpoints={{
+                      768: { slidesPerView: 1 },
+                    }}
+                  >
+                    {!isLoading &&
+                      scheduleAI?.map((schedule, index) => (
+                        <SwiperSlide key={index}>
+                          <PostCard
+                            key={schedule._id}
+                            schedule={schedule}
+                            handleScheduleClick={handleScheduleClick}
+                            style={{ width: windowWidth < 780 ? "100%" : "80%" }}
+                          />
+                        </SwiperSlide>
+                      ))}
+                    {scheduleAI?.length === 0 && (
+                      <SwiperSlide>
                         <p className="post-card-recommendations__message">
                           Không có lịch trình phù hợp.
                         </p>
-                      )}
-                    </Swiper>
-                  </div>
-                </div>
-              ))}
+                      </SwiperSlide>
+                    )}
+                  </Swiper>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="post-card-recommendations">
             <div className="post-card-header">
               <h3>Lịch trình nổi bật </h3>
             </div>
             <div className="post-card-recommendations__container">
-              <Swiper
-                modules={[Navigation, Pagination, Autoplay]}
-                spaceBetween={30}
-                slidesPerView={1}
-                navigation
-                breakpoints={{
-                  768: { slidesPerView: 1 },
-                }}
-                pagination={{ clickable: true }}
-                autoplay={{
-                  delay: 3000,
-                  pauseOnMouseEnter: true,
-                  disableOnInteraction: true,
-                }}
-              >
-                {!isLoading &&
-                  filteredSchedules?.map((schedule, index) => (
+              {isLoading ? (
+                <div className="skeleton-container" style={{ 
+                  display: "flex", 
+                  justifyContent: "center", 
+                  alignItems: "center", 
+                  width: "100%" 
+                }}>
+                  <PostCardSkeleton count={1} />
+                </div>
+              ) : (
+                <Swiper
+                  modules={[Navigation, Pagination, Autoplay]}
+                  spaceBetween={30}
+                  slidesPerView={1}
+                  navigation
+                  breakpoints={{
+                    768: { slidesPerView: 1 },
+                  }}
+                  pagination={{ clickable: true }}
+                  autoplay={{
+                    delay: 3000,
+                    pauseOnMouseEnter: true,
+                    disableOnInteraction: true,
+                  }}
+                >
+                  {filteredSchedules?.map((schedule, index) => (
                     <SwiperSlide key={index}>
                       <PostCard
                         key={schedule._id}
@@ -480,14 +545,15 @@ const Home = () => {
                       />
                     </SwiperSlide>
                   ))}
-                {isLoading && <div className="spinner"> </div>}
-                {filteredSchedules?.length === 0 && !isLoading && (
-                  <p className="post-card-recommendations__message">
-                    {" "}
-                    Không có lịch trình phù hợp.
-                  </p>
-                )}
-              </Swiper>
+                  {filteredSchedules?.length === 0 && (
+                    <SwiperSlide>
+                      <p className="post-card-recommendations__message">
+                        Không có lịch trình phù hợp.
+                      </p>
+                    </SwiperSlide>
+                  )}
+                </Swiper>
+              )}
             </div>
           </div>
 
