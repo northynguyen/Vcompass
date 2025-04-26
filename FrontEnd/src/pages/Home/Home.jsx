@@ -198,23 +198,6 @@ const Home = () => {
         if (data.success) {
           console.log("Recommended schedules by AI:", data.recommendedSchedules);
           setScheduleAI(data.recommendedSchedules);
-// =======
-//     const fetchData2 = async () => {
-//       try {
-//         const cityResponse = await axios.get(
-//           `${url}/api/schedule/getByCity/Top`
-//         );
-//         if (cityResponse.data.success) {
-//           setTopCity(cityResponse.data.addresses);
-//         }
-//         const scheduleResponse2 = await axios.get(
-//           `${url}/api/schedule/getAllSchedule?forHomePage=true`
-//         );
-//         if (scheduleResponse2.data.success) {
-//           const publicSchedules = scheduleResponse2.data.schedules;
-//           setFilteredSchedules(publicSchedules);
-//           console.log("Most liked schedules", publicSchedules);
-// >>>>>>> main
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -223,25 +206,12 @@ const Home = () => {
       }
     };
 
-
     fetchData();
   }, [url, user]);
-// =======
-//     if (user) {
-//       fetchData();
-//     } else {
-//       fetchData2();
-//     }
-//   }, [url, token]);
-
-  
-// >>>>>>> main
-
 
   const handleScheduleClick = (id) => {
     navigate(`/schedule-view/${id}`);
   };
-
 
   // Xử lý sự kiện nhập liệu
   const handleAddressChange = (e) => {
@@ -480,60 +450,60 @@ const Home = () => {
             </Swiper>
           </div>
 
-          {scheduleAI && scheduleAI.length > 0 &&
-            (//console.log(schedules),
-              (
-                <div className="post-card-recommendations">
-                  <div className="post-card-header">
-                    <h3>Lịch trình dành cho bạn </h3>
+          {scheduleAI && scheduleAI.length > 0 && (
+            <div className="post-card-recommendations">
+              <div className="post-card-header">
+                <h3>Lịch trình dành cho bạn </h3>
+              </div>
+              <div className="post-card-recommendations__container">
+                {isLoading ? (
+                  <div className="skeleton-container" style={{ 
+                    display: "flex", 
+                    justifyContent: "center", 
+                    alignItems: "center", 
+                    width: "100%" 
+                  }}>
+                    <PostCardSkeleton count={1} />
                   </div>
-                  <div className="post-card-recommendations__container">
-                  {isLoading ? (
-                      <div className="skeleton-container" style={{ 
-                        display: "flex", 
-                        justifyContent: "center", 
-                        alignItems: "center", 
-                        width: "100%" 
-                      }}>
-                        <PostCardSkeleton count={1} />
-                      </div>
-                    ) : (
-                    <Swiper
-                      modules={[Navigation, Pagination, Autoplay]}
-                      spaceBetween={30}
-                      slidesPerView={1} // Mặc định hiển thị 1 slide
-                      navigation
-                      pagination={{ clickable: true }}
-                      autoplay={{
-                        delay: 4000,
-                        pauseOnMouseEnter: true,
-                        disableOnInteraction: true,
-                      }}
-                      breakpoints={{
-                        768: { slidesPerView: 1 },
-                      }}
-                    >
-                      {!isLoading &&
-                         scheduleAI?.map((schedule, index) => (
-                          <SwiperSlide key={index}>
-                            <PostCard
-                              key={schedule._id}
-                              schedule={schedule}
-                              handleScheduleClick={handleScheduleClick}
-                              style={{ width: windowWidth < 780 ? "100%" : "80%" }}
-                            />
-                          </SwiperSlide>
-                        ))}
-                      {scheduleAI?.length === 0 && (
-                          <SwiperSlide>
-                            <p className="post-card-recommendations__message">
-                              Không có lịch trình phù hợp.
-                            </p>
-                          </SwiperSlide>
-                        )}
-                  </div>
-                </div>
-              )}
+                ) : (
+                  <Swiper
+                    modules={[Navigation, Pagination, Autoplay]}
+                    spaceBetween={30}
+                    slidesPerView={1}
+                    navigation
+                    pagination={{ clickable: true }}
+                    autoplay={{
+                      delay: 4000,
+                      pauseOnMouseEnter: true,
+                      disableOnInteraction: true,
+                    }}
+                    breakpoints={{
+                      768: { slidesPerView: 1 },
+                    }}
+                  >
+                    {!isLoading &&
+                      scheduleAI?.map((schedule, index) => (
+                        <SwiperSlide key={index}>
+                          <PostCard
+                            key={schedule._id}
+                            schedule={schedule}
+                            handleScheduleClick={handleScheduleClick}
+                            style={{ width: windowWidth < 780 ? "100%" : "80%" }}
+                          />
+                        </SwiperSlide>
+                      ))}
+                    {scheduleAI?.length === 0 && (
+                      <SwiperSlide>
+                        <p className="post-card-recommendations__message">
+                          Không có lịch trình phù hợp.
+                        </p>
+                      </SwiperSlide>
+                    )}
+                  </Swiper>
+                )}
+              </div>
+            </div>
+          )}
 
           <div className="post-card-recommendations">
             <div className="post-card-header">
