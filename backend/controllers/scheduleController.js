@@ -1,23 +1,22 @@
+import axios from "axios";
+import { exec } from "child_process";
+import fs from "fs";
+import keyword_extractor from "keyword-extractor";
+import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
+import Accommodation from "../models/accommodation.js";
+import Attraction from "../models/attraction.js";
+import FoodService from "../models/foodService.js";
+import Log from "../models/logActivity.js";
 import Schedule from "../models/schedule.js";
 import User from "../models/user.js";
-import Accommodation from "../models/accommodation.js"
-import FoodService from "../models/foodService.js"
-import Attraction from "../models/attraction.js"
 import { createNotification } from "./notiController.js";
-import { ObjectId } from "mongodb";
-import keyword_extractor from "keyword-extractor";
-import { uploadToCloudinaryV2 } from './videoController.js';
-
-import Log from "../models/logActivity.js";
-import fs from 'fs';
-import { exec } from 'child_process';
-import path from "path";
+import { uploadToCloudinaryV2 } from "./videoController.js";
 
 export const addSchedule = async (req, res) => {
   try {
     const { userId, schedule } = req.body;
-    let newSchedule
+    let newSchedule;
     const tags = generateTagsFromSchedule(schedule);
 
     if (userId) {
@@ -61,8 +60,9 @@ export const getScheduleById = async (req, res) => {
     }
 
     // Kiểm tra quyền chỉnh sửa
-    const canEdit = schedule.idUser.equals(userId) ||
-      schedule.idInvitee.some(invitee => invitee._id.equals(userId));
+    const canEdit =
+      schedule.idUser.equals(userId) ||
+      schedule.idInvitee.some((invitee) => invitee._id.equals(userId));
 
     // Nếu có activityId, tìm activity cụ thể trong schedule.activities
     if (activityId) {
@@ -88,7 +88,7 @@ export const getScheduleById = async (req, res) => {
       success: true,
       message: "Get schedule success",
       schedule,
-      canEdit // Thêm flag này vào response
+      canEdit, // Thêm flag này vào response
     });
   } catch (error) {
     console.error("Error retrieving schedule:", error);
@@ -154,7 +154,7 @@ export const getSchedulesByIdUser = async (req, res) => {
     if (type === "group") {
       console.log("type group -------");
       const schedules = await Schedule.find({
-        idInvitee: new mongoose.Types.ObjectId(userId)
+        idInvitee: new mongoose.Types.ObjectId(userId),
       });
       if (!schedules.length) {
         return res.json({
@@ -167,17 +167,25 @@ export const getSchedulesByIdUser = async (req, res) => {
         success: true,
         message: "Schedules retrieved successfully",
         schedules,
-      })
+      });
     }
     if (type === "wishlist") {
       const user = await User.findById(userId);
       if (!user) {
-        return res.status(404).json({ success: false, message: "User not found" });
+        return res
+          .status(404)
+          .json({ success: false, message: "User not found" });
       }
 
-      const schedules = await Schedule.find({ _id: { $in: user.favorites.schedule } }).populate("idUser");
+      const schedules = await Schedule.find({
+        _id: { $in: user.favorites.schedule },
+      }).populate("idUser");
       if (!schedules.length) {
-        return res.json({ success: true, message: "No schedules found in wishlist", schedules: [] });
+        return res.json({
+          success: true,
+          message: "No schedules found in wishlist",
+          schedules: [],
+        });
       }
 
       return res.json({
@@ -185,8 +193,7 @@ export const getSchedulesByIdUser = async (req, res) => {
         message: "Wishlist schedules retrieved successfully",
         schedules,
       });
-    }
-    else {
+    } else {
       const idUserFind = type === "follower" ? id : userId;
       console.log("idUserFind : ", idUserFind);
       if (!idUserFind) {
@@ -196,7 +203,9 @@ export const getSchedulesByIdUser = async (req, res) => {
         });
       }
 
-      const schedules = await Schedule.find({ idUser: idUserFind }).populate("idUser");
+      const schedules = await Schedule.find({ idUser: idUserFind }).populate(
+        "idUser"
+      );
       if (!schedules.length) {
         return res.status(404).json({
           success: false,
@@ -238,8 +247,6 @@ export const getAllSchedule = async (req, res) => {
     // Tạo điều kiện tìm kiếm - luôn lấy isPublic=true
     const query = { isPublic: true };
 
-
-
     // Loại bỏ lịch trình của user hiện tại nếu có userId được cung cấp
     if (userId) {
       query.idUser = { $ne: userId }; // Không lấy lịch trình của user hiện tại
@@ -260,16 +267,14 @@ export const getAllSchedule = async (req, res) => {
     }
 
     // Nếu request từ trang Home, xử lý theo yêu cầu đặc biệt
-    if (forHomePage === 'true') {
+    if (forHomePage === "true") {
       if (cityList.length > 0) {
         // Lấy schedule được like nhiều nhất cho mỗi thành phố
         const schedulesByCity = [];
 
-
         // Lấy schedule phổ biến nhất cho mỗi thành phố
         for (const city of cityList) {
           const cityQuery = { address: city, isPublic: true };
-
 
           // Loại bỏ lịch trình của user hiện tại
           if (userId) {
@@ -301,7 +306,6 @@ export const getAllSchedule = async (req, res) => {
       } else {
         // Nếu không có danh sách thành phố, lấy 6 lịch trình được like nhiều nhất
         const homeQuery = { isPublic: true };
-
 
         // Loại bỏ lịch trình của user hiện tại
         if (userId) {
@@ -336,7 +340,6 @@ export const getAllSchedule = async (req, res) => {
         .sort(sortOptions) // Sắp xếp
         .skip(skip) // Bỏ qua các bản ghi trước đó
         .limit(parseInt(limit)); // Giới hạn số bản ghi trả về
-
 
       // Đếm tổng số lịch trình
       const total = await Schedule.countDocuments(query);
@@ -438,20 +441,23 @@ export const updateLikeComment = async (req, res) => {
           content: `${user.name} thích lịch trình: ${schedule.scheduleName}`,
           createdAt: new Date(),
           nameSender: user.name || "Unknown",
-          imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-        }
+          imgSender:
+            user.avatar ||
+            "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        };
         await createNotification(global.io, notificationData);
       }
-
     } else if (action === "comment") {
       // Add a comment
       const newComment = {
         idUser: userId,
         userName: user.name,
-        avatar: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        avatar:
+          user.avatar ||
+          "https://cdn-icons-png.flaticon.com/512/149/149071.png",
         content,
         createdAt: new Date(),
-        replies: []
+        replies: [],
       };
       schedule.comments.push(newComment);
       if (!schedule.idUser.equals(new ObjectId(userId))) {
@@ -462,8 +468,10 @@ export const updateLikeComment = async (req, res) => {
           content: `${user.name} đã bình luận lịch trình: ${schedule.scheduleName}`,
           createdAt: new Date(),
           nameSender: user.name || "Unknown",
-          imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-        }
+          imgSender:
+            user.avatar ||
+            "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        };
 
         await createNotification(global.io, notificationData);
       }
@@ -491,13 +499,14 @@ export const updateLikeComment = async (req, res) => {
           content: `${user.name} đã bình luận lịch trình: ${schedule.scheduleName}`,
           createdAt: new Date(),
           nameSender: user.name || "Unknown",
-          imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-        }
+          imgSender:
+            user.avatar ||
+            "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        };
         await createNotification(global.io, notificationData);
       }
 
       if (comment.idUser !== userId) {
-
         const notificationData2 = {
           idSender: userId,
           idReceiver: comment.idUser,
@@ -505,24 +514,22 @@ export const updateLikeComment = async (req, res) => {
           content: `${user.name} đã trả lời bình luận của bạn: ${schedule.scheduleName}`,
           createdAt: new Date(),
           nameSender: user.name || "Unknown",
-          imgSender: user.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-        }
-
+          imgSender:
+            user.avatar ||
+            "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+        };
 
         await createNotification(global.io, notificationData2);
       }
     }
 
-
     // Save the updated schedule
     await schedule.save();
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Schedule updated successfully",
-        schedule,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Schedule updated successfully",
+      schedule,
+    });
   } catch (error) {
     console.error(error);
     res
@@ -539,44 +546,61 @@ export const deleteActivity = async (req, res) => {
     const schedule = await Schedule.findById(id);
 
     if (!schedule) {
-      return res.status(404).json({ success: false, message: "Schedule not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Schedule not found" });
     }
 
     // Lọc các hoạt động để loại bỏ activity có id là activityId
     schedule.activities = schedule.activities.map((day) => {
       return {
         ...day,
-        activity: day.activity.filter((activity) => activity._id.toString() !== activityId),
+        activity: day.activity.filter(
+          (activity) => activity._id.toString() !== activityId
+        ),
       };
     });
 
     // Lưu lại lịch trình đã chỉnh sửa
     await schedule.save();
 
-    res.status(200).json({ success: true, message: "Activity deleted successfully", schedule });
+    res.status(200).json({
+      success: true,
+      message: "Activity deleted successfully",
+      schedule,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "Failed to delete activity", error: error.message });
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete activity",
+      error: error.message,
+    });
   }
 };
 
 export const uploadFiles = async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ success: false, message: 'No files uploaded!' });
+      return res
+        .status(400)
+        .json({ success: false, message: "No files uploaded!" });
     }
 
     const uploadPromises = req.files.map(async (file) => {
       try {
-        const result = await uploadToCloudinaryV2(file.buffer, 'schedule_images');
+        const result = await uploadToCloudinaryV2(
+          file.buffer,
+          "schedule_images"
+        );
         return {
           filename: file.originalname,
           path: result.secure_url,
           size: file.size,
-          public_id: result.public_id
+          public_id: result.public_id,
         };
       } catch (error) {
-        console.error('Error uploading file to Cloudinary:', error);
+        console.error("Error uploading file to Cloudinary:", error);
         throw error;
       }
     });
@@ -585,17 +609,16 @@ export const uploadFiles = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Files uploaded successfully!',
+      message: "Files uploaded successfully!",
       files: uploadedFiles,
     });
   } catch (error) {
-    console.error('Error in uploadFiles:', error);
+    console.error("Error in uploadFiles:", error);
 
     res.status(500).json({
       success: false,
-      message: 'Error uploading files',
-      error: error.message
-
+      message: "Error uploading files",
+      error: error.message,
     });
   }
 };
@@ -606,13 +629,19 @@ export const deleteSchedule = async (req, res) => {
     const schedule = await Schedule.findByIdAndDelete(id);
 
     if (!schedule) {
-      return res.status(404).json({ success: false, message: "Schedule not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Schedule not found" });
     }
 
-    res.status(200).json({ success: true, message: "Schedule deleted successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Schedule deleted successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ success: false, message: "Failed to delete schedule" });
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to delete schedule" });
   }
 };
 const generateTagsFromSchedule = (schedule) => {
@@ -622,10 +651,16 @@ const generateTagsFromSchedule = (schedule) => {
   if (schedule.address) {
     tags.add(schedule.address);
 
-    const beachPlaces = ['Vũng Tàu', 'Phú Quốc', 'Nha Trang', 'Đà Nẵng', 'Côn Đảo'];
-    if (beachPlaces.some(place => schedule.address.includes(place))) {
-      tags.add('biển');
-      tags.add('nghỉ dưỡng');
+    const beachPlaces = [
+      "Vũng Tàu",
+      "Phú Quốc",
+      "Nha Trang",
+      "Đà Nẵng",
+      "Côn Đảo",
+    ];
+    if (beachPlaces.some((place) => schedule.address.includes(place))) {
+      tags.add("biển");
+      tags.add("nghỉ dưỡng");
     }
   }
 
@@ -647,39 +682,39 @@ const generateTagsFromSchedule = (schedule) => {
     for (const activity of day.activity || []) {
       activityTypes.add(activity.activityType);
 
-      const lowerName = activity.name?.toLowerCase() || '';
-      const lowerDesc = activity.description?.toLowerCase() || '';
+      const lowerName = activity.name?.toLowerCase() || "";
+      const lowerDesc = activity.description?.toLowerCase() || "";
 
-      if (lowerName.includes('hải sản') || lowerDesc.includes('hải sản')) {
+      if (lowerName.includes("hải sản") || lowerDesc.includes("hải sản")) {
         hasSeafood = true;
       }
 
-      if (lowerName.includes('cà phê') || lowerDesc.includes('view đẹp')) {
+      if (lowerName.includes("cà phê") || lowerDesc.includes("view đẹp")) {
         hasCafe = true;
       }
 
-      if (lowerName.includes('resort') || lowerDesc.includes('hồ bơi')) {
+      if (lowerName.includes("resort") || lowerDesc.includes("hồ bơi")) {
         hasResort = true;
       }
     }
   }
 
-  activityTypes.forEach(type => {
+  activityTypes.forEach((type) => {
     switch (type) {
-      case 'Accommodation':
-        tags.add('khách sạn');
-        tags.add('chỗ ở');
+      case "Accommodation":
+        tags.add("khách sạn");
+        tags.add("chỗ ở");
         break;
-      case 'Attraction':
-        tags.add('địa điểm');
-        tags.add('tham quan');
+      case "Attraction":
+        tags.add("địa điểm");
+        tags.add("tham quan");
         break;
-      case 'FoodService':
-        tags.add('ẩm thực');
-        tags.add('ăn uống');
+      case "FoodService":
+        tags.add("ẩm thực");
+        tags.add("ăn uống");
         break;
-      case 'Other':
-        tags.add('hoạt động khác');
+      case "Other":
+        tags.add("hoạt động khác");
         break;
       default:
         tags.add(type.toLowerCase());
@@ -687,17 +722,17 @@ const generateTagsFromSchedule = (schedule) => {
   });
 
   // 4. Từ khóa bổ sung
-  tags.add('du lịch');
-  tags.add('phượt');
-  tags.add('lịch trình');
+  tags.add("du lịch");
+  tags.add("phượt");
+  tags.add("lịch trình");
 
   // 5. Gợi ý thêm theo cảm xúc/xu hướng
-  if (hasSeafood) tags.add('ẩm thực');
-  if (hasCafe) tags.add('sống ảo');
-  if (hasResort) tags.add('nghỉ dưỡng');
+  if (hasSeafood) tags.add("ẩm thực");
+  if (hasCafe) tags.add("sống ảo");
+  if (hasResort) tags.add("nghỉ dưỡng");
 
   if (schedule.numDays <= 3 && (hasCafe || hasResort)) {
-    tags.add('giới trẻ');
+    tags.add("giới trẻ");
   }
 
   // 6. Tag từ người dùng (tuổi + giới tính)
@@ -706,23 +741,36 @@ const generateTagsFromSchedule = (schedule) => {
     const gender = schedule.idUser.gender; // "male" | "female" | "other"
 
     // Giới tính
-    if (gender === 'male' || gender === 'female') {
+    if (gender === "male" || gender === "female") {
       tags.add(gender); // thêm "male" hoặc "female"
     }
 
     // Nhóm tuổi
-    if (age <= 25) tags.add('trẻ');
-    else if (age <= 50) tags.add('trung niên');
-    else tags.add('cao tuổi');
+    if (age <= 25) tags.add("trẻ");
+    else if (age <= 50) tags.add("trung niên");
+    else tags.add("cao tuổi");
   }
+
+  // Lọc và loại bỏ các từ không cần thiết như "hà", "nội", "a"
+  const filteredTags = Array.from(tags).filter(
+    (tag) => !/^[a-zA-Z]{1,2}$/.test(tag)
+  ); // Loại bỏ từ ngắn, ký tự 1-2 chữ
+
+  // Lấy từ khóa từ tên và mô tả lịch trình
   const nameTags = extractTagsFromName(schedule.scheduleName);
-  nameTags.forEach(tag => tags.add(tag));
+  nameTags.forEach((tag) => {
+    if (!/^[a-zA-Z]{1,2}$/.test(tag)) tags.add(tag); // Lọc từ không cần thiết từ tên
+  });
 
   const descriptionTags = extractTagsFromName(schedule.description);
-  descriptionTags.forEach(tag => tags.add(tag));
-  console.log(tags);
-  return Array.from(tags);
+  descriptionTags.forEach((tag) => {
+    if (!/^[a-zA-Z]{1,2}$/.test(tag)) tags.add(tag); // Lọc từ không cần thiết từ mô tả
+  });
+
+  console.log(filteredTags);
+  return filteredTags; // Trả về kết quả đã lọc
 };
+
 // Hàm tính tuổi từ ngày sinh
 const calculateAge = (dob) => {
   const birthDate = new Date(dob);
@@ -740,7 +788,7 @@ const extractTagsFromName = (name) => {
     language: "vi", // hoặc "english" nếu cần
     remove_digits: true,
     return_changed_case: true,
-    remove_duplicates: true
+    remove_duplicates: true,
   });
 
   return keywords; // Trả về mảng các từ khóa
@@ -772,13 +820,13 @@ export const getFollowingSchedules = async (req, res) => {
     // Get total count for pagination
     const totalSchedules = await Schedule.countDocuments({
       idUser: { $in: user.following },
-      isPublic: true
+      isPublic: true,
     });
 
     // Get paginated schedules from followed users
     const schedules = await Schedule.find({
       idUser: { $in: user.following },
-      isPublic: true // Only get public schedules
+      isPublic: true, // Only get public schedules
     })
       .populate("idUser", "name avatar")
 
@@ -796,8 +844,8 @@ export const getFollowingSchedules = async (req, res) => {
           currentPage: page,
           totalPages: Math.ceil(totalSchedules / limit),
           totalItems: totalSchedules,
-          itemsPerPage: limit
-        }
+          itemsPerPage: limit,
+        },
       });
     }
 
@@ -809,8 +857,8 @@ export const getFollowingSchedules = async (req, res) => {
         currentPage: page,
         totalPages: Math.ceil(totalSchedules / limit),
         totalItems: totalSchedules,
-        itemsPerPage: limit
-      }
+        itemsPerPage: limit,
+      },
     });
   } catch (error) {
     console.error("Error retrieving following schedules:", error);
@@ -822,21 +870,20 @@ export const getFollowingSchedules = async (req, res) => {
   }
 };
 
-
 // 🔧 Hàm tính top tags từ cả lịch trình cá nhân và lịch trình đã tương tác
 const getTopTags = (personalSchedules, interactedSchedules, limit = 10) => {
   const tagFrequency = {};
 
   // Tags từ lịch trình người dùng tạo
-  personalSchedules.forEach(schedule => {
-    (schedule.tags || []).forEach(tag => {
+  personalSchedules.forEach((schedule) => {
+    (schedule.tags || []).forEach((tag) => {
       tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
     });
   });
 
   // Tags từ lịch trình người dùng đã tương tác
-  interactedSchedules.forEach(item => {
-    (item.tags || []).forEach(tag => {
+  interactedSchedules.forEach((item) => {
+    (item.tags || []).forEach((tag) => {
       tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
     });
   });
@@ -856,17 +903,31 @@ export const scheduleAI = async (req, res) => {
     let topTags = [];
 
     if (userId) {
-      schedules = await Schedule.find({ idUser: userId });
+      schedules = await Schedule.find({ idUser: userId })
+        .select("idUser numDays address tags activities") // Chọn các trường của Schedule
+        .lean() // Chuyển sang object thuần để dễ xử lý
+        .then((schedules) => {
+          schedules.forEach((schedule) => {
+            schedule.activities.forEach((day) => {
+              day.activity = day.activity.map((act) => ({
+                activityType: act.activityType,
+                idDestination: act.idDestination,
+                cost: act.cost,
+              }));
+            });
+          });
+          return schedules;
+        });
       const logs = await Log.find({ userId });
-      user = await User.findById(userId);
-
-      // Tính thống kê tương tác
+      user = await User.findById(userId)
+      .select("_id");
+      // Thống kê tương tác
       const logStats = {};
-      logs.forEach(log => {
+      logs.forEach((log) => {
         const id = log.scheduleId.toString();
         if (!logStats[id]) logStats[id] = { viewCount: 0, editCount: 0 };
-        if (log.actionType === 'view') logStats[id].viewCount++;
-        if (log.actionType === 'edit') logStats[id].editCount++;
+        if (log.actionType === "view") logStats[id].viewCount++;
+        if (log.actionType === "edit") logStats[id].editCount++;
       });
 
       const scheduleIds = Object.keys(logStats);
@@ -875,94 +936,148 @@ export const scheduleAI = async (req, res) => {
         { tags: 1, address: 1 }
       );
 
-      interactedSchedules.forEach(schedule => {
+      interactedSchedules.forEach((schedule) => {
         const id = schedule._id.toString();
         if (logStats[id]) {
           logStats[id].tags = schedule.tags || [];
-          logStats[id].address = schedule.address || '';
+          logStats[id].address = schedule.address || "";
         }
       });
 
-      interactionSummary = scheduleIds.map(id => ({
+      interactionSummary = scheduleIds.map((id) => ({
         scheduleId: id,
         ...logStats[id],
       }));
 
-      // ✅ Tính topTags từ cả lịch trình cá nhân và tương tác
+      // Tính topTags cho user
       topTags = getTopTags(schedules, interactionSummary);
     }
-    // Huấn luyện nếu đủ điều kiện
-    const allSchedules = await Schedule.find().populate("idUser", "name avatar");
-    topTags = getTopTags(allSchedules, []);
 
-    // ✅ Chuẩn hóa thông tin người dùng
+    // Chuẩn hóa thông tin user để đưa vào AI
     const exportData = {
-      user,
+      userId:user._id,
       schedules,
       interactionSummary,
       topTags,
     };
 
-    fs.writeFileSync('../Schedule_AI/user.json', JSON.stringify(exportData, null, 2));
+    // Ghi file input cho AI predict
+    fs.writeFileSync(
+      "../Schedule_AI/user.json",
+      JSON.stringify(exportData, null, 2)
+    );
+    const apiUrl = "http://localhost:8000/predict";
 
-
-
-    const shouldTrain = allSchedules.length % 1 === 0;
-
-    if (shouldTrain) {
-      fs.writeFileSync('../Schedule_AI/All_schedules.json', JSON.stringify(allSchedules, null, 2));
-      exec('python ../Schedule_AI/train.py', (err, stdout, stderr) => {
-        if (err) {
-          console.error("Lỗi khi train AI:", err.message);
-          return res.status(500).json({ success: false, message: "AI training error" });
-        }
-        if (stderr) console.warn("Train stderr:", stderr);
-        callPredictAndRespond(res);
+    const response = await axios.post(apiUrl, exportData, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    if (response.data.status === "success") {
+      res.status(200).json({
+        success: true,
+        recommendedSchedules: response.data.recommendedSchedules,
       });
     } else {
-      callPredictAndRespond(res);
+      res.status(500).json({
+        success: false,
+        message: "Không thể dự đoán lịch trình",
+      });
     }
-
   } catch (error) {
-    console.error("Lỗi trong scheduleAI:", error);
+    console.error("Lỗi trong recommendSchedule:", error);
     res.status(500).json({
       success: false,
-      message: "Lỗi khi xử lý dữ liệu lịch trình",
+      message: "Lỗi khi recommend lịch trình",
       error: error.message,
     });
   }
 };
 
+export const trainScheduleModel = async (req, res) => {
+  try {
+    const allSchedules = await Schedule.find().populate(
+      "idUser",
+      "name avatar"
+    );
+
+    // Lưu toàn bộ lịch trình vào file
+    fs.writeFileSync(
+      "../Schedule_AI/All_schedules.json",
+      JSON.stringify(allSchedules, null, 2)
+    );
+
+    // Gọi lệnh train bằng Python
+    exec("python ../Schedule_AI/train.py", (err, stdout, stderr) => {
+      if (err) {
+        console.error("Lỗi khi train AI:", err.message);
+        return res
+          .status(500)
+          .json({ success: false, message: "AI training error" });
+      }
+      if (stderr) {
+        console.warn("Train stderr:", stderr);
+      }
+      console.log("Train stdout:", stdout);
+      return res.json({
+        success: true,
+        message: "Model retrained successfully!",
+      });
+    });
+  } catch (error) {
+    console.error("Lỗi trong trainScheduleModel:", error);
+    res.status(500).json({
+      success: false,
+      message: "Lỗi khi train mô hình",
+      error: error.message,
+    });
+  }
+};
 
 // Hàm tách riêng xử lý predict và trả kết quả
-const callPredictAndRespond = (res) => {
-  exec('python ../Schedule_AI/predict.py', (predictError, _, predictStderr, stdout) => {
-    if (predictError) {
-      console.error(`Lỗi predict AI: ${predictError.message}`);
-      return res.status(500).json({ success: false, message: "AI prediction error" });
+const PREDICT_SCRIPT = "python ../Schedule_AI/predict.py";
+
+export const callPredictAndRespond = (res) => {
+  console.log("🔵 Bắt đầu chạy predict.py...");
+
+  exec(PREDICT_SCRIPT, { timeout: 30000 }, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`❌ Lỗi khi chạy predict.py:`, error.message);
+      return res
+        .status(500)
+        .json({ success: false, message: "Lỗi khi chạy AI prediction" });
     }
-    if (predictStderr) console.error(`Predict stderr: ${predictStderr}`);
-    console.log("Predict output:", stdout);
-    fs.readFile('recommend.json', 'utf-8', (err, data) => {
-      if (err) {
-        console.error("Lỗi đọc file kết quả predict:", err);
-        return res.status(500).json({ success: false, message: "Lỗi đọc kết quả AI" });
+
+    if (stderr) {
+      console.warn(`⚠️ Cảnh báo từ predict.py:`, stderr);
+    }
+
+    console.log(`✅ Predict output:`, stdout);
+
+    fs.readFile("./recommend.json", "utf-8", (readErr, data) => {
+      if (readErr) {
+        console.error("❌ Lỗi đọc recommend.json:", readErr);
+        return res
+          .status(500)
+          .json({ success: false, message: "Lỗi đọc kết quả AI" });
       }
+
       try {
         const result = JSON.parse(data);
         res.status(200).json({
           success: true,
           message: "Gợi ý lịch trình thành công",
-          recommendedSchedules: result
+          recommendedSchedules: result,
         });
-      } catch (parseError) {
-        console.error("Lỗi phân tích JSON:", parseError);
-        res.status(500).json({ success: false, message: "Lỗi phân tích kết quả AI" });
+      } catch (parseErr) {
+        console.error("❌ Lỗi phân tích JSON recommend.json:", parseErr);
+        res
+          .status(500)
+          .json({ success: false, message: "Lỗi phân tích dữ liệu AI" });
       }
     });
   });
 };
-
 
 //// Application
 
@@ -971,7 +1086,6 @@ const models = {
   Attraction,
   FoodService,
 };
-
 
 export const getScheduleByIdForMobile = async (req, res) => {
   const { id } = req.params;
@@ -1020,8 +1134,8 @@ export const getScheduleByIdForMobile = async (req, res) => {
     // ✅ Check quyền chỉnh sửa
     const canEdit =
       schedule.idUser.toString() === userId ||
-      (schedule.idInvitee || []).some((invitee) =>
-        invitee._id.toString() === userId
+      (schedule.idInvitee || []).some(
+        (invitee) => invitee._id.toString() === userId
       );
 
     // ✅ Nếu có activityId: trả về activity cụ thể
@@ -1059,4 +1173,3 @@ export const getScheduleByIdForMobile = async (req, res) => {
     });
   }
 };
-

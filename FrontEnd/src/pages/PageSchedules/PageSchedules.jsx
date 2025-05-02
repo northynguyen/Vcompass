@@ -54,15 +54,36 @@ const PageSchedules = () => {
       navigate('/404');
     }
   }, [user, type, navigate]);
+  const fetchData = async () => {
+    try {
+      const userId = user && user._id ? user._id : '';
+      const response = await fetch(`${url}/api/schedule/scheduleforuser/${userId}`);
+      const data = await response.json();
+
+      if (data.success) {
+        console.log("Recommended schedules by AI:", data.recommendedSchedules);
+        setScheduleAI(data.recommendedSchedules);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
         setLoading(true);
         let response;
-
         if (type === 'foryou') {
-          response = await axios.get(`${url}/api/schedule/getAllSchedule`);
+          if (user) {
+            const userId = user && user._id ? user._id : '';
+            response = await axios.get(`${url}/api/schedule/scheduleforuser/${userId}`);
+          } else {
+            response = await axios.get(`${url}/api/schedule/getAllSchedule`);
+          }
+
         } else {
           response = await axios.get(
             `${url}/api/schedule/getSchedules/followingSchedules`,
@@ -73,8 +94,14 @@ const PageSchedules = () => {
         }
 
         if (response.data.success) {
-          setAllSchedules(response.data.schedules);
-          setFilteredSchedules(response.data.schedules);
+          if (type === 'foryou' && user) {
+            setAllSchedules(response.data.recommendedSchedules);
+            setFilteredSchedules(response.data.recommendedSchedules);
+            console.log("Recommended schedules by AI:", response.data.recommendedSchedules);
+          } else {
+            setAllSchedules(response.data.schedules);
+            setFilteredSchedules(response.data.schedules);
+          }
         } else {
           toast.error(response.data.message || 'Failed to fetch schedules');
         }
