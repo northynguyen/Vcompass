@@ -10,14 +10,15 @@ def main():
     user = input_data.get('user', {}).get('user')
     user_schedule = input_data.get('user', {}).get('schedules', [])
     schedules = input_data['schedules']
-
+    topTags = input_data.get('user', {}).get('topTags', [])
     favorites = (user or {}).get('favorites', {})
     following = (user or {}).get('following', [])
     interaction_summary = input_data.get('user', {}).get('interactionSummary')
-
-    analyzer = ScheduleAnalyzer(user_schedule, favorites, following, interaction_summary)
+    user_id = (user or {}).get('_id')
+    analyzer = ScheduleAnalyzer(user_schedule, favorites, following, interaction_summary,topTags)
     behavior = analyzer.behavior
     user_vector = analyzer.user_to_vector()
+   
 
     if isinstance(schedules[0], str):
         schedules = [json.loads(s) for s in schedules]
@@ -35,8 +36,20 @@ def main():
             q = agent.q_net(state).item()
         q_vals.append((i, q))
 
+    # q_vals.sort(key=lambda x: x[1], reverse=True)
+    # top_schedules = [env.schedules[idx] for idx, _ in q_vals[:10]]
+   
     q_vals.sort(key=lambda x: x[1], reverse=True)
-    top_schedules = [env.schedules[idx] for idx, _ in q_vals[:10]]
+
+    top_schedules = []
+    for idx, _ in q_vals:
+        schedule = env.schedules[idx]
+        id_user_in_schedule = schedule.get('idUser', {}).get('_id')
+        if str(id_user_in_schedule) == str(user_id):
+            continue
+        top_schedules.append(schedule)
+        if len(top_schedules) == 10:
+            break
     with open("recommend.json", "w", encoding="utf-8") as f:
         json.dump(top_schedules, f, ensure_ascii=False)
 

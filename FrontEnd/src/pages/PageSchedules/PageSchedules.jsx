@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { FaBars } from "react-icons/fa";
 import { Range } from 'react-range';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -23,9 +23,7 @@ const PageSchedules = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [schedulesPerPage] = useState(4);
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const [filters, setFilters] = useState({
     activityType: '',
     sortBy: '',
@@ -34,14 +32,15 @@ const PageSchedules = () => {
     days: 0
   });
   const [priceRange, setPriceRange] = useState([0, 10000000]);
-
   const [debouncedPriceRange, setDebouncedPriceRange] = useState(priceRange);
-  
+  const idleTimer = useRef(null);
+  const startTimeRef = useRef(Date.now());
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedPriceRange(priceRange);
     }, 1000); // 1 giây
-  
+
     return () => clearTimeout(timeout);
   }, [priceRange]);
 
@@ -53,18 +52,38 @@ const PageSchedules = () => {
 
     if (type !== 'foryou' && type !== 'follow') {
       navigate('/404');
-      return;
     }
   }, [user, type, navigate]);
+  const fetchData = async () => {
+    try {
+      const userId = user && user._id ? user._id : '';
+      const response = await fetch(`${url}/api/schedule/scheduleforuser/${userId}`);
+      const data = await response.json();
+
+      if (data.success) {
+        console.log("Recommended schedules by AI:", data.recommendedSchedules);
+        setScheduleAI(data.recommendedSchedules);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
         setLoading(true);
         let response;
-
         if (type === 'foryou') {
-          response = await axios.get(`${url}/api/schedule/getAllSchedule`);
+          if (user) {
+            const userId = user && user._id ? user._id : '';
+            response = await axios.get(`${url}/api/schedule/scheduleforuser/${userId}`);
+          } else {
+            response = await axios.get(`${url}/api/schedule/getAllSchedule`);
+          }
+
         } else {
           response = await axios.get(
             `${url}/api/schedule/getSchedules/followingSchedules`,
@@ -75,8 +94,14 @@ const PageSchedules = () => {
         }
 
         if (response.data.success) {
-          setAllSchedules(response.data.schedules);
-          setFilteredSchedules(response.data.schedules);
+          if (type === 'foryou' && user) {
+            setAllSchedules(response.data.recommendedSchedules);
+            setFilteredSchedules(response.data.recommendedSchedules);
+            console.log("Recommended schedules by AI:", response.data.recommendedSchedules);
+          } else {
+            setAllSchedules(response.data.schedules);
+            setFilteredSchedules(response.data.schedules);
+          }
         } else {
           toast.error(response.data.message || 'Failed to fetch schedules');
         }
@@ -90,17 +115,6 @@ const PageSchedules = () => {
 
     fetchSchedules();
   }, [type, url, token, user]);
-
-  const calculateTotalCost = (activities) => {
-    return activities.reduce((sum, day) => {
-      return (
-        sum +
-        day.activity.reduce((acc, act) => {
-          return acc + (act.cost || 0);
-        }, 0)
-      );
-    }, 0);
-  };
 
   useEffect(() => {
     if (allSchedules.length === 0) return;
@@ -154,6 +168,43 @@ const PageSchedules = () => {
 
   }, [allSchedules, filters, debouncedPriceRange]);
 
+  const reportSatisfaction = async (action, score, schedule) => {
+    const userId = user._id
+    console.log("action, score:", action, score)
+    // try {
+    //   await axios.post("/api/userSatisfaction", {
+    //     userId,
+    //     scheduleId,
+    //     action,
+    //     score,
+    //   });
+    //   console.log(`📤 Sent: ${action} (${score})`);
+    // } catch (err) {
+    //   console.error("❌ Failed to report satisfaction:", err.message);
+    // }
+  };
+  useEffect(() => {
+    startTimeRef.current = Date.now();
+
+    idleTimer.current = setTimeout(() => {
+      reportSatisfaction("over_view", 0.2);
+    }, 30000);
+
+    return () => {
+      if (idleTimer.current) clearTimeout(idleTimer.current);
+    };
+  }, []);
+
+  const calculateTotalCost = (activities) => {
+    return activities.reduce((sum, day) => {
+      return (
+        sum +
+        day.activity.reduce((acc, act) => {
+          return acc + (act.cost || 0);
+        }, 0)
+      );
+    }, 0);
+  };
 
   const handleScheduleClick = (id) => {
     navigate(`/schedule-view/${id}`);
@@ -171,6 +222,21 @@ const PageSchedules = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
+  const handleView = (scheduleId) => {
+    reportSatisfaction("view", 0.6, scheduleId);
+  };
+  const handleLike = (scheduleId) => {
+    reportSatisfaction("like", 0.7, scheduleId);
+  };
+  const handleComment = (scheduleId) => {
+    reportSatisfaction("comment", 0.8, scheduleId);
+  };
+  const handleSave = (scheduleId) => {
+    reportSatisfaction("save", 0.9, scheduleId);
+  };
+  const handleEdit = (scheduleId) => {
+    reportSatisfaction("edit", 1.0, scheduleId);
+  };
 
   const indexOfLastSchedule = currentPage * schedulesPerPage;
   const indexOfFirstSchedule = indexOfLastSchedule - schedulesPerPage;
@@ -360,7 +426,6 @@ const PageSchedules = () => {
           </div>
         </div>
       </div>
-
     </div>
   );
 };

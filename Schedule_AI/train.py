@@ -9,12 +9,13 @@ def main():
     user = input_data.get('user', {}).get('user')
     user_schedule = input_data.get('user', {}).get('schedules', [])
     schedules = input_data['schedules']
+    topTags = input_data.get('user', {}).get('topTags', [])
 
     favorites = (user or {}).get('favorites', {})
     following = (user or {}).get('following', [])
     interaction_summary = input_data.get('user', {}).get('interactionSummary')
 
-    analyzer = ScheduleAnalyzer(user_schedule, favorites, following, interaction_summary)
+    analyzer = ScheduleAnalyzer(user_schedule, favorites, following, interaction_summary, topTags)
     behavior = analyzer.behavior
     user_vector = analyzer.user_to_vector()
 

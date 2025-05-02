@@ -8,6 +8,9 @@
   margin-top: 55px;
   margin-right: 60px;
 }
+.heart-container {
+  width: 42vw !important;
+}
 .left-side-bar-container {
   width: fit-content;
   height: 100%;
