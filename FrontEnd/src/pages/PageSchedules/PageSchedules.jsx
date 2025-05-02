@@ -238,14 +238,6 @@ const PageSchedules = () => {
     reportSatisfaction("edit", 1.0, scheduleId);
   };
 
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-      </div>
-    );
-  }
-
   const indexOfLastSchedule = currentPage * schedulesPerPage;
   const indexOfFirstSchedule = indexOfLastSchedule - schedulesPerPage;
   const currentSchedules = filteredSchedules.slice(indexOfFirstSchedule, indexOfLastSchedule);
