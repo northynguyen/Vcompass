@@ -356,7 +356,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
       // Kiểm tra các trường bắt buộc
       const newErrors = {
         costName: !costDes.trim(),
-        cost: !cost.trim(),
+        cost: cost === null || cost === undefined || cost === '',
         description: !description.trim()
       };
       

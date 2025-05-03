@@ -920,7 +920,7 @@ export const scheduleAI = async (req, res) => {
         });
       const logs = await Log.find({ userId });
       user = await User.findById(userId)
-      .select("_id");
+        .select("_id");
       // Thống kê tương tác
       const logStats = {};
       logs.forEach((log) => {
@@ -955,7 +955,7 @@ export const scheduleAI = async (req, res) => {
 
     // Chuẩn hóa thông tin user để đưa vào AI
     const exportData = {
-      userId:user._id,
+      userId: user._id,
       schedules,
       interactionSummary,
       topTags,
@@ -966,7 +966,7 @@ export const scheduleAI = async (req, res) => {
       "../Schedule_AI/user.json",
       JSON.stringify(exportData, null, 2)
     );
-    const apiUrl = "http://localhost:8000/predict";
+    const apiUrl = "http://127.0.0.1:8000/predict";
 
     const response = await axios.post(apiUrl, exportData, {
       headers: {
