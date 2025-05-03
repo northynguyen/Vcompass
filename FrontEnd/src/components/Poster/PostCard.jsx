@@ -12,7 +12,7 @@ import { FiFlag } from "react-icons/fi";
 import "./PostCard.css";
 import ReportForm from "../Report/ReportForm";
 
-const PostCard = ({ schedule, handleScheduleClick, style }) => {
+const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartClick }) => {
   const { url, user, token } = useContext(StoreContext);
   const [likes, setLikes] = useState(schedule?.likes || []);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -63,6 +63,9 @@ const PostCard = ({ schedule, handleScheduleClick, style }) => {
         },
         { headers: { token } }
       );
+      if (onLikeClick && !isLike()){
+        onLikeClick()
+      }
       if (response.data.success) {
         console.log("data", response.data);
         setLikes(response.data.schedule.likes);
@@ -188,7 +191,9 @@ const PostCard = ({ schedule, handleScheduleClick, style }) => {
     try {
       const action = isFavorite ? "remove" : "add";
       const requestUrl = `${url}/api/user/user/${user._id}/addtoWishlist?type=schedule&itemId=${id}&action=${action}`;
-
+      if (onHeartClick && !isFavorite){
+        onHeartClick()
+      }
       const response = await fetch(requestUrl, {
         method: "POST",
         headers: { token },

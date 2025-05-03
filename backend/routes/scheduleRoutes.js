@@ -7,7 +7,7 @@ import {
   getAllSchedule,
   getTopAddressSchedule,
   updateLikeComment,
-
+  trainScheduleModel,
   deleteActivity, uploadFiles ,deleteSchedule,getFollowingSchedules,getScheduleByIdForMobile ,scheduleAI
   
 
@@ -31,7 +31,7 @@ scheduleRouter.post('/images/upload/new', upload.array('files', 4), uploadFiles)
 scheduleRouter.delete('/:id', deleteSchedule);
 
 scheduleRouter.get('/getSchedules/followingSchedules',authMiddleware, getFollowingSchedules);
-
+scheduleRouter.post('/trainAI', trainScheduleModel);
 
 // Mobile
 

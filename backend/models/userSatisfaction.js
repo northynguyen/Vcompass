@@ -9,6 +9,8 @@ const userSatisfactionSchema = new mongoose.Schema({
   scheduleId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Schedule",
+    default: null,
+    required: false,
   },
   action: {
     type: String,

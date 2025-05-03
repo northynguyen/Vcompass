@@ -908,18 +908,109 @@
         "phượt",
         "lịch trình",
         "male",
-        "trẻ",
-        "tour",
-        "hà",
-        "nội",
-        "chi",
-        "phí",
-        "đêm",
-        "hấp"
+        "trẻ"
+      ]
+    },
+    {
+      "_id": "6815f5e3c4e7eadcd5fa749d",
+      "idUser": "672c8a9f18bd893f40487f9a",
+      "address": "Hà Nội",
+      "numDays": 2,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "6736f2c80798cfaae0937a41",
+              "cost": 100000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 400000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6710ee6ffcdfa639cc6468e1",
+              "cost": 300000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 0
+            }
+          ],
+          "_id": "673717888199a5bb3cc3c057"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "6735627ef4f9ee42b98aa14d",
+              "cost": 10000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 400000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6710eefcfcdfa639cc6468e4",
+              "cost": 500000
+            }
+          ],
+          "_id": "673717888199a5bb3cc3c058"
+        }
+      ],
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "địa điểm",
+        "tham quan",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ"
       ]
     }
   ],
   "interactionSummary": [
+    {
+      "scheduleId": "673721fe8199a5bb3cc3c7ed",
+      "viewCount": 0,
+      "editCount": 0,
+      "tags": [
+        "Bà Rịa - Vũng Tàu",
+        "biển",
+        "nghỉ dưỡng",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "ẩm thực",
+        "ăn uống",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ"
+      ],
+      "address": "Bà Rịa - Vũng Tàu"
+    },
     {
       "scheduleId": "673726d61924ffd732a46297",
       "viewCount": 1,
@@ -966,34 +1057,7 @@
         "phượt",
         "lịch trình",
         "male",
-        "trẻ",
-        "foodtour",
-        "vũng",
-        "tàu",
-        "3n2d",
-        "-",
-        "chân",
-        "dân",
-        "địa",
-        "phương",
-        "200k",
-        "đảm",
-        "bảo",
-        "đáp",
-        "ứng",
-        "tiêu",
-        "chí",
-        "ngon-bổ-rẻ",
-        "bí",
-        "mật",
-        "bật",
-        "mí",
-        "lưu",
-        "checklist",
-        "thưởng",
-        "thức",
-        "chuyến",
-        "đi"
+        "trẻ"
       ],
       "address": "Bà Rịa - Vũng Tàu"
     },
@@ -1019,6 +1083,29 @@
         "hà",
         "nội",
         "đêm"
+      ],
+      "address": "Hà Nội"
+    },
+    {
+      "scheduleId": "675501f47edb5449f44a85ef",
+      "viewCount": 0,
+      "editCount": 1,
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "địa điểm",
+        "tham quan",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ"
       ],
       "address": "Hà Nội"
     },
@@ -1066,69 +1153,41 @@
         "du lịch",
         "phượt",
         "lịch trình",
-        "trẻ",
-        "quẩy",
-        "tung",
-        "vũng",
-        "tàu",
-        "đêm",
-        "thả",
-        "ga",
-        "check-in",
-        "cháy",
-        "máy",
-        "chuẩn",
-        "đồ",
-        "sạc",
-        "pin",
-        "chuyến",
-        "du",
-        "lịch",
-        "hứa",
-        "hẹn",
-        "bùng",
-        "nổ",
-        "trình",
-        "uống",
-        "cực",
-        "bãi",
-        "xanh",
-        "mướt",
-        "loạt",
-        "địa",
-        "hot",
-        "trend",
-        "hải",
-        "sản",
-        "tươi",
-        "ngon",
-        "góc",
-        "sống",
-        "ảo",
-        "đẹp",
-        "mê",
-        "hồn",
-        "trải",
-        "nghiệm",
-        "thú",
-        "vị",
-        "leo",
-        "núi",
-        "ngắm",
-        "hoàng",
-        "hôn",
-        "dạo",
-        "hành",
-        "thể",
-        "lỡ",
-        "đi",
-        "chờ"
+        "trẻ"
       ],
       "address": "Bà Rịa - Vũng Tàu"
     },
     {
+      "scheduleId": "67f4caaf4d051782f2e4effe",
+      "viewCount": 0,
+      "editCount": 0,
+      "tags": [
+        "Hà Nội",
+        "3 ngày",
+        "2 đêm",
+        "3N2Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ",
+        "tour",
+        "hà",
+        "nội",
+        "lịch",
+        "trình"
+      ],
+      "address": "Hà Nội"
+    },
+    {
       "scheduleId": "67f7a29a25561e1f544515f9",
-      "viewCount": 1,
+      "viewCount": 2,
       "editCount": 0,
       "tags": [
         "Bà Rịa - Vũng Tàu",
@@ -1167,14 +1226,30 @@
         "du lịch",
         "phượt",
         "lịch trình",
-        "trẻ",
-        "tour",
-        "hà",
-        "nội",
-        "chi",
-        "phí",
-        "đêm",
-        "hấp"
+        "trẻ"
+      ],
+      "address": "Hà Nội"
+    },
+    {
+      "scheduleId": "6815f5e3c4e7eadcd5fa749d",
+      "viewCount": 0,
+      "editCount": 0,
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "địa điểm",
+        "tham quan",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ"
       ],
       "address": "Hà Nội"
     }

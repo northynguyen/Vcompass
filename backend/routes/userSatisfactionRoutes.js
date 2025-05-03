@@ -5,7 +5,6 @@ const userSatisRouter = express.Router();
 
 userSatisRouter.post("/", createSatisfaction);
 
-// GET: Lấy tất cả hành vi của một user
-userSatisRouter.get("/:userId", getSatisfactionsByUser);
+userSatisRouter.get("/getAll", getSatisfactionsByUser);
 
 export default userSatisRouter;

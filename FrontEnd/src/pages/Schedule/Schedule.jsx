@@ -3,14 +3,16 @@
 import axios from "axios";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import Modal from "react-modal";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { StoreContext } from "../../Context/StoreContext";
 import { io } from "socket.io-client";
+import { StoreContext } from "../../Context/StoreContext";
 
 import L from "leaflet";
 import "leaflet-routing-machine";
+import _ from "lodash";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { Tooltip } from "react-tooltip";
 import ConfirmDialog from "../../components/Dialog/ConfirmDialog";
 import ActivityTime, {
   AccomActivity,
@@ -21,11 +23,9 @@ import ActivityTime, {
 import AddActivity from "./AddActivity/AddActivity";
 import Comment from "./Comment/Comment";
 import Expense from "./Expense/Expense";
-import "./Schedule.css";
-import { Tooltip } from "react-tooltip";
 import InviteTripmatesModal from "./InviteTripmatesModal/InviteTripmatesModal";
-import _ from "lodash";
 import RecommendPlace from "./RecommendPlace/RecommendPlace";
+import "./Schedule.css";
 
 const MapViewWithRoute = ({ activities, scheduleID }) => {
   const [activitiesWithCoordinates, setActivitiesWithCoordinates] = useState([]);
@@ -227,7 +227,7 @@ const Activity = ({
   setInforSchedule,
   mode,
   inforSchedule,
-  socket 
+  socket
 }) => {
   //console.log("activities", activity);
   return (
@@ -252,7 +252,7 @@ const Activity = ({
                   setCurrentActivity={setCurrentActivity}
                   openModal={openModal}
                   mode={mode}
-                  socket ={socket}
+                  socket={socket}
                 />
               </div>
             )}
@@ -271,7 +271,7 @@ const ActivityItem = ({
   setInforSchedule,
   mode,
   inforSchedule,
-  socket 
+  socket
 }) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -465,7 +465,7 @@ const InforScheduleMedal = ({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const { url } = useContext(StoreContext);
-  
+
   const travelTypes = [
     'Du lịch vui chơi',
     'Du lịch học tập',
@@ -695,8 +695,8 @@ const InforScheduleMedal = ({
       }
 
       // Tạo một biến để lưu giá trị cuối cùng của imgSrc
-      const finalImgSrc = mediaType === 'image' 
-        ? (imgSrc[0] instanceof File ? [uploadedImgSrc] : inforSchedule.imgSrc) 
+      const finalImgSrc = mediaType === 'image'
+        ? (imgSrc[0] instanceof File ? [uploadedImgSrc] : inforSchedule.imgSrc)
         : null;
 
       // Cập nhật thông tin lịch trình
@@ -797,7 +797,7 @@ const InforScheduleMedal = ({
               onChange={handleChange}
               placeholder="Nhập ghi chú chi tiết"
             ></textarea>
-            
+
             <label className="expense-sub-title">Loại hình du lịch</label>
             <div className="travel-types-container">
               {travelTypes.map((travelType, index) => (
@@ -1061,14 +1061,14 @@ const DateSchedule = ({
               )}
 
               {isOpen && mode === "edit" && (
-                <RecommendPlace 
+                <RecommendPlace
                   city={city}
                   onSelectPlace={(place) => {
                     // Handle adding the selected place to the schedule
                     if (mode === "edit") {
                       // When a place is selected, we can open the add activity modal with prefilled data
                       const placeData = place.data;
-                      
+
                       // Ensure proper data formatting for different place types
                       const newDestination = {
                         _id: placeData._id,
@@ -1093,7 +1093,7 @@ const DateSchedule = ({
                           serviceType: placeData.serviceType
                         })
                       };
-                      
+
                       // Create a minimal activity object to prefill the modal
                       const prefillActivity = {
                         activityType: place.type,
@@ -1103,7 +1103,7 @@ const DateSchedule = ({
                         timeStart: "09:00",
                         timeEnd: "11:00",
                       };
-                      
+
                       // Set current activity and destination for the modal
                       setCurrentActivity(prefillActivity);
                       setCurrentDestination(newDestination);
@@ -1153,7 +1153,9 @@ const Schedule = ({ mode }) => {
   const [inactiveUsers, setInactiveUsers] = useState(new Set());
   const [viewTimer, setViewTimer] = useState(null);
   const [hasLoggedView, setHasLoggedView] = useState(false);
-  
+  const location = useLocation();
+  const type = location.state?.type;
+
   // Thêm socket ref vào đây
   const socket = useRef(null);
 
@@ -1174,7 +1176,33 @@ const Schedule = ({ mode }) => {
       console.error('Error logging activity:', error);
     }
   };
-
+  const reportSatisfaction = async (action, score, scheduleId) => {
+    const userId = user._id
+    console.log("action, score:", action, score)
+    try {
+      await axios.post(`${url}/api/userSatisfaction`, {
+        userId,
+        scheduleId,
+        action,
+        score,
+      });
+      console.log(`📤 Sent: ${action} (${score})`);
+    } catch (err) {
+      console.error("❌ Failed to report satisfaction:", err.message);
+    }
+  };
+  const handleLike = (scheduleId) => {
+    reportSatisfaction("like", 0.7, scheduleId);
+  };
+  const handleComment = (scheduleId) => {
+    reportSatisfaction("comment", 0.8, scheduleId);
+  };
+  const handleSave = (scheduleId) => {
+    reportSatisfaction("save", 0.9, scheduleId);
+  };
+  const handleEdit = (scheduleId) => {
+    reportSatisfaction("edit", 1.0, scheduleId);
+  };
   // Add view timer effect
   useEffect(() => {
     if (mode === "view" && inforSchedule && user && !hasLoggedView) {
@@ -1223,6 +1251,9 @@ const Schedule = ({ mode }) => {
           headers: { token: token },
         }
       );
+      if (type === "foryou" && newStatus === "add") {
+        handleSave(id)
+      }
 
       const result = await response.json();
       if (result.success) {
@@ -1276,7 +1307,7 @@ const Schedule = ({ mode }) => {
         setLoading(false);
       }
     }
-}, [inforSchedule, mode, user]);
+  }, [inforSchedule, mode, user]);
 
   const updateSchedule = async () => {
     try {
@@ -1288,7 +1319,7 @@ const Schedule = ({ mode }) => {
       );
       if (response.data.success) {
         console.log("Cập nhật lịch trình thành công:", response.data);
-       // setInforSchedule(response.data.schedule)
+        // setInforSchedule(response.data.schedule)
       } else {
         console.error(
           "Lỗi khi cập nhật lịch trình:",
@@ -1300,16 +1331,16 @@ const Schedule = ({ mode }) => {
     }
   };
   useEffect(() => {
-    if (inforSchedule){
+    if (inforSchedule) {
       const newTotalActivities = inforSchedule.activities.reduce(
         (sum, day) => sum + day.activity.length,
         0
       );
       const updateAndFetch = async () => {
         await updateSchedule();
-        fetchSchedule(); 
+        fetchSchedule();
       };
-      if (newTotalActivities > totalActivities){
+      if (newTotalActivities > totalActivities) {
         updateAndFetch()
       }
       else if (mode === "edit") {
@@ -1344,7 +1375,7 @@ const Schedule = ({ mode }) => {
         createdAt: new Date(),
       };
       delete newSchedule._id;
-      
+
       const response = await axios.post(
         url + "/api/schedule/addNew",
         { schedule: newSchedule },
@@ -1352,9 +1383,12 @@ const Schedule = ({ mode }) => {
       );
 
       if (response.data.success) {
+        if (type === "foryou") {
+          handleEdit(id)
+        }
         // Log edit action
         await logActivity('edit', 'Đã bắt đầu chỉnh sửa lịch trình');
-        
+
         const scheduleId = response.data.schedule._id;
         window.location.href = `/schedule-edit/${scheduleId}`;
         toast.success("Lấy thành công");
@@ -1378,7 +1412,7 @@ const Schedule = ({ mode }) => {
           icon: activity.imgSrc,
         };
         expenses.push(expense);
-      });  
+      });
     });
     return expenses;
   };
@@ -1389,7 +1423,7 @@ const Schedule = ({ mode }) => {
       const additonExpense = {
         id: addExpense._id,
         name: addExpense.name,
-        cost: addExpense.cost,  
+        cost: addExpense.cost,
         description: addExpense.description,
       };
       additonExpenses.push(additonExpense);
@@ -1492,7 +1526,7 @@ const Schedule = ({ mode }) => {
         ...(inforSchedule.idInvitee?.map(user => user._id) || [])
       ]);
       setInactiveUsers(allUsers);
-      
+
       socket.current = io(url, {
         transports: ['websocket'],
         upgrade: false
@@ -1505,16 +1539,16 @@ const Schedule = ({ mode }) => {
 
       // Lắng nghe các sự kiện update
       socket.current.on('activitiesUpdated', (activities) => {
-        setInforSchedule(prev => ({...prev, activities}));
+        setInforSchedule(prev => ({ ...prev, activities }));
       });
 
       socket.current.on('scheduleInfoUpdated', (scheduleInfo) => {
-        setInforSchedule(prev => ({...prev, ...scheduleInfo}));
+        setInforSchedule(prev => ({ ...prev, ...scheduleInfo }));
       });
 
       socket.current.on('expensesUpdated', (expenses) => {
         setInforSchedule(prev => ({
-          ...prev, 
+          ...prev,
           additionalExpenses: expenses
         }));
       });
@@ -1555,11 +1589,11 @@ const Schedule = ({ mode }) => {
           const scheduleElement = document.querySelector('.custom-schedule');
           if (scheduleElement) {
             const targetElement = e.target.closest('button, h2, .activity-item, .expense-item, .time-schedule-item, input, select');
-            
+
             if (targetElement) {
               const elementRect = targetElement.getBoundingClientRect();
               const scheduleRect = scheduleElement.getBoundingClientRect();
-              
+
               const relativeX = ((e.clientX - elementRect.left) / elementRect.width) * 100;
               const relativeY = ((e.clientY - elementRect.top) / elementRect.height) * 100;
 
@@ -1611,7 +1645,7 @@ const Schedule = ({ mode }) => {
       if (cursor.targetInfo) {
         // Tìm phần tử tương ứng dựa trên thông tin
         const targetElement = findMatchingElement(cursor.targetInfo);
-        
+
         if (targetElement) {
           const elementRect = targetElement.getBoundingClientRect();
           // Tính toán vị trí chính xác trên phần tử
@@ -1648,7 +1682,7 @@ const Schedule = ({ mode }) => {
     return Array.from(elements).find(element => {
       const matchesText = !targetInfo.text || element.textContent?.includes(targetInfo.text);
       const matchesPosition = Math.abs(element.offsetTop - targetInfo.offsetTop) < 10 &&
-                            Math.abs(element.offsetLeft - targetInfo.offsetLeft) < 10;
+        Math.abs(element.offsetLeft - targetInfo.offsetLeft) < 10;
       return matchesText && matchesPosition;
     });
   };
@@ -1656,9 +1690,9 @@ const Schedule = ({ mode }) => {
   // Thêm lại các hàm xử lý video popup
   const openVideoPopup = () => setIsVideoOpen(true);
   const closeVideoPopup = () => setIsVideoOpen(false);
-  const isUnActive = (id)=>{
-    if(id === user._id)
-       return false;
+  const isUnActive = (id) => {
+    if (id === user._id)
+      return false;
     return inactiveUsers.has(id);
   }
 
@@ -1683,20 +1717,20 @@ const Schedule = ({ mode }) => {
           )}
 
           {mode === "edit" && (
-            <div className="invitee_container">  
+            <div className="invitee_container">
               <div className="invitee_item" data-tooltip-id="avata-tooltip">
                 <img
-                  className={`invitee_image ${isUnActive(inforSchedule.idUser._id ) ? "unactive_avatar" : ""}`}
+                  className={`invitee_image ${isUnActive(inforSchedule.idUser._id) ? "unactive_avatar" : ""}`}
                   src={inforSchedule.idUser.avatar && inforSchedule.idUser.avatar.includes("http") ? inforSchedule.idUser.avatar : `${url}/images/${inforSchedule.idUser.avatar}`}
                   alt={inforSchedule.idUser.name}
                 />
-                
+
               </div>
-              <Tooltip 
-                id="avata-tooltip" 
+              <Tooltip
+                id="avata-tooltip"
                 place="bottom"
-                 style={{ fontSize: "12px", zIndex: "999", borderRadius: "10px" }} 
-                content= {inforSchedule.idUser._id === user._id ? "Bạn" :  `${inforSchedule.idUser.name}${inactiveUsers.has(inforSchedule.idUser._id) ?  "" :" (Hoạt động)"}` } />              
+                style={{ fontSize: "12px", zIndex: "999", borderRadius: "10px" }}
+                content={inforSchedule.idUser._id === user._id ? "Bạn" : `${inforSchedule.idUser.name}${inactiveUsers.has(inforSchedule.idUser._id) ? "" : " (Hoạt động)"}`} />
 
               {inforSchedule.idInvitee?.map((invitee, index) => (
                 <div key={index} className="invitee_item" data-tooltip-id={`avata-tooltip-${index}`}>
@@ -1712,15 +1746,15 @@ const Schedule = ({ mode }) => {
                     content={
                       invitee._id === user._id
                         ? "Bạn"
-                        : `${invitee.name}${inactiveUsers.has(invitee._id) ? "" :" (Hoạt động)"}`
+                        : `${invitee.name}${inactiveUsers.has(invitee._id) ? "" : " (Hoạt động)"}`
                     }
                   />
 
                 </div>
-              ))}          
+              ))}
               <button className="invitee_button" data-tooltip-id="save-tooltip" onClick={() => setOpenInviteModal(true)}>
                 <i className="fa-solid fa-user-plus"></i>
-                <Tooltip id="save-tooltip" place="top" style={{ fontSize: "12px", zIndex: "999",borderRadius: "10px" }} content="Thêm người tham gia" />
+                <Tooltip id="save-tooltip" place="top" style={{ fontSize: "12px", zIndex: "999", borderRadius: "10px" }} content="Thêm người tham gia" />
               </button>
             </div>
           )}
@@ -1851,8 +1885,12 @@ const Schedule = ({ mode }) => {
         </div>
       )}
 
-      <Comment 
+      <Comment
         schedule={inforSchedule}
+        {...(type === "foryou" && {
+          onLikeClick: handleLike,
+          onComment: handleComment
+        })}
       />
       <InforScheduleMedal
         isOpen={isOpenInforSchedule}
