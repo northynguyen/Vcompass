@@ -26,7 +26,7 @@ def main():
     input_dim = len(user_vector) + len(analyzer.schedule_to_vector(schedules[0]))
     agent = ScheduleRLAgent(input_dim, env)
     agent.train()
-    agent.save_model("model_RecommentSchedule.pth")
+    agent.save_model("../Schedule_AI/model_RecommentSchedule.pth")
 if __name__ == "__main__":
     print("Training model...")
     main()

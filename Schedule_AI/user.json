@@ -1,1344 +1,202 @@
 {
-  "user": {},
+  "userId": "672c8a9f18bd893f40487f9a",
   "schedules": [
     {
-      "_id": "6740c0a901e8bc563a3dfc91",
-      "idUser": "67128427a9cdb6c151e91e14",
-      "scheduleName": "Foodtour Vũng Tàu 3N2D - Theo chân \"dân địa phương\" 200k",
-      "description": "Ở đây có những địa điểm ăn chơi đảm bảo đáp ứng đủ 3 tiêu chí \"ngon-bổ-rẻ\" bí mật mà chỉ có dân địa phương \"bật mí\" cho bạn. Lưu vào checklist để thưởng thức trong chuyến đi sắp tới nhé !",
+      "_id": "673721fe8199a5bb3cc3c7ed",
+      "idUser": "672c8a9f18bd893f40487f9a",
       "address": "Bà Rịa - Vũng Tàu",
-      "imgSrc": [],
-      "numDays": 3,
-      "dateStart": "07-03-2025",
-      "dateEnd": "10-03-2025",
-      "status": "Draft",
+      "numDays": 2,
       "activities": [
         {
           "day": 1,
           "activity": [
             {
-              "activityType": "Attraction",
-              "idDestination": "6740735aa908719dec998c66",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 40000,
-              "costDescription": "Pasta",
-              "description": "Đi ngọn hải đăng ăn trứng lòng đào , sữa chua . Ngắm hoàng hôn ở đây luôn ",
-              "timeStart": "09:30",
-              "timeEnd": "10:00",
-              "_id": "6740785011b863a2ca68316f"
-            },
-            {
-              "activityType": "Other",
-              "idDestination": "674070a011b863a2ca681828",
-              "name": "Đi xe đến Vũng Tàu 1",
-              "address": "Suối Tiên, Quốc lộ 1, Tan Phu Ward, Thủ Đức, Ho Chi Minh City, 71300, Vietnam",
-              "imgSrc": [
-                "1732276383965-192553200.jpg"
-              ],
-              "cost": 100000,
-              "costDescription": "",
-              "description": "Đổ xăng trước khi đi , chuẩn bị đầy đủ  đồ dùng , dây sạc ,\nĐi đúng giờ , ai trễ cho ở nhà ",
-              "timeStart": "08:30",
-              "timeEnd": "09:00",
-              "_id": "674070a011b863a2ca681828"
-            },
-            {
-              "activityType": "Other",
-              "idDestination": "6740731e11b863a2ca681b7b",
-              "name": "Ngủ nghỉ ",
-              "address": "Christ of Vung Tau, Hạ Long, Bãi Dứa, Ward 2, Vũng Tàu, Bà Rịa - Vũng Tàu Province, 78225, Vietnam",
-              "imgSrc": [
-                "1732277022119-821402781.jpg",
-                "1732277022123-443567740.jpg"
-              ],
-              "cost": 0,
-              "costDescription": "",
-              "description": "Ngủ nghỉ đủ giấc để chiều đi chơi tiếp hehe",
-              "timeStart": "13:00",
-              "timeEnd": "15:30",
-              "_id": "6740731e11b863a2ca681b7b"
-            },
-            {
               "activityType": "FoodService",
-              "idDestination": "67406cf511b863a2ca681730",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 100000,
-              "costDescription": "",
-              "description": "Quán lẩu nổi tiếng trên tiktok , đi thử cho biết ",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "6740785011b863a2ca683170"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86f2fe137be97dd5e683",
-              "name": "The Song Yuki Apartment",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 111,
-              "costDescription": "11",
-              "description": "111",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "67caa37e00188139743949fd"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86f2fe137be97dd5e683",
-              "name": "The Song Yuki Apartment",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 100000,
-              "costDescription": "Đi chơi",
-              "description": "111",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "67caa630001881397439559c"
-            }
-          ],
-          "_id": "673b65cd003aed23b6c91c6b"
-        },
-        {
-          "day": 2,
-          "activity": [
-            {
-              "activityType": "Other",
-              "idDestination": "6740725711b863a2ca681969",
-              "name": "Ăn sáng",
-              "address": "Trương Công Định, Khu phố 2, Ward 3, Vũng Tàu, Bà Rịa - Vũng Tàu Province, 78207, Vietnam",
-              "imgSrc": [
-                "1732276823503-655366558.jpg",
-                "1732276823503-477711907.jpg",
-                "1732276823503-279688192.jpg"
-              ],
-              "cost": 30000,
-              "costDescription": "Ăn bánh canh cua",
-              "description": "Được người dân giới thiệu , người dân ở đây thường xuyên đến ăn \nGiá cả phải chăng 30000 một tô , quá là ngon và hời ",
-              "timeStart": "08:30",
-              "timeEnd": "11:00",
-              "_id": "6740725711b863a2ca681969"
+              "idDestination": "671f13d35213b114a61b34d7",
+              "cost": 60000
             },
             {
               "activityType": "Accommodation",
               "idDestination": "671271acc1f203ea504b6c9c",
-              "name": "Lucky House - Second Home in The Sóng Vũng Tàu",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 1200000,
-              "costDescription": "",
-              "description": "Đã đặt rồi \nSố phòng 708\nCheck in vào lúc 12h , chuẩn bị căn cước để đưa cho nhân viên khách sạn",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "6740731e11b863a2ca681b7a"
-            },
-            {
-              "activityType": "Other",
-              "idDestination": "6740437d776f1ebf8a9753ba",
-              "name": "Đi leo tượng chúa Kito",
-              "address": "Christ of Vung Tau, Hạ Long, Bãi Dứa, Ward 2, Vũng Tàu, Bà Rịa - Vũng Tàu Province, 78225, Vietnam",
-              "imgSrc": [
-                "1732264826547-4385131.jpg"
-              ],
-              "cost": 50000,
-              "costDescription": "",
-              "description": "Thuê xe đạp , đpaj tới tượng chúa , gửi xe , rồi leo lên , chuẩn bị chai nước và nước đầy đủ , coi như dậy tập thể dục ",
-              "timeStart": "08:00",
-              "timeEnd": "09:30",
-              "_id": "6740437d776f1ebf8a9753ba"
-            },
-            {
-              "activityType": "Attraction",
-              "idDestination": "67407405a908719dec998c70",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 10000,
-              "costDescription": "",
-              "description": "Gửi xe 10000 VND , đi ngắm cảnh , có view nhìn toàn cảnh thành phố ",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "674075cb11b863a2ca6823fb"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "6740698911b863a2ca68167c",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 150000,
-              "costDescription": "",
-              "description": "Quán ngon nhất ở Vũng Tàu , hải sản tươi , nghe review như vậy , đi ăn trải nghiệm thử ",
-              "timeStart": "18:30",
-              "timeEnd": "20:30",
-              "_id": "674076f611b863a2ca682969"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "67406b7311b863a2ca681720",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 50000,
-              "costDescription": "",
-              "description": "Đi uống nước chill chill chụp hình . Quán có khác nhiều điểm để chụp hình check in. Có võng để ngủ nữa , nên khỏi về khác sạn ngủ trưa",
-              "timeStart": "12:30",
-              "timeEnd": "13:30",
-              "_id": "6740746011b863a2ca682091"
-            },
-            {
-              "activityType": "Other",
-              "idDestination": "674075cb11b863a2ca6823fc",
-              "name": "Tắm biển",
-              "address": "Bãi Sau, Thang Tam Ward, Vũng Tàu, Bà Rịa - Vũng Tàu Province, 78207, Vietnam",
-              "imgSrc": [
-                "1732277707688-893534336.jpg"
-              ],
-              "cost": 0,
-              "costDescription": "",
-              "description": "Đi bộ ra bãi sau , nhớ ko đem điện thoại và vật dụng cá nhân , đme theo tự cầm , ko ai coi giùm đâu ",
-              "timeStart": "16:30",
-              "timeEnd": "18:00",
-              "_id": "674075cb11b863a2ca6823fc"
-            },
-            {
-              "activityType": "Other",
-              "name": "Ăn đêm ",
-              "address": "19 La Văn Cầu, Phường Thắng Tam, Vũng Tàu, Bà Rịa - Vũng Tàu 78000, Việt Nam",
-              "imgSrc": [
-                "1732278006705-355186440.jpg",
-                "1732278006706-99319059.jpg"
-              ],
-              "cost": 50000,
-              "costDescription": "",
-              "description": "Đi ăn đem , dạo thành phố Vũng Tàu",
-              "timeStart": "21:30",
-              "timeEnd": "23:30",
-              "_id": "674076f611b863a2ca68296a"
-            }
-          ],
-          "_id": "673b65cd003aed23b6c91c6c"
-        },
-        {
-          "day": 3,
-          "activity": [
-            {
-              "activityType": "Attraction",
-              "idDestination": "6740730ba908719dec998c5d",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 5000,
-              "costDescription": "",
-              "description": "Gửi xe 5000.  Ngắm binbhf minh ở đây là quá đỉnh , uống cafe sáng ",
-              "timeStart": "05:00",
-              "timeEnd": "08:00",
-              "_id": "6740785011b863a2ca68317a"
-            },
-            {
-              "activityType": "Other",
-              "idDestination": "6740785011b863a2ca68317b",
-              "name": "Ăn sáng",
-              "address": "Lương Văn Can, Xóm Lưới, Ward 2, Vũng Tàu, Bà Rịa - Vũng Tàu Province, 78207, Vietnam",
-              "imgSrc": [
-                "1732278352566-222937999.jpg",
-                "1732278352567-505292014.jpg"
-              ],
-              "cost": 30000,
-              "costDescription": "",
-              "description": "Bánh căn được dân địa phương giới thiệu",
-              "timeStart": "08:30",
-              "timeEnd": "10:30",
-              "_id": "6740785011b863a2ca68317b"
-            },
-            {
-              "activityType": "Other",
-              "idDestination": "6740789311b863a2ca6834a0",
-              "name": "Check out phòng",
-              "address": "Thi Sach Street, Khu Phương Nam, Ward 8, Vũng Tàu, Bà Rịa - Vũng Tàu Province, 76666, Vietnam",
-              "imgSrc": [
-                "1732278419658-533196591.jpg",
-                "1732278419693-221602821.jpg"
-              ],
-              "cost": 0,
-              "costDescription": "",
-              "timeStart": "12:00",
-              "timeEnd": "13:00",
-              "_id": "6740789311b863a2ca6834a0"
-            },
-            {
-              "activityType": "Other",
-              "name": "Mua bánh bông lan trứng muối ",
-              "address": "17B Nguyễn Trường Tộ, Phường 2, Vũng Tàu, Bà Rịa - Vũng Tàu, Việt Nam",
-              "imgSrc": [
-                "1732278652691-48444836.jpg"
-              ],
-              "cost": 60000,
-              "costDescription": "",
-              "description": "Tiệm bánh bông lan nổi tiếng ở Vũng Tàu",
-              "timeStart": "13:30",
-              "timeEnd": "14:00",
-              "_id": "6740797c11b863a2ca6837ab"
-            },
-            {
-              "activityType": "Other",
-              "idDestination": "674079d111b863a2ca683a76",
-              "name": "Về lại sài gòn",
-              "address": "Ho Chi Minh City, Vietnam",
-              "imgSrc": [
-                "1732278793125-29314065.jpg"
-              ],
-              "cost": 100000,
-              "costDescription": "",
-              "description": "Đổ xăng đầy bình và về lại Sài Gòn ",
-              "timeStart": "14:30",
-              "timeEnd": "17:00",
-              "_id": "674079d111b863a2ca683a76"
-            },
-            {
-              "activityType": "Other",
-              "idDestination": "67407a5f11b863a2ca683e41",
-              "name": "Ghé bò sữa Long Thành",
-              "address": "Trạm dừng chân Bò sữa Long Thành, Quốc lộ 51, An Phuoc, Long Thành District, Đồng Nai Province, Vietnam",
-              "imgSrc": [
-                "1732278879061-778166509.jpg"
-              ],
-              "cost": 50000,
-              "costDescription": "",
-              "description": "Đi Vũng Tàu phải ghé bò sữa Long Thành ",
-              "timeStart": "15:30",
-              "timeEnd": "16:00",
-              "_id": "67407a5f11b863a2ca683e41"
-            }
-          ],
-          "_id": "673b65cd003aed23b6c91c6d"
-        }
-      ],
-      "additionalExpenses": [
-        {
-          "name": "Ăn ở",
-          "cost": 10000,
-          "description": "",
-          "_id": "67caa3fd0018813974394b8c"
-        },
-        {
-          "name": "Phạm Bá Thành",
-          "cost": 11111,
-          "description": "",
-          "_id": "67caa41c0018813974394d0f"
-        }
-      ],
-      "comments": [
-        {
-          "idUser": "672c8a9f18bd893f40487f9a",
-          "userName": "Thiện",
-          "avatar": "1733837669866-939479299.jpg",
-          "content": "Lịch trình hay quá bạn ơi",
-          "createdAt": "2025-04-18T08:23:21.925Z",
-          "replies": [],
-          "_id": "68020bf977a8e2ac91aa3323"
-        }
-      ],
-      "likes": [
-        {
-          "idUser": "67128427a9cdb6c151e91e14",
-          "createdAt": "2024-11-28T16:53:23.109Z",
-          "_id": "6748a00301b18ae8c44fcb9d"
-        },
-        {
-          "idUser": "672c8a9f18bd893f40487f9a",
-          "createdAt": "2025-02-26T11:10:03.684Z",
-          "_id": "67bef68bd9484d75870f3e93"
-        }
-      ],
-      "createdAt": "2024-11-22T17:34:33.080Z",
-      "__v": 3,
-      "isPublic": true,
-      "videoSrc": null,
-      "idInvitee": [],
-      "type": [],
-      "tags": [
-        "Bà Rịa - Vũng Tàu",
-        "biển",
-        "nghỉ dưỡng",
-        "3 ngày",
-        "2 đêm",
-        "3N2Đ",
-        "địa điểm",
-        "tham quan",
-        "hoạt động khác",
-        "ẩm thực",
-        "ăn uống",
-        "khách sạn",
-        "chỗ ở",
-        "du lịch",
-        "phượt",
-        "lịch trình",
-        "male",
-        "trẻ",
-        "foodtour",
-        "vũng",
-        "tàu",
-        "3n2d",
-        "-",
-        "chân",
-        "dân",
-        "địa",
-        "phương",
-        "200k",
-        "đảm",
-        "bảo",
-        "đáp",
-        "ứng",
-        "tiêu",
-        "chí",
-        "ngon-bổ-rẻ",
-        "bí",
-        "mật",
-        "bật",
-        "mí",
-        "lưu",
-        "checklist",
-        "thưởng",
-        "thức",
-        "chuyến",
-        "đi"
-      ]
-    },
-    {
-      "_id": "6748972201b18ae8c44f8dcf",
-      "idUser": "67128427a9cdb6c151e91e14",
-      "scheduleName": "Foodtour Vũng Tàu 3N2D - Theo chân \"dân địa phương\" chỉ với 1.000.000 đồng",
-      "description": "Ở đây có những địa điểm ăn chơi đảm bảo đáp ứng đủ 3 tiêu chí \"ngon-bổ-rẻ\" bí mật mà chỉ có dân địa phương \"bật mí\" cho bạn. Lưu vào checklist để thưởng thức trong chuyến đi sắp tới nhé !",
-      "address": "Bà Rịa - Vũng Tàu",
-      "imgSrc": [
-        "https://res.cloudinary.com/dmdzku5og/image/upload/v1744780741/images/teqzlzxoh2dav6no7di4.jpg"
-      ],
-      "numDays": 3,
-      "dateStart": "20-11-2024",
-      "dateEnd": "23-11-2024",
-      "status": "Draft",
-      "activities": [
-        {
-          "day": 1,
-          "activity": [
-            {
-              "activityType": "Other",
-              "idDestination": "674070a011b863a2ca681828",
-              "name": "Ăn sáng",
-              "address": "Suối Tiên, Song hành Xa lộ Hà Nội, Khu phố 23, Linh Trung Ward, Thủ Đức, Ho Chi Minh City, Bình Dương Province, 71300, Vietnam",
-              "imgSrc": [
-                "1732276383965-192553200.jpg"
-              ],
-              "cost": 100000,
-              "costDescription": "Gửi xe",
-              "description": "Đổ xăng trước khi đi , chuẩn bị đầy đủ  đồ dùng , dây sạc ,\nĐi đúng giờ , ai trễ cho ở nhà ",
-              "timeStart": "04:30",
-              "timeEnd": "08:00",
-              "_id": "674070a011b863a2ca681828"
-            },
-            {
-              "activityType": "Other",
-              "idDestination": "6740725711b863a2ca681969",
-              "name": "Ăn sáng",
-              "address": "Trương Công Định, Khu phố 2, Phường 3, Thành phố Vũng Tàu, Tỉnh Bà Rịa - Vũng Tàu, 78207, Việt Nam",
-              "imgSrc": [
-                "https://res.cloudinary.com/dmdzku5og/image/upload/v1744780574/h4ssbov4gsgrwdfgyi71.jpg"
-              ],
-              "cost": 30000,
-              "costDescription": "",
-              "description": "Được người dân giới thiệu , người dân ở đây thường xuyên đến ăn \nGiá cả phải chăng 30000 một tô , quá là ngon và hời ",
-              "timeStart": "08:30",
-              "timeEnd": "11:00",
-              "_id": "6740725711b863a2ca681969"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86f2fe137be97dd5e683",
-              "name": "The Song Yuki Apartment",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 1200000,
-              "costDescription": "",
-              "description": "Đã đặt rồi \nSố phòng 708\nCheck in vào lúc 12h , chuẩn bị căn cước để đưa cho nhân viên khách sạn",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "6740731e11b863a2ca681b7a"
-            },
-            {
-              "activityType": "Attraction",
-              "idDestination": "67407405a908719dec998c70",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 40000,
-              "costDescription": "",
-              "description": "Đi ngọn hải đăng ăn trứng lòng đào , sữa chua . Ngắm hoàng hôn ở đây luôn ",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "6740785011b863a2ca68316f"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "67406cf511b863a2ca681730",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 100000,
-              "costDescription": "",
-              "description": "Quán lẩu nổi tiếng trên tiktok , đi thử cho biết ",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "6740785011b863a2ca683170"
-            }
-          ],
-          "_id": "673b65cd003aed23b6c91c6b"
-        },
-        {
-          "day": 2,
-          "activity": [
-            {
-              "activityType": "Other",
-              "idDestination": "6740437d776f1ebf8a9753ba",
-              "name": "Ăn đêm ",
-              "address": "Christ of Vung Tau, Hạ Long, Bãi Dứa, Ward 2, Vũng Tàu, Bà Rịa - Vũng Tàu Province, 78225, Vietnam",
-              "imgSrc": [],
-              "cost": 50000,
-              "costDescription": "",
-              "description": "Thuê xe đạp , đpaj tới tượng chúa , gửi xe , rồi leo lên , chuẩn bị chai nước và nước đầy đủ , coi như dậy tập thể dục ",
-              "timeStart": "08:00",
-              "timeEnd": "09:30",
-              "_id": "6740437d776f1ebf8a9753ba"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "67406b7311b863a2ca681720",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 50000,
-              "costDescription": "",
-              "description": "Đi uống nước chill chill chụp hình . Quán có khác nhiều điểm để chụp hình check in. Có võng để ngủ nữa , nên khỏi về khác sạn ngủ trưa",
-              "timeStart": "12:30",
-              "timeEnd": "13:30",
-              "_id": "6740746011b863a2ca682091"
-            },
-            {
-              "activityType": "Attraction",
-              "idDestination": "67407405a908719dec998c70",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 10000,
-              "costDescription": "",
-              "description": "Gửi xe 10000 VND , đi ngắm cảnh , có view nhìn toàn cảnh thành phố ",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "674075cb11b863a2ca6823fb"
-            },
-            {
-              "activityType": "Other",
-              "idDestination": "674075cb11b863a2ca6823fc",
-              "name": "Tắm biển",
-              "address": "Bãi Sau, Thang Tam Ward, Vũng Tàu, Bà Rịa - Vũng Tàu Province, 78207, Vietnam",
-              "imgSrc": [
-                "1732277707688-893534336.jpg"
-              ],
-              "cost": 0,
-              "costDescription": "Gửi xe",
-              "description": "Đi bộ ra bãi sau , nhớ ko đem điện thoại và vật dụng cá nhân , đme theo tự cầm , ko ai coi giùm đâu ",
-              "timeStart": "16:30",
-              "timeEnd": "18:00",
-              "_id": "674075cb11b863a2ca6823fc"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "6740698911b863a2ca68167c",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 150000,
-              "costDescription": "",
-              "description": "Quán ngon nhất ở Vũng Tàu , hải sản tươi , nghe review như vậy , đi ăn trải nghiệm thử ",
-              "timeStart": "18:30",
-              "timeEnd": "20:30",
-              "_id": "674076f611b863a2ca682969"
-            },
-            {
-              "activityType": "Other",
-              "idDestination": "674076f611b863a2ca68296a",
-              "name": "Ăn đêm ",
-              "address": "La Văn Cầu, Khu phố 1, Thang Tam Ward, Vũng Tàu, Bà Rịa - Vũng Tàu Province, 78207, Vietnam",
-              "imgSrc": [
-                "1732278006705-355186440.jpg",
-                "1732278006706-99319059.jpg"
-              ],
-              "cost": 50000,
-              "costDescription": "",
-              "description": "Đi ăn đem , dạo thành phố Vũng Tàu",
-              "timeStart": "21:30",
-              "timeEnd": "23:30",
-              "_id": "674076f611b863a2ca68296a"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "67406b7311b863a2ca681720",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 100000,
-              "costDescription": "",
-              "description": "Mỗi người một dĩa cơm  hoặc phở , bún tùy mỗi người chọn ",
-              "timeStart": "12:30",
-              "timeEnd": "13:30",
-              "_id": "6740746011b863a2ca682090"
-            }
-          ],
-          "_id": "673b65cd003aed23b6c91c6c"
-        },
-        {
-          "day": 3,
-          "activity": [
-            {
-              "activityType": "Attraction",
-              "idDestination": "6740730ba908719dec998c5d",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 5000,
-              "costDescription": "",
-              "description": "Gửi xe 5000.  Ngắm binbhf minh ở đây là quá đỉnh , uống cafe sáng ",
-              "timeStart": "05:00",
-              "timeEnd": "08:00",
-              "_id": "6740785011b863a2ca68317a"
-            },
-            {
-              "activityType": "Other",
-              "name": "Ăn sáng",
-              "address": "12B Lương Văn Can, Phường 2, Vũng Tàu, Bà Rịa - Vũng Tàu, Việt Nam",
-              "imgSrc": [
-                "1732278352566-222937999.jpg",
-                "1732278352567-505292014.jpg"
-              ],
-              "cost": 30000,
-              "costDescription": "",
-              "description": "Bánh căn được dân địa phương giới thiệu",
-              "timeStart": "08:30",
-              "timeEnd": "10:30",
-              "_id": "6740785011b863a2ca68317b"
-            },
-            {
-              "activityType": "Other",
-              "name": "Check out phòng",
-              "address": "Khách sạn",
-              "imgSrc": [
-                "1732278419658-533196591.jpg",
-                "1732278419693-221602821.jpg"
-              ],
-              "cost": 0,
-              "costDescription": "",
-              "timeStart": "12:00",
-              "timeEnd": "13:00",
-              "_id": "6740789311b863a2ca6834a0"
-            },
-            {
-              "activityType": "Other",
-              "name": "Mua bánh bông lan trứng muối ",
-              "address": "17B Nguyễn Trường Tộ, Phường 2, Vũng Tàu, Bà Rịa - Vũng Tàu, Việt Nam",
-              "imgSrc": [
-                "1732278652691-48444836.jpg"
-              ],
-              "cost": 60000,
-              "costDescription": "",
-              "description": "Tiệm bánh bông lan nổi tiếng ở Vũng Tàu",
-              "timeStart": "13:30",
-              "timeEnd": "14:00",
-              "_id": "6740797c11b863a2ca6837ab"
-            },
-            {
-              "activityType": "Other",
-              "idDestination": "674079d111b863a2ca683a76",
-              "name": "Về lại sài gòn",
-              "address": "Hồ Chí Minh ",
-              "imgSrc": [
-                "1732278793125-29314065.jpg"
-              ],
-              "cost": 100000,
-              "costDescription": "",
-              "description": "Đổ xăng đầy bình và về lại Sài Gòn ",
-              "timeStart": "14:30",
-              "timeEnd": "17:00",
-              "_id": "674079d111b863a2ca683a76"
-            },
-            {
-              "activityType": "Other",
-              "name": "Ghé bò sữa Long Thành",
-              "address": "Bò Sữa Long Thành",
-              "imgSrc": [
-                "1732278879061-778166509.jpg"
-              ],
-              "cost": 40000,
-              "costDescription": "",
-              "description": "Đi Vũng Tàu phải ghé bò sữa Long Thành ",
-              "timeStart": "15:30",
-              "timeEnd": "16:00",
-              "_id": "67407a5f11b863a2ca683e41"
-            }
-          ],
-          "_id": "673b65cd003aed23b6c91c6d"
-        }
-      ],
-      "additionalExpenses": [],
-      "comments": [],
-      "likes": [
-        {
-          "idUser": "67128427a9cdb6c151e91e14",
-          "createdAt": "2024-11-28T16:53:24.697Z",
-          "_id": "6748a00401b18ae8c44fcbb7"
-        }
-      ],
-      "createdAt": "2024-11-28T16:15:30.621Z",
-      "isPublic": true,
-      "__v": 1,
-      "videoSrc": null,
-      "idInvitee": [
-        "675fb2a89efd41573be29524"
-      ],
-      "tags": [
-        "Bà Rịa - Vũng Tàu",
-        "biển",
-        "nghỉ dưỡng",
-        "3 ngày",
-        "2 đêm",
-        "3N2Đ",
-        "hoạt động khác",
-        "khách sạn",
-        "chỗ ở",
-        "địa điểm",
-        "tham quan",
-        "ẩm thực",
-        "ăn uống",
-        "du lịch",
-        "phượt",
-        "lịch trình",
-        "male",
-        "trẻ",
-        "foodtour",
-        "vũng",
-        "tàu",
-        "3n2d",
-        "-",
-        "chân",
-        "dân",
-        "địa",
-        "phương",
-        "đồng",
-        "đảm",
-        "bảo",
-        "đáp",
-        "ứng",
-        "tiêu",
-        "chí",
-        "ngon-bổ-rẻ",
-        "bí",
-        "mật",
-        "bật",
-        "mí",
-        "lưu",
-        "checklist",
-        "thưởng",
-        "thức",
-        "chuyến",
-        "đi"
-      ],
-      "type": []
-    },
-    {
-      "_id": "674c96c6072ca8b401c4aca3",
-      "idUser": "67128427a9cdb6c151e91e14",
-      "scheduleName": "Tour Hà Nội chi phí thấp",
-      "description": "Tour Hà Nội 2 ngày 1 đêm Rất hấp dẫn ",
-      "address": "Hà Nội",
-      "imgSrc": [],
-      "numDays": 2,
-      "dateStart": "22-11-2024",
-      "dateEnd": "24-11-2024",
-      "status": "Draft",
-      "activities": [
-        {
-          "day": 1,
-          "activity": [
-            {
-              "activityType": "Attraction",
-              "idDestination": "6736f2c80798cfaae0937a41",
-              "imgSrc": [],
-              "cost": 100000,
-              "costDescription": "",
-              "description": "Buổi sáng ra đây tập thể dục, ngắm cảnh và nhâm nhi vài ly trà đá, quá tuyệt",
-              "timeStart": "06:00",
-              "timeEnd": "08:00",
-              "_id": "673717de8199a5bb3cc3c1a9"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86affe137be97dd5e67d",
-              "name": "Paradise Home Ton Duc Thang",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 400000,
-              "costDescription": "Tiền khách sạn ",
-              "description": "Về khách sạn check-in, tắm rửa, Phòng ốc ở đây sạch sẽ và thoáng mát, đầy đủ tiện nghi, nhân viên thì dễ thương",
-              "timeStart": "08:30",
-              "timeEnd": "11:00",
-              "_id": "67380545c1a0c73be6b9cadb"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "6710ee6ffcdfa639cc6468e1",
-              "imgSrc": [],
-              "cost": 300000,
-              "costDescription": "",
-              "description": "Với chỉ phỉ khoảng 300k mỗi người là đủ cho 1 bữa trưa đậm phong cách Nhật  Bản giữa lòng Hà Nội",
-              "timeStart": "11:30",
-              "timeEnd": "13:00",
-              "_id": "67380545c1a0c73be6b9cadc"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86affe137be97dd5e67d",
-              "imgSrc": [],
-              "cost": 0,
-              "costDescription": "",
-              "description": "Về khách sạn  nghỉ ngơi, giữ sức  cho ngày mai",
-              "timeStart": "13:00",
-              "timeEnd": "16:00",
-              "_id": "6738062cc1a0c73be6b9ce65"
-            }
-          ],
-          "_id": "673717888199a5bb3cc3c057"
-        },
-        {
-          "day": 2,
-          "activity": [
-            {
-              "activityType": "Attraction",
-              "idDestination": "6735627ef4f9ee42b98aa14d",
-              "imgSrc": [],
-              "cost": 10000,
-              "costDescription": "",
-              "timeStart": "06:00",
-              "timeEnd": "14:00",
-              "_id": "673717de8199a5bb3cc3c1ab"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86affe137be97dd5e67d",
-              "imgSrc": [],
-              "cost": 400000,
-              "costDescription": "",
-              "description": "Về  lại khách sạn nghỉ ngơi",
-              "timeStart": "12:30",
-              "timeEnd": "17:00",
-              "_id": "673717fc8199a5bb3cc3c2d6"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "6710eefcfcdfa639cc6468e4",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 400000,
-              "costDescription": "",
-              "description": "Nhà hàng sang trọng nhưng giá cả phải chăng",
-              "timeStart": "16:00",
-              "timeEnd": "19:30",
-              "_id": "6738062cc1a0c73be6b9ce69"
-            }
-          ],
-          "_id": "673717888199a5bb3cc3c058"
-        }
-      ],
-      "additionalExpenses": [
-        {
-          "name": "Chi phí thuê xe đạp",
-          "cost": 200000,
-          "description": "Thuê xe đạp dạo quanh hồ Tây",
-          "_id": "6738062cc1a0c73be6b9ce6a"
-        }
-      ],
-      "comments": [],
-      "likes": [
-        {
-          "idUser": "675fb2a89efd41573be29524",
-          "_id": "680a828390fd112a2bbb26d7",
-          "createdAt": "2025-04-24T18:27:15.120Z"
-        }
-      ],
-      "createdAt": "2024-12-01T17:03:02.459Z",
-      "isPublic": true,
-      "__v": 1,
-      "idInvitee": [],
-      "tags": [
-        "Hà Nội",
-        "2 ngày",
-        "1 đêm",
-        "2N1Đ",
-        "địa điểm",
-        "tham quan",
-        "khách sạn",
-        "chỗ ở",
-        "ẩm thực",
-        "ăn uống",
-        "du lịch",
-        "phượt",
-        "lịch trình",
-        "male",
-        "trẻ",
-        "tour",
-        "hà",
-        "nội",
-        "chi",
-        "phí",
-        "đêm",
-        "hấp"
-      ],
-      "videoSrc": null,
-      "type": []
-    },
-    {
-      "tags": [],
-      "_id": "675501f47edb5449f44a85ef",
-      "idUser": "67128427a9cdb6c151e91e14",
-      "scheduleName": "Tour Hà Nội chi phí thấp",
-      "description": "Tour Hà Nội 2 ngày 1 đêm Rất hấp dẫn",
-      "address": "Hà Nội",
-      "imgSrc": [
-        "1734457844180-786777524.jpg"
-      ],
-      "numDays": 2,
-      "dateStart": "22-11-2024",
-      "dateEnd": "24-11-2024",
-      "status": "Draft",
-      "activities": [
-        {
-          "day": 1,
-          "activity": [
-            {
-              "activityType": "Attraction",
-              "idDestination": "6736f2c80798cfaae0937a41",
-              "imgSrc": [],
-              "cost": 100000,
-              "costDescription": "",
-              "description": "Buổi sáng ra đây tập thể dục, ngắm cảnh và nhâm nhi vài ly trà đá, quá tuyệt",
-              "timeStart": "06:00",
-              "timeEnd": "08:00",
-              "_id": "673717de8199a5bb3cc3c1a9"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86affe137be97dd5e67d",
-              "imgSrc": [],
-              "cost": 400000,
-              "costDescription": "",
-              "description": "Về khách sạn check-in, tắm rửa, Phòng ốc ở đây sạch sẽ và thoáng mát, đầy đủ tiện nghi, nhân viên thì dễ thương",
-              "timeStart": "08:30",
-              "timeEnd": "11:00",
-              "_id": "67380545c1a0c73be6b9cadb"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "6710ee6ffcdfa639cc6468e1",
-              "imgSrc": [],
-              "cost": 300000,
-              "costDescription": "",
-              "description": "Với chỉ phỉ khoảng 300k mỗi người là đủ cho 1 bữa trưa đậm phong cách Nhật  Bản giữa lòng Hà Nội",
-              "timeStart": "11:30",
-              "timeEnd": "13:00",
-              "_id": "67380545c1a0c73be6b9cadc"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86affe137be97dd5e67d",
-              "imgSrc": [],
-              "cost": 0,
-              "costDescription": "",
-              "description": "Về khách sạn  nghỉ ngơi, giữ sức  cho ngày mai",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "6738062cc1a0c73be6b9ce65"
-            }
-          ],
-          "_id": "673717888199a5bb3cc3c057"
-        },
-        {
-          "day": 2,
-          "activity": [
-            {
-              "activityType": "Attraction",
-              "idDestination": "6735627ef4f9ee42b98aa14d",
-              "imgSrc": [],
-              "cost": 10000,
-              "costDescription": "",
-              "timeStart": "06:00",
-              "timeEnd": "14:00",
-              "_id": "673717de8199a5bb3cc3c1ab"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86affe137be97dd5e67d",
-              "imgSrc": [],
-              "cost": 400000,
-              "costDescription": "",
-              "description": "Về  lại khách sạn nghỉ ngơi",
-              "timeStart": "12:30",
-              "timeEnd": "17:00",
-              "_id": "673717fc8199a5bb3cc3c2d6"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "6710eefcfcdfa639cc6468e4",
-              "imgSrc": [],
-              "cost": 500000,
-              "costDescription": "",
-              "description": "Nhà hàng sang trọng nhưng giá cả phải chăng",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "6738062cc1a0c73be6b9ce69"
-            }
-          ],
-          "_id": "673717888199a5bb3cc3c058"
-        }
-      ],
-      "additionalExpenses": [
-        {
-          "name": "Chi phí thuê xe đạp",
-          "cost": 200000,
-          "description": "Thuê xe đạp dạo quanh hồ Tây",
-          "_id": "6738062cc1a0c73be6b9ce6a"
-        }
-      ],
-      "comments": [],
-      "likes": [
-        {
-          "idUser": "67206ecb0ced73018f8970b1",
-          "createdAt": "2024-12-08T02:32:38.635Z",
-          "_id": "675505467edb5449f44ab136"
-        },
-        {
-          "idUser": "67128427a9cdb6c151e91e14",
-          "createdAt": "2024-12-17T14:32:11.103Z",
-          "_id": "67618b6b1fd31ed925ec8068"
-        }
-      ],
-      "createdAt": "2024-12-08T02:18:28.118Z",
-      "isPublic": false,
-      "__v": 2,
-      "videoSrc": null,
-      "idInvitee": [],
-      "type": []
-    },
-    {
-      "_id": "6755132c2e3ea6637d0c84db",
-      "idUser": "67128427a9cdb6c151e91e14",
-      "scheduleName": "Tour Hà Nội chi phí thấp",
-      "description": "Tour Hà Nội 2 ngày 1 đêm Rất hấp dẫn",
-      "address": "Hà Nội",
-      "imgSrc": [],
-      "numDays": 2,
-      "dateStart": "22-11-2024",
-      "dateEnd": "24-11-2024",
-      "status": "Draft",
-      "activities": [
-        {
-          "day": 1,
-          "activity": [
-            {
-              "activityType": "Attraction",
-              "idDestination": "6736f2c80798cfaae0937a41",
-              "imgSrc": [],
-              "cost": 100000,
-              "costDescription": "",
-              "description": "Buổi sáng ra đây tập thể dục, ngắm cảnh và nhâm nhi vài ly trà đá, quá tuyệt",
-              "timeStart": "06:00",
-              "timeEnd": "08:00",
-              "_id": "673717de8199a5bb3cc3c1a9"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86affe137be97dd5e67d",
-              "imgSrc": [],
-              "cost": 400000,
-              "costDescription": "",
-              "description": "Về khách sạn check-in, tắm rửa, Phòng ốc ở đây sạch sẽ và thoáng mát, đầy đủ tiện nghi, nhân viên thì dễ thương",
-              "timeStart": "08:30",
-              "timeEnd": "11:00",
-              "_id": "67380545c1a0c73be6b9cadb"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "6710ee6ffcdfa639cc6468e1",
-              "imgSrc": [],
-              "cost": 300000,
-              "costDescription": "",
-              "description": "Với chỉ phỉ khoảng 300k mỗi người là đủ cho 1 bữa trưa đậm phong cách Nhật  Bản giữa lòng Hà Nội",
-              "timeStart": "11:30",
-              "timeEnd": "13:00",
-              "_id": "67380545c1a0c73be6b9cadc"
-            }
-          ],
-          "_id": "673717888199a5bb3cc3c057"
-        },
-        {
-          "day": 2,
-          "activity": [
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86affe137be97dd5e67d",
-              "imgSrc": [],
-              "cost": 0,
-              "costDescription": "",
-              "description": "Về khách sạn  nghỉ ngơi, giữ sức  cho ngày mai",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "6738062cc1a0c73be6b9ce65"
-            },
-            {
-              "activityType": "Attraction",
-              "idDestination": "6735627ef4f9ee42b98aa14d",
-              "imgSrc": [],
-              "cost": 10000,
-              "costDescription": "",
-              "timeStart": "06:00",
-              "timeEnd": "14:00",
-              "_id": "673717de8199a5bb3cc3c1ab"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "6710b2459ffa18bd1b7faeaa",
-              "name": "Narcissus 2 Hotel & Apartment",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 400000,
-              "costDescription": "",
-              "description": "Về  lại khách sạn nghỉ ngơi",
-              "timeStart": "12:30",
-              "timeEnd": "17:00",
-              "_id": "673717fc8199a5bb3cc3c2d6"
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "6710eefcfcdfa639cc6468e4",
-              "imgSrc": [],
-              "cost": 500000,
-              "costDescription": "",
-              "description": "Nhà hàng sang trọng nhưng giá cả phải chăng",
-              "timeStart": "17:00",
-              "timeEnd": "20:00",
-              "_id": "6738062cc1a0c73be6b9ce69"
-            }
-          ],
-          "_id": "673717888199a5bb3cc3c058"
-        }
-      ],
-      "additionalExpenses": [
-        {
-          "name": "Chi phí thuê xe đạp",
-          "cost": 200000,
-          "description": "Thuê xe đạp dạo quanh hồ Tây",
-          "_id": "6738062cc1a0c73be6b9ce6a"
-        }
-      ],
-      "comments": [],
-      "likes": [
-        {
-          "idUser": "67128427a9cdb6c151e91e14",
-          "createdAt": "2024-12-17T14:32:09.029Z",
-          "_id": "67618b691fd31ed925ec804b"
-        }
-      ],
-      "createdAt": "2024-12-08T03:31:56.454Z",
-      "isPublic": true,
-      "__v": 1,
-      "idInvitee": [],
-      "tags": [
-        "Hà Nội",
-        "2 ngày",
-        "1 đêm",
-        "2N1Đ",
-        "địa điểm",
-        "tham quan",
-        "khách sạn",
-        "chỗ ở",
-        "ẩm thực",
-        "ăn uống",
-        "du lịch",
-        "phượt",
-        "lịch trình",
-        "male",
-        "trẻ",
-        "tour",
-        "hà",
-        "nội",
-        "chi",
-        "phí",
-        "đêm",
-        "hấp"
-      ],
-      "type": []
-    },
-    {
-      "_id": "67eea2bfd0bb46ac2ac97866",
-      "idUser": "67128427a9cdb6c151e91e14",
-      "idInvitee": [],
-      "scheduleName": "Tour Bà Rịa - Vũng Tàu 2 ngày",
-      "description": "Lịch trình được tạo từ AI",
-      "address": "Bà Rịa - Vũng Tàu",
-      "imgSrc": [],
-      "numDays": 2,
-      "dateStart": "30-04-2025",
-      "dateEnd": "01-05-2025",
-      "status": "Draft",
-      "activities": [
-        {
-          "day": 1,
-          "activity": [
-            {
-              "activityType": "Accommodation",
-              "idDestination": "670e86affe137be97dd5e67d",
-              "imgSrc": [],
-              "cost": 1000000,
-              "costDescription": "Chi phí thuê phòng khách sạn Paradise Home Ton Duc Thang",
-              "description": "Nhận phòng và nghỉ ngơi",
-              "timeStart": "14:00",
-              "timeEnd": "15:00",
-              "_id": "67eea2bfd0bb46ac2ac97868"
+              "cost": 200000
             },
             {
               "activityType": "Attraction",
               "idDestination": "6740730ba908719dec998c5d",
-              "imgSrc": [],
-              "cost": 0,
-              "costDescription": "Chi phí tham quan Mũi Nghinh Phong",
-              "description": "Tham quan Mũi Nghinh Phong, ngắm cảnh hoàng hôn",
-              "timeStart": "16:00",
-              "timeEnd": "18:00",
-              "_id": "67eea2bfd0bb46ac2ac97869"
+              "cost": 0
             },
             {
-              "activityType": "FoodService",
-              "idDestination": "6740698911b863a2ca68167c",
-              "imgSrc": [],
-              "cost": 50000,
-              "costDescription": "Ăn tối tại Hải sản Biển Xanh",
-              "description": "Thưởng thức hải sản tươi ngon",
-              "timeStart": "19:00",
-              "timeEnd": "20:30",
-              "_id": "67eea2bfd0bb46ac2ac9786a"
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 0
             }
           ],
-          "_id": "67eea2bfd0bb46ac2ac97867"
+          "_id": "673721fe8199a5bb3cc3c7ee"
         },
         {
           "day": 2,
           "activity": [
             {
-              "activityType": "Attraction",
-              "idDestination": "67e519ebfd28456dcbaf6937",
-              "imgSrc": [],
-              "cost": 10000,
-              "costDescription": "Tham quan Tượng Chúa Kito Vua",
-              "description": "Tham quan Tượng Chúa Kito Vua và chụp ảnh",
-              "timeStart": "8:00",
-              "timeEnd": "9:30",
-              "_id": "67eea2bfd0bb46ac2ac9786c"
+              "activityType": "FoodService",
+              "idDestination": "67406b7311b863a2ca681720",
+              "cost": 300000
             },
             {
               "activityType": "Attraction",
-              "idDestination": "67e51c0efd28456dcbaf6962",
-              "imgSrc": [],
-              "cost": 500000,
-              "costDescription": "Tham quan Khu du lịch Hồ Mây",
-              "description": "Tham quan các trò chơi và cảnh quan tại Khu du lịch Hồ Mây",
-              "timeStart": "10:00",
-              "timeEnd": "14:00",
-              "_id": "67eea2bfd0bb46ac2ac9786d"
+              "idDestination": "67407405a908719dec998c70",
+              "cost": 50000
             },
             {
               "activityType": "FoodService",
               "idDestination": "67e8d84d43ea4eedd3f53784",
-              "imgSrc": [],
-              "cost": 50000,
-              "costDescription": "Ăn trưa tại Bánh Canh Ghẹ Ngọc Lâm Vũng Tàu",
-              "description": "Thưởng thức đặc sản địa phương",
-              "timeStart": "14:30",
-              "timeEnd": "15:30",
-              "_id": "67eea2bfd0bb46ac2ac9786e"
+              "cost": 400000
+            },
+            {
+              "activityType": "Other",
+              "idDestination": "67f52a6751fa385a61820c56",
+              "cost": 300000
+            }
+          ],
+          "_id": "673721fe8199a5bb3cc3c7ef"
+        }
+      ],
+      "tags": [
+        "Bà Rịa - Vũng Tàu",
+        "biển",
+        "nghỉ dưỡng",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "ẩm thực",
+        "ăn uống",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ"
+      ]
+    },
+    {
+      "_id": "673726d61924ffd732a46297",
+      "idUser": "672c8a9f18bd893f40487f9a",
+      "address": "Hà Nội",
+      "numDays": 2,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "6710b2459ffa18bd1b7faeaa",
+              "cost": 1600000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6748491ef8e22e0643c47c30",
+              "cost": 1000000
             },
             {
               "activityType": "Attraction",
-              "idDestination": "67e51b13fd28456dcbaf6951",
-              "imgSrc": [],
-              "cost": 0,
-              "costDescription": "Tham quan Hòn Bà",
-              "description": "Tham quan Hòn Bà và tận hưởng không khí trong lành",
-              "timeStart": "16:00",
-              "timeEnd": "17:00",
-              "_id": "67eea2bfd0bb46ac2ac9786f"
+              "idDestination": "6763198fe229dd5a9cf0ee6d",
+              "cost": 50000
+            },
+            {
+              "activityType": "Other",
+              "cost": 0
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6710eefcfcdfa639cc6468e4",
+              "cost": 300000
             }
           ],
-          "_id": "67eea2bfd0bb46ac2ac9786b"
+          "_id": "673717888199a5bb3cc3c057"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "6763198fe229dd5a9cf0ee6d",
+              "cost": 300000
+            },
+            {
+              "activityType": "Other",
+              "idDestination": "67f53525fbed846c2154aa63",
+              "cost": 350000
+            }
+          ],
+          "_id": "673717888199a5bb3cc3c058"
         }
       ],
-      "type": [],
-      "createdAt": "2023-10-27T10:00:00.000Z",
-      "isPublic": false,
-      "additionalExpenses": [],
-      "comments": [],
-      "likes": [],
-      "__v": 0,
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "địa điểm",
+        "tham quan",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ"
+      ]
+    },
+    {
+      "_id": "67f53de77a7d2fbcc4934dbf",
+      "idUser": "672c8a9f18bd893f40487f9a",
+      "address": "Bà Rịa - Vũng Tàu",
+      "numDays": 2,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 1000000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e519ebfd28456dcbaf6937",
+              "cost": 10000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6740698911b863a2ca68167c",
+              "cost": 50000
+            }
+          ],
+          "_id": "67f53de77a7d2fbcc4934dc0"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e51c0efd28456dcbaf6962",
+              "cost": 500000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "67e8d84d43ea4eedd3f53784",
+              "cost": 330000
+            }
+          ],
+          "_id": "67f53de77a7d2fbcc4934dc5"
+        }
+      ],
       "tags": [
         "Bà Rịa - Vũng Tàu",
         "biển",
@@ -1367,17 +225,10 @@
       ]
     },
     {
-      "_id": "67f4caaf4d051782f2e4effe",
-      "idUser": "67128427a9cdb6c151e91e14",
-      "idInvitee": [],
-      "scheduleName": "Tour Hà Nội 3 ngày",
-      "description": "Lịch trình được tạo từ AI",
+      "_id": "67f5d1d2b23e9393bee2c5b1",
+      "idUser": "672c8a9f18bd893f40487f9a",
       "address": "Hà Nội",
-      "imgSrc": [],
-      "numDays": 3,
-      "dateStart": "11-04-2025",
-      "dateEnd": "13-04-2025",
-      "status": "Draft",
+      "numDays": 2,
       "activities": [
         {
           "day": 1,
@@ -1385,42 +236,20 @@
             {
               "activityType": "Accommodation",
               "idDestination": "6710b2459ffa18bd1b7faeaa",
-              "imgSrc": [],
-              "cost": 1000000,
-              "costDescription": "Chi phí thuê phòng 1 đêm",
-              "description": "Nhận phòng tại Narcissus 2 Hotel & Apartment",
-              "timeStart": "14:00",
-              "timeEnd": "15:00",
-              "_id": "67f4caaf4d051782f2e4f000"
+              "cost": 500000
             },
             {
               "activityType": "Attraction",
               "idDestination": "6736f2c80798cfaae0937a41",
-              "name": "default-name",
-              "address": "default-address",
-              "imgSrc": [
-                "default-image"
-              ],
-              "cost": 10,
-              "costDescription": "Miễn phí",
-              "description": "Tham quan Hồ Hoàn Kiếm, ngắm cảnh và thư giãn",
-              "timeStart": "15:30",
-              "timeEnd": "17:30",
-              "_id": "67f4caaf4d051782f2e4f001"
+              "cost": 0
             },
             {
               "activityType": "FoodService",
               "idDestination": "6710eefcfcdfa639cc6468e4",
-              "imgSrc": [],
-              "cost": 200000,
-              "costDescription": "Ăn tối",
-              "description": "Ăn tối tại Essence Restaurant",
-              "timeStart": "19:00",
-              "timeEnd": "20:30",
-              "_id": "67f4caaf4d051782f2e4f002"
+              "cost": 200000
             }
           ],
-          "_id": "67f4caaf4d051782f2e4efff"
+          "_id": "67f5d1d2b23e9393bee2c5b2"
         },
         {
           "day": 2,
@@ -1428,97 +257,462 @@
             {
               "activityType": "Attraction",
               "idDestination": "6763198fe229dd5a9cf0ee6d",
-              "imgSrc": [],
-              "cost": 0,
-              "costDescription": "Miễn phí",
-              "description": "Tham quan Lăng Chủ tịch Hồ Chí Minh",
-              "timeStart": "8:00",
-              "timeEnd": "10:00",
-              "_id": "67f4caaf4d051782f2e4f004"
+              "cost": 0
             },
             {
               "activityType": "Attraction",
               "idDestination": "67dce3e880362ea4bb541a31",
-              "imgSrc": [],
-              "cost": 10000,
-              "costDescription": "Vé vào cửa",
-              "description": "Tham quan Chùa Một Cột",
-              "timeStart": "10:30",
-              "timeEnd": "11:30",
-              "_id": "67f4caaf4d051782f2e4f005"
+              "cost": 1000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "676311cee229dd5a9cf0d775",
+              "cost": 150000
             },
             {
               "activityType": "FoodService",
               "idDestination": "6748491ef8e22e0643c47c30",
-              "imgSrc": [],
-              "cost": 300000,
-              "costDescription": "Ăn trưa",
-              "description": "Ăn trưa tại Haidilao",
-              "timeStart": "12:00",
-              "timeEnd": "13:30",
-              "_id": "67f4caaf4d051782f2e4f006"
+              "cost": 200000
+            }
+          ],
+          "_id": "67f5d1d2b23e9393bee2c5b6"
+        }
+      ],
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ",
+        "tour",
+        "hà",
+        "nội",
+        "lịch",
+        "trình"
+      ]
+    },
+    {
+      "_id": "67f5d2afb23e9393bee2d17f",
+      "idUser": "672c8a9f18bd893f40487f9a",
+      "address": "Bình Thuận",
+      "numDays": 2,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "671e699a1ac25da2805825d1",
+              "cost": 500000
             },
             {
               "activityType": "Attraction",
-              "idDestination": "67dce11380362ea4bb541903",
-              "imgSrc": [],
-              "cost": 0,
-              "costDescription": "Miễn phí",
-              "description": "Tham quan Hồ Hoàn Kiếm buổi chiều",
-              "timeStart": "16:00",
-              "timeEnd": "18:00",
-              "_id": "67f4caaf4d051782f2e4f007"
+              "idDestination": "6735627ef4f9ee42b98aa14d",
+              "cost": 200000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dceba280362ea4bb541b5a",
+              "cost": 50000
             }
           ],
-          "_id": "67f4caaf4d051782f2e4f003"
+          "_id": "67f5d2afb23e9393bee2d180"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "6735627ef4f9ee42b98aa14d",
+              "cost": 100000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dceba280362ea4bb541b5a",
+              "cost": 50000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "671e699a1ac25da2805825d1",
+              "cost": 0
+            }
+          ],
+          "_id": "67f5d2afb23e9393bee2d184"
+        }
+      ],
+      "tags": [
+        "Bình Thuận",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ",
+        "tour",
+        "bình",
+        "thuận",
+        "lịch",
+        "trình"
+      ]
+    },
+    {
+      "_id": "67f5d37fb23e9393bee2d4fe",
+      "idUser": "672c8a9f18bd893f40487f9a",
+      "address": "Bà Rịa - Vũng Tàu",
+      "numDays": 2,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 1000000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67407405a908719dec998c70",
+              "cost": 10000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e519ebfd28456dcbaf6937",
+              "cost": 10000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6740698911b863a2ca68167c",
+              "cost": 50000
+            }
+          ],
+          "_id": "67f5d37fb23e9393bee2d4ff"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e51c0efd28456dcbaf6962",
+              "cost": 500000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "67e8d84d43ea4eedd3f53784",
+              "cost": 50000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e538d277a3301c455bdc44",
+              "cost": 270000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "67ea5e723dcaf8dca374b643",
+              "cost": 200000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 0
+            }
+          ],
+          "_id": "67f5d37fb23e9393bee2d504"
+        }
+      ],
+      "tags": [
+        "Bà Rịa - Vũng Tàu",
+        "biển",
+        "nghỉ dưỡng",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ",
+        "tour",
+        "rịa",
+        "-",
+        "vũng",
+        "tàu",
+        "lịch",
+        "trình",
+        "nha"
+      ]
+    },
+    {
+      "_id": "67f5f4ec1aacb5cc05790541",
+      "idUser": "672c8a9f18bd893f40487f9a",
+      "address": "Hải Phòng",
+      "numDays": 2,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "6710b4349ffa18bd1b7faf38",
+              "cost": 500000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dce3aa80362ea4bb541a20",
+              "cost": 50000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "671e84e545df39703238849f",
+              "cost": 200000
+            }
+          ],
+          "_id": "67f5f4ec1aacb5cc05790542"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "FoodService",
+              "idDestination": "6763e8a35cc2ed87dc2f0e04",
+              "cost": 150000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dce3aa80362ea4bb541a20",
+              "cost": 50000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "6710b4349ffa18bd1b7faf38",
+              "cost": 0
+            }
+          ],
+          "_id": "67f5f4ec1aacb5cc05790546"
+        }
+      ],
+      "tags": [
+        "Hải Phòng",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ",
+        "tour",
+        "hải",
+        "phòng",
+        "lịch",
+        "trình"
+      ]
+    },
+    {
+      "_id": "6800ef2a8bf3587f97a9d26a",
+      "idUser": "672c8a9f18bd893f40487f9a",
+      "address": "Hà Nội",
+      "numDays": 2,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 123123
+            }
+          ],
+          "_id": "673717888199a5bb3cc3c057"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "6735627ef4f9ee42b98aa14d",
+              "cost": 10000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86f2fe137be97dd5e683",
+              "cost": 0
+            }
+          ],
+          "_id": "673717888199a5bb3cc3c058"
+        }
+      ],
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ",
+        "tour",
+        "hà",
+        "nội",
+        "đêm"
+      ]
+    },
+    {
+      "_id": "6800ef438bf3587f97a9d61f",
+      "idUser": "672c8a9f18bd893f40487f9a",
+      "address": "Hà Nội",
+      "numDays": 2,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 123123
+            }
+          ],
+          "_id": "673717888199a5bb3cc3c057"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "6735627ef4f9ee42b98aa14d",
+              "cost": 10000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86f2fe137be97dd5e683",
+              "cost": 0
+            }
+          ],
+          "_id": "673717888199a5bb3cc3c058"
+        }
+      ],
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ",
+        "tour",
+        "hà",
+        "nội",
+        "đêm"
+      ]
+    },
+    {
+      "_id": "680c7d4e6bf83b68938ec60c",
+      "idUser": "672c8a9f18bd893f40487f9a",
+      "address": "Hà Nội",
+      "numDays": 3,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "6710b2459ffa18bd1b7faeaa",
+              "cost": 500000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "6736f2c80798cfaae0937a41",
+              "cost": 0
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6710eefcfcdfa639cc6468e4",
+              "cost": 200000
+            }
+          ],
+          "_id": "680c7d4e6bf83b68938ec60d"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "6763198fe229dd5a9cf0ee6d",
+              "cost": 0
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dce3e880362ea4bb541a31",
+              "cost": 1000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6748491ef8e22e0643c47c30",
+              "cost": 100000
+            }
+          ],
+          "_id": "680c7d4e6bf83b68938ec611"
         },
         {
           "day": 3,
           "activity": [
             {
+              "activityType": "Attraction",
+              "idDestination": "67dce11380362ea4bb541903",
+              "cost": 0
+            },
+            {
               "activityType": "FoodService",
               "idDestination": "676311cee229dd5a9cf0d775",
-              "imgSrc": [],
-              "cost": 150000,
-              "costDescription": "Ăn sáng",
-              "description": "Ăn sáng tại Thế Giới Hải Sản",
-              "timeStart": "7:00",
-              "timeEnd": "8:00",
-              "_id": "67f4caaf4d051782f2e4f009"
+              "cost": 100000
             },
             {
               "activityType": "FoodService",
               "idDestination": "6710ee6ffcdfa639cc6468e1",
-              "imgSrc": [],
-              "cost": 250000,
-              "costDescription": "Ăn trưa",
-              "description": "Ăn trưa tại Nhà hàng Okita",
-              "timeStart": "12:00",
-              "timeEnd": "13:30",
-              "_id": "67f4caaf4d051782f2e4f00a"
-            },
-            {
-              "activityType": "Accommodation",
-              "idDestination": "6710b2459ffa18bd1b7faeaa",
-              "imgSrc": [],
-              "cost": 0,
-              "costDescription": "Trả phòng",
-              "description": "Trả phòng tại Narcissus 2 Hotel & Apartment",
-              "timeStart": "14:00",
-              "timeEnd": "15:00",
-              "_id": "67f4caaf4d051782f2e4f00b"
+              "cost": 100000
             }
           ],
-          "_id": "67f4caaf4d051782f2e4f008"
+          "_id": "680c7d4e6bf83b68938ec615"
         }
       ],
-      "type": [],
-      "createdAt": "2023-10-27T10:00:00.000Z",
-      "isPublic": true,
-      "additionalExpenses": [],
-      "comments": [],
-      "likes": [],
-      "__v": 0,
       "tags": [
         "Hà Nội",
         "3 ngày",
@@ -1543,85 +737,85 @@
       ]
     },
     {
-      "_id": "67f7ac4136e18e3326170ad1",
-      "idUser": "67128427a9cdb6c151e91e14",
-      "idInvitee": [],
-      "scheduleName": "Tour Phú Yên 3 ngày 2 đêm",
-      "description": "Tour Phú Yên 3 ngày 2 đêm",
-      "address": "Phú Yên",
-      "imgSrc": [],
+      "_id": "680c7dd4e30e0771eb02b4e1",
+      "idUser": "672c8a9f18bd893f40487f9a",
+      "address": "Bà Rịa - Vũng Tàu",
       "numDays": 3,
-      "dateStart": "27-04-2025",
-      "dateEnd": "29-04-2025",
-      "status": "Draft",
       "activities": [
         {
           "day": 1,
           "activity": [
             {
-              "activityType": "Other",
-              "name": "Check in, gửi đồ",
-              "address": "Gành Đá Đĩa, Tuy An District, Phú Yên Province, Vietnam",
-              "imgSrc": [
-                null,
-                null
-              ],
-              "cost": 10000,
-              "costDescription": "Phí gửi xe",
-              "description": "",
-              "timeStart": "00:00",
-              "timeEnd": "00:30",
-              "_id": "67faac313bb961728553011a"
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 500000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67407405a908719dec998c70",
+              "cost": 10000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6740698911b863a2ca68167c",
+              "cost": 50000
             }
           ],
-          "_id": "67f7ac4136e18e3326170ad2"
+          "_id": "680c7dd4e30e0771eb02b4e2"
         },
         {
           "day": 2,
-          "activity": [],
-          "_id": "67f7ac4136e18e3326170ad3"
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e519ebfd28456dcbaf6937",
+              "cost": 10000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e51c0efd28456dcbaf6962",
+              "cost": 300000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "67e8d84d43ea4eedd3f53784",
+              "cost": 30000
+            }
+          ],
+          "_id": "680c7dd4e30e0771eb02b4e6"
         },
         {
           "day": 3,
-          "activity": [],
-          "_id": "67f7ac4136e18e3326170ad4"
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e51b13fd28456dcbaf6951",
+              "cost": 0
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "67e92576301957bd5c62b60e",
+              "cost": 30000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e538d277a3301c455bdc44",
+              "cost": 100000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "67ea5d783dcaf8dca374b622",
+              "cost": 60000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 0
+            }
+          ],
+          "_id": "680c7dd4e30e0771eb02b4ea"
         }
       ],
-      "type": [
-        "Du lịch vui chơi",
-        "Du lịch văn hóa",
-        "Du lịch ẩm thực",
-        "Du lịch học tập"
-      ],
-      "isPublic": true,
-      "additionalExpenses": [],
-      "comments": [],
-      "likes": [],
-      "createdAt": "2025-04-10T11:32:17.601Z",
-      "__v": 0,
-      "tags": [
-        "Phú Yên",
-        "3 ngày",
-        "2 đêm",
-        "3N2Đ",
-        "hoạt động khác",
-        "du lịch",
-        "phượt",
-        "lịch trình",
-        "male",
-        "trẻ",
-        "tour",
-        "phú",
-        "yên",
-        "đêm"
-      ]
-    }
-  ],
-  "interactionSummary": [
-    {
-      "scheduleId": "6748972201b18ae8c44f8dcf",
-      "viewCount": 0,
-      "editCount": 0,
       "tags": [
         "Bà Rịa - Vũng Tàu",
         "biển",
@@ -1629,77 +823,76 @@
         "3 ngày",
         "2 đêm",
         "3N2Đ",
-        "hoạt động khác",
-        "khách sạn",
-        "chỗ ở",
-        "địa điểm",
-        "tham quan",
+        "check-in",
         "ẩm thực",
-        "ăn uống",
-        "du lịch",
-        "phượt",
-        "lịch trình",
-        "male",
-        "trẻ",
-        "foodtour",
-        "vũng",
-        "tàu",
-        "3n2d",
-        "-",
-        "chân",
-        "dân",
-        "địa",
-        "phương",
-        "đồng",
-        "đảm",
-        "bảo",
-        "đáp",
-        "ứng",
-        "tiêu",
-        "chí",
-        "ngon-bổ-rẻ",
-        "bí",
-        "mật",
-        "bật",
-        "mí",
-        "lưu",
-        "checklist",
-        "thưởng",
-        "thức",
-        "chuyến",
-        "đi"
-      ],
-      "address": "Bà Rịa - Vũng Tàu"
-    },
-    {
-      "scheduleId": "67500fbe0ea60d21d67bb056",
-      "viewCount": 0,
-      "editCount": 0,
-      "tags": [
-        "Hà Nội",
-        "2 ngày",
-        "1 đêm",
-        "2N1Đ",
-        "khách sạn",
-        "chỗ ở",
-        "địa điểm",
-        "tham quan",
-        "du lịch",
-        "phượt",
-        "lịch trình",
+        "hải sản",
         "male",
         "trẻ",
         "tour",
-        "hà",
-        "nội",
-        "đêm"
-      ],
-      "address": "Hà Nội"
+        "rịa",
+        "-",
+        "vũng",
+        "tàu",
+        "lịch",
+        "trình",
+        "du lịch",
+        "lịch trình"
+      ]
     },
     {
-      "scheduleId": "6755132c2e3ea6637d0c84db",
-      "viewCount": 0,
-      "editCount": 0,
+      "_id": "680cbf23fa3297e07fa306c9",
+      "idUser": "672c8a9f18bd893f40487f9a",
+      "address": "Hà Nội",
+      "numDays": 2,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "6736f2c80798cfaae0937a41",
+              "cost": 100000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 400000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6710ee6ffcdfa639cc6468e1",
+              "cost": 300000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 0
+            }
+          ],
+          "_id": "673717888199a5bb3cc3c057"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "6735627ef4f9ee42b98aa14d",
+              "cost": 10000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 400000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6710eefcfcdfa639cc6468e4",
+              "cost": 400000
+            }
+          ],
+          "_id": "673717888199a5bb3cc3c058"
+        }
+      ],
       "tags": [
         "Hà Nội",
         "2 ngày",
@@ -1723,6 +916,105 @@
         "phí",
         "đêm",
         "hấp"
+      ]
+    }
+  ],
+  "interactionSummary": [
+    {
+      "scheduleId": "673726d61924ffd732a46297",
+      "viewCount": 1,
+      "editCount": 0,
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "địa điểm",
+        "tham quan",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ"
+      ],
+      "address": "Hà Nội"
+    },
+    {
+      "scheduleId": "6740c0a901e8bc563a3dfc91",
+      "viewCount": 1,
+      "editCount": 0,
+      "tags": [
+        "Bà Rịa - Vũng Tàu",
+        "biển",
+        "nghỉ dưỡng",
+        "3 ngày",
+        "2 đêm",
+        "3N2Đ",
+        "địa điểm",
+        "tham quan",
+        "hoạt động khác",
+        "ẩm thực",
+        "ăn uống",
+        "khách sạn",
+        "chỗ ở",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ"
+      ],
+      "address": "Bà Rịa - Vũng Tàu"
+    },
+    {
+      "scheduleId": "67500fbe0ea60d21d67bb056",
+      "viewCount": 1,
+      "editCount": 2,
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ",
+        "tour",
+        "hà",
+        "nội",
+        "đêm"
+      ],
+      "address": "Hà Nội"
+    },
+    {
+      "scheduleId": "6756ca591928dd4d5ec0bbb4",
+      "viewCount": 0,
+      "editCount": 0,
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "địa điểm",
+        "tham quan",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ"
       ],
       "address": "Hà Nội"
     },
@@ -1747,65 +1039,66 @@
         "du lịch",
         "phượt",
         "lịch trình",
-        "trẻ",
-        "quẩy",
-        "tung",
-        "vũng",
-        "tàu",
-        "đêm",
-        "thả",
-        "ga",
-        "check-in",
-        "cháy",
-        "máy",
-        "chuẩn",
-        "đồ",
-        "sạc",
-        "pin",
-        "chuyến",
-        "du",
-        "lịch",
-        "hứa",
-        "hẹn",
-        "bùng",
-        "nổ",
-        "trình",
-        "uống",
-        "cực",
-        "bãi",
-        "xanh",
-        "mướt",
-        "loạt",
-        "địa",
-        "hot",
-        "trend",
-        "hải",
-        "sản",
-        "tươi",
-        "ngon",
-        "góc",
-        "sống",
-        "ảo",
-        "đẹp",
-        "mê",
-        "hồn",
-        "trải",
-        "nghiệm",
-        "thú",
-        "vị",
-        "leo",
-        "núi",
-        "ngắm",
-        "hoàng",
-        "hôn",
-        "dạo",
-        "hành",
-        "thể",
-        "lỡ",
-        "đi",
-        "chờ"
+        "trẻ"
       ],
       "address": "Bà Rịa - Vũng Tàu"
+    },
+    {
+      "scheduleId": "67f7a29a25561e1f544515f9",
+      "viewCount": 1,
+      "editCount": 0,
+      "tags": [
+        "Bà Rịa - Vũng Tàu",
+        "biển",
+        "nghỉ dưỡng",
+        "3 ngày",
+        "2 đêm",
+        "3N2Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình"
+      ],
+      "address": "Bà Rịa - Vũng Tàu"
+    },
+    {
+      "scheduleId": "6800dfcf995c40cd5d83919a",
+      "viewCount": 0,
+      "editCount": 1,
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "địa điểm",
+        "tham quan",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "trẻ"
+      ],
+      "address": "Hà Nội"
     }
+  ],
+  "topTags": [
+    "du lịch",
+    "lịch trình",
+    "khách sạn",
+    "chỗ ở",
+    "địa điểm",
+    "tham quan",
+    "phượt",
+    "trẻ",
+    "male",
+    "ẩm thực"
   ]
 }
