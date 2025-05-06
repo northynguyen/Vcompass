@@ -1158,8 +1158,36 @@
       "address": "Bà Rịa - Vũng Tàu"
     },
     {
+      "scheduleId": "67f4caaf4d051782f2e4effe",
+      "viewCount": 0,
+      "editCount": 0,
+      "tags": [
+        "Hà Nội",
+        "3 ngày",
+        "2 đêm",
+        "3N2Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ",
+        "tour",
+        "hà",
+        "nội",
+        "lịch",
+        "trình"
+      ],
+      "address": "Hà Nội"
+    },
+    {
       "scheduleId": "67f7a29a25561e1f544515f9",
-      "viewCount": 2,
+      "viewCount": 3,
       "editCount": 0,
       "tags": [
         "Bà Rịa - Vũng Tàu",
@@ -1198,6 +1226,29 @@
         "du lịch",
         "phượt",
         "lịch trình",
+        "trẻ"
+      ],
+      "address": "Hà Nội"
+    },
+    {
+      "scheduleId": "6815f5e3c4e7eadcd5fa749d",
+      "viewCount": 0,
+      "editCount": 0,
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "địa điểm",
+        "tham quan",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
         "trẻ"
       ],
       "address": "Hà Nội"

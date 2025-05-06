@@ -1,35 +1,32 @@
 /* Container Styles */
 .partner-hotels-container {
-    max-width: 100%;
-    margin: 0 auto;
     padding: 20px;
+    background-color: white;
+    margin-bottom: 100px;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .partner-hotels-container h2 {
     text-align: center;
     margin-bottom: 30px;
-    color: #333;
-    font-size: 1.8em;
 }
 
-/* Hotel List */
 .hotels-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    align-items: flex-start; /* Đảm bảo các thẻ căn trên cùng */
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 45px;
 }
-
 
 /* Hotel Card */
 .hotel-card {
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
-    width: 300px;
+    min-width: 300px;
+    flex: 1;
     overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
     display: flex;
@@ -149,6 +146,11 @@
     transition: background-color 0.3s;
     font-size: 1em;
 }
+.main-title {
+    text-align: center !important;
+    color: #444;
+    font-weight: bold;
+}
 
 .menu-options button:hover {
     background-color: #e2e6ea;
@@ -158,12 +160,19 @@
 .add-hotel-card {
     display: flex;
     justify-content: center;
+    flex-direction: row;
+    padding: 8px 16px;
+    gap: 15px;
     align-items: center;
+    font-weight: 600;
+    color: #184b7f;
     border: 2px dashed #007bff;
     background-color: #f8f9fa;
     cursor: pointer;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    width: fit-content;
     transition: background-color 0.3s, border-color 0.3s;
-    height: 500px;
 }
 
 .add-hotel-card:hover {

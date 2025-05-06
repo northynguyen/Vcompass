@@ -15,7 +15,7 @@ const Reservation = () => {
     };
 
     return (
-        <div className="reservation">
+        <div className="reservation-container">
             {!selectedReservation ? (
                 <ReservationList onReservationSelect={handleReservationSelect} />
             ) : (

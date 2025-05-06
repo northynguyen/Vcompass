@@ -168,7 +168,7 @@ const PageSchedules = () => {
     startTimeRef.current = Date.now();
     idleTimer.current = setTimeout(() => {
       reportSatisfaction("over_view", 0.2, null);
-    }, 600000);
+    }, 60000);
 
     return () => {
       if (idleTimer.current) clearTimeout(idleTimer.current);

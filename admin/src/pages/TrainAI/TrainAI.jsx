@@ -5,6 +5,7 @@ import { PiSmileyAngryFill, PiSmileyFill } from "react-icons/pi";
 import { RiCopilotFill } from "react-icons/ri";
 import 'react-tabs/style/react-tabs.css';
 import { Cell, Legend, Pie, PieChart, Tooltip } from 'recharts';
+import Loading from '../../components/Loading/Loading';
 import { StoreContext } from '../../Context/StoreContext';
 import './TrainAI.css';
 const TrainAI = () => {
@@ -76,9 +77,7 @@ const TrainAI = () => {
     const COLORS = ['#184b7f', '#fb4141'];
     if (isTrainAILoading) {
         return (
-            <div className="">
-                <h2>đang train AI</h2>
-            </div>
+            <Loading title="Đang huấn luyện AI"/>
         )
     }
     return (

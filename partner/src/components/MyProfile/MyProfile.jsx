@@ -1,11 +1,10 @@
-import React, { useState, useContext } from 'react';
-import './MyProfile.css';
-import edit_icon from '../../assets/edit-alt-regular-24.png';
-import default_avatar from '../../assets/profile_icon.png';
-import { StoreContext } from '../../Context/StoreContext';
 import axios from 'axios';
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Navigate, useNavigate } from 'react-router-dom';
+import edit_icon from '../../assets/edit-alt-regular-24.png';
+import { StoreContext } from '../../Context/StoreContext';
+import './MyProfile.css';
 export const MyProfileContainer = () => {
     const { user, setUser } = useContext(StoreContext);
     const [activeTab, setActiveTab] = useState('profile');
@@ -22,13 +21,13 @@ export const MyProfileContainer = () => {
                         className={activeTab === 'profile' ? 'sidebar-button active' : 'sidebar-button'}
                         onClick={() => handleTabClick('profile')}
                     >
-                        Thông tin cá nhân 
+                        Thông tin cá nhân
                     </button>
                     <button
                         className={activeTab === 'update-password' ? 'sidebar-button active' : 'sidebar-button'}
                         onClick={() => handleTabClick('update-password')}
                     >
-                        Đổi mật khẩu 
+                        Đổi mật khẩu
                     </button>
                 </div>
             </div>
@@ -125,121 +124,126 @@ const MyProfile = ({ user, setuser }) => {
 
     return (
         <div className="profile-section-wrapper">
-                    <div className="profile-header">
-                        <h2 className="profile-title">Hồ Sơ Của Tôi</h2>
-                        <img
-                            src={edit_icon}
-                            alt="Chỉnh sửa"
-                            className="profile-edit-icon"
-                            onClick={handleEditClick}
+            <div className="profile-header">
+                <h2 className="profile-title">Hồ Sơ Của Tôi</h2>
+                <img
+                    src={edit_icon}
+                    alt="Chỉnh sửa"
+                    className="profile-edit-icon"
+                    onClick={handleEditClick}
+                />
+            </div>
+            <div className="avatar-section">
+                <img
+                    src={selectedAvatar ? URL.createObjectURL(selectedAvatar) : user.avatar && user.avatar.includes('http') ? user.avatar : `${url}/images/${user.avatar}`}
+                    alt="Ảnh đại diện"
+                    className="avatar-image"
+                />
+                {isEditing && (
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarChange}
+                        className="avatar-input"
+                    />
+                )}
+            </div>
+            <div className="details-section">
+                <p>
+                    <strong>Tên:</strong>{' '}
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            name="name"
+                            value={editedInfo.name || ''}
+                            onChange={handleChange}
+                            className="details-input"
                         />
-                    </div>
-                    <div className="avatar-section">
-                        <img
-                            src={selectedAvatar ? URL.createObjectURL(selectedAvatar) : user.avatar && user.avatar.includes('http') ? user.avatar : `${url}/images/${user.avatar}`}
-                            alt="Ảnh đại diện"
-                            className="avatar-image"
-                        />
-                        {isEditing && (
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleAvatarChange}
-                                className="avatar-input"
-                            />
-                        )}
-                    </div>
-                    <div className="details-section">
-                        <p>
-                            <strong>Tên:</strong>{' '}
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={editedInfo.name || ''}
-                                    onChange={handleChange}
-                                    className="details-input"
-                                />
-                            ) : (
-                                user.name
-                            )}
-                        </p>
-                        <p>
-                            <strong>Email:</strong>{' '}
-                            <input
-                                type="email"
-                                name="email"
-                                value={user.email || ''}
-                                readOnly
-                                className="readonly-input"
-                            />
-                        </p>
-                        <p>
-                            <strong>Số Điện Thoại:</strong>{' '}
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    name="phone_number"
-                                    value={editedInfo.phone_number || ''}
-                                    onChange={handleChange}
-                                    className="details-input"
-                                />
-                            ) : (
-                                user.phone_number
-                            )}
-                        </p>
-                        <p>
-                            <strong>Địa Chỉ:</strong>{' '}
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    name="address"
-                                    value={editedInfo.address || ''}
-                                    onChange={handleChange}
-                                    className="details-input"
-                                />
-                            ) : (
-                                user.address
-                            )}
-                        </p>
-                        <p>
-                            <strong>Giới Tính:</strong>{' '}
-                            {isEditing ? (
-                                <select
-                                    name="gender"
-                                    value={editedInfo.gender || ''}
-                                    onChange={handleChange}
-                                    className="gender-select"
-                                >
-                                    <option value="male">Nam</option>
-                                    <option value="female">Nữ</option>
-                                    <option value="">Khác</option>
-                                </select>
-                            ) : (
-                                user.gender
-                            )}
-                        </p>
-                        <p>
-                            <strong>Ngày Sinh:</strong>
-                            {isEditing ? (
-                                <input
-                                    type="date"
-                                    name="date_of_birth"
-                                    value={editedInfo.date_of_birth || ''}
-                                    onChange={handleDateChange}
-                                    className="details-input"
-                                />
-                            ) : (
-                                formatDateForDisplay(user.date_of_birth)
-                            )}
-                        </p>
-                    </div>
-                    {isEditing && (
-                        <button className="save-button" onClick={handleSaveClick}>
-                            Lưu
-                        </button>
+                    ) : (
+                        user.name
                     )}
-                </div>
+                </p>
+                <p>
+                    <strong>Email:</strong>{' '}
+                    {isEditing ? (
+                        <input
+                            type="email"
+                            name="email"
+                            value={user.email || ''}
+                            readOnly
+                            className="readonly-input"
+                        />
+                    ) : (
+                        user.email
+                    )}
+
+                </p>
+                <p>
+                    <strong>Số Điện Thoại:</strong>{' '}
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            name="phone_number"
+                            value={editedInfo.phone_number || ''}
+                            onChange={handleChange}
+                            className="details-input"
+                        />
+                    ) : (
+                        user.phone_number
+                    )}
+                </p>
+                <p>
+                    <strong>Địa Chỉ:</strong>{' '}
+                    {isEditing ? (
+                        <input
+                            type="text"
+                            name="address"
+                            value={editedInfo.address || ''}
+                            onChange={handleChange}
+                            className="details-input"
+                        />
+                    ) : (
+                        user.address
+                    )}
+                </p>
+                <p>
+                    <strong>Giới Tính:</strong>{' '}
+                    {isEditing ? (
+                        <select
+                            name="gender"
+                            value={editedInfo.gender || ''}
+                            onChange={handleChange}
+                            className="gender-select"
+                        >
+                            <option value="male">Nam</option>
+                            <option value="female">Nữ</option>
+                            <option value="">Khác</option>
+                        </select>
+                    ) : (
+                        user.gender
+                    )}
+                </p>
+                <p>
+                    <strong>Ngày Sinh:</strong>
+                    {isEditing ? (
+                        <input
+                            type="date"
+                            name="date_of_birth"
+                            value={editedInfo.date_of_birth || ''}
+                            onChange={handleDateChange}
+                            className="details-input"
+                        />
+                    ) : (
+                        formatDateForDisplay(user.date_of_birth)
+                    )}
+                </p>
+            </div>
+            {isEditing && (
+                <button className="save-button" onClick={handleSaveClick}>
+                    Lưu
+                </button>
+            )}
+        </div>
     );
 };
 

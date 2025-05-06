@@ -596,7 +596,7 @@ const HotelActionPopup = ({ action, hotel, onClose, onSubmit }) => {
                             </button>
                             <span> </span>
                             <button type="button" className="hap-submit-btn" style={{ backgroundColor: 'red' }} onClick={onClose}>
-                                Huy
+                                Hủy
                             </button>
                         </div>
 

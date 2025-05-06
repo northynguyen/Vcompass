@@ -1,70 +1,72 @@
-.dashboard-container {
-  padding: 20px;
-}
-
-.summary-cards {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.card {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  width: 22%;
-}
-
-.card-icon {
-  font-size: 36px;
-  color: #4CAF50;
-}
-
 .card-red-icon {
   font-size: 36px;
   color: #fe3e25;
 }
 .red-card-content {
-  color: #b31a06;
+  color: #b31a06 !important;
 }
 .red-card-title {
   color: #dc5b4a !important;
 }
-
-.card-details h3 {
-  margin: 0;
-  font-size: 18px;
-  color: #555;
+.summary-user-cards {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.card {
+  border-radius: 4px;
+  padding: 15px 12px;
+  box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  width: 100%;
 }
 
+.card-icon {
+  font-size: 30px;
+  color: #184b7f;
+}
+.card-details{
+  flex: 1;
+}
+
+.card-details h3 {
+  font-size: 13px;
+  color: #7b7b7b;
+  font-weight: 500;
+}
 .card-details p {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 18px;
+  color: #333;
+  font-weight: 800;
   margin: 0;
+  margin-top: 8px;
 }
 
 .chart-section {
-  margin-bottom: 40px;
+  margin-bottom: 100px;
+  padding: 10px;
+  background-color: white;
+  box-shadow: 1px 1px 5px 0px rgb(122 122 122);
+  flex: 3;
+  border-radius: 4px;
 }
+
+.chart-section p {
+  color: #4b4b4b;
+  font-size: 18px;
+}
+
 
 .chart-section h3 {
   margin-bottom: 20px;
   color: #333;
 }
 
-.recent-activities {
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
 .recent-activities h3 {
+  font-size: 16px;
   margin-bottom: 20px;
   color: #333;
 }
@@ -73,11 +75,15 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  margin-top: 10px;
 }
 
 .recent-activities li {
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
+  font-size: 16px;
+  font-weight: 400;
+  color: #4d4d4d;
 }
 
 .recent-activities li:last-child {
@@ -99,7 +105,42 @@
   animation: spin 1s linear infinite;
 }
 
+.chart-container {
+  display: flex;
+  gap: 15px;
+}
+.left-chart-container{
+  flex: 2;
+  padding: 10px 20px 50px 20px;
+  border-radius: 4px;
+  box-shadow: 1px 1px 5px 0px rgb(122 122 122);
+  background-color: white;
+  height: fit-content;
+}
+.task-item{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+.pink{
+  background-color: #ffdfee;
+}
+.orange{
+  background-color: #feedd3;
+}
+.cyan{
+  background-color: #dffffc;
+}
+.blue{
+  background-color: #d3ddfe;
+}
+.yellow{
+  background-color: #fefdd3;
 }

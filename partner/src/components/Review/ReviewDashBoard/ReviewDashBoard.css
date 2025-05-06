@@ -1,20 +1,14 @@
 /* ReviewDashBoard.css */
 
 .review-dashboard {
-    padding: 20px;
-    background-color: #f7f9fc;
-    font-family: Arial, sans-serif;
-    color: #333;
-    width: 90%;
-    margin-left: max(5vw, 35px);
-    margin-top: 20px;
-    margin-right: max(5vw, 35px);
+  padding: 20px;
+  background-color: white;
+  margin-bottom: 100px;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .review-dashboard h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #333;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -92,28 +86,27 @@
 }
   /* Phong cách nút */
   .date-actions button {
-    padding: 5px 10px;
-    font-size: 14px;
+    padding: 8px 16px;
+    font-size: 16px;
     border: none;
-    border-radius: 5px;
+    font-weight: 500;
+    border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s;
-  }
+}
   
   .date-actions .btn-overview {
-    background-color: #7BBCB0;
+    background-color: #868686;
     color: white;
   }
-  .date-actions .btn-overview:hover {
-}
 
 .date-actions .btn-details {
-  background-color: #7BBCB0;
+  background-color: #868686;
   color: white;
 }
   .date-actions .active {
-    background-color: #054338;
-    color: white;
+    background-color: #ecf4f3;
+    color: #184b7f ;
   
   }
 

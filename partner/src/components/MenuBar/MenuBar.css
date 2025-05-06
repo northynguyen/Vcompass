@@ -1,51 +1,98 @@
+/* Sidebar styles */
 .menu {
-        width: 300px;
-        background-color: #fff;
-        padding: 20px;
-        margin-right: 20px;
-        border-radius: 10px;
-        border: 1px solid #ccc;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        height: 100%;
-    }
+  width: 250px;
+  background-color: #fff;
+  min-height: 100vh;
+  box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s ease;
+  padding-top: 30px;
+  position: sticky;
+}
 
+/* Menu items */
 .menu ul li {
-    padding: 15px 15px;
-    display: flex;
-    align-items: center;
-    font-size: 16px;
-    color: #333;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #868686;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.menu ul li svg {
+  margin-right: 18px;
+  font-size: 18px;
+  color: #868686;
+}
+.active svg {
+  color: #184b7f !important;
+}
+.menu ul li.active {
+  background-color: #ecf4f3;
+  font-weight: bold;
+  color: #184b7f !important;
+}
+.menu ul li:hover {
+  background-color: #f0f0f0;
+}
+
+
+/* Badge for notifications */
+.notification-badge {
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  padding: 3px 7px;
+  margin-left: auto;
+}
+
+/* Responsive styles for small screens */
+@media (max-width: 768px) {
+  .menu {
+      width: 80px;
+      /* Sidebar width reduced */
+      padding: 10px;
   }
-  
+
+  .menu ul li {
+      justify-content: center;
+      padding: 10px 0;
+  }
+
   .menu ul li svg {
-    margin-right: 10px; /* Space between icon and text */
-    font-size: 18px;    /* Adjust icon size */
+      margin-right: 0;
+      font-size: 24px;
+      /* Increase icon size */
   }
-  
+
+  .menu ul li {
+      font-size: 0;
+      /* Hide text */
+  }
+
   .menu ul li.active {
-    background-color: #f0f0f0;
-    font-weight: bold;
-    border-radius: 10px;
+      background-color: #f0f0f0;
   }
-  
-  .notification-badge {
-    background-color: red;
-    color: white;
-    font-size: 12px;
-    border-radius: 50%;
-    padding: 3px 7px;
-    margin-left: auto;
+
+  .menu ul li:hover {
+      background-color: #f0f0f0;
+      /* Hover effect to give feedback */
   }
-  
-  .submenu {
-    padding-left: 20px;
+
+  /* Show tooltip on hover for better UX */
+  .menu ul li:hover:after {
+      content: attr(data-title);
+      /* Show the title from a custom attribute */
+      position: absolute;
+      left: 100px;
+      background-color: #333;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      white-space: nowrap;
   }
-  
-  .highlight {
-    background-color: #e9f9a3;
-    border-radius: 4px;
-    padding: 5px 10px;
-  }
-  
+}

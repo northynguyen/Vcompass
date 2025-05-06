@@ -1,15 +1,3 @@
-/* src/components/FABS/RestaurantCard.css */
-.restaurant-card {
-    display: flex;
-    border-radius: 8px;
-    margin: 10px 0;
-    overflow: hidden;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    position: relative;
-    width: 300px;
-}
 
 .restaurant-image {
     width: 300px;

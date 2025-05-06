@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
-import "./GuestProfile.css";
 import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../../Context/StoreContext";
+import "./GuestProfile.css";
 
 const GuestProfile = ({ selectedReservation, onBack }) => {
   const [bookingHistory, setBookingHistory] = useState(null);
@@ -81,13 +81,15 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
       <div className="guest-profile">
         <div className="profile">
           <div className="profile-info">
-            <img
-              src="https://via.placeholder.com/96"
-              alt="Khách hàng"
-              className="profile-photo"
-            />
-            <h2>{selectedReservation.guestInfo.name}</h2>
-            <hr />
+            <div className="user-infor">
+              <img
+                src="https://via.placeholder.com/96"
+                alt="Khách hàng"
+                className="profile-photo"
+              />
+              <h2>{selectedReservation.guestInfo.name}</h2>
+              <hr />
+            </div>
             <div className="contact-info">
               <p>
                 <strong>Số điện thoại:</strong> {selectedReservation.guestInfo.phone}
@@ -102,132 +104,133 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
           </div>
         </div>
 
-        {/* Booking Info Section */}
-        <div className="booking-info">
-          <h3>Thông tin đặt phòng</h3>
-          <p>
-            <strong>Mã đặt phòng:</strong> {selectedReservation._id}
-          </p>
-          <p>
-            <strong>Số khách:</strong> {selectedReservation.numberOfGuests.adult}{" "}
-            Người lớn và {selectedReservation.numberOfGuests.child} Trẻ em
-          </p>
-          <p>
-            <strong>Ngày nhận phòng:</strong>{" "}
-            {new Date(selectedReservation.checkInDate).toLocaleDateString(
-              "vi-VN",
-              { year: "numeric", month: "long", day: "numeric" }
-            )}{" "}
-            , Nhận phòng lúc 14:00
-          </p>
-          <p>
-            <strong>Ngày trả phòng:</strong>{" "}
-            {new Date(selectedReservation.checkOutDate).toLocaleDateString(
-              "vi-VN",
-              { year: "numeric", month: "long", day: "numeric" }
-            )}
-            , Trả phòng lúc 12:00
-          </p>
-          <p>
-            <strong>Thời gian lưu trú:</strong> {selectedReservation.duration} ngày
-          </p>
-          <p>
-            <strong>Yêu cầu đặc biệt:</strong> {selectedReservation.specialRequest}
-          </p>
-          <div
-            className={`loyalty-program ${
-              selectedReservation.status === "cancelled"
+        <div className="accommodation-infor">
+          {/* Booking Info Section */}
+          <div className="booking-info">
+            <h3>Thông tin đặt phòng</h3>
+            <p>
+              <strong>Mã đặt phòng:</strong> {selectedReservation._id}
+            </p>
+            <p>
+              <strong>Số khách:</strong> {selectedReservation.numberOfGuests.adult}{" "}
+              Người lớn và {selectedReservation.numberOfGuests.child} Trẻ em
+            </p>
+            <p>
+              <strong>Ngày nhận phòng:</strong>{" "}
+              {new Date(selectedReservation.checkInDate).toLocaleDateString(
+                "vi-VN",
+                { year: "numeric", month: "long", day: "numeric" }
+              )}{" "}
+              , Nhận phòng lúc 14:00
+            </p>
+            <p>
+              <strong>Ngày trả phòng:</strong>{" "}
+              {new Date(selectedReservation.checkOutDate).toLocaleDateString(
+                "vi-VN",
+                { year: "numeric", month: "long", day: "numeric" }
+              )}
+              , Trả phòng lúc 12:00
+            </p>
+            <p>
+              <strong>Thời gian lưu trú:</strong> {selectedReservation.duration} ngày
+            </p>
+            <p>
+              <strong>Yêu cầu đặc biệt:</strong> {selectedReservation.specialRequest}
+            </p>
+            <div
+              className={`loyalty-program ${selectedReservation.status === "cancelled"
                 ? "cancelled"
                 : selectedReservation.status === "confirmed"
-                ? "confirmed"
-                : "completed"
-            }`}
-          >
-            <h3>Trạng thái đặt phòng</h3>
-            <p>
-              <strong>Trạng thái:</strong> {selectedReservation.status}
-            </p>
-            {selectedReservation.status === "cancelled" && (
-              <div className="cancellation-info">
-                <h3>Thông tin hủy</h3>
-                <p>
-                  <strong>Lý do:</strong>{" "}
-                  {selectedReservation.cancellationReason}
-                </p>
-                {selectedReservation.additionalComments && (
+                  ? "confirmed"
+                  : "completed"
+                }`}
+            >
+              <h3>Trạng thái đặt phòng</h3>
+              <p>
+                <strong>Trạng thái:</strong> {selectedReservation.status}
+              </p>
+              {selectedReservation.status === "cancelled" && (
+                <div className="cancellation-info">
+                  <h3>Thông tin hủy</h3>
                   <p>
-                    <strong>Ghi chú:</strong>{" "}
-                    {selectedReservation.additionalComments}
+                    <strong>Lý do:</strong>{" "}
+                    {selectedReservation.cancellationReason}
                   </p>
-                )}
-              </div>
-            )}
+                  {selectedReservation.additionalComments && (
+                    <p>
+                      <strong>Ghi chú:</strong>{" "}
+                      {selectedReservation.additionalComments}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Price Summary Section */}
+            <div className="price-summary">
+              <h3>Tóm tắt giá</h3>
+              <p>
+                <strong>Phòng và ưu đãi:</strong>{" "}
+                {new Intl.NumberFormat().format(roomInfo.pricePerNight)} VND x{" "}
+                {selectedReservation.duration} đêm
+              </p>
+              <p>
+                <strong>Phụ phí:</strong> 0 VND{" "}
+              </p>
+              <p>
+                <strong>VAT:</strong>{" "}
+                {new Intl.NumberFormat().format(
+                  roomInfo.pricePerNight * selectedReservation.duration * 0.08
+                )}{" "}
+                VND{" "}
+              </p>
+              <p>
+                <strong>Tổng cộng:</strong>{" "}
+                {new Intl.NumberFormat().format(selectedReservation.totalAmount)}{" "}
+                VND
+              </p>
+            </div>
           </div>
 
-          {/* Price Summary Section */}
-          <div className="price-summary">
-            <h3>Tóm tắt giá</h3>
+          {/* Room Info Section */}
+          <div className="room-info">
+            <h3>Thông tin phòng</h3>
+            <img
+              src={
+                (roomInfo.images && `${url}/images/${roomInfo.images[0]}`) ||
+                "https://via.placeholder.com/1024x768"
+              }
+              alt="Phòng"
+              className="room-photo"
+            />
             <p>
-              <strong>Phòng và ưu đãi:</strong>{" "}
-              {new Intl.NumberFormat().format(roomInfo.pricePerNight)} VND x{" "}
-              {selectedReservation.duration} đêm
+              <strong>Tên:</strong> {roomInfo.nameRoomType}
             </p>
             <p>
-              <strong>Phụ phí:</strong> 0 VND{" "}
+              <strong>Diện tích:</strong> {roomInfo.roomSize} m<sup>2</sup>
             </p>
             <p>
-              <strong>VAT:</strong>{" "}
-              {new Intl.NumberFormat().format(
-                roomInfo.pricePerNight * selectedReservation.duration * 0.08
-              )}{" "}
-              VND{" "}
+              <strong>Loại giường:</strong>{" "}
+              {roomInfo.numBed
+                .map((bed) => `${bed.nameBed} - ${bed.number}`)
+                .join(", ")}
             </p>
             <p>
-              <strong>Tổng cộng:</strong>{" "}
-              {new Intl.NumberFormat().format(selectedReservation.totalAmount)}{" "}
-              VND
+              <strong>Số khách:</strong> {roomInfo.numPeople.adult} người lớn,{" "}
+              {roomInfo.numPeople.child} trẻ em
+            </p>
+            <p>
+              <strong>Mô tả:</strong> {roomInfo.description}
+            </p>
+            <p
+              style={{ color: "#ff23322", fontWeight: "bold", fontSize: "20px" }}
+            >
+              <strong>Giá:</strong>{" "}
+              {new Intl.NumberFormat().format(roomInfo.pricePerNight)} VND
             </p>
           </div>
-        </div>
 
-        {/* Room Info Section */}
-        <div className="room-info">
-          <h3>Thông tin phòng</h3>
-          <img
-            src={
-              (roomInfo.images && `${url}/images/${roomInfo.images[0]}`) ||
-              "https://via.placeholder.com/1024x768"
-            }
-            alt="Phòng"
-            className="room-photo"
-          />
-          <p>
-            <strong>Tên:</strong> {roomInfo.nameRoomType}
-          </p>
-          <p>
-            <strong>Diện tích:</strong> {roomInfo.roomSize} m<sup>2</sup>
-          </p>
-          <p>
-            <strong>Loại giường:</strong>{" "}
-            {roomInfo.numBed
-              .map((bed) => `${bed.nameBed} - ${bed.number}`)
-              .join(", ")}
-          </p>
-          <p>
-            <strong>Số khách:</strong> {roomInfo.numPeople.adult} người lớn,{" "}
-            {roomInfo.numPeople.child} trẻ em
-          </p>
-          <p>
-            <strong>Mô tả:</strong> {roomInfo.description}
-          </p>
-          <p
-            style={{ color: "#ff23322", fontWeight: "bold", fontSize: "20px" }}
-          >
-            <strong>Giá:</strong>{" "}
-            {new Intl.NumberFormat().format(roomInfo.pricePerNight)} VND
-          </p>
         </div>
-
         {/* Booking History Section */}
         <div className="booking-history">
           <h3>Lịch sử đặt phòng</h3>
@@ -238,11 +241,11 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
               <table>
                 <thead>
                   <tr>
-                    <th>Ngày đặt</th>
+                    <th>Ngày</th>
                     <th>Loại phòng</th>
-                    <th>Tên cơ sở lưu trú</th>
-                    <th>Ngày nhận phòng</th>
-                    <th>Ngày trả phòng</th>
+                    <th>Tên </th>
+                    <th>Ngày nhận</th>
+                    <th>Ngày trả</th>
                     <th>Số khách</th>
                     <th>Trạng thái</th>
                   </tr>
@@ -284,7 +287,7 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
                   disabled={currentPage === 1}
                   onClick={() => setCurrentPage((prev) => prev - 1)}
                 >
-                 Trang trước
+                  Trang trước
                 </button>
                 <span>
                   Trang {currentPage} trên {totalPages}

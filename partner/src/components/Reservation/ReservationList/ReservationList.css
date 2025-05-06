@@ -1,41 +1,22 @@
-/* General styles */
-body {
-  font-family: 'Inter', sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f4f5f7;
-  color: #333;
-}
-
-.reservation-list {
-  margin: 10px auto;
-  max-width: 1200px;
-  padding: 20px;
-  background: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
 
 .reservation-header {
   display: flex;
+  flex-direction: column;
+  gap: 15px;
   justify-content: space-between;
   align-items: center;
+  margin: 0 -20px;
   margin-bottom: 30px;
-  background: #2e2e3a; /* Charcoal header */
+  background: #184b7f; /* Charcoal header */
   padding: 20px;
-  border-radius: 12px;
+  border-radius: 6px 6px 0px 0px;
   color: #fff;
-}
-
-.reservation-header h2 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin: 0;
 }
 
 .filters {
   display: flex;
-  gap: 20px;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .filters select,
@@ -56,7 +37,7 @@ body {
 /* Cards styles */
 .reservation-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(390px, 1fr));
   gap: 20px;
 }
 
@@ -74,8 +55,8 @@ body {
 }
 
 .card-header {
-  padding: 20px;
-  background: #2e2e3a;
+  padding: 15px;
+  background: #00264c;
   color: #fff;
   display: flex;
   border-radius: 12px 12px 0 0;
@@ -84,23 +65,23 @@ body {
 }
 
 .card-header h3 {
-  font-size: 1.1rem;
+  font-size: 18px;
   font-weight: 600;
   margin: 0;
   color: #fff;
 }
 
 .status-label {
-  padding: 5px 15px;
+  padding: 5px 10px;
   border-radius: 20px;
-  font-size: 0.85rem;
+  font-size: 16px;
   color: #fff;
-  font-weight: 600;
+  font-weight: 500;
   text-transform: capitalize;
 }
 
 .status-label.pending {
-  background: #ffcc00; /* Vàng */
+  background: #e4b706; /* Vàng */
 }
 
 .status-label.confirmed {
@@ -108,7 +89,7 @@ body {
 }
 
 .status-label.expired {
-  background: #6c757d; /* Xám */
+  background: #5e5e5e; /* Xám */
 }
 
 .status-label.cancelled {
