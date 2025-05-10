@@ -5,6 +5,7 @@ import { Range } from 'react-range';
 import { StoreContext } from "../../Context/StoreContext";
 import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import "./ListAccommodation.css";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 // Accommodation Item Component
 const AccomItem = ({ accommodation, status, setCurDes }) => {
   const handleSelect = (e) => {
@@ -137,9 +138,13 @@ AccomList.propTypes = {
 // Pagination Component
 const Pagination = ({ currentPage, totalPages, setCurrentPage }) => (
   <div className="list-accom__pagination">
-    <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
-    <span>Page {currentPage} of {totalPages}</span>
-    <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
+    <button disabled={currentPage === 1 || totalPages === 0} onClick={() => setCurrentPage(currentPage - 1)}>
+      <IoIosArrowBack />    
+    </button>
+    <span>{currentPage} / {totalPages}</span>
+    <button disabled={currentPage === totalPages || totalPages === 0} onClick={() => setCurrentPage(currentPage + 1)}>
+      <IoIosArrowForward />
+    </button>
   </div>
 );
 

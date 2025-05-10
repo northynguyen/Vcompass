@@ -14,7 +14,7 @@ const HomeAttractions = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState({
-        priceRange: { min: 0, max: 700000 },
+        priceRange: { min: 0, max: 1000000 },
         minRating: '',
         selectedAmenities: [],
     });
@@ -27,7 +27,7 @@ const HomeAttractions = () => {
                 page: pageNum,
                 limit: 6,
                 minPrice: customFilters.priceRange?.min || 0,
-                maxPrice: customFilters.priceRange?.max || 700000,
+                maxPrice: customFilters.priceRange?.max || 1000000,
                 minRating: customFilters.minRating || '',
                 amenities: customFilters.selectedAmenities?.join(',') || '',
             });
@@ -49,11 +49,11 @@ const HomeAttractions = () => {
     // Khi location hoặc page thay đổi, gọi lại API
     useEffect(() => {
         fetchAttractions(location, page);
-    }, [location, page, filters]);
+    }, [ page, filters]);
 
     const handleSearch = () => {
-        setPage(1); // Reset lại trang đầu tiên
-        // fetchAttractions sẽ được gọi tự động qua useEffect
+        setPage(1); 
+        fetchAttractions(location, page);
     };
 
     const handlePageChange = (newPage) => {
@@ -77,7 +77,14 @@ const HomeAttractions = () => {
                         type="text"
                         placeholder="Bà Rịa - Vũng Tàu"
                         className="attractions-input"
-                        onChange={(e) => setLocation(e.target.value)}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setLocation(value);
+                            if (value === '') {
+                                setPage(1);
+                                fetchAttractions('', 1, filters);
+                            }
+                        }}
                         value={location}
                     />
                 </div>

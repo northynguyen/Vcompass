@@ -5,7 +5,7 @@ import { Range } from 'react-range';
 import { StoreContext } from "../../Context/StoreContext";
 import { calculateTotalRate, SelectButton } from "../ListAttractions/ListAttractions";
 import "./ListFoodServices.css";
-
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 // TourItem Component
 const FoodServiceItem = ({ foodService, status, setCurDes }) => {
   const { url } = useContext(StoreContext);
@@ -71,7 +71,7 @@ const FoodServiceItem = ({ foodService, status, setCurDes }) => {
       </div>
       <div className="list-accom__tour-price">
         <div className="price-container">
-          <p className="price-text">{foodService.price.minPrice} - {foodService.price.maxPrice} ₫</p>
+          <p className="price-text">{foodService.price.minPrice.toLocaleString().replace(/,/g, '.')} - {foodService.price.maxPrice.toLocaleString().replace(/,/g, '.')} ₫</p>
         </div>
         {
           (status === "Schedule" || status === "WishList") && <SelectButton onClick={handleSelect} />
@@ -233,9 +233,13 @@ Filters.propTypes = {
 // Pagination Component
 const Pagination = ({ currentPage, totalPages, setCurrentPage }) => (
   <div className="list-accom__pagination">
-    <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>Previous</button>
-    <span>Page {currentPage} of {totalPages}</span>
-    <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>Next</button>
+    <button disabled={currentPage === 1 || totalPages === 0} onClick={() => setCurrentPage(currentPage - 1)}>
+      <IoIosArrowBack />
+    </button>
+    <span>{currentPage} / {totalPages}</span>
+    <button disabled={currentPage === totalPages || totalPages === 0} onClick={() => setCurrentPage(currentPage + 1)}>
+      <IoIosArrowForward />
+    </button>
   </div>
 );
 

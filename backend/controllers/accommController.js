@@ -5,8 +5,9 @@ import userModel from "../models/user.js";
 import partnerModel from "../models/partner.js";
 import { createNotification } from "./notiController.js";
 import { uploadToCloudinaryV2, deleteImageFromCloudinary } from './videoController.js';
+import Booking from "../models/booking.js";
 
-export const getListAccomm = async (req, res) => {
+export const getListAccomm = async (req, res) => { 
   try {
 
     const { name, minPrice, maxPrice, city, status, filterData } = req.query;
@@ -831,88 +832,192 @@ export const getAccommWishList = async (req, res) => {
     })
   }
 }
+
 export const searchAccommodations = async (req, res) => {
   try {
+    // Lấy và validate tham số đầu vào
     const {
       amenities,
-      rating, // Đổi từ minRating để khớp với frontend
+      rating,
       minPrice,
       maxPrice,
       keyword,
-      adults, // Đổi từ maxAdults
-      children, // Đổi từ maxChildren
-      startDate, // Thêm lọc theo ngày
-      endDate, // Thêm lọc theo ngày
+      adults,
+      children,
+      startDate,
+      endDate,
       page = 1,
       limit = 10
     } = req.query;
 
-    const query = {};
+    
+    const baseQuery = buildBaseQuery(keyword, amenities, minPrice, maxPrice, adults, children);
+    // Xác định phương thức lấy dữ liệu (aggregation hoặc find thông thường)
+    const needRatingFilter = !!rating;
+    let results = await fetchAccommodations(baseQuery, needRatingFilter, rating);
 
-    // Lọc theo tiện ích (amenities)
-    if (amenities) {
-      const amenitiesArray = amenities.split(",");
-      query.amenities = { $all: amenitiesArray };
+    // Lọc theo ngày nếu có tham số startDate và endDate
+    if (startDate && endDate) {
+      results = await filterByAvailableDates(results, startDate, endDate);
     }
 
-    // Tìm theo từ khóa (name, city)
-    if (keyword) {
-      query.$or = [
-        { name: { $regex: keyword, $options: "i" } },
-        { city: { $regex: keyword, $options: "i" } }
-      ];
-    }
+    // Xử lý phân trang
+    const { paginatedData, paginationInfo } = paginateResults(results, page, limit);
 
-    // Lọc theo khoảng giá
-    if (minPrice || maxPrice) {
-      query.price = {};
-      if (minPrice) query.price.$gte = Number(minPrice);
-      if (maxPrice) query.price.$lte = Number(maxPrice);
-    }
-
-    // Lọc theo rating tối thiểu
-    if (rating) {
-      query["ratings.rating"] = { $gte: Number(rating) };
-    }
-
-    // Lọc theo số người tối đa (người lớn & trẻ em)
-    if (adults || children) {
-      query.roomTypes = {
-        $elemMatch: {
-          "numPeople.adult": { $gte: Number(adults || 0) },
-          "numPeople.child": { $gte: Number(children || 0) }
-        }
-      };
-    }
-
-    // Lọc theo ngày check-in/check-out (nếu có)
-    if (startDate || endDate) {
-      query.availableDates = {};
-      if (startDate) query.availableDates.$gte = new Date(startDate);
-      if (endDate) query.availableDates.$lte = new Date(endDate);
-    }
-
-    // Phân trang
-    const skip = (Number(page) - 1) * Number(limit);
-
-    // Truy vấn DB
-    const accommodations = await Accommodation.find(query)
-      .skip(skip)
-      .limit(Number(limit));
-
-    // Tổng số kết quả tìm thấy
-    const total = await Accommodation.countDocuments(query);
-
-    res.status(200).json({
+    // Trả về kết quả
+    return res.status(200).json({
       success: true,
-      total,
-      page: Number(page),
-      totalPages: Math.ceil(total / Number(limit)),
-      data: accommodations,
+      ...paginationInfo,
+      data: paginatedData,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Lỗi server!", error: error.message });
+    console.error("Error in searchAccommodations:", error);
+    return res.status(500).json({ 
+      success: false, 
+      message: "Lỗi server khi tìm kiếm khách sạn!", 
+      error: error.message 
+    });
   }
 };
+
+// Hàm xây dựng query cơ bản dựa trên các tham số
+function buildBaseQuery(keyword, amenities, minPrice, maxPrice, adults, children) {
+  const query = {};
+  query.status = "active";
+  // Lọc theo tiện ích (amenities)
+  if (amenities) {
+    const amenitiesArray = amenities.split(",");
+    query.amenities = { $all: amenitiesArray };
+  }
+
+  // Tìm theo từ khóa (name, city)
+  if (keyword) {
+    query.$or = [
+      { name: { $regex: keyword, $options: "i" } },
+      { city: { $regex: keyword, $options: "i" } }
+    ];
+  }
+
+  // Lọc theo khoảng giá
+  if (minPrice || maxPrice) {
+    query.price = {};
+    if (minPrice) query.price.$gte = Number(minPrice);
+    if (maxPrice) query.price.$lte = Number(maxPrice);
+  }
+
+  // Lọc theo số người tối đa (người lớn & trẻ em)
+  if (adults || children) {
+    query.roomTypes = {
+      $elemMatch: {
+        "numPeople.adult": { $gte: Number(adults || 0) },
+        "numPeople.child": { $gte: Number(children || 0) }
+      }
+    };
+  }
+
+  return query;
+}
+
+// Hàm fetch dữ liệu từ database
+async function fetchAccommodations(query, needRatingFilter, rating) {
+  if (needRatingFilter) {
+    // Sử dụng aggregation pipeline để lọc theo rating trung bình
+    return await Accommodation.aggregate([
+      { $match: query },
+      {
+        $addFields: {
+          averageRating: {
+            $cond: {
+              if: { $gt: [{ $size: "$ratings" }, 0] },
+              then: { $avg: "$ratings.rate" },
+              else: 0
+            }
+          }
+        }
+      },
+      { $match: { averageRating: { $gte: Number(rating) } } },
+      { $sort: { averageRating: -1 } }
+    ]);
+  } else {
+    // Lấy dữ liệu thông thường, sau đó bổ sung thông tin rating trung bình
+    const accommodations = await Accommodation.find(query);
+    
+    return accommodations.map(accommodation => {
+      const ratings = accommodation.ratings || [];
+      const averageRating = ratings.length > 0
+        ? ratings.reduce((sum, rating) => sum + rating.rate, 0) / ratings.length
+        : 0;
+      
+      const accommodationObj = accommodation.toObject ? accommodation.toObject() : accommodation;
+      return {
+        ...accommodationObj,
+        averageRating: parseFloat(averageRating.toFixed(1))
+      };
+    });
+  }
+}
+
+// Hàm lọc theo ngày trống
+async function filterByAvailableDates(accommodations, startDate, endDate) {
+  try {
+    // Lấy danh sách booking trùng với khoảng thời gian
+    const bookings = await Booking.find({
+      status: { $ne: 'cancelled' },
+      $or: [
+        {
+          checkInDate: { $lt: new Date(endDate) },
+          checkOutDate: { $gt: new Date(startDate) }
+        }
+      ]
+    });
+
+    // Không có booking nào => trả về toàn bộ danh sách
+    if (bookings.length === 0) return accommodations;
+
+    // Tạo map lưu trữ các phòng đã được đặt
+    const bookedRoomsByAccommodation = {};
+    bookings.forEach(booking => {
+      if (!bookedRoomsByAccommodation[booking.accommodationId]) {
+        bookedRoomsByAccommodation[booking.accommodationId] = new Set();
+      }
+      bookedRoomsByAccommodation[booking.accommodationId].add(booking.roomId);
+    });
+
+    // Lọc khách sạn có ít nhất một phòng trống
+    return accommodations.filter(accommodation => {
+      // Kiểm tra nếu không có booking nào của khách sạn này
+      if (!bookedRoomsByAccommodation[accommodation._id.toString()]) {
+        return true;
+      }
+
+      // Kiểm tra có ít nhất một phòng chưa bị đặt
+      return accommodation.roomTypes.some(room =>
+        !bookedRoomsByAccommodation[accommodation._id.toString()].has(room._id.toString())
+      );
+    });
+  } catch (error) {
+    console.error("Error in filterByAvailableDates:", error);
+    // Nếu có lỗi, trả về danh sách gốc
+    return accommodations;
+  }
+}
+
+// Hàm xử lý phân trang
+function paginateResults(results, page, limit) {
+  const total = results.length;
+  const numPage = Number(page);
+  const numLimit = Number(limit);
+  const skip = (numPage - 1) * numLimit;
+  const paginatedData = results.slice(skip, skip + numLimit);
+
+  return {
+    paginatedData,
+    paginationInfo: {
+      total,
+      page: numPage,
+      totalPages: Math.ceil(total / numLimit)
+    }
+  };
+}
 
 

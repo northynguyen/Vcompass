@@ -93,7 +93,7 @@ const AttractionDetailsInfo = ({ serviceId }) => {
                                 key={index}
                                 src={ image.includes("http") ? image : `${url}/images/${image}`}
                                 alt={`Thumb ${index + 1}`}
-                                onClick={() => openModal(index + 1)}
+                                onClick={() => openModal(index )}
                             />
                         ))}
                     </div>

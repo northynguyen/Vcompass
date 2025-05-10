@@ -7,9 +7,10 @@ import ImagesModal from '../ImagesModal/ImagesModal';
 import { StarRating } from '../PlaceReview/PlaceReview';
 import './FoodDetailsInfo.css';
 const FoodDetailsInfo = ({ serviceId }) => {
-    const { url, token, user } = useContext(StoreContext);
+    const { url, token, user , getImageUrl } = useContext(StoreContext);
     const [isSave, setIsSave] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
     const [foodService, setFoodService] = useState(null); // To store food service details
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
     const [selectedMenuIndex, setSelectedMenuIndex] = useState(0);
@@ -32,16 +33,19 @@ const FoodDetailsInfo = ({ serviceId }) => {
     // Open Modal and set the clicked image
     const openModal = (index) => {
         setSelectedImageIndex(index);
-        setIsModalOpen(true);
+        setIsImageModalOpen(true);
     };
     const openModalMenu = (index) => {
         setSelectedMenuIndex(index);
-        setIsModalOpen(true);
+        setIsMenuModalOpen(true);
     };
     // Close the Modal
-    const closeModal = () => {
-        setIsModalOpen(false);
-
+    const closeImageModal = () => {
+        setIsImageModalOpen(false);
+    };
+    
+    const closeMenuModal = () => {
+        setIsMenuModalOpen(false);
     };
     const toggleWishlist = async () => {
         try {
@@ -81,14 +85,14 @@ const FoodDetailsInfo = ({ serviceId }) => {
                 {/* Image Gallery */}
                 <div className='food-gallery-container'>
                     <div className="food-gallery">
-                        <img src={`${url}/images/${foodService.images[0]}`} alt="Main" className="food-main-img" />
+                        <img src={getImageUrl(foodService, 0)} alt="Main" className="food-main-img" />
                         <div className="food-thumbnails">
                             {foodService.images.map((image, index) => (
                                 <img
                                     key={index}
-                                    src={`${url}/images/${image}`}
+                                    src={image.includes('http') ? image : `${url}/images/${image}`}
                                     alt={`Thumb ${index + 1}`}
-                                    onClick={() => openModal(index + 1)}
+                                    onClick={() => openModal(index )}
                                 />
                             ))}
                         </div>
@@ -110,12 +114,11 @@ const FoodDetailsInfo = ({ serviceId }) => {
                 <div className="food-description">
                     <h3>Thực đơn</h3>
                     <div className="food-gallery" onClick={() => openModalMenu(0)}>
-                        <img src={`${url}/images/${foodService.menuImages[0]}`} alt="Main" className="food-main-img" />
                         <div className="food-thumbnails">
                             {foodService.menuImages.map((image, index) => (
                                 <img
                                     key={index}
-                                    src={`${url}/images/${image}`}
+                                    src={image.includes('http') ? image : `${url}/images/${image}`}
                                     alt={`Thumb ${index + 1}`}
                                     onClick={() => openModalMenu(index + 1)}
                                 />
@@ -174,19 +177,19 @@ const FoodDetailsInfo = ({ serviceId }) => {
             </div>
 
 
-            {/* Modal for displaying clicked images */}
+            {/* Modal for displaying service images */}
             <ImagesModal
-                isOpen={isModalOpen}
+                isOpen={isImageModalOpen}
                 images={foodService.images}
                 selectedIndex={selectedImageIndex}
-                onClose={closeModal}
+                onClose={closeImageModal}
             />
-            {/* Modal for displaying clicked images */}
+            {/* Modal for displaying menu images */}
             <ImagesModal
-                isOpen={isModalOpen}
+                isOpen={isMenuModalOpen}
                 images={foodService.menuImages}
                 selectedIndex={selectedMenuIndex}
-                onClose={closeModal}
+                onClose={closeMenuModal}
             />
         </div>
     );

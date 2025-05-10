@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import './HomeFoodService.css';
 import FoodServiceCards from './FoodServiceCards';
@@ -23,7 +23,7 @@ const HomeFoodService = () => {
                 page: pageNum,
                 limit: 6,
                 minPrice: currentFilters.priceRange?.min || 0,
-                maxPrice: currentFilters.priceRange?.max || 700000,
+                maxPrice: currentFilters.priceRange?.max || 1000000,
                 minRating: currentFilters.rating || '',
                 amenities: currentFilters.selectedAmenities?.join(',') || '',
                 serviceType: currentFilters.serviceType || '',
@@ -45,10 +45,11 @@ const HomeFoodService = () => {
 
     useEffect(() => {
         fetchFoodServices(location, page, filters);
-    }, [page, location, filters]);
+    }, [page, filters,]);
 
     const handleSearch = () => {
         setPage(1);
+        fetchFoodServices(location, page, filters);
     };
 
     const handlePageChange = (newPage) => {
@@ -71,7 +72,15 @@ const HomeFoodService = () => {
                         type="text"
                         placeholder="Cơm nghêu Vũng Tàu"
                         className="attractions-input"
-                        onChange={(e) => setLocation(e.target.value)}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setLocation(value);
+                            if (value === '') {
+                                // Auto fetch when input is cleared
+                                setPage(1);
+                                fetchFoodServices('', 1, filters);
+                            }
+                        }}
                         value={location}
                     />
                 </div>

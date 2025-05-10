@@ -966,7 +966,7 @@ export const scheduleAI = async (req, res) => {
       "../Schedule_AI/user.json",
       JSON.stringify(exportData, null, 2)
     );
-    const apiUrl = "http://localhost:8000/predict";
+    const apiUrl = "http://127.0.0.1:8000";
 
     const response = await axios.post(apiUrl, exportData, {
       headers: {

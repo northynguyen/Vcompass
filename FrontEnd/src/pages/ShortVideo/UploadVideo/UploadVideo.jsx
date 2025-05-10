@@ -69,6 +69,7 @@ const UploadVideo = ({ onClose }) => {
   }, []);
   
   const categories = [
+    
     { id: 'general', name: 'Chung' },
     { id: 'comedy', name: 'Hài hước' },
     { id: 'music', name: 'Âm nhạc' },
@@ -269,10 +270,6 @@ const UploadVideo = ({ onClose }) => {
         } else {
           toast.success('Video đã được tải lên thành công!');
         }
-        
-        setTimeout(() => {
-          onClose(); // Đóng form upload sau 1 giây
-        }, 1000);
       }
     } catch (error) {
       console.error('Upload error:', error);
@@ -336,6 +333,13 @@ const UploadVideo = ({ onClose }) => {
     setSelectedSchedule(schedule);
     setShowScheduleModal(false);
   };
+  
+  useEffect(() => {
+    if (uploadStatus === 'success' && calculateDisplayProgress() === 100) {
+      onClose();
+    }
+    // eslint-disable-next-line
+  }, [uploadStatus, uploadPhase]);
   
   return (
     <div className="upload-container">

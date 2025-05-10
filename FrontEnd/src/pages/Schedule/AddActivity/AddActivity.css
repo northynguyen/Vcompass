@@ -445,8 +445,8 @@ textarea.input-field {
 }
 
 .carousel-button {
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
+  background-color: transparent;
+  color: gray;
   border: none;
   border-radius: 50%;
   width: 36px;
@@ -456,7 +456,7 @@ textarea.input-field {
   justify-content: center;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  font-size: 1.2rem;
+  font-size: 2.2rem;
   position: absolute;
   z-index: 5;
 }
@@ -465,13 +465,20 @@ textarea.input-field {
   left: 10px;
 }
 
+.carousel-button:first-child:hover {
+  color:rgb(185, 192, 198);
+}
+
+.carousel-button:last-child:hover {
+  color:rgb(185, 192, 198);
+}
+
+
 .carousel-button:last-child {
   right: 10px;
 }
 
-.carousel-button:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-}
+
 
 /* Info Container */
 .info-container {

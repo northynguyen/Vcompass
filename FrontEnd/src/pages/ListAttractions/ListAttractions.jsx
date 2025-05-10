@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from "react";
 import { Range } from 'react-range';
 import { StoreContext } from "../../Context/StoreContext";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import "./ListAttractions.css";
 
 export const calculateTotalRate = (ratings) => {
@@ -79,7 +80,7 @@ const AttractionItem = ({ attraction, status, setCurDes }) => {
       </div>
       <div className="list-accom__tour-price">
         <div className="price-container">
-          <p className="price-text">{attraction.price} ₫</p>
+          <p className="price-text">{attraction.price.toLocaleString().replace(/,/g, '.')} ₫</p>
         </div>
         {
           (status === "Schedule" || status === "WishList") && <SelectButton onClick={handleSelect} />
@@ -264,19 +265,20 @@ const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
   return (
     <div className="list-accom__pagination">
       <button
-        disabled={currentPage === 1}
+        disabled={currentPage === 1 || totalPages === 0}
         onClick={() => setCurrentPage(currentPage - 1)}
       >
-        Previous
+        <IoIosArrowBack />
+
       </button>
       <span>
-        Page {currentPage} of {totalPages}
+        {currentPage} / {totalPages}
       </span>
       <button
-        disabled={currentPage === totalPages}
+        disabled={currentPage === totalPages || totalPages === 0}
         onClick={() => setCurrentPage(currentPage + 1)}
       >
-        Next
+        <IoIosArrowForward />
       </button>
     </div>
   );

@@ -2,13 +2,12 @@
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  margin: 0 auto;
+  width: 96%;
+  margin: 0 0px 0 35px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-height: 800px;
 }
 
 .upload-header {
@@ -326,7 +325,7 @@
   gap: 12px;
   padding: 10px 25px;
   border-top: 1px solid #eee;
-  background-color: #fff;
+  margin-right:60px;
 }
 
 .cancel-button {
@@ -335,7 +334,7 @@
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -350,7 +349,7 @@
   border: none;
   padding: 10px 20px;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -379,12 +378,12 @@
   }
   
   .upload-container {
-    height: auto;
+    height: 100vh;
     max-height: none;
   }
   
   .upload-form {
-    max-height: 400px;
+    max-height: 500px;
     overflow-y: auto;
   }
 }

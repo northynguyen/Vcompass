@@ -512,7 +512,7 @@ i.fa-solid.fa-plus.add-icon {
 .price-text {
   font-weight: bolder;
   color: #7BBCB0;
-  font-size: 25px;
+  font-size: 20px;
 }
 
 .persion-text {
@@ -1210,6 +1210,7 @@ i.fa-solid.fa-plus.add-icon {
   .time-schedule-price {
     width: 100%;
     text-align: center;
+    align-items: center;
     margin: 0;
   }
 
@@ -1415,6 +1416,7 @@ i.fa-solid.fa-plus.add-icon {
   }
 
   .list-accom__tour-price {
+    flex-direction: column;
     margin-top: 10px;
   }
 

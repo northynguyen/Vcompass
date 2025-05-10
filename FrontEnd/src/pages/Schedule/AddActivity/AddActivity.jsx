@@ -11,6 +11,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import PropTypes from 'prop-types';
+import { IoIosArrowDropleft, IoIosArrowDropright, IoMdCash } from "react-icons/io";
 
 // Fix for default marker icon in Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -355,9 +356,9 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
     try {
       // Kiểm tra các trường bắt buộc
       const newErrors = {
-        costName: !costDes.trim(),
+        costName: costDes === null || costDes === undefined || costDes === '',
         cost: cost === null || cost === undefined || cost === '',
-        description: !description.trim()
+        description: description === null || description === undefined || description === ''
       };
       
       setErrors(newErrors);
@@ -606,17 +607,23 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
                       <div className="destination-content">
                         {curDes.images && curDes.images.length > 0 && (
                           <div className="img-add-activity-container">
-                            <button onClick={handlePrevImage} className="carousel-button">{"<"}</button>
+                            <button onClick={handlePrevImage} className="carousel-button">
+                              <IoIosArrowDropleft />  
+
+                            </button>
                             <img
                               className="add-schedule-img"
                               src={`${url}/images/${curDes.images[currentImageIndex]}`}
                               alt={`${curDes.name}`}
                             />
-                            <button onClick={handleNextImage} className="carousel-button">{">"}</button>
+                            <button onClick={handleNextImage} className="carousel-button">
+                              <IoIosArrowDropright />
+
+                            </button>
                           </div>
                         )}
                         
-                        <div className="destination-details">
+                        {/* <div className="destination-details">
                           <div className="destination-detail-item">
                             <span className="detail-icon"><i className="fas fa-map-marker-alt"></i></span>
                             <span className="detail-text">{curDes.location?.address || curDes.address}</span>
@@ -627,13 +634,13 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
                               <span className="detail-text">{curDes.contact.phone}</span>
                             </div>
                           )}
-                          {curDes.price && (
+                          {curDes.price && curDes.price >0 && (
                             <div className="destination-detail-item">
-                              <span className="detail-icon"><i className="fas fa-tag"></i></span>
-                              <span className="detail-text">{curDes.price.toLocaleString()} VND</span>
+                              <span className="detail-icon"> <IoMdCash /></span>
+                              <span className="detail-text">{curDes.price.toLocaleString().replace(/,/g, '.')} VND</span>
                             </div>
                           )}
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   )}

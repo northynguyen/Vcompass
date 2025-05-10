@@ -202,6 +202,7 @@ const getShortVideos = async (req, res) => {
     // Lọc theo category nếu có
     if (category && category !== 'all') {
       query.category = category;
+      console.log('category:', category);
     }
     
     // Lọc theo userId nếu có
@@ -232,7 +233,7 @@ const getShortVideos = async (req, res) => {
     const total = await ShortVideo.countDocuments(query);
     
     // Lấy danh sách video với phân trang
-    const shortVideos = await ShortVideo.find(query)
+    const videos = await ShortVideo.find(query)
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
@@ -243,7 +244,7 @@ const getShortVideos = async (req, res) => {
     
     res.status(200).json({
       success: true,
-      shortVideos,
+      videos,
       totalPages: Math.ceil(total / limit),
       currentPage: parseInt(page),
       total
@@ -902,12 +903,11 @@ const getTrendingVideos = async (req, res) => {
       query.category = category;
     }
     
-    // Tính điểm tương tác cho mỗi video
+    // Lấy tất cả video mà không sắp xếp trước
     const videos = await ShortVideo.find(query)
       .populate('userId', 'name avatar')
       .populate('likes', 'name avatar')
-      .populate('comments.userId', 'name avatar')
-      .sort({ createdAt: -1 });
+      .populate('comments.userId', 'name avatar');
     
     // Tính điểm tương tác cho mỗi video
     const scoredVideos = videos.map(video => {
@@ -934,7 +934,7 @@ const getTrendingVideos = async (req, res) => {
       };
     });
     
-    // Sắp xếp theo điểm
+    // Sắp xếp theo điểm từ cao đến thấp
     scoredVideos.sort((a, b) => b.score - a.score);
     
     // Phân trang

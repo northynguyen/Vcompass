@@ -10,7 +10,7 @@
 }
 
 .left-sidebar h2 {
-    font-size: 20px;
+    font-size: 18px;
     margin-bottom: 20px;
     color: #333;
 }
@@ -104,11 +104,6 @@
     font-family: Arial, sans-serif;
 }
 
-.left-sidebar h2 {
-    font-size: 20px;
-    margin-bottom: 20px;
-    color: #333;
-}
 
 .left-sidebar .filter-section {
     margin-bottom: 20px;
@@ -188,6 +183,7 @@
 
 .filter-header {
     display: flex;
+    font-size: 14px;
     justify-content: space-between;
     align-items: flex-start;
     cursor: pointer;

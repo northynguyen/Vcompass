@@ -69,7 +69,7 @@ const ShortVideo = () => {
         });
         
         if (response.data.success) {
-          setFollowingVideos(response.data.shortVideos);
+          setFollowingVideos(response.data.videos);
         }
       } catch (error) {
         console.error('Error fetching following videos:', error);
@@ -198,11 +198,7 @@ const ShortVideo = () => {
     setActiveOption('explore');
   };
   
-  // eslint-disable-next-line no-unused-vars
-  const handleUserVideosClick = (userId) => {
-    setSelectedUserId(userId);
-    showTab('userVideos');
-  };
+
   
   const handleMyVideosClick = () => {
     if (user) {
@@ -211,29 +207,18 @@ const ShortVideo = () => {
     }
   };
   
-  const handleHomeClick = () => {
+  const handleForYouClick = () => {
     showTab('home');
   };
+
+  const handleHomeClick = () => { 
+    navigate('/') ;
+  }
   
   const handleFollowingClick = () => {
     showTab('following');
   };
-  
-  const handleFriendsClick = () => {
-    showTab('friends');
-  };
-  
-  const handleActivityClick = () => {
-    showTab('activity');
-  };
-  
-  const handleMessagesClick = () => {
-    showTab('messages');
-  };
-  
-  const handleLiveClick = () => {
-    showTab('live');
-  };
+
   
   // Lấy danh sách video ngắn
   useEffect(() => {
@@ -245,11 +230,11 @@ const ShortVideo = () => {
         });
         
         if (response.data.success) {
-          setVideos(response.data.shortVideos);
+          setVideos(response.data.videos);
           
           // Nếu có videoId trong URL, tìm index của video đó
           if (videoIdFromUrl) {
-            const videoIndex = response.data.shortVideos.findIndex(
+            const videoIndex = response.data.videos.findIndex(
               video => video._id === videoIdFromUrl
             );
             
@@ -534,7 +519,6 @@ const ShortVideo = () => {
   if (loading) {
     return (
       <div className="loading-container">
-        <div className="spinner"></div>
         <p>Đang tải video...</p>
       </div>
     );
@@ -555,11 +539,19 @@ const ShortVideo = () => {
       {/* Sidebar Menu - sẽ ẩn trên mobile */}
       <div className="tiktok-sidebar">       
         <div className="sidebar-menu">
-          <div 
-            className={`menu-item ${activeOption === 'home' ? 'active' : ''}`}
+          <div           
             onClick={handleHomeClick}
+            className={`menu-item `}
           >
             <FaHome />
+            <span>Trang chủ </span>
+          </div>
+
+          <div 
+            className={`menu-item ${activeOption === 'home' ? 'active' : ''}`}
+            onClick={handleForYouClick}
+          >
+            <FaUser />
             <span>For You</span>
           </div>
           
@@ -579,13 +571,7 @@ const ShortVideo = () => {
             <span>Following</span>
           </div>
           
-          <div 
-            className={`menu-item ${activeOption === 'friends' ? 'active' : ''}`}
-            onClick={handleFriendsClick}
-          >
-            <FaUser />
-            <span>Friends</span>
-          </div>
+       
           
           <div 
             className={`menu-item ${activeOption === 'upload' ? 'active' : ''}`}
@@ -595,29 +581,6 @@ const ShortVideo = () => {
             <span>Upload</span>
           </div>
           
-          <div 
-            className={`menu-item ${activeOption === 'activity' ? 'active' : ''}`}
-            onClick={handleActivityClick}
-          >
-            <FaBell />
-            <span>Activity</span>
-          </div>
-          
-          <div 
-            className={`menu-item ${activeOption === 'messages' ? 'active' : ''}`}
-            onClick={handleMessagesClick}
-          >
-            <FaEnvelope />
-            <span>Messages</span>
-          </div>
-          
-          <div 
-            className={`menu-item ${activeOption === 'live' ? 'active' : ''}`}
-            onClick={handleLiveClick}
-          >
-            <FaVideo />
-            <span>LIVE</span>
-          </div>
           
           <div 
             className={`menu-item ${activeOption === 'profile' ? 'active' : ''}`}

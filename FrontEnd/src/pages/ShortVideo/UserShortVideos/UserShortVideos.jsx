@@ -70,6 +70,7 @@ const UserShortVideos = ({ onClose, currentUserId, hideHeader = false }) => {
   
   // Xử lý khi click vào video
   const handleVideoClick = (videoId) => {
+    if (onClose) onClose(); // Đóng popup trước
     // Chuyển hướng đến trang ShortVideo với ID của video
     navigate(`/short-video?videoId=${videoId}`);
   };
@@ -114,7 +115,7 @@ const UserShortVideos = ({ onClose, currentUserId, hideHeader = false }) => {
       
       {loading ? (
         <div className="loading-container">
-          <div className="loading-spinner"></div>
+          <div className="spinner"></div>
           <p>Đang tải video...</p>
         </div>
       ) : error ? (

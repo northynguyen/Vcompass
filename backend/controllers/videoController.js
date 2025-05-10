@@ -205,4 +205,116 @@ const uploadToCloudinaryV2 = async (buffer, folder = 'images', transformations =
   }
 };
 
-export { upload, uploadVideo, uploadImage, deleteVideo, deleteImage, uploadToCloudinaryV2, deleteImageFromCloudinary };
+const copyMediaFromSchedule = async (oldSchedule) => {
+  try {
+    const copiedMedia = {
+      imgSrc: [],
+      videoSrc: null
+    };
+
+    // Copy main schedule images
+    if (oldSchedule.imgSrc && oldSchedule.imgSrc.length > 0) {
+      for (const imgUrl of oldSchedule.imgSrc) {
+        if (imgUrl) {
+          try {
+            // Check if URL is valid
+            if (!imgUrl.startsWith('http') && !imgUrl.startsWith('https')) {
+              // If it's a default image or local path, just keep it as is
+              copiedMedia.imgSrc.push(imgUrl);
+              continue;
+            }
+
+            // Download image from old URL
+            const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
+            const buffer = Buffer.from(response.data, 'binary');
+            
+            // Upload to Cloudinary
+            const result = await uploadToCloudinary(buffer, 'image', 'images', [
+              { width: 800, crop: 'scale' },
+              { quality: 'auto' },
+            ]);
+            
+            copiedMedia.imgSrc.push(result.secure_url);
+          } catch (error) {
+            console.error(`Error copying image ${imgUrl}:`, error);
+            // If there's an error, keep the original URL
+            copiedMedia.imgSrc.push(imgUrl);
+          }
+        }
+      }
+    }
+
+    // Copy main schedule video
+    if (oldSchedule.videoSrc) {
+      try {
+        // Check if URL is valid
+        if (!oldSchedule.videoSrc.startsWith('http') && !oldSchedule.videoSrc.startsWith('https')) {
+          // If it's a default video or local path, just keep it as is
+          copiedMedia.videoSrc = oldSchedule.videoSrc;
+        } else {
+          const response = await axios.get(oldSchedule.videoSrc, { responseType: 'arraybuffer' });
+          const buffer = Buffer.from(response.data, 'binary');
+          
+          const result = await uploadToCloudinary(buffer, 'video', 'videos', [
+            { width: 720, crop: 'scale' },
+            { quality: 'auto:low' },
+          ]);
+          
+          copiedMedia.videoSrc = result.secure_url;
+        }
+      } catch (error) {
+        console.error(`Error copying video ${oldSchedule.videoSrc}:`, error);
+        // If there's an error, keep the original URL
+        copiedMedia.videoSrc = oldSchedule.videoSrc;
+      }
+    }
+
+    // Copy images from activities
+    if (oldSchedule.activities) {
+      for (const day of oldSchedule.activities) {
+        for (const activity of day.activity) {
+          if (activity.imgSrc && activity.imgSrc.length > 0) {
+            const copiedActivityImages = [];
+            for (const imgUrl of activity.imgSrc) {
+              if (imgUrl) {
+                try {
+                  // Check if URL is valid
+                  if (!imgUrl.startsWith('http') && !imgUrl.startsWith('https')) {
+                    // If it's a default image or local path, just keep it as is
+                    copiedActivityImages.push(imgUrl);
+                    continue;
+                  }
+
+                  const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
+                  const buffer = Buffer.from(response.data, 'binary');
+                  
+                  const result = await uploadToCloudinary(buffer, 'image', 'images', [
+                    { width: 800, crop: 'scale' },
+                    { quality: 'auto' },
+                  ]);
+                  
+                  copiedActivityImages.push(result.secure_url);
+                } catch (error) {
+                  console.error(`Error copying activity image ${imgUrl}:`, error);
+                  // If there's an error, keep the original URL
+                  copiedActivityImages.push(imgUrl);
+                }
+              }
+            }
+            activity.imgSrc = copiedActivityImages;
+          }
+        }
+      }
+    }
+
+    return {
+      ...copiedMedia,
+      activities: oldSchedule.activities
+    };
+  } catch (error) {
+    console.error('Error copying media:', error);
+    throw error;
+  }
+};
+
+export { upload, uploadVideo, uploadImage, deleteVideo, deleteImage, uploadToCloudinaryV2, deleteImageFromCloudinary, copyMediaFromSchedule };

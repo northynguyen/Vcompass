@@ -118,3 +118,7 @@ body::-webkit-scrollbar-thumb:hover {
   z-index: 1999;
   background-color: transparent;
 }
+
+.app-content{
+  min-height: 100vh;
+}

@@ -1336,30 +1336,46 @@ const Schedule = ({ mode }) => {
   };
   const onEdit = async () => {
     try {
+      // Copy media from old schedule
+      const response = await axios.post(
+        `${url}/api/videos/copy-media`,
+        { schedule: inforSchedule },
+        { headers: { token } }
+      );
+
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      const { imgSrc, videoSrc, activities } = response.data;
+
       const newSchedule = {
         ...inforSchedule,
         status: "Draft",
         likes: [],
         comments: [],
         createdAt: new Date(),
+        imgSrc: imgSrc || [],
+        videoSrc: videoSrc || null,
+        activities: activities || []
       };
       delete newSchedule._id;
       
-      const response = await axios.post(
+      const createResponse = await axios.post(
         url + "/api/schedule/addNew",
         { schedule: newSchedule },
         { headers: { token } }
       );
 
-      if (response.data.success) {
+      if (createResponse.data.success) {
         // Log edit action
         await logActivity('edit', 'Đã bắt đầu chỉnh sửa lịch trình');
         
-        const scheduleId = response.data.schedule._id;
+        const scheduleId = createResponse.data.schedule._id;
         window.location.href = `/schedule-edit/${scheduleId}`;
         toast.success("Lấy thành công");
       } else {
-        toast.error(response.data.message);
+        toast.error(createResponse.data.message);
       }
     } catch (error) {
       console.error("Error in onEdit:", error);
@@ -1695,7 +1711,7 @@ const Schedule = ({ mode }) => {
               <Tooltip 
                 id="avata-tooltip" 
                 place="bottom"
-                 style={{ fontSize: "12px", zIndex: "999", borderRadius: "10px" }} 
+                style={{ fontSize: "12px", zIndex: "999", borderRadius: "10px" }} 
                 content= {inforSchedule.idUser._id === user._id ? "Bạn" :  `${inforSchedule.idUser.name}${inactiveUsers.has(inforSchedule.idUser._id) ?  "" :" (Hoạt động)"}` } />              
 
               {inforSchedule.idInvitee?.map((invitee, index) => (
@@ -1720,7 +1736,7 @@ const Schedule = ({ mode }) => {
               ))}          
               <button className="invitee_button" data-tooltip-id="save-tooltip" onClick={() => setOpenInviteModal(true)}>
                 <i className="fa-solid fa-user-plus"></i>
-                <Tooltip id="save-tooltip" place="top" style={{ fontSize: "12px", zIndex: "999",borderRadius: "10px" }} content="Thêm người tham gia" />
+                <Tooltip id="save-tooltip" place="top" style={{ fontSize: "100px", zIndex: "999",borderRadius: "10px" }} content="Thêm người tham gia" />
               </button>
             </div>
           )}

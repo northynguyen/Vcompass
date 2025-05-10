@@ -331,58 +331,129 @@ const getAttracWishList = async (req, res) => {
         res.status(500).json({ success: false, message: "Error retrieving wish list attractions" });
     }
 }
+
 export const searchAttractions = async (req, res) => {
     try {
-        const { amenities, minRating, minPrice, maxPrice, keyword, page = 1, limit = 10 } = req.query;
-        // Giới hạn page và limit để tránh abuse
-        if (page < 1) page = 1;
-        if (limit < 1) limit = 10;
-        if (limit > 50) limit = 50; // Giới hạn tối đa 50 bản ghi/trang
-        const query = {};
+        const { 
+            amenities, 
+            minRating, 
+            minPrice, 
+            maxPrice, 
+            keyword, 
+            page = 1, 
+            limit = 10 
+        } = req.query;
 
-        // Tìm theo amenities (mảng)
-        if (amenities) {
-            const amenitiesArray = amenities.split(",");
-            query.amenities = { $all: amenitiesArray }; // Lọc những attraction có tất cả amenities trong danh sách
-        }
-
-
-
-        // Lọc theo khoảng giá
-        if (minPrice || maxPrice) {
-            query.price = {};
-            if (minPrice) query.price.$gte = Number(minPrice);
-            if (maxPrice) query.price.$lte = Number(maxPrice);
-        }
-
-        // Lọc rating lớn hơn 3 sao hoặc 4 sao
-        if (minRating) {
-            query["ratings.rating"] = { $gte: Number(minRating) };
-        }
-        if (keyword) {
-            query.$or = [
-                {
-                    attractionName: { $regex: keyword, $options: "i" }
-                }, // Tìm trong tên
-                { city: { $regex: keyword, $options: "i" } }             // Tìm trong thành phố
-            ];
-        }
-        // Phân trang
-        const skip = (Number(page) - 1) * Number(limit);
-
-        const attractions = await Attraction.find(query).skip(skip).limit(Number(limit));
-
-        const total = await Attraction.countDocuments(query);
-
-        res.status(200).json({
+        // Xây dựng query cơ bản
+        const baseQuery = buildBaseQuery(keyword, amenities, minPrice, maxPrice);
+        
+        // Xác định phương thức lấy dữ liệu (aggregation hoặc find thông thường)
+        const needRatingFilter = !!minRating;
+        let results = await fetchAttractions(baseQuery, needRatingFilter, minRating);
+        
+        // Xử lý phân trang
+        const { paginatedData, paginationInfo } = paginateResults(results, page, limit);
+        
+        // Trả về kết quả
+        return res.status(200).json({
             success: true,
-            total,
-            page: Number(page),
-            totalPages: Math.ceil(total / Number(limit)),
-            data: attractions,
+            ...paginationInfo,
+            data: paginatedData,
         });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Lỗi server!", error: error.message });
+        console.error("Error in searchAttractions:", error);
+        return res.status(500).json({ 
+            success: false, 
+            message: "Lỗi server khi tìm kiếm điểm tham quan!", 
+            error: error.message 
+        });
     }
 };
+
+// Hàm xây dựng query cơ bản
+function buildBaseQuery(keyword, amenities, minPrice, maxPrice) {
+    const query = {};
+
+    // Tìm theo amenities (mảng)
+    if (amenities) {
+        const amenitiesArray = amenities.split(",");
+        query.amenities = { $all: amenitiesArray }; // Lọc những attraction có tất cả amenities trong danh sách
+    }
+
+    // Lọc theo khoảng giá
+    if (minPrice || maxPrice) {
+        query.price = {};
+        if (minPrice) query.price.$gte = Number(minPrice);
+        if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    // Tìm kiếm theo từ khóa
+    if (keyword) {
+        query.$or = [
+            { attractionName: { $regex: keyword, $options: "i" } }, // Tìm trong tên
+            { city: { $regex: keyword, $options: "i" } }           // Tìm trong thành phố
+        ];
+    }
+
+    return query;
+}
+
+// Hàm fetch dữ liệu từ database
+async function fetchAttractions(query, needRatingFilter, minRating) {
+    if (needRatingFilter) {
+        // Sử dụng aggregation pipeline để lọc theo rating trung bình
+        return await Attraction.aggregate([
+            { $match: query },
+            {
+                $addFields: {
+                    averageRating: {
+                        $cond: {
+                            if: { $gt: [{ $size: "$ratings" }, 0] },
+                            then: { $avg: "$ratings.rate" },
+                            else: 0
+                        }
+                    }
+                }
+            },
+            { $match: { averageRating: { $gte: Number(minRating) } } },
+            { $sort: { averageRating: -1 } }
+        ]);
+    } else {
+        // Lấy dữ liệu thông thường, sau đó bổ sung thông tin rating trung bình
+        const attractions = await Attraction.find(query);
+        
+        return attractions.map(attraction => {
+            const ratings = attraction.ratings || [];
+            const averageRating = ratings.length > 0
+                ? ratings.reduce((sum, rating) => sum + rating.rate, 0) / ratings.length
+                : 0;
+            
+            const attractionObj = attraction.toObject ? attraction.toObject() : attraction;
+            return {
+                ...attractionObj,
+                averageRating: parseFloat(averageRating.toFixed(1))
+            };
+        });
+    }
+}
+
+// Hàm xử lý phân trang
+function paginateResults(results, page, limit) {
+    const numPage = Math.max(1, Number(page));
+    const numLimit = Math.min(50, Math.max(1, Number(limit))); // Giới hạn từ 1-50 bản ghi/trang
+    
+    const total = results.length;
+    const skip = (numPage - 1) * numLimit;
+    const paginatedData = results.slice(skip, skip + numLimit);
+
+    return {
+        paginatedData,
+        paginationInfo: {
+            total,
+            page: numPage,
+            totalPages: Math.ceil(total / numLimit)
+        }
+    };
+}
+
 export { getAttractions, getAttractionById, addAttraction, updateAttraction, addReview, deleteAttraction, getAttracWishList }; 
