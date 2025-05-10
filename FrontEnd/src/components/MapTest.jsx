@@ -23,7 +23,7 @@ const libraries = ["places"]; // Thêm thư viện Places API
 
 const MapTest = () => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyBYQh7yM1m1WZdzL_k30O_-HttyEjsBUo8", // Thay thế bằng API Key mới
+    googleMapsApiKey: "", // Thay thế bằng API Key mới
     libraries,
   });
 
