@@ -198,7 +198,7 @@ const ReviewDashboard = () => {
     }
     return (
         <div className="review-dashboard">
-            <h2>Đánh giá dịch vụ</h2>
+            <h2  className='main-title'>Đánh giá dịch vụ</h2>
 
             <div className="service-bar">
                 <div className="date-actions">

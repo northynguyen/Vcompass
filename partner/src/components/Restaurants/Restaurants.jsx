@@ -1,12 +1,12 @@
-import { useState, useEffect, useContext } from 'react';
-import { StoreContext } from '../../Context/StoreContext';
-import './Restaurants.css';
-import { FaPlus, FaTimes } from 'react-icons/fa';
 import axios from 'axios'; // Import axios
+import { useContext, useEffect, useState } from 'react';
+import { FaPlus, FaTimes } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import { StoreContext } from '../../Context/StoreContext';
+import RestaurantActionPopup from './RestaurantActionPopup/RestaurantActionPopup';
 import RestaurantCard from './RestaurantCard/RestaurantCard';
 import RestaurantDetail from './RestaurantDetail/RestaurantDetail';
-import RestaurantActionPopup from './RestaurantActionPopup/RestaurantActionPopup';
-import { toast } from 'react-toastify';
+import './Restaurants.css';
 
 const Restaurants = () => {
     const [restaurants, setRestaurants] = useState([]);
@@ -14,23 +14,21 @@ const Restaurants = () => {
     const [action, setAction] = useState(''); // 'add', 'edit', 'lock', 'view', 'menu'
     const [selectedRestaurant, setSelectedRestaurant] = useState(null);
     const [selectedTab, setSelectedTab] = useState(null); // 'rooms'
-    const { url, token, user  } = useContext(StoreContext);
+    const { url, token, user } = useContext(StoreContext);
 
     const fetchRestaurants = async () => {
         try {
-            const response = await axios.get(`${url}/api/foodServices/partner/${user._id}`, 
+            const response = await axios.get(`${url}/api/foodServices/partner/${user._id}`,
                 { headers: { token } }
             );
-            if (response.data.success)
-            {
+            if (response.data.success) {
                 console.log(response.data);
                 setRestaurants(response.data.foodService); // Assuming the response data contains the restaurant array
             }
-            else
-            {
+            else {
                 console.error(response.data.message);
             }
-           
+
 
         } catch (error) {
             console.error('Error fetching restaurant data:', error);
@@ -39,8 +37,8 @@ const Restaurants = () => {
 
     useEffect(() => {
         fetchRestaurants();
-    }, [token, url]); 
-    
+    }, [token, url]);
+
 
     const openPopup = (actionType, restaurant = null) => {
         console.log("restaurant", restaurant);
@@ -63,7 +61,7 @@ const Restaurants = () => {
                 ...selectedRestaurant,
                 status: action === 'lock' ? 'unActive' : 'active',
             };
-    
+
             // Prepare FormData payload
             const dataToSend = new FormData();
             dataToSend.append('foodServiceData', JSON.stringify(updateData));
@@ -74,12 +72,12 @@ const Restaurants = () => {
                 dataToSend,
                 { headers: { token } }
             );
-    
+
             // Handle the response
             if (response.data.success) {
                 toast.success(response.data.message || 'Operation successful!');
                 fetchRestaurants(); // Refresh the restaurant list
-} else {
+            } else {
                 toast.error(response.data.message || 'Operation failed!');
             }
         } catch (error) {
@@ -87,7 +85,7 @@ const Restaurants = () => {
             const errorMsg =
                 action === 'lock' ? 'Error locking restaurant.' : 'Error unlocking restaurant.';
             console.error(errorMsg, error);
-    
+
             // Check for specific server error messages
             if (error.response?.data?.message) {
                 toast.error(error.response.data.message);
@@ -98,9 +96,10 @@ const Restaurants = () => {
 
             // Reset the loading state
             setShowPopup(false);
-            setAction('');}
+            setAction('');
+        }
     };
-    
+
 
 
 
@@ -109,20 +108,17 @@ const Restaurants = () => {
         setSelectedTab('rooms');
     };
 
-  
+
     return (
         <div className="Restaurants-container">
             {!selectedTab ? (
                 <div className="partner-restaurants-container">
-                    <h2>Danh Sách Nhà Hàng/Quán Nước</h2>
+                    <h2 className='main-title'>Dịch vụ ăn uống</h2>
+                    <div className="add-restaurant-card" onClick={() => openRoomsTab(null)}>
+                        <FaPlus size={25} color="#184b7f" />
+                        <p>Thêm mới</p>
+                    </div>
                     <div className="restaurants-list">
-                        <div className="restaurant-card add-restaurant-card" onClick={() => openRoomsTab(null)}>
-                            <div className="add-restaurant-content">
-                                <FaPlus size={50} color="#007bff" />
-                                <p>Thêm Nhà Hàng/Quán Nước Mới</p>
-                            </div>
-                        </div>
-
                         {restaurants.length > 0 ? (
                             restaurants.map((restaurant, index) => (
                                 <RestaurantCard
@@ -153,7 +149,7 @@ const Restaurants = () => {
                             restaurant={selectedRestaurant}
                             isOpen={showPopup}
                             onClose={closePopup}
-onSubmit={() => { handleSubmit(); }} 
+                            onSubmit={() => { handleSubmit(); }}
                         />
                     )}
 
@@ -162,7 +158,7 @@ onSubmit={() => { handleSubmit(); }}
                             <div className="popup-content menu-popup-content">
                                 <FaTimes className="close-popup" onClick={closePopup} />
                                 <div className="menu-options">
-                                    {selectedRestaurant.status !== 'unActive' && selectedRestaurant.status !== 'block' &&  (
+                                    {selectedRestaurant.status !== 'unActive' && selectedRestaurant.status !== 'block' && (
                                         <button onClick={() => { closePopup(); openPopup('lock', selectedRestaurant); }}>
                                             Khóa Nhà Hàng/Quán Nước
                                         </button>

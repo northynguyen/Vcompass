@@ -2,6 +2,7 @@ from data_loader import load_input
 from analyzer import ScheduleAnalyzer
 from schedule_env import ScheduleEnv
 from agent import ScheduleRLAgent
+import os
 import json
 
 def main():
@@ -26,7 +27,9 @@ def main():
     input_dim = len(user_vector) + len(analyzer.schedule_to_vector(schedules[0]))
     agent = ScheduleRLAgent(input_dim, env)
     agent.train()
-    agent.save_model("model_RecommentSchedule.pth")
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(BASE_DIR, "model_RecommentSchedule.pth")
+    agent.save_model(model_path)
 if __name__ == "__main__":
     print("Training model...")
     main()

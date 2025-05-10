@@ -45,31 +45,13 @@ const PageSchedules = () => {
   }, [priceRange]);
 
   useEffect(() => {
-    if (!user) {
-      navigate('/login');
-      return;
+    if (!user && type === "follow") {
+      navigate('/');
     }
-
     if (type !== 'foryou' && type !== 'follow') {
       navigate('/404');
     }
   }, [user, type, navigate]);
-  const fetchData = async () => {
-    try {
-      const userId = user && user._id ? user._id : '';
-      const response = await fetch(`${url}/api/schedule/scheduleforuser/${userId}`);
-      const data = await response.json();
-
-      if (data.success) {
-        console.log("Recommended schedules by AI:", data.recommendedSchedules);
-        setScheduleAI(data.recommendedSchedules);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -83,7 +65,6 @@ const PageSchedules = () => {
           } else {
             response = await axios.get(`${url}/api/schedule/getAllSchedule`);
           }
-
         } else {
           response = await axios.get(
             `${url}/api/schedule/getSchedules/followingSchedules`,
@@ -168,27 +149,26 @@ const PageSchedules = () => {
 
   }, [allSchedules, filters, debouncedPriceRange]);
 
-  const reportSatisfaction = async (action, score, schedule) => {
+  const reportSatisfaction = async (action, score, scheduleId) => {
     const userId = user._id
     console.log("action, score:", action, score)
-    // try {
-    //   await axios.post("/api/userSatisfaction", {
-    //     userId,
-    //     scheduleId,
-    //     action,
-    //     score,
-    //   });
-    //   console.log(`📤 Sent: ${action} (${score})`);
-    // } catch (err) {
-    //   console.error("❌ Failed to report satisfaction:", err.message);
-    // }
+    try {
+      await axios.post(`${url}/api/userSatisfaction`, {
+        userId,
+        scheduleId,
+        action,
+        score,
+      });
+      console.log(`📤 Sent: ${action} (${score})`);
+    } catch (err) {
+      console.error("❌ Failed to report satisfaction:", err.message);
+    }
   };
   useEffect(() => {
     startTimeRef.current = Date.now();
-
     idleTimer.current = setTimeout(() => {
-      reportSatisfaction("over_view", 0.2);
-    }, 30000);
+      reportSatisfaction("over_view", 0.2, null);
+    }, 60000);
 
     return () => {
       if (idleTimer.current) clearTimeout(idleTimer.current);
@@ -207,7 +187,11 @@ const PageSchedules = () => {
   };
 
   const handleScheduleClick = (id) => {
-    navigate(`/schedule-view/${id}`);
+    if (type === "foryou") {
+      handleView(id)
+      navigate(`/schedule-view/${id}`, { state: { type: "foryou" } });
+    } else
+      navigate(`/schedule-view/${id}`);
   };
 
   const handlePageChange = (newPage) => {
@@ -228,14 +212,8 @@ const PageSchedules = () => {
   const handleLike = (scheduleId) => {
     reportSatisfaction("like", 0.7, scheduleId);
   };
-  const handleComment = (scheduleId) => {
-    reportSatisfaction("comment", 0.8, scheduleId);
-  };
   const handleSave = (scheduleId) => {
     reportSatisfaction("save", 0.9, scheduleId);
-  };
-  const handleEdit = (scheduleId) => {
-    reportSatisfaction("edit", 1.0, scheduleId);
   };
 
   const indexOfLastSchedule = currentPage * schedulesPerPage;
@@ -261,17 +239,22 @@ const PageSchedules = () => {
       <div className="main-content">
         <div>
           <div className="schedule-for-you-list">
-            {loading ? (
-              <PostCardSkeleton count={schedulesPerPage} />
-            ) : currentSchedules.length > 0 ? (
+            {loading && <PostCardSkeleton count={schedulesPerPage} />}
+
+            {!loading && currentSchedules.length > 0 &&
               currentSchedules.map((schedule) => (
                 <PostCard
                   key={schedule._id}
                   schedule={schedule}
                   handleScheduleClick={handleScheduleClick}
+                  {...(type === "foryou" && {
+                    onLikeClick: handleLike,
+                    onHeartClick: handleSave
+                  })}
                 />
               ))
-            ) : (
+            }
+            {!loading && currentSchedules.length === 0 && (
               <div className="no-schedule">
                 <h3>Không tìm thấy lịch trình</h3>
               </div>

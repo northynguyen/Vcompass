@@ -106,7 +106,7 @@ const DashBoard = () => {
 
     while (currentDate <= maxDate) {
       labels.push(
-        `${currentDate.toLocaleString("default", { month: "long" })} ${currentDate.getFullYear()}`
+        `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`
       );
       revenues.push(0);
       currentDate.setMonth(currentDate.getMonth() + 1);
@@ -126,8 +126,9 @@ const DashBoard = () => {
           label: 'Doanh thu khách sạn trong tháng',
           data: revenues,
           fill: false,
-          backgroundColor: '#4CAF50',
-          borderColor: '#4CAF50',
+          tension: 0.4,
+          backgroundColor: '#003bff',
+          borderColor: '#003bff',
         },
       ],
     };
@@ -163,8 +164,6 @@ const DashBoard = () => {
         },
         ticks: {
           autoSkip: false, // Ngăn không cho tự động bỏ qua các tháng
-          maxRotation: 90, // Xoay nhãn trục x nếu cần
-          minRotation: 45, // Chỉ định góc quay tối thiểu
         },
       },
       y: {
@@ -190,59 +189,60 @@ const DashBoard = () => {
     return (
       <div className="dashboard-container">
         {/* Header with Summary Cards */}
-        <div className="summary-cards">
-          <div className="card">
+        <div className="summary-user-cards">
+          <div className="card blue">
             <TbBed className="card-icon" />
             <div className="card-details">
-              <h3>Đặt phòng</h3>
               <p>{bookings.length}</p>
+              <h3>Đặt phòng</h3>
             </div>
           </div>
-          <div className="card">
+          <div className="card orange">
             <TbBedOff className="card-red-icon" />
             <div className="card-details">
-              <h3 className='red-card-title'>Hủy đặt phòng</h3>
               <p className='red-card-content'>{countCancelled()}</p>
+              <h3 className='red-card-title'>Hủy đặt phòng</h3>
             </div>
           </div>
-          <div className="card">
+          <div className="card pink">
             <LiaMoneyBillWaveSolid className="card-icon" />
             <div className="card-details">
-              <h3>Doanh thu</h3>
               <p>{calculateRevenue()}</p>
+              <h3>Doanh thu</h3>
             </div>
           </div>
-          <div className="card">
+          <div className="card cyan">
             <FaRegSmileBeam className="card-icon" />
             <div className="card-details">
-              <h3>Mức độ hài lòng</h3>
               <p>{calculateSatisfaction()}%</p>
+              <h3>Mức độ hài lòng</h3>
             </div>
           </div>
         </div>
 
-        {/* Revenue Chart */}
-        {chartData &&
-          <div className="chart-section">
-          <h3>Biểu đồ doanh thu theo tháng</h3>
-          <Line data={chartData} options={options} />
-        </div>
-        }
-
-        {/* Recent Activities */}
-        <div className="recent-activities">
-          <h3>Hoạt động gần đây</h3>
-          <ul>
-            {bookings
-              .slice(-5)
-              .reverse()
-              .map((booking, index) => (
-                <li key={index}>
-                  {`Khách hàng ${booking.guestInfo.name}: ${booking.status === "canceled" ? "đã hủy đặt phòng" : "đã đặt phòng"
-                    } lúc ${new Date(booking.createdAt).toLocaleString()}`}
-                </li>
-              ))}
-          </ul>
+        <div className="chart-container">
+          {chartData &&
+            <div className="chart-section">
+              <h4>Biểu đồ doanh thu theo tháng</h4>
+              <Line data={chartData} options={options} />
+            </div>
+          }
+          <div className="left-chart-container">
+            <div className="recent-activities">
+              <h4>Hoạt động gần đây</h4>
+              <ul>
+                {bookings
+                  .slice(-5)
+                  .reverse()
+                  .map((booking, index) => (
+                    <li key={index}>
+                      {`${booking.guestInfo.name} ${booking.status === "canceled" ? "đã hủy đặt phòng" : "đã đặt phòng"
+                        } lúc ${new Date(booking.createdAt).toLocaleString()}`}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     );

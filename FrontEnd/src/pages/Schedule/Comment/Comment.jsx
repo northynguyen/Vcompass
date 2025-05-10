@@ -71,27 +71,27 @@ const formatDate = (timestamp) => {
     return time.format('MMM DD, YYYY, HH:mm');
 };
 
-const Comment = ({ schedule }) => {
+const Comment = ({ schedule, onLikeClick, onComment }) => {
     const { url, user, token } = useContext(StoreContext);
     const [comments, setComments] = useState(schedule?.comments || []);
     const [likes, setLikes] = useState(schedule?.likes || []);
     const [newComment, setNewComment] = useState('');
     const logActivity = async (actionType, content) => {
         try {
-          await axios.post(
-            `${url}/api/logs/create`,
-            {
-              userId: user._id,
-              scheduleId: schedule._id,
-              actionType,
-              content
-            },
-            { headers: { token } }
-          );
+            await axios.post(
+                `${url}/api/logs/create`,
+                {
+                    userId: user._id,
+                    scheduleId: schedule._id,
+                    actionType,
+                    content
+                },
+                { headers: { token } }
+            );
         } catch (error) {
-          console.error('Error logging activity:', error);
+            console.error('Error logging activity:', error);
         }
-      };
+    };
 
     useEffect(() => {
         // Load comments from server to update view after a reply
@@ -123,6 +123,9 @@ const Comment = ({ schedule }) => {
                 action: isLike() ? 'unlike' : 'like',
             }, { headers: { token } });
             if (response.data.success) {
+                if (onLikeClick && !isLike()) {
+                    onLikeClick()
+                }
                 if (isLike()) {
                     await logActivity('unlike', 'Đã bỏ thích lịch trình');
                 } else {
@@ -152,6 +155,9 @@ const Comment = ({ schedule }) => {
                 content: newComment,
             }, { headers: { token } });
             if (response.data.success) {
+                if (onComment) {
+                    onComment()
+                }
                 await logActivity('comment', `Đã bình luận: ${newComment}`);
                 setComments(response.data.schedule.comments);
                 setNewComment('');

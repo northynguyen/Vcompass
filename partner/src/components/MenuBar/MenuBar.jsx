@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import './MenuBar.css';
+import { FaCalendarAlt, FaConciergeBell, FaHome, FaStar, FaThLarge } from 'react-icons/fa'; // Import icons
 import { Link, useLocation } from 'react-router-dom'; // Import Link and useLocation from react-router-dom
-import { FaThLarge, FaCalendarAlt, FaHome, FaEnvelope, FaBroom, FaBox, FaDollarSign, FaStar, FaConciergeBell } from 'react-icons/fa'; // Import icons
+import './MenuBar.css';
 
 const MenuBar = () => {
   // Use useLocation hook to get the current route
@@ -12,79 +12,36 @@ const MenuBar = () => {
       {/* Menu Items */}
       <nav className="menu">
         <ul>
-          <li className={location.pathname === '/dashboard' ? 'active' : ''}>
-            <Link to="/dashboard">
+          <Link to="/dashboard">
+            <li className={location.pathname === '/dashboard' ? 'active' : ''}>
               <FaThLarge />
               Tổng quan
-            </Link>
-          </li>
-          <li className={location.pathname === '/reservation' ? 'active' : ''}>
-            <Link to="/reservation">
+            </li>
+          </Link>
+          <Link to="/reservation">
+            <li className={location.pathname === '/reservation' ? 'active' : ''}>
               <FaCalendarAlt />
-              Quản lý đặt phòng
-            </Link>
-          </li>
-          <li className={location.pathname === '/hotels' ? 'active' : ''}>
-            <Link to="/hotels">
+              Đặt phòng
+            </li>
+          </Link>
+          <Link to="/hotels">
+            <li className={location.pathname === '/hotels' ? 'active' : ''}>
               <FaHome />
-              Dịch vụ chỗ ở
-            </Link>
-          </li>
-          <li className={location.pathname === '/concierge' ? 'active' : ''}>
-            <Link to="/concierge">
+              Khách sạn
+            </li>
+          </Link>
+          <Link to="/concierge">
+            <li className={location.pathname === '/concierge' ? 'active' : ''}>
               <FaConciergeBell />
-              Dịch vụ ăn uống
-            </Link>
-          </li>
-          {/* <li className={location.pathname === '/messages' ? 'active' : ''}>
-            <Link to="/messages">
-              <FaEnvelope />
-              Messages
-              <span className="notification-badge">5</span>
-            </Link>
-          </li> */}
-          {/* <li className={location.pathname === '/housekeeping' ? 'active' : ''}>
-            <Link to="/housekeeping">
-              <FaBroom />
-              Housekeeping
-            </Link>
-          </li> */}
-          {/* <li className={location.pathname === '/inventory' ? 'active' : ''}>
-            <Link to="/inventory">
-              <FaBox />
-              Inventory
-            </Link>
-          </li>
-          <li className={location.pathname === '/calendar' ? 'active' : ''}>
-            <Link to="/calendar">
-              <FaCalendarAlt />
-              Calendar
-            </Link>
-          </li> */}
-          {/* <li className={location.pathname === '/financials' ? 'active' : ''}>
-            <Link to="/financials">
-              <FaDollarSign />
-              Financials
-            </Link>
-          </li> */}
-          {/* <ul className="submenu">
-            <li className={location.pathname === '/invoice' ? 'active' : ''}>
-              <Link to="/invoice">
-                Invoice
-              </Link>
+              Ăn uống
             </li>
-            <li className={location.pathname === '/expenses' ? 'active' : ''}>
-              <Link to="/expenses">
-                <span className="highlight">Expenses</span>
-              </Link>
-            </li>
-          </ul> */}
-          <li className={location.pathname === '/review' ? 'active' : ''}>
-            <Link to="/review">
+          </Link>
+          <Link to="/review">
+            <li className={location.pathname === '/review' ? 'active' : ''}>
               <FaStar />
               Đánh giá
-            </Link>
-          </li>
+            </li>
+          </Link>
         </ul>
       </nav>
     </aside>

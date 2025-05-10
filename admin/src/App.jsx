@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { StoreContext } from './Context/StoreContext';
-import Login from './pages/Login/Login';
-import Register from './pages/Register/Register';
-import MainPage from './pages/MainPage/MainPage';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { StoreContext } from './Context/StoreContext';
+import Login from './pages/Login/Login';
+import MainPage from './pages/MainPage/MainPage';
+import Register from './pages/Register/Register';
 
 function App() {
   const { token } = useContext(StoreContext);

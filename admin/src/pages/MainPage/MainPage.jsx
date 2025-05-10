@@ -14,6 +14,7 @@ import Notification from '../Notification/Notification';
 import Partners from '../Partners/Partners';
 import ReportManagement from '../ReportManagement/ReportManagement';
 import Services from '../Services/Services';
+import TrainAI from '../TrainAI/TrainAI'
 import Tours from '../Tours/Tours';
 import Users from '../Users/Users';
 import './MainPage.css';
@@ -39,7 +40,7 @@ const MainPage = () => {
             <Route path="/myprofile" element={<MyProfileContainer />} />
             <Route path="/extensions" element={<Extensions />} />
             <Route path="/reportmanagement" element={<ReportManagement />} />
-            <Route path="/trainAI" element={<ReportManagement />} />
+            <Route path="/trainAI" element={<TrainAI />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </div>

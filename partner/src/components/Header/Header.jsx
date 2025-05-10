@@ -3,12 +3,13 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { CiLogout, CiSettings } from "react-icons/ci";
 import { FaBell } from "react-icons/fa"; // Importing Bell icon from react-icons
 import { MdManageAccounts } from "react-icons/md";
+import { TiArrowSortedDown } from "react-icons/ti";
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { io } from 'socket.io-client';
+import logo from '../../assets/logo.png';
 import { StoreContext } from '../../Context/StoreContext';
 import './Header.css';
-import logo from '../../assets/logo.png'
 
 const Header = () => {
   // State to handle the visibility of the profile popup
@@ -251,15 +252,17 @@ const Header = () => {
         {
           user &&
           <div className="user-profile">
+            <div className="user-info">
+              <p>{user.name}</p>
+            </div>
             <img
-              src={` ${user.avatar && user.avatar.includes('http') ? user.avatar : user.avatar? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}` }
+              src={` ${user.avatar && user.avatar.includes('http') ? user.avatar : user.avatar ? `${url}/images/${user.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}`}
               alt="User Avatar"
               className="user-avatar"
               onClick={toggleProfilePopup} // Toggle profile popup on click
             />
-            <div className="user-info">
-              <p>{user.name}</p>
-              <span>Partner</span>
+            <div className="arrow-down-infor">
+              <TiArrowSortedDown />
             </div>
           </div>
         }
@@ -267,11 +270,10 @@ const Header = () => {
         {/* Profile Popup Menu */}
         {isProfilePopupVisible && (
           <div className="profile-popup" ref={menuRef}>
-            <ul className="menu">
-              <li><CiSettings /> My Settings</li>
-              <li onClick={handleMyProfile}><MdManageAccounts /> My Profile</li>
+            <ul className="profile-dropdown">
+              <li onClick={handleMyProfile}><MdManageAccounts /> Thông tin cá nhân</li>
               <hr />
-              <li onClick={handleLogout}><CiLogout /> Log Out</li>
+              <li onClick={handleLogout}><CiLogout />Đăng xuất</li>
             </ul>
           </div>
         )}

@@ -71,7 +71,7 @@ const Sidebar = () => {
                         onClick={() => handleNavigation('/trainAI')}
                     >
                         <RiCopilotFill />
-                        Huấn luyện AI
+                        AI
                     </li>
                     <li
                         className={isActive('/reportmanagement') ? 'active' : ''}

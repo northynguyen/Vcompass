@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
-import "./Hotels.css";
-import { FaPlus, FaEllipsisV, FaTimes } from "react-icons/fa";
-import HotelActionPopup from "./HotelActionPopup/HotelActionPopup";
-import Rooms from "../Rooms/Rooms";
 import axios from "axios";
-import { StoreContext } from "../../Context/StoreContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { FaEllipsisV, FaPlus, FaTimes } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { StoreContext } from "../../Context/StoreContext";
 import Loading from "../Loading/Loading";
+import Rooms from "../Rooms/Rooms";
+import HotelActionPopup from "./HotelActionPopup/HotelActionPopup";
+import "./Hotels.css";
 
 const Hotels = () => {
   const [hotels, setHotels] = useState([]);
@@ -148,18 +147,15 @@ const Hotels = () => {
         <Loading size="60px" color="#007bff" /> // Hiển thị vòng xoay nếu đang tải dữ liệu
       ) : !selectedTab ? (
         <div className="partner-hotels-container">
-          <h2>Danh Sách Khách Sạn Đăng Ký</h2>
+          <h2 className="main-title">Dịch vụ lưu trú</h2>
+          <div
+            className="add-hotel-card"
+            onClick={() => openPopup("add")}
+          >
+            <FaPlus size={25} color="#184b7f" />
+            <p>Thêm mới</p>
+          </div>
           <div className="hotels-list">
-            <div
-              className="hotel-card add-hotel-card"
-              onClick={() => openPopup("add")}
-            >
-              <div className="add-hotel-content">
-                <FaPlus size={50} color="#007bff" />
-                <p>Thêm Khách Sạn Mới</p>
-              </div>
-            </div>
-
             {hotels.map((hotel) => {
               const isExpanded = expandedHotels[hotel._id] || false; // Lấy trạng thái của khách sạn hiện tại
               return (
@@ -184,9 +180,8 @@ const Hotels = () => {
                     <p>
                       <strong>Mô Tả:</strong>
                       <span
-                        className={`hotel-description ${
-                          isExpanded ? "expanded" : ""
-                        }`}
+                        className={`hotel-description ${isExpanded ? "expanded" : ""
+                          }`}
                       >
                         {hotel.description}
                       </span>
@@ -216,15 +211,15 @@ const Hotels = () => {
                     </p>
                     <p className="hotel-status">
                       <strong>Trạng Thái:</strong>
-                      <span className={`status-badge ${hotel.status}`}> 
+                      <span className={`status-badge ${hotel.status}`}>
                         {hotel.status === "active"
                           ? "Đang hoạt động"
                           : hotel.status === "pending"
-                          ? "Đang chờ duyệt"
-                          : hotel.status === "unActive"
-                          ? "Dừng hoạt động"
-                          : "Đã bị khóa"}
-                        </span>
+                            ? "Đang chờ duyệt"
+                            : hotel.status === "unActive"
+                              ? "Dừng hoạt động"
+                              : "Đã bị khóa"}
+                      </span>
                     </p>
                   </div>
                   <div className="hotel-actions">
