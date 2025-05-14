@@ -68,17 +68,50 @@
             },
             {
               "activityType": "Other",
-              "idDestination": "674076f611b863a2ca68296a",
-              "cost": 50000
-            },
-            {
-              "activityType": "FoodService",
-              "idDestination": "67406b7311b863a2ca681720",
-              "cost": 100000
+              "idDestination": "67f52a6751fa385a61820c56",
+              "cost": 300000
             }
           ],
-          "_id": "673b65cd003aed23b6c91c6c"
-        },
+          "_id": "673721fe8199a5bb3cc3c7ef"
+        }
+      ],
+      "tags": [
+        "Bà Rịa - Vũng Tàu",
+        "biển",
+        "nghỉ dưỡng",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "ẩm thực",
+        "ăn uống",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ",
+        "tour",
+        "rịa",
+        "-",
+        "vũng",
+        "tàu",
+        "đêm",
+        "uống",
+        "thả",
+        "ga",
+        "a"
+      ]
+    },
+    {
+      "_id": "673726d61924ffd732a46297",
+      "idUser": "672c8a9f18bd893f40487f9a",
+      "address": "Hà Nội",
+      "numDays": 2,
+      "activities": [
         {
           "day": 3,
           "activity": [
@@ -131,7 +164,12 @@
         "phượt",
         "lịch trình",
         "male",
-        "trẻ"
+        "trẻ",
+        "tour",
+        "hà",
+        "nội",
+        "đêm",
+        "a"
       ]
     },
     {
@@ -808,7 +846,7 @@
     {
       "scheduleId": "673721fe8199a5bb3cc3c7ed",
       "viewCount": 1,
-      "editCount": 1,
+      "editCount": 0,
       "tags": [
         "Bà Rịa - Vũng Tàu",
         "biển",
@@ -842,30 +880,38 @@
       "address": "Bà Rịa - Vũng Tàu"
     },
     {
-      "scheduleId": "6748972201b18ae8c44f8dcf",
-      "viewCount": 0,
+      "scheduleId": "673726d61924ffd732a46297",
+      "viewCount": 1,
       "editCount": 0,
       "tags": [
-        "Bà Rịa - Vũng Tàu",
-        "biển",
-        "nghỉ dưỡng",
-        "3 ngày",
-        "2 đêm",
-        "3N2Đ",
-        "hoạt động khác",
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
         "khách sạn",
         "chỗ ở",
-        "địa điểm",
-        "tham quan",
         "ẩm thực",
         "ăn uống",
+        "địa điểm",
+        "tham quan",
+        "hoạt động khác",
         "du lịch",
         "phượt",
         "lịch trình",
         "male",
-        "trẻ"
+        "trẻ",
+        "tour",
+        "hà",
+        "nội",
+        "đêm",
+        "a"
       ],
-      "address": "Bà Rịa - Vũng Tàu"
+      "address": "Hà Nội"
+    },
+    {
+      "scheduleId": "6740c0a901e8bc563a3dfc91",
+      "viewCount": 1,
+      "editCount": 0
     },
     {
       "scheduleId": "67500fbe0ea60d21d67bb056",
@@ -924,32 +970,7 @@
     },
     {
       "scheduleId": "6761bc9176de7ada521d3606",
-      "viewCount": 2,
-      "editCount": 1,
-      "tags": [
-        "Bà Rịa - Vũng Tàu",
-        "biển",
-        "nghỉ dưỡng",
-        "4 ngày",
-        "3 đêm",
-        "4N3Đ",
-        "khách sạn",
-        "chỗ ở",
-        "hoạt động khác",
-        "ẩm thực",
-        "ăn uống",
-        "địa điểm",
-        "tham quan",
-        "du lịch",
-        "phượt",
-        "lịch trình",
-        "trẻ"
-      ],
-      "address": "Bà Rịa - Vũng Tàu"
-    },
-    {
-      "scheduleId": "68158cc7ee0fb25d292e58f4",
-      "viewCount": 0,
+      "viewCount": 1,
       "editCount": 0,
       "tags": [
         "Bà Rịa - Vũng Tàu",
@@ -978,6 +999,29 @@
       "viewCount": 0,
       "editCount": 0,
       "tags": [
+        "Hà Nội",
+        "3 ngày",
+        "2 đêm",
+        "3N2Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "male",
+        "trẻ"
+      ],
+      "address": "Hà Nội"
+    },
+    {
+      "scheduleId": "67f7a29a25561e1f544515f9",
+      "viewCount": 3,
+      "editCount": 0,
+      "tags": [
         "Bà Rịa - Vũng Tàu",
         "biển",
         "nghỉ dưỡng",
@@ -986,6 +1030,31 @@
         "2N1Đ",
         "ẩm thực",
         "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "trẻ",
+        "tour",
+        "hà",
+        "nội",
+        "chi",
+        "phí",
+        "đêm",
+        "hấp"
+      ],
+      "address": "Hà Nội"
+    },
+    {
+      "scheduleId": "6815f5e3c4e7eadcd5fa749d",
+      "viewCount": 1,
+      "editCount": 0,
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "địa điểm",
+        "tham quan",
         "khách sạn",
         "chỗ ở",
         "địa điểm",

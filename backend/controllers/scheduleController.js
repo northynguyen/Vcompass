@@ -966,17 +966,22 @@ export const scheduleAI = async (req, res) => {
       "../Schedule_AI/user.json",
       JSON.stringify(exportData, null, 2)
     );
-    const apiUrl = "http://127.0.0.1:8000/predict";
-
+    const apiUrl = "http://127.0.0.1:8000/recommend_schedules/";
     const response = await axios.post(apiUrl, exportData, {
       headers: {
         'Content-Type': 'application/json',
       }
     });
     if (response.data.status === "success") {
+      const recommendedScheduleIds = response.data.recommendedSchedules || [];
+      const recommendedSchedules = await Schedule.find({
+        _id: { $in: recommendedScheduleIds },
+      }).populate("idUser")
+        .populate("idInvitee", "name avatar email")
+        .lean(); // dùng lean để thao tác dễ hơn
       res.status(200).json({
         success: true,
-        recommendedSchedules: response.data.recommendedSchedules,
+        recommendedSchedules,
       });
     } else {
       res.status(500).json({
@@ -996,19 +1001,11 @@ export const scheduleAI = async (req, res) => {
 
 export const trainScheduleModel = async (req, res) => {
   try {
-    const allSchedules = await Schedule.find().populate(
-      "idUser",
-      "name avatar"
-    );
-
-    // Lưu toàn bộ lịch trình vào file
-    fs.writeFileSync(
-      "../Schedule_AI/All_schedules.json",
-      JSON.stringify(allSchedules, null, 2)
-    );
+    getAllScheduleToTrainAI();
+    getAllUserDataToTrainAI();
 
     // Gọi lệnh train bằng Python
-    exec("python ../Schedule_AI/train.py", (err, stdout, stderr) => {
+    exec("python ../Schedule_AI/travel_recommendation_dqn.py", (err, stdout, stderr) => {
       if (err) {
         console.error("Lỗi khi train AI:", err.message);
         return res
@@ -1034,50 +1031,6 @@ export const trainScheduleModel = async (req, res) => {
   }
 };
 
-// Hàm tách riêng xử lý predict và trả kết quả
-const PREDICT_SCRIPT = "python ../Schedule_AI/predict.py";
-
-export const callPredictAndRespond = (res) => {
-  console.log("🔵 Bắt đầu chạy predict.py...");
-
-  exec(PREDICT_SCRIPT, { timeout: 30000 }, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`❌ Lỗi khi chạy predict.py:`, error.message);
-      return res
-        .status(500)
-        .json({ success: false, message: "Lỗi khi chạy AI prediction" });
-    }
-
-    if (stderr) {
-      console.warn(`⚠️ Cảnh báo từ predict.py:`, stderr);
-    }
-
-    console.log(`✅ Predict output:`, stdout);
-
-    fs.readFile("./recommend.json", "utf-8", (readErr, data) => {
-      if (readErr) {
-        console.error("❌ Lỗi đọc recommend.json:", readErr);
-        return res
-          .status(500)
-          .json({ success: false, message: "Lỗi đọc kết quả AI" });
-      }
-
-      try {
-        const result = JSON.parse(data);
-        res.status(200).json({
-          success: true,
-          message: "Gợi ý lịch trình thành công",
-          recommendedSchedules: result,
-        });
-      } catch (parseErr) {
-        console.error("❌ Lỗi phân tích JSON recommend.json:", parseErr);
-        res
-          .status(500)
-          .json({ success: false, message: "Lỗi phân tích dữ liệu AI" });
-      }
-    });
-  });
-};
 
 //// Application
 
@@ -1172,4 +1125,158 @@ export const getScheduleByIdForMobile = async (req, res) => {
       error,
     });
   }
+};
+const getAllUserDataToTrainAI = async () => {
+  const users = await User.find().populate('following.idUser').lean();
+  const allData = [];
+
+  for (const user of users) {
+    const age = calculateAge(user.date_of_birth); // bạn đã có hàm này
+    const restaurants = new Set();
+    const accommodations = new Set();
+    const attractions = new Set();
+    const allTags = [];
+    const actionCounts = { like: 0, comment: 0, edit: 0, view: 0, share: 0 };
+    let totalDays = 0;
+    let totalCost = 0;
+
+    // Favorite của user
+    user.favorites?.foodService?.forEach(r => restaurants.add(r.toString()));
+    user.favorites?.accommodation?.forEach(a => accommodations.add(a.toString()));
+    user.favorites?.attraction?.forEach(t => attractions.add(t.toString()));
+
+    // Lịch trình user tạo
+    const schedules = await Schedule.find({ idUser: user._id }).lean();
+    schedules.forEach(schedule => {
+      totalDays += schedule.numDays || 0;
+      allTags.push(...(schedule.tags || []));
+
+      schedule.activities?.forEach(day => {
+        day.activity.forEach(act => {
+          totalCost += act.cost || 0;
+          if (act.activityType === 'FoodService') {
+            restaurants.add(act.idDestination);
+
+          }
+          if (act.activityType === 'Accommodation') {
+            accommodations.add(act.idDestination);
+          }
+          if (act.activityType === 'Attraction') {
+            attractions.add(act.idDestination);
+          }
+        });
+      });
+    });
+    // Lịch trình user tương tác
+    const logs = await Log.find({ userId: user._id }).populate('scheduleId').lean();
+
+    logs.forEach(log => {
+      // Đếm số lượng hành động (dùng actionType chứ không phải action)
+      actionCounts[log.actionType] = (actionCounts[log.actionType] || 0) + 1;
+
+      const sched = log.scheduleId;
+      if (sched) {
+        allTags.push(...(sched.tags || []));
+
+        sched.activities?.forEach(day => {
+          day.activity.forEach(act => {
+            if (act.activityType === 'FoodService') {
+              restaurants.add(act.idDestination || act.activityId?.toString());
+            }
+            if (act.activityType === 'Accommodation') {
+              accommodations.add(act.idDestination || act.activityId?.toString());
+            }
+            if (act.activityType === 'Attraction') {
+              attractions.add(act.idDestination || act.activityId?.toString());
+            }
+          });
+        });
+      }
+    });
+    // Đếm số lần xuất hiện của từng tag
+    const tagCounts = {};
+    allTags.forEach(tag => {
+      tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+    });
+
+    // Sắp xếp tag theo tần suất giảm dần và lấy top 10
+    const topTags = Object.entries(tagCounts)
+      .sort((a, b) => b[1] - a[1]) // sắp giảm dần theo count
+      .slice(0, 10)                 // lấy top 10
+      .map(entry => entry[0]);      // chỉ lấy tên tag
+    allData.push({
+      userId: user._id,
+      age,
+      address: user.address || '',
+      gender: user.gender || '',
+      restaurants: Array.from(restaurants),
+      accommodations: Array.from(accommodations),
+      attractions: Array.from(attractions),
+      following: Array.isArray(user.following) ? user.following.map(f => f.toString()) : [],
+      averageDays: schedules.length ? (totalDays / schedules.length) : 0,
+      averageCost: schedules.length ? (totalCost / schedules.length) : 0,
+      topTags: topTags,
+      numRestaurants: restaurants.size,
+      numAccommodations: accommodations.size,
+      numAttractions: attractions.size,
+      totalLikes: actionCounts.like,
+      totalComments: actionCounts.comment,
+      totalEdits: actionCounts.edit,
+      totalViews: actionCounts.view,
+      totalShares: actionCounts.share
+    });
+  }
+
+  fs.writeFileSync('../Schedule_AI/ALL_users.json', JSON.stringify(allData, null, 2));
+};
+const getAllScheduleToTrainAI = async () => {
+  const schedules = await Schedule.find().lean();
+  const result = [];
+
+  for (const sched of schedules) {
+    let totalCost = 0;
+    const restaurants = new Set();
+    const accommodations = new Set();
+    const attractions = new Set();
+
+    sched.activities?.forEach(day => {
+      day.activity.forEach(act => {
+        totalCost += act.cost || 0;
+        if (act.activityType === 'FoodService') {
+          restaurants.add(act.idDestination.toString());
+        }
+        if (act.activityType === 'Accommodation') {
+          accommodations.add(act.idDestination.toString());
+        }
+        if (act.activityType === 'Attraction') {
+          attractions.add(act.idDestination.toString());
+        }
+      });
+    });
+
+    // Tính tổng số like và comment
+    const totalLikes = sched.likes ? sched.likes.length : 0;
+    const totalComments = sched.comments
+      ? sched.comments.reduce((sum, comment) => {
+        const repliesCount = comment.replies ? comment.replies.length : 0;
+        return sum + 1 + repliesCount; // 1 comment + số reply
+      }, 0)
+      : 0;
+
+    result.push({
+      scheduleId: sched._id,
+      userId: sched.idUser,
+      address: sched.address || '',
+      numDays: sched.numDays || 0,
+      totalLikes,
+      totalComments,
+      tags: sched.tags || [],
+      totalCost,
+      restaurants: Array.from(restaurants),
+      accommodations: Array.from(accommodations),
+      attractions: Array.from(attractions),
+    });
+  }
+
+  fs.writeFileSync('../Schedule_AI/ALL_schedules.json', JSON.stringify(result, null, 2));
 };
