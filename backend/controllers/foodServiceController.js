@@ -154,40 +154,115 @@ const getAdminGetListByPartner = async (req, res) => {
 const createFoodService = async (req, res) => {
   const idPartner = req.userId;
   try {
-    const newFoodService = new FoodService(
-      JSON.parse(req.body.foodServiceData)
-    );
+    const foodServiceData = typeof req.body.foodServiceData === 'string' 
+        ? JSON.parse(req.body.foodServiceData) 
+        : req.body.foodServiceData;
+    const newFoodService = new FoodService(foodServiceData);
     newFoodService.idPartner = idPartner;
     console.log("newFoodService:", newFoodService);
+
+    let images = [];
+    let menuImages = [];
 
     // Check and save images if present
     if (req.files) {
       if (req.files.images) {
         const imagePromises = req.files.images.map(async (file) => {
-          const result = await uploadToCloudinaryV2(file.buffer, 'foodServices', [
-            { width: 800, crop: 'scale' },
-            { quality: 'auto' }
-          ]);
-          return result.secure_url;
+          try {
+            if (!file.buffer || file.buffer.length === 0) {
+              console.error("Empty file buffer detected:", file.originalname);
+              return null;
+            }
+            
+            const result = await uploadToCloudinaryV2(file.buffer, 'foodServices', [
+              { width: 800, crop: 'scale' },
+              { quality: 'auto' }
+            ]);
+            
+            if (!result || !result.secure_url) {
+              console.error("Invalid Cloudinary result:", result);
+              return null;
+            }
+            
+            return result.secure_url;
+          } catch (err) {
+            console.error(`Error uploading file ${file.originalname}:`, err);
+            return null;
+          }
         });
         
-        const images = await Promise.all(imagePromises);
-        newFoodService.images = images;
+        const uploadedImages = await Promise.all(imagePromises);
+        images = uploadedImages.filter(img => img !== null);
+        console.log("Valid images from uploads:", images);
       }
 
       // Check and save menuImages if present
       if (req.files.menuImages) {
         const menuImagePromises = req.files.menuImages.map(async (file) => {
-          const result = await uploadToCloudinaryV2(file.buffer, 'foodServicesMenu', [
-            { width: 800, crop: 'scale' },
-            { quality: 'auto' }
-          ]);
-          return result.secure_url;
+          try {
+            if (!file.buffer || file.buffer.length === 0) {
+              console.error("Empty file buffer detected:", file.originalname);
+              return null;
+            }
+            
+            const result = await uploadToCloudinaryV2(file.buffer, 'foodServicesMenu', [
+              { width: 800, crop: 'scale' },
+              { quality: 'auto' }
+            ]);
+            
+            if (!result || !result.secure_url) {
+              console.error("Invalid Cloudinary result:", result);
+              return null;
+            }
+            
+            return result.secure_url;
+          } catch (err) {
+            console.error(`Error uploading file ${file.originalname}:`, err);
+            return null;
+          }
         });
         
-        const menuImages = await Promise.all(menuImagePromises);
-        newFoodService.menuImages = menuImages;
+        const uploadedMenuImages = await Promise.all(menuImagePromises);
+        menuImages = uploadedMenuImages.filter(img => img !== null);
+        console.log("Valid menu images from uploads:", menuImages);
       }
+    }
+    
+    // Handle image URLs from request body
+    if (req.body.imageUrl) {
+      console.log("Processing image URL from request body");
+      // Handle single URL
+      if (typeof req.body.imageUrl === 'string') {
+        images.push(req.body.imageUrl);
+      } 
+      // Handle array of URLs
+      else if (Array.isArray(req.body.imageUrl)) {
+        images = [...images, ...req.body.imageUrl.filter(url => url)];
+      }
+      console.log("Added image URLs:", images);
+    }
+    
+    // Handle menu image URLs from request body
+    if (req.body.menuImageUrl) {
+      console.log("Processing menu image URL from request body");
+      // Handle single URL
+      if (typeof req.body.menuImageUrl === 'string') {
+        menuImages.push(req.body.menuImageUrl);
+      } 
+      // Handle array of URLs
+      else if (Array.isArray(req.body.menuImageUrl)) {
+        menuImages = [...menuImages, ...req.body.menuImageUrl.filter(url => url)];
+      }
+      console.log("Added menu image URLs:", menuImages);
+    }
+
+    // Set images and menuImages
+    if (images.length > 0) {
+      newFoodService.images = images;
+    }
+    
+    if (menuImages.length > 0) {
+      newFoodService.menuImages = menuImages;
     }
 
     await newFoodService.save();

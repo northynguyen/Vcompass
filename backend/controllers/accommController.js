@@ -160,6 +160,8 @@ export const addNew = async (req, res) => {
       images: []
     });
 
+    let validImages = [];
+
     // Handle image uploads to Cloudinary
     if (req.files && req.files.length > 0) {
       console.log("Uploading images to Cloudinary...");
@@ -195,12 +197,26 @@ export const addNew = async (req, res) => {
       console.log("Uploaded images:", uploadedImages);
       
       // Filter out any null values from failed uploads
-      const validImages = uploadedImages.filter(img => img !== null);
+      validImages = uploadedImages.filter(img => img !== null);
       console.log("Valid images to add:", validImages);
-      
-      if (validImages.length > 0) {
-        newAccommodation.images = validImages;
+    }
+    
+    // Handle image URLs from request body
+    if (req.body.imageUrl) {
+      console.log("Processing image URL from request body");
+      // Handle single URL
+      if (typeof req.body.imageUrl === 'string') {
+        validImages.push(req.body.imageUrl);
+      } 
+      // Handle array of URLs
+      else if (Array.isArray(req.body.imageUrl)) {
+        validImages = [...validImages, ...req.body.imageUrl.filter(url => url)];
       }
+      console.log("Added image URLs:", validImages);
+    }
+    
+    if (validImages.length > 0) {
+      newAccommodation.images = validImages;
     }
 
     console.log("Final accommodation data to save:", newAccommodation);

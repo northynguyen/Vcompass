@@ -115,6 +115,8 @@ const addAttraction = async (req, res) => {
             images: []
         });
 
+        let validImages = [];
+
         // Handle image uploads to Cloudinary
         if (req.files && req.files.length > 0) {
             console.log("Uploading attraction images to Cloudinary...");
@@ -148,12 +150,26 @@ const addAttraction = async (req, res) => {
             console.log("Uploaded attraction images:", uploadedImages);
             
             // Filter out any null values from failed uploads
-            const validImages = uploadedImages.filter(img => img !== null);
-            console.log("Valid images to add:", validImages);
-            
-            if (validImages.length > 0) {
-                newAttraction.images = validImages;
+            validImages = uploadedImages.filter(img => img !== null);
+            console.log("Valid images from uploads:", validImages);
+        }
+        
+        // Handle image URLs from request body
+        if (req.body.imageUrl) {
+            console.log("Processing image URL from request body");
+            // Handle single URL
+            if (typeof req.body.imageUrl === 'string') {
+                validImages.push(req.body.imageUrl);
+            } 
+            // Handle array of URLs
+            else if (Array.isArray(req.body.imageUrl)) {
+                validImages = [...validImages, ...req.body.imageUrl.filter(url => url)];
             }
+            console.log("Added image URLs:", validImages);
+        }
+        
+        if (validImages.length > 0) {
+            newAttraction.images = validImages;
         }
 
         console.log("Final attraction data to save:", newAttraction);

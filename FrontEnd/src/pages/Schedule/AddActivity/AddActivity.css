@@ -28,13 +28,7 @@
   overflow: hidden;
 }
 
-/* Split Layout Structure */
-.add-activity.split-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-}
+
 
 .modal-header {
   display: flex;
@@ -67,9 +61,7 @@
   transition: color 0.2s ease;
 }
 
-.close-btn:hover i {
-  color: #ff0000;
-}
+
 
 /* Search and Filter Bar */
 .search-filter-bar {
@@ -83,7 +75,7 @@
 
 .filter-row {
   display: flex;
-  gap: 300px;
+  gap: 30px;
   align-items: center;
 }
 
@@ -100,11 +92,11 @@
   margin-bottom: 5px;
   font-size: 0.9rem;
   color: #555;
-  width: 200px;
+  width: 150px;
 }
 
 .filter-group select {
-  width: 100%;
+  width: 60%;
   padding: 10px;
   border-radius: 6px;
   border: 1px solid #ddd;
@@ -124,7 +116,6 @@
 /* Left Panel Styles */
 .modal-left-panel {
   flex: 7;
-  overflow-y: auto;
   border-right: 1px solid #eaeaea;
   padding: 0;
 }
@@ -213,13 +204,30 @@
 }
 
 /* List Container */
-.list-container {
-  padding: 15px;
-}
+
 
 /* Form Styles */
 .form-page {
+  overflow-y: auto;
+  max-height: 74vh;
   padding: 15px;
+}
+
+.form-page::-webkit-scrollbar {
+  width: 6px;
+}
+
+.form-page::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.form-page::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.form-page::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 
 .form-container-single {
@@ -592,6 +600,7 @@ textarea.input-field {
   
   .form-page {
     padding: 10px;
+    max-height: 82vh;
   }
   
   .add-schedule-img {
@@ -609,21 +618,27 @@ textarea.input-field {
   }
 }
 
+@media (min-width: 1280px) { 
+
+  .add-activity-modal{
+    width: 65%;
+  }
+}
 /* Scrollbar Styling */
-.modal-left-panel::-webkit-scrollbar {
+.modal-body::-webkit-scrollbar {
   width: 8px;
 }
 
-.modal-left-panel::-webkit-scrollbar-track {
+.modal-body::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 
-.modal-left-panel::-webkit-scrollbar-thumb {
+.modal-body::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 4px;
 }
 
-.modal-left-panel::-webkit-scrollbar-thumb:hover {
+.modal-body::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
 
