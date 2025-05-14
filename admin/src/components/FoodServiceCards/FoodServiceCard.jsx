@@ -8,7 +8,7 @@ const FoodServiceCard = ({ partnerId, onStatusChange, foodServiceList }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedFoodService, setSelectedFoodService] = useState(null);
-    const { url } = useContext(StoreContext);
+    const { url, getImageUrl } = useContext(StoreContext);
 
     const handleStatusChange = (id, status) => {
         const updatedFoodService = foodServices.find((service) => service._id === id);
@@ -67,7 +67,7 @@ const FoodServiceCard = ({ partnerId, onStatusChange, foodServiceList }) => {
 
                 >
                     <div className="card-image" onClick={() => handleCardClick(service)}>
-                        <img src={`${url}/images/${service.images[0] || 'placeholder.jpg'}`} alt={service.foodServiceName} />
+                        <img src={getImageUrl(service.images[0])} alt={service.foodServiceName} />
                     </div>
                     <div className="card-content">
                         <h3 onClick={() => handleCardClick(service)}>{service.foodServiceName}</h3>

@@ -59,25 +59,25 @@ const ReviewDashboard = () => {
     useEffect(() => {
         if (currentType === 'accommodation' && accommodations) {
             setCurrentService(accommodations[0])
-            setRatings(accommodations[0].ratings)
+            setRatings(accommodations[0]?.ratings)
         } else if (currentType === 'foodService' && foodServices) {
             setCurrentService(foodServices[0])
-            setRatings(foodServices[0].ratings)
+            setRatings(foodServices[0]?.ratings)
         }
     }, [currentType]);
     useEffect(() => {
         if (!isAccomLoading) {
             setCurrentService(accommodations[0])
-            setRatings(accommodations[0].ratings)
+            setRatings(accommodations[0]?.ratings)
         }
     }, [isAccomLoading]);
     useEffect(() => {
         if (currentType === 'accommodation' && !isAccomLoading) {
             setCurrentService(accommodations[selectedIndex])
-            setRatings(accommodations[selectedIndex].ratings)
+            setRatings(accommodations[selectedIndex]?.ratings)
         } else if (currentType === 'foodService' && !isFoodServiceLoading) {
             console.log('foodService', foodServices[selectedIndex])
-            setRatings(foodServices[selectedIndex].ratings)
+            setRatings(foodServices[selectedIndex]?.ratings)
         }   
     }, [accommodations, foodServices]);
     const handleResponse = (ratingId, responseText) => {
