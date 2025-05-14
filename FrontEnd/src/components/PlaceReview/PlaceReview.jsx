@@ -20,64 +20,69 @@ const ReviewCard = ({ review, type }) => (
   <div className="review-card">
     <div className="user-review-container">
       <div className="review-avatar">
-        <img src={review.idUser.avatar } alt={`${review.userName} avatar`} />
+        <img src={review.idUser.avatar} alt={`${review.userName} avatar`} />
+        <div className="review-header">
+          <h4>{review.idUser.name}</h4>
+          <p>{new Date(review.createdAt).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        </div>
+
+
+      </div>
+      <div className="review-content">
+
         {type === "accommodation" && (
           <div className="additional-info">
             <p><strong>Số đêm ở:</strong> {review.duration}</p>
             <p><strong>Loại phòng:</strong> {review.roomType}</p>
-            <p><strong>Số lượng người:</strong> {review.numPeople}</p>
+            <p><strong>Người:</strong> {review.numPeople}</p>
           </div>
-        )}   
-      </div>
-      <div className="review-content">
-        <div className="review-header">
-          <h4>{review.idUser.name }</h4>
-          <p>{new Date(review.createdAt).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        )}
+        <div className="main-rating">
+          <div className="overall-rating" >
+            <StarRating rating={review.rate} />
+          </div>
+          {type === "accommodation" && (
+            <div>
+              <div>
+                <p><strong>Chất lượng chỗ ở:</strong> </p>
+                <StarRating rating={review.roomRate} />
+              </div>
+
+              <div>
+                <p><strong>Dịch vụ:</strong> </p>
+                <StarRating rating={review.serviceRate} />
+              </div>
+            </div>
+          )}
+
+          {type === "food" && (
+            <div>
+              <div>
+                <p><strong>Chất đồ ăn:</strong> </p>
+                <StarRating rating={review.foodRate} />
+              </div>
+              <div>
+                <p><strong>Dịch vụ:</strong> </p>
+                <StarRating rating={review.serviceRate} />
+              </div>
+            </div>
+          )}
+
+          {type === "attraction" && (
+            <div>
+              <div>
+                <p><strong>Chất lượng địa điểm:</strong> </p>
+                <StarRating rating={review.attractionRate} />
+              </div>
+              <div>
+                <p><strong>Dịch vụ:</strong> </p>
+                <StarRating rating={review.serviceRate} />
+              </div>
+            </div>
+          )}
+
+          <p>{review.content}</p>
         </div>
-        <div className="overall-rating" >
-          <StarRating rating={review.rate} />
-        </div>
-        {type === "accommodation" && (
-          <div>
-            <div>
-              <p><strong>Chất lượng chỗ ở:</strong> </p>
-              <StarRating rating={review.roomRate} />
-            </div>
-
-            <div>
-              <p><strong>Dịch vụ:</strong> </p>
-              <StarRating rating={review.serviceRate} />
-            </div>
-          </div>
-        )}
-
-        {type === "food" && (
-          <div>
-            <div>
-              <p><strong>Chất đồ ăn:</strong> </p>
-              <StarRating rating={review.foodRate} />
-            </div>
-            <div>
-              <p><strong>Dịch vụ:</strong> </p>
-              <StarRating rating={review.serviceRate} />
-            </div>
-          </div>
-        )}
-
-        {type === "attraction" && (
-          <div>
-            <div>
-              <p><strong>Chất lượng địa điểm:</strong> </p>
-              <StarRating rating={review.attractionRate} />
-            </div>
-            <div>
-              <p><strong>Dịch vụ:</strong> </p>
-              <StarRating rating={review.serviceRate} />
-            </div>
-          </div>
-        )}
-
-        <p>{review.content}</p>
       </div>
     </div>
     {review.response && (
@@ -90,7 +95,7 @@ const ReviewCard = ({ review, type }) => (
 );
 
 
-const PlaceReview = ({ type, id , isPopup   }) => {
+const PlaceReview = ({ type, id, isPopup }) => {
   const [reviews, setReviews] = useState([]);
   const [visibleReviews, setVisibleReviews] = useState(5);
   const [filterRating, setFilterRating] = useState(0);

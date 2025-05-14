@@ -1,14 +1,14 @@
 import mongoose, { Schema } from "mongoose";
 
 const LogActivitySchema = new Schema({
-  userId: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'User',
-    required: true 
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'user',
+    required: true
   },
   scheduleId: {
     type: Schema.Types.ObjectId,
-    ref: 'Schedule',
+    ref: 'schedule',
     required: true
   },
   actionType: {
@@ -26,7 +26,7 @@ const LogActivitySchema = new Schema({
     type: Number, // Thời gian xem tính bằng giây
     default: 0
   },
-  
+
   content: String,
 
   // Các feature phái sinh
@@ -48,7 +48,7 @@ LogActivitySchema.index({ "scheduleMetadata.location": 1 });
 LogActivitySchema.index({ "userMetadata.location": 1 });
 
 // Phương thức tĩnh để tính điểm tương tác của user với schedule
-LogActivitySchema.statics.calculateUserEngagement = async function(userId, scheduleId) {
+LogActivitySchema.statics.calculateUserEngagement = async function (userId, scheduleId) {
   const weights = {
     view: 1,
     like: 2,

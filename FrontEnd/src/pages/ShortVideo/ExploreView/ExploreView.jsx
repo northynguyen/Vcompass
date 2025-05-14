@@ -21,15 +21,16 @@ const ExploreView = ({ onClose }) => {
   
   const categories = [
     { id: 'trending', name: 'Xu hướng' },
+    { id: 'general', name: 'Chung' },
+    { id: 'comedy', name: 'Hài hước' },
     { id: 'music', name: 'Âm nhạc' },
     { id: 'dance', name: 'Nhảy múa' },
-    { id: 'comedy', name: 'Hài hước' },
+    { id: 'sports', name: 'Thể thao' },
     { id: 'food', name: 'Ẩm thực' },
     { id: 'travel', name: 'Du lịch' },
-    { id: 'fashion', name: 'Thời trang' },
-    { id: 'sports', name: 'Thể thao' },
     { id: 'education', name: 'Giáo dục' },
-    { id: 'gaming', name: 'Gaming' }
+    { id: 'pets', name: 'Thú cưng' },
+    { id: 'beauty', name: 'Làm đẹp' }
   ];
   
   useEffect(() => {
@@ -234,7 +235,6 @@ const ExploreView = ({ onClose }) => {
               <div className="video-info-explore">
                 <div className="video-username-explore">
                   @{video.userId?.name}
-                  {video.userId?.verified && <span className="verified-badge">✓</span>}
                 </div>
               </div>
             </div>

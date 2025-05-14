@@ -20,7 +20,7 @@
 }
 
 .activity-header {
-  color: #7BBCB0;
+  color: #62726f;
   display: flex;
   text-align: center;
   padding: 20px 40px;
@@ -189,8 +189,9 @@ img.custom-schedule-image,
 }
 
 .date-schedule input {
-  border: 1px;
-  color: #7BBCB0;
+  border: none;
+  color: #62726f;
+  font-size: 15px;
 }
 
 .numday-title {
@@ -512,7 +513,7 @@ i.fa-solid.fa-plus.add-icon {
 .price-text {
   font-weight: bolder;
   color: #7BBCB0;
-  font-size: 25px;
+  font-size: 20px;
 }
 
 .persion-text {
@@ -1210,6 +1211,7 @@ i.fa-solid.fa-plus.add-icon {
   .time-schedule-price {
     width: 100%;
     text-align: center;
+    align-items: center;
     margin: 0;
   }
 
@@ -1415,6 +1417,7 @@ i.fa-solid.fa-plus.add-icon {
   }
 
   .list-accom__tour-price {
+    flex-direction: column;
     margin-top: 10px;
   }
 
@@ -1678,9 +1681,7 @@ i.fa-solid.fa-plus.add-icon {
   transition: transform 0.2s ease;
 }
 
-.modal-header .close-btn:hover {
-  transform: scale(1.1);
-}
+
 
 .modal-body {
   padding: 25px 30px;

@@ -85,8 +85,10 @@
 
 .attractions-content-container .left-sidebar {
     flex: 1;
+    width: 100% !important;
+    max-width: none !important;
     /* Chiếm ít không gian hơn */
-    padding: 20px;
+    padding: 20px 20px 0px 20px;
 }
 
 @media (max-width: 768px) {

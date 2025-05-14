@@ -15,7 +15,7 @@ const SlideBar = ({ type }) => {
     const [popularServices, setPopularServices] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    const { url } = useContext(StoreContext);
+    const { url, getImageUrl } = useContext(StoreContext);
 
     useEffect(() => {
         const fetchFoodServices = async () => {
@@ -204,7 +204,7 @@ const SlideBar = ({ type }) => {
                     return (
                         <SwiperSlide key={service._id} className="custom-slide">
                             <div className="card" onClick={() => onClick(service._id)}>
-                                <img src={`${url}/images/${service.images[0]}`} alt={service.foodServiceName || service.name || service.attraction_name} className="card-image" />
+                                <img src={getImageUrl(service, 0)} alt={service.foodServiceName || service.name || service.attraction_name} className="card-image" />
                                 <div className="card-content">
                                     {renderCardContent(service)}
                                     <p className="card-reviews">

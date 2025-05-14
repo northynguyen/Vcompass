@@ -9,7 +9,7 @@ const ImagesModal = ({ isOpen, images, selectedIndex, onClose }) => {
   const { url } = useContext(StoreContext)
 
   useEffect(() => {
-    setCurrentIndex(selectedIndex - 1)
+    setCurrentIndex(selectedIndex )
   }, [isOpen, selectedIndex]);
   if (!isOpen) return null;
   const handlePrev = () => {

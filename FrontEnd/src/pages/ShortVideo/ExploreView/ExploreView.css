@@ -30,7 +30,7 @@
 
 /* Firefox scrollbar */
 .explore-container {
-  scrollbar-width: thin;
+  scrollbar-width: none;
   scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
 }
 
@@ -272,6 +272,8 @@
 
   .categories-scrollbar {
     padding: 0 5px;
+    margin: 0 10px 0 80px;
+
   }
 
   .videos-grid {

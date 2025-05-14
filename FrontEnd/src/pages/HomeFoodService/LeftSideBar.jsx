@@ -8,7 +8,7 @@ import { StoreContext } from '../../Context/StoreContext';
 
 const LeftSideBar = ({ onFilterChange = () => { } }) => {
     const [isFilterVisible, setIsFilterVisible] = useState(false);
-    const [priceRange, setPriceRange] = useState({ min: 0, max: 700000 });
+    const [priceRange, setPriceRange] = useState({ min: 0, max: 10000000 });
     const [selectedAmenities, setSelectedAmenities] = useState([]);
     const [rating, setRating] = useState('');
     const [amenities, setAmenities] = useState([]);
@@ -60,7 +60,7 @@ const LeftSideBar = ({ onFilterChange = () => { } }) => {
         const value = parseInt(e.target.value, 10) || 0;
         setPriceRange((prev) => ({
             ...prev,
-            [type]: Math.min(Math.max(0, value), 700000),
+            [type]: Math.min(Math.max(0, value), 10000000),
         }));
     };
 
@@ -79,7 +79,7 @@ const LeftSideBar = ({ onFilterChange = () => { } }) => {
                             value={priceRange.min}
                             onChange={(e) => handleInputChange(e, "min")}
                             min="0"
-                            max="700000"
+                            max="10000000"
                         />
                         <span>-</span>
                         <input
@@ -87,14 +87,14 @@ const LeftSideBar = ({ onFilterChange = () => { } }) => {
                             value={priceRange.max}
                             onChange={(e) => handleInputChange(e, "max")}
                             min="0"
-                            max="700000"
+                            max="10000000"
                         />
                     </div>
                     <Range
                         values={[priceRange.min, priceRange.max]}
                         step={1000}
                         min={0}
-                        max={700000}
+                        max={10000000}
                         onChange={handlePriceChange}
                         renderTrack={({ props, children }) => (
                             <div {...props} className="range-track">

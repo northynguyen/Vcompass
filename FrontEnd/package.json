@@ -10,7 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.1.0",
+    "@mui/x-date-pickers": "^8.3.0",
     "@react-google-maps/api": "^2.20.6",
+    "@react-map/vietnam": "^1.0.9",
     "@tailwindcss/vite": "^4.0.15",
     "axios": "^1.7.7",
     "crypto-js": "^4.2.0",

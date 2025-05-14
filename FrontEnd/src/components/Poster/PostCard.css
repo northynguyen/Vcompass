@@ -98,10 +98,12 @@
   object-position: center;
 }
 
-.card-content {
+.content-container .card-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between !important;
   padding: 5px 15px;
+  width: 100%;
+  flex-direction: row;
 }
 
 .card-content h2 {

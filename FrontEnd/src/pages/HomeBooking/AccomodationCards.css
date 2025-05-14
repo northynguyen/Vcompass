@@ -10,9 +10,8 @@
     overflow: hidden;
     background-color: #ffffff;
     transition: box-shadow 0.3s ease-in-out;
-   animation: fadeIn 0.5s ease-in-out;
-    /* Thêm hiệu ứng fadeIn */
-
+    animation: fadeIn 0.5s ease-in-out;
+}
 
 .card-content-container:hover {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
@@ -42,18 +41,25 @@
 .card-content-img img {
     width: 100%;
     height: 200px;
-    /* Định nghĩa chiều cao cố định */
     object-fit: cover;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
 }
 
+.card-content-wrapper {
+    width: 70%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .card-content {
-    width: 50%;
+    width: 80%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     overflow: hidden;
+    padding: 0 10px;
 }
 
 .card-content a {
@@ -74,24 +80,116 @@
 }
 
 .card-content-price {
+    width: 30%;
     padding: 10px;
     text-align: right;
     font-size: 1.1em;
     color: #333;
-    width: 20%;
-    align-self: center;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: center;
+    align-items: flex-end;
     gap: 5px;
 }
 
 .card-content-price p {
     margin: 0;
 }
-}
+
 p.card-range-price {
     color: #038819;
     font-size: 20px;
     font-weight: 500;
+}
+
+/* Media queries for responsive design */
+@media screen and (max-width: 768px) {
+    .card-content-container {
+        flex-direction: row;
+        padding: 0;
+    }
+
+    .card-content-img {
+        width: 40%;
+    }
+
+    .card-content-wrapper {
+        width: 60%;
+    }
+
+    .card-content {
+        padding: 10px;
+    }
+
+    .card-content h3 {
+        font-size: 1.1em;
+        margin-bottom: 5px;
+    }
+
+    .card-content a {
+        font-size: 0.8em;
+        margin-bottom: 5px;
+    }
+
+    .card-content p {
+        font-size: 0.8em;
+        margin-bottom: 5px;
+    }
+
+    .card-content-price {
+        padding: 8px 10px;
+    }
+
+    .card-content-price p {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .card-content-container {
+        flex-direction: row;
+        padding: 0;
+    }
+
+    .card-content-img {
+        width: 40%;
+    }
+
+    .card-content-wrapper {
+        width: 60%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .card-content {
+        width: 100% !important;
+        padding: 10px;
+    }
+
+    .card-content h3 {
+        font-size: 1em;
+        margin-bottom: 5px;
+    }
+
+    .card-content a {
+        font-size: 0.75em;
+        margin-bottom: 5px;
+    }
+
+    .card-content p {
+        font-size: 0.75em;
+        margin-bottom: 5px;
+    }
+
+    .card-content-price {
+
+        width: 100% !important;
+        padding: 8px 5px !important;
+        flex-direction: row !important;
+    }
+
+    .card-content-price p {
+        font-size: 15px;
+    }
 }

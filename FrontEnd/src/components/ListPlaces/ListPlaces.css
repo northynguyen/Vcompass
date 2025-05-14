@@ -1,0 +1,500 @@
+/* Main Container */
+.list-accom__container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px 20px 20px;
+  position: relative;
+  max-height: 70vh;
+  overflow-y: auto;
+  scrollbar-color: rgb(169, 173, 179) transparent; /* For Firefox */
+}
+
+
+/* List Content Container */
+.list-content-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Filters */
+.list-accom__filters {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px 15px 15px 15px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.3s, transform 0.3s;
+  opacity: 1; /* Start visible */
+  transform: translateY(0);
+}
+
+/* Sticky filter - adjust to prevent overlap */
+.sticky-filter {
+  position: sticky;
+  top: 0px;
+  z-index: 100;
+  background-color: #fff;
+  margin-bottom: 20px;
+  /* Chỉnh sửa để đảm bảo không bị che khuất phần trên */
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+/* List scroll container */
+.list-scroll-container {
+  width: 100%;
+}
+
+/* Basic filter layout */
+.filter-basic {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.filter-search-container {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.advanced-filter-toggle {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #0066ff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+.filter-button {
+  height: 40px;
+  min-width: 80px;
+}
+
+/* Advanced filters */
+.advanced-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 10px;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+  animation: fadeIn 0.5s ease-in-out;
+  overflow-y: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.filter-label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+.price-filter-container {
+  margin-top: 10px;
+}
+
+.price-range-slider {
+  padding: 20px 10px 0;
+}
+
+.price-range-value {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+}
+
+.list-accom__filters input[type="text"],
+.list-accom__filters select {
+  padding: 10px;
+  padding-right: 35px; /* Space for the toggle button */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 100%;
+}
+
+.list-accom__filters .sort-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.list-accom__filters .sort-select {
+  width: 100%;
+  cursor: pointer;
+}
+
+.list-accom__filters button {
+  padding: 10px;
+  background-color: #0066ff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.list-accom__filters button:hover {
+  background-color: #0052cc;
+}
+
+.list-accom__filters button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* List Items */
+.list-accom__tour-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-right: 5px;
+  padding-bottom: 40px; /* Add space at bottom for better UX */
+  width: 100%;
+}
+
+.list-accom__tour-item {
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  width: 100%;
+}
+
+.list-accom__tour-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.accom-card-header {
+  display: flex;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.list-accom__tour-item-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.accom-card-header-right {
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.accom-card-header-right h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.list-accom__tour-location {
+  font-size: 14px;
+  color: #666;
+  margin: 5px 0;
+}
+
+.list-accom__tour-location a {
+  color: #0066ff;
+  text-decoration: none;
+}
+
+.list-accom__tour-location a:hover {
+  text-decoration: underline;
+}
+
+.list-accom__tour-rating {
+  font-size: 14px;
+  color: #ff9900;
+}
+
+.list-accom__tour-details {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.list-accom__tour-facilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.list-accom__tour-facilities span {
+  background-color: #f0f8ff;
+  color: #0066ff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.list-accom__tour-details span {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.list-accom__tour-price {
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price-container {
+  display: flex;
+  align-items: center;
+}
+
+.price-text {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.select-container {
+  text-align: right;
+}
+
+.selection-btn {
+  background-color: #0066ff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.selection-btn:hover {
+  background-color: #0052cc;
+}
+
+/* Pagination */
+.list-accom__pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.list-accom__pagination button {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.list-accom__pagination button:hover:not(:disabled) {
+  background-color: #f9f9f9;
+}
+
+.list-accom__pagination button:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.list-accom__pagination span {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Skeleton Loading */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-image-container {
+  width: 120px;
+  height: 120px;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+}
+
+.skeleton-title {
+  height: 24px;
+  width: 80%;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.skeleton-location {
+  height: 16px;
+  width: 60%;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+.skeleton-rating {
+  height: 16px;
+  width: 40%;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.skeleton-facilities {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.skeleton-facility {
+  height: 24px;
+  width: 70px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.skeleton-description {
+  height: 70px;
+  width: 100%;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.skeleton-price {
+  height: 20px;
+  width: 120px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+.skeleton-button {
+  height: 36px;
+  width: 80px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+  .list-accom__container {
+    padding: 10px;
+    padding-top: 0px;
+  }
+
+  .accom-card-header {
+    flex-direction: column;
+  }
+  
+  .list-accom__tour-item-image {
+    width: 100%;
+    height: 180px;
+    margin-bottom: 10px;
+  }
+  
+  .accom-card-header-right {
+    margin-left: 0;
+  }
+  
+  .list-accom__tour-price {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  
+  .select-container {
+    text-align: left;
+    width: 100%;
+  }
+  
+  .selection-btn {
+    width: 100%;
+  }
+
+  /* Adjust sticky position for mobile */
+  .list-accom__filters {
+    top: 0px;
+    margin-bottom: 15px;
+    padding: 12px;
+  }
+} 

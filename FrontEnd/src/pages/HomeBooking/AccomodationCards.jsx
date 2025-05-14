@@ -48,32 +48,52 @@ const AccomodationCards = ({ accommodationsFound, startDay, endDay, adults, chil
                     const { totalReviews, averageRating } = getRatingInfo(item.ratings);
                     return (
                         <div key={item._id} className="accomodation-card-home">
-                            <div className='card-content-container'>
-                                <div className='card-content-img' onClick={() => onClick(item._id)}>
-                                    <img
-                                     src={getImageUrl(item)}
-                                      alt={item.name} 
-                                        onError={(e) => {
-                                            e.target.onerror = null; // Prevent infinite loop
-                                            e.target.src = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
-                                        }}
-                                       />
-                                </div>
-                                <div className='card-content'>
+                        <div className="card-content-container">
+                            {/* Hình ảnh */}
+                            <div className="card-content-img" onClick={() => onClick(item._id)}>
+                                <img
+                                    src={getImageUrl(item)}
+                                    alt={item.name }
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+                                    }}
+                                />
+                            </div>
+
+                            {/* Wrapper cho nội dung và giá */}
+                            <div className="card-content-wrapper">
+                                {/* Nội dung chính */}
+                                <div className="card-content">
                                     <h3 onClick={() => onClick(item._id)}>{item.name}</h3>
-                                    <a href={`https://www.google.com/maps/?q=${item.location.latitude},${item.location.longitude}`}>{item.location.address}</a>
+                                    <a
+                                        href={`https://www.google.com/maps/?q=${item.location.latitude},${item.location.longitude}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {item.location.address}
+                                    </a>
                                     <p>{item.description}</p>
                                     <p className="card-reviews">
                                         ⭐ {averageRating} ({totalReviews} đánh giá)
                                     </p>
                                 </div>
-                                <div className='card-content-price'>
-                                    <p className="card-range-price">{minPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
-                                    <p className="card-range-price">đến</p>
-                                    <p className="card-range-price">{maxPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
+
+                                {/* Hiển thị giá */}
+                                <div className="card-content-price">
+                                    <p className="card-range-price">
+                                        {minPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                    </p>
+                                    <p className="card-range-price">
+                                        -
+                                    </p>
+                                    <p className="card-range-price">
+                                        {maxPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                    </p>
                                 </div>
                             </div>
                         </div>
+                    </div>
                     );
                 })}
             </div>
