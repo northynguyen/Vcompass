@@ -67,7 +67,7 @@ const FoodServiceCard = ({ partnerId, onStatusChange, foodServiceList }) => {
 
                 >
                     <div className="card-image" onClick={() => handleCardClick(service)}>
-                        <img src={getImageUrl(service.images[0])} alt={service.foodServiceName} />
+                        <img src={getImageUrl(service)} alt={service.foodServiceName} />
                     </div>
                     <div className="card-content">
                         <h3 onClick={() => handleCardClick(service)}>{service.foodServiceName}</h3>

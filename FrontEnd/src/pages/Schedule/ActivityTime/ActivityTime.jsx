@@ -123,7 +123,7 @@ export const AccomActivity = ({
 
 
   const [isSaved, setIsSaved] = useState(false);
-  const { url, user, token } = useContext(StoreContext);
+  const { url, user, token, getImageUrl } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
       if (!user) {
@@ -197,19 +197,6 @@ export const AccomActivity = ({
       "_blank"
     );
   };
-  const getImageUrl = (place) => {
-    if (!place.images || !place.images.length) {
-      return 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
-    }
-    
-    const image = place.images[0];
-    if (image.includes('http')) {
-      return image;
-    }
-    
-    return `${url}/images/${image}`;
-  };
-
 
   if (!data) {
     return <div className="div">...</div>;
@@ -246,7 +233,7 @@ export const AccomActivity = ({
       <div className="activity-content-card" onClick={onNavigateToDetails}>
         <div className="time-schedule-left">
           <img
-            src={getImageUrl( data)}
+            src={getImageUrl(data)}
             alt={data.title || "Image"}
             onError={(e) => {
               e.target.onerror = null; // Prevent infinite loop
@@ -320,7 +307,7 @@ export const FoodServiceActivity = ({
   mode, socket
 }) => {
   const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
-  const { url, user, token } = useContext(StoreContext);
+  const { url, user, token, getImageUrl } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
       if (!user) {
@@ -429,7 +416,7 @@ export const FoodServiceActivity = ({
       <div className="activity-content-card" onClick={onNavigateToDetails}>
         <div className="time-schedule-left">
           <img
-            src={`${url}/images/${data.images[0]}`}
+            src={getImageUrl(data)}
             alt={data.title || "Image"}
             className="time-schedule-image"
           />
@@ -497,7 +484,7 @@ export const AttractionActivity = ({
   mode, socket
 }) => {
   const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
-  const { url, user, token } = useContext(StoreContext);
+  const { url, user, token, getImageUrl } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
       if (!user) {
@@ -607,7 +594,7 @@ export const AttractionActivity = ({
       <div className="activity-content-card" onClick={onNavigateToDetails}>
         <div className="time-schedule-left">
           <img
-            src={`${url}/images/${data.images[0]}`}
+            src={getImageUrl(data)}
             alt={data.title || "Image"}
             className="time-schedule-image"
           />
@@ -673,7 +660,7 @@ export const OtherActivity = ({
   setIsOpenModal,
   mode, socket
 }) => {
-  const { url } = useContext(StoreContext);
+  const { url, getImageUrl } = useContext(StoreContext);
 
   // State điều khiển modal
   const [isModalOpen, setIsModalOpen] = useState(false);

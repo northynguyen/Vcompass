@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Modal from "react-modal";
+import mongoose from "mongoose";
 import { v4 as uuidv4 } from 'uuid';
 import { StoreContext } from "../../../Context/StoreContext";
 import ListPlaces, { ListItem as PlaceItem } from "../../../components/ListPlaces";
@@ -433,7 +434,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
       // Chuẩn bị dữ liệu activity mới
       const newActivity = {
         activityType: curDes?.activityType || "Other",
-        idDestination: curDes?._id || uuidv4(),
+        idDestination: curDes?._id || new mongoose.Types.ObjectId(),
         address: curDes.address || "default-address",
         imgSrc: curDes.imgSrc ? curDes.imgSrc.filter(img => typeof img === 'string') : ["default-image"],
         name: curDes.name || "default-name",

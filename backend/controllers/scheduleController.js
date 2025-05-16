@@ -735,21 +735,21 @@ const generateTagsFromSchedule = (schedule) => {
     tags.add("giới trẻ");
   }
 
-  // 6. Tag từ người dùng (tuổi + giới tính)
-  if (schedule.idUser.date_of_birth) {
-    const age = calculateAge(schedule.idUser.date_of_birth);
-    const gender = schedule.idUser.gender; // "male" | "female" | "other"
+  // // 6. Tag từ người dùng (tuổi + giới tính)
+  // if (schedule.idUser.date_of_birth) {
+  //   const age = calculateAge(schedule.idUser.date_of_birth);
+  //   const gender = schedule.idUser.gender; // "male" | "female" | "other"
 
-    // Giới tính
-    if (gender === "male" || gender === "female") {
-      tags.add(gender); // thêm "male" hoặc "female"
-    }
+  //   // Giới tính
+  //   if (gender === "male" || gender === "female") {
+  //     tags.add(gender); // thêm "male" hoặc "female"
+  //   }
 
-    // Nhóm tuổi
-    if (age <= 25) tags.add("trẻ");
-    else if (age <= 50) tags.add("trung niên");
-    else tags.add("cao tuổi");
-  }
+  //   // Nhóm tuổi
+  //   if (age <= 25) tags.add("trẻ");
+  //   else if (age <= 50) tags.add("trung niên");
+  //   else tags.add("cao tuổi");
+  // }
 
   // Lọc và loại bỏ các từ không cần thiết như "hà", "nội", "a"
   const filteredTags = Array.from(tags).filter(

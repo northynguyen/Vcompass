@@ -507,17 +507,19 @@ const InforScheduleMedal = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
+  
     if (name === "startDay") {
       const newStartDay = new Date(value);
       setStartDay(newStartDay);
-      const newEndDate = new Date(newStartDay.getTime() + numDays * 24 * 60 * 60 * 1000);
+      // Dùng numDays hiện tại từ state
+      const newEndDate = new Date(newStartDay.getTime() + (numDays - 1) * 24 * 60 * 60 * 1000);
       setEndDate(newEndDate);
     } else if (name === "numDays") {
       const newNumDays = Number(value);
-      setNumDays(newNumDays);
-      const newEndDate = new Date(startDay.getTime() + newNumDays * 24 * 60 * 60 * 1000);
-      setEndDate(newEndDate);
+      if (startDay) {
+        const newEndDate = new Date(startDay.getTime() + newNumDays * 24 * 60 * 60 * 1000);
+        setEndDate(newEndDate);
+      }
     } else {
       switch (name) {
         case "scheduleName":
