@@ -904,14 +904,14 @@ const DateSchedule = ({
   index,
   socket,
 }) => {
-  //console.log("schedule", schedule);
   const [scheduleDate, setScheduleDate] = useState(schedule);
   const [isOpen, setIsOpen] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentActivity, setCurrentActivity] = useState(null);
   const [currentDestination, setCurrentDestination] = useState(null);
-  const [viewMode, setViewMode] = useState("overview"); // Overview, details, or map view
-  const [currentMapIndex, setCurrentMapIndex] = useState(null); // Track which day map is open
+  const [viewMode, setViewMode] = useState("overview");
+  const [currentMapIndex, setCurrentMapIndex] = useState(null);
+  const [weatherData, setWeatherData] = useState(null);
 
   useEffect(() => {
     if (schedule) {
@@ -927,6 +927,54 @@ const DateSchedule = ({
       setCurrentDestination(null);
     }
   }, [isModalOpen]);
+
+  // Add weather fetch effect
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        // Calculate date difference
+        const [day, month, year] = inforSchedule.dateStart.split("-");
+        let addressTemp = inforSchedule.address;
+        if(inforSchedule.address == "Bà Rịa - Vũng Tàu"){
+          addressTemp = "Vũng Tàu";
+        }
+        const startDate = new Date(year, month - 1, day);
+        const currentDate = new Date();
+        const diffTime = startDate - currentDate;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        // Only fetch if within 7 days
+        if (diffDays < 7) {
+          
+          const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/forecast/daily?q=${addressTemp}&appid=e888d6c55a0c9f77c0f19776c545cd5d&units=metric&lang=vi&cnt=17`
+          );
+          const data = await response.json();
+          setWeatherData(data);
+        }
+      } catch (error) {
+        console.error("Error fetching weather:", error);
+      }
+    };
+
+    if (inforSchedule?.dateStart && inforSchedule?.address) {
+      fetchWeather();
+    }
+  }, [inforSchedule?.dateStart, inforSchedule?.address]);
+
+  // Function to get weather for specific day
+  const getWeatherForDay = (dayIndex) => {
+    if (!weatherData?.list) return null;
+    
+    const [day, month, year] = inforSchedule.dateStart.split("-");
+    const startDate = new Date(year, month - 1, day);
+    const currentDate = new Date();
+    const diffTime = startDate - currentDate;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Get weather data for the specific day
+    const weatherIndex = dayIndex + diffDays;
+    return weatherData.list[weatherIndex];
+  };
 
   const toggleDetails = () => {
     setIsOpen(!isOpen);
@@ -948,7 +996,6 @@ const DateSchedule = ({
       setCurrentMapIndex(dayIndex); // Open the map view for the selected day
     }
   };
-
   return (
     <div className="detail-container">
       <Droppable droppableId={`${index}`} disabled={mode === "view"}>
@@ -960,6 +1007,7 @@ const DateSchedule = ({
           >
             <div className="date-section">
               <div className="date-header">
+                <div className="date-header-left">
                 <h2>
                   Ngày {scheduleDate.day}{" "}
                   <i
@@ -969,6 +1017,22 @@ const DateSchedule = ({
                     onClick={toggleDetails}
                   ></i>
                 </h2>
+                <div className="weather-container">
+                  {getWeatherForDay(index) && (
+                    <div className="weather-info">
+                      <img 
+                        src={`http://openweathermap.org/img/wn/${getWeatherForDay(index).weather[0].icon}@2x.png`}
+                        alt={getWeatherForDay(index).weather[0].description}
+                      />
+                      <div className="weather-details">
+                        <span className="temperature">{Math.round(getWeatherForDay(index).temp.day)} / {Math.round(getWeatherForDay(index).temp.night)}°C</span>
+                        <span className="description">{getWeatherForDay(index).weather[0].description}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div></div>
+                </div>
                 <div className="date-actions">
                   <button
                     className={`btn-overview ${viewMode === "overview" ? "active" : ""}`}
