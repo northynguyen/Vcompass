@@ -214,9 +214,9 @@ export const addNew = async (req, res) => {
       }
       console.log("Added image URLs:", validImages);
     }
-    
-    if (validImages.length > 0) {
-      newAccommodation.images = validImages;
+      
+      if (validImages.length > 0) {
+        newAccommodation.images = validImages;
     }
 
     console.log("Final accommodation data to save:", newAccommodation);

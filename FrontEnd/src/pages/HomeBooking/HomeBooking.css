@@ -32,6 +32,7 @@
     border-radius: 4px;
     padding: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 .home-booking-search-item span {
@@ -50,7 +51,6 @@
 
 /* Datepicker specific styling */
 .home-booking-datepicker {
-    width: 100%;
     border: none;
     outline: none;
     font-size: 16px;
@@ -228,4 +228,36 @@
         width: 100%;
         margin-bottom: 10px;
     }
+}
+
+/* Thêm style cho suggestions-list */
+.suggestions-list {
+    width: 340px;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 10;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    list-style-type: none;
+    padding: 0;
+}
+
+.suggestions-list li {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.suggestions-list li:last-child {
+    border-bottom: none;
+}
+
+.suggestions-list li:hover {
+    background-color: #f7f7f7;
 }

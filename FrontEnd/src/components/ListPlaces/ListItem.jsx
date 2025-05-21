@@ -5,7 +5,7 @@ import CryptoJS from 'crypto-js';
 import { StoreContext } from '../../Context/StoreContext';
 import './ListPlaces.css';
 
-const ListItem = ({ item, type, additionalData }) => {
+const ListItem = ({ item, type, additionalData, status = "Default", setCurDes }) => {
   const { getImageUrl } = useContext(StoreContext);
   const navigate = useNavigate();
 
@@ -35,6 +35,12 @@ const ListItem = ({ item, type, additionalData }) => {
     window.scrollTo(0, 0);
   };
 
+  const handleSelect = () => {
+    if (setCurDes) {
+      setCurDes(item);
+    }
+  };
+
   const getRatingInfo = (ratings) => {
     const totalReviews = ratings?.length || 0;
     const averageRating = totalReviews > 0
@@ -59,11 +65,11 @@ const ListItem = ({ item, type, additionalData }) => {
         const maxPrice = Math.max(...prices);
         priceDisplay = (
           <>
-            <p className="card-range-price">
+            <p className="list-item-price-value">
               {minPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
             </p>
-            <p className="card-range-price">-</p>
-            <p className="card-range-price">
+            <p className="list-item-price-value">-</p>
+            <p className="list-item-price-value">
               {maxPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
             </p>
           </>
@@ -73,7 +79,7 @@ const ListItem = ({ item, type, additionalData }) => {
     case 'attraction':
       name = item.attractionName;
       priceDisplay = (
-        <p className="card-range-price">
+        <p className="list-item-price-value">
           {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
         </p>
       );
@@ -82,11 +88,11 @@ const ListItem = ({ item, type, additionalData }) => {
       name = item.foodServiceName;
       priceDisplay = (
         <>
-          <p className="card-range-price">
+          <p className="list-item-price-value">
             {(item.price?.minPrice || 0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
           </p>
-          <p className="card-range-price">-</p>
-          <p className="card-range-price">
+          <p className="list-item-price-value">-</p>
+          <p className="list-item-price-value">
             {(item.price?.maxPrice || 0).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
           </p>
         </>
@@ -98,10 +104,10 @@ const ListItem = ({ item, type, additionalData }) => {
   }
 
   return (
-    <div className="accomodation-card-home">
-      <div className="card-content-container">
+    <div className="list-item-card">
+      <div className="list-item-content-container">
         {/* Hình ảnh */}
-        <div className="card-content-img" onClick={() => onClick(item._id)}>
+        <div className="list-item-img" onClick={() => onClick(item._id)}>
           <img
             src={getImageUrl(item)}
             alt={name}
@@ -113,9 +119,9 @@ const ListItem = ({ item, type, additionalData }) => {
         </div>
 
         {/* Wrapper cho nội dung và giá */}
-        <div className="card-content-wrapper">
+        <div className="list-item-wrapper">
           {/* Nội dung chính */}
-          <div className="card-content">
+          <div className="list-item-content">
             <h3 onClick={() => onClick(item._id)}>{name}</h3>
             {item.location && (
               <a
@@ -127,17 +133,28 @@ const ListItem = ({ item, type, additionalData }) => {
               </a>
             )}
             <p>{item.description}</p>
-            <p className="card-reviews">
+            <p className="list-item-reviews">
               ⭐ {averageRating} ({totalReviews} đánh giá)
             </p>
           </div>
-
-          {/* Hiển thị giá */}
-          <div className="card-content-price">
-            {priceDisplay}
+          <div className="list-item-price-select-container">
+            {/* Hiển thị giá và nút chọn */}
+            <div className="list-item-price">
+              <div className="list-item-price-container">
+                {priceDisplay}
+              </div>
+            </div>
+            {status !== "Default" && (
+                <div className="list-item-select-container">
+                  <button className="list-item-select-btn" onClick={handleSelect}>
+                    Chọn
+                  </button>
+                </div>
+              )}
           </div>
         </div>
       </div>
+     
     </div>
   );
 };
@@ -145,7 +162,9 @@ const ListItem = ({ item, type, additionalData }) => {
 ListItem.propTypes = {
   item: PropTypes.object.isRequired,
   type: PropTypes.oneOf(['accommodation', 'attraction', 'food']).isRequired,
-  additionalData: PropTypes.object
+  additionalData: PropTypes.object,
+  status: PropTypes.string,
+  setCurDes: PropTypes.func
 };
 
 export default ListItem; 

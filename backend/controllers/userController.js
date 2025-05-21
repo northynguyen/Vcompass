@@ -176,12 +176,12 @@ const handleRegister = async (req, res, model, userRole = "user") => {
   }
 
   try {
-    // Check if a user with the same email and role already exists
-    const existingUser = await model.findOne({ email, roles: userRole });
-    if (existingUser) {
+    // Kiểm tra email đã tồn tại chưa (không quan tâm đến role)
+    const emailExists = await model.findOne({ email });
+    if (emailExists) {
       return res.json({
         success: false,
-        message: "Người dùng đã tồn tại với vai trò này.",
+        message: "Email này đã được đăng ký, vui lòng sử dụng email khác.",
       });
     }
 
@@ -199,7 +199,7 @@ const handleRegister = async (req, res, model, userRole = "user") => {
       date_of_birth: "",
       gender: "",
       phone_number: "",
-      avatar: "profile_icon.png",
+      avatar: "https://media.istockphoto.com/id/1196083861/vi/vec-to/b%E1%BB%99-bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-%C4%91%E1%BA%A7u-ng%C6%B0%E1%BB%9Di-%C4%91%C3%A0n-%C3%B4ng-%C4%91%C6%A1n-gi%E1%BA%A3n.jpg?s=612x612&w=0&k=20&c=7juGotIovn0c2KFGhZ_DcEqpfiSyYl-zz2ty9XYnYNs=",
       status: "active", // Initialize roles array with the specified role\
     });
 
@@ -216,7 +216,7 @@ const handleRegister = async (req, res, model, userRole = "user") => {
     });
   } catch (error) {
     console.error(error);
-    res.json({ success: false, message: "Đã xảy ra lỗi máy chủ 23423452345." });
+    res.json({ success: false, message: "Đã xảy ra lỗi máy chủ." });
   }
 };
 
@@ -335,7 +335,7 @@ const googleSignIn = async (req, res) => {
         address: "Ho Chi Minh City",
         date_of_birth: "01-01-2000",
         gender: "male",
-        avatar: "profile_icon.png",
+        avatar: "https://media.istockphoto.com/id/1196083861/vi/vec-to/b%E1%BB%99-bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-%C4%91%E1%BA%A7u-ng%C6%B0%E1%BB%9Di-%C4%91%C3%A0n-%C3%B4ng-%C4%91%C6%A1n-gi%E1%BA%A3n.jpg?s=612x612&w=0&k=20&c=7juGotIovn0c2KFGhZ_DcEqpfiSyYl-zz2ty9XYnYNs=",
         status: "active",
       });
 

@@ -92,7 +92,7 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   }
 
-  .suggestions-list {
+  .suggestions-list-create-schedule {
     list-style: none;
     padding: 0;
     margin-top: 5px;
@@ -106,12 +106,12 @@
     width: 200px;
   }
   
-  .suggestions-list li {
+  .suggestions-list-create-schedule li {
     padding: 10px;
     cursor: pointer;
   }
   
-  .suggestions-list li:hover {
+  .suggestions-list-create-schedule li:hover {
     background-color: #f0f0f0;
   }
   
@@ -142,17 +142,19 @@
   }
 
   .error-input {
-    border-color: #dc3545 !important;
+    border-color: #ff0000 !important;
   }
 
   .error-message {
-    color: #dc3545;
+    color: #ff0000;
     font-size: 0.875rem;
     margin-top: 5px;
+    padding: 0;
   }
 
-  .type-button.error-input {
-    border-color: #dc3545;
+  /* Xóa icon cảnh báo */
+  .error-message::before {
+    content: none;
   }
 
   .loading-indicator {

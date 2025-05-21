@@ -77,7 +77,7 @@ export default function OtherUserProfile({setCurrentConversation}) {
     }
   };
   const onCreateNewPostClick = () => {
-    navigate("/create-schedule")
+    navigate("/create-schedule/manual")
   }
   const calculateTotalLikes = () => {
     return schedules.reduce((total, schedule) => total + (schedule.likes.length || 0), 0);

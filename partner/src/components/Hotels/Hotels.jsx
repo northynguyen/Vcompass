@@ -165,7 +165,7 @@ const Hotels = () => {
                   onClick={() => openRoomsTab(hotel)}
                 >
                   <img
-                    src={hotel.images[0].includes('http') ? hotel.images[0] : `${url}/images/${hotel.images[0]}`}
+                    src={hotel.images?.[0]?.includes('http') ? hotel.images[0] : `${url}/images/${hotel.images[0]}`}
                     alt={`${hotel.name}`}
                     className="hotel-image"
                   />

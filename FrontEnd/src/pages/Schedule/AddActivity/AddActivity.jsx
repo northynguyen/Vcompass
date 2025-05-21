@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import Modal from "react-modal";
-import { v4 as uuidv4 } from 'uuid';
 import { StoreContext } from "../../../Context/StoreContext";
 import ListPlaces, { ListItem as PlaceItem } from "../../../components/ListPlaces";
 import "./AddActivity.css";
@@ -277,7 +276,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   const [description, setDescription] = React.useState("")
   const [curDes, setCurDes] = React.useState(null)
   const [locations, setLocations] = useState([]);
-  const { url } = useContext(StoreContext);
+  const { url,getImageUrl } = useContext(StoreContext);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [listData, setListData] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -432,19 +431,21 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
 
       // Chuẩn bị dữ liệu activity mới
       const newActivity = {
-        activityType: curDes?.activityType || "Other",
-        idDestination: curDes?._id || uuidv4(),
-        address: curDes.address || "default-address",
-        imgSrc: curDes.imgSrc ? curDes.imgSrc.filter(img => typeof img === 'string') : ["default-image"],
-        name: curDes.name || "default-name",
+        activityType: curDes?.activityType || option,
+        idDestination: curDes?._id ? curDes._id : undefined,
+        address: curDes?.location?.address || curDes?.address || "default-address",
+        imgSrc: curDes?.imgSrc ? curDes.imgSrc.filter(img => typeof img === 'string') : ["default-image"],
+        name: curDes?.name || "default-name",
         cost: parseInt(cost) || 0,
         costDescription: costDes ? costDes : "",
         description: description,
         timeStart: activity ? activity.timeStart : "00:00",
         timeEnd: activity ? activity.timeEnd : "00:30",
-        latitude: curDes.latitude || 0,
-        longitude: curDes.longitude || 0,
+        latitude: curDes?.location?.latitude || curDes?.latitude || 0,
+        longitude: curDes?.location?.longitude || curDes?.longitude || 0,
       };
+
+      console.log("Saving new activity:", newActivity);
 
       // Cập nhật activity trong schedule
       setInforSchedule((prevSchedule) => {
@@ -461,14 +462,16 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
                     { ...day.activity[existingActivityIndex], ...newActivity },
                     ...day.activity.slice(existingActivityIndex + 1),
                   ]
-                  : day.activity;
+                  : [...day.activity, { ...newActivity }];
               return { ...day, activity: updatedActivitiesList };
             } else {
-              return { ...day, activity: [...day.activity, newActivity] };
+              return { ...day, activity: [...day.activity, { ...newActivity }] };
             }
           }
           return day;
         });
+
+        console.log("updatedActivities", updatedActivities);
 
         const newSchedule = {
           ...prevSchedule,
@@ -615,7 +618,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
                             </button>
                             <img
                               className="add-schedule-img"
-                              src={`${url}/images/${curDes.images[currentImageIndex]}`}
+                              src={getImageUrl(curDes,currentImageIndex)}
                               alt={`${curDes.name}`}
                             />
                             <button onClick={handleNextImage} className="carousel-button">
@@ -778,7 +781,6 @@ const LocationsMapView = ({ locations, selectedLocation }) => {
         <MapController locations={locations} selectedLocation={selectedLocation} />
 
         {locations && locations.length > 0 && locations.map((location, index) => {
-          console.log(location);
           if (location.latitude && location.longitude) {
             const position = [location.latitude, location.longitude];
             const isSelected = selectedLocation && location &&
@@ -863,6 +865,9 @@ LocationsMapView.propTypes = {
 
 const FormAddActivity = ({ cost, setCost, description, setDescription, option, costDes, setCostDes, curDes, errors }) => {
   const formatNumber = (value) => {
+    if (value === undefined || value === null || value === '') {
+      return '';
+    }
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 

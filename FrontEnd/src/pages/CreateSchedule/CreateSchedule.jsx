@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { StoreContext } from '../../Context/StoreContext';
 import './CreateSchedule.css';
@@ -20,6 +20,53 @@ const cities = [
   'Vĩnh Long', 'Vĩnh Phúc', 'Yên Bái'
 ];
 
+// Cập nhật popularCities bằng cách loại bỏ các key trùng lặp
+const popularCities = {
+  'Đà Lạt': 'Lâm Đồng',
+  'Hạ Long': 'Quảng Ninh',
+  'Long Hải': 'Bà Rịa - Vũng Tàu',
+  'Nha Trang': 'Khánh Hòa',
+  'Phan Thiết': 'Bình Thuận',
+  'Huế': 'Thừa Thiên Huế',
+  'Hội An': 'Quảng Nam',
+  'Sapa': 'Lào Cai',
+  'Vũng Tàu': 'Bà Rịa - Vũng Tàu',
+  'Đồng Hới': 'Quảng Bình',
+  'Tuy Hòa': 'Phú Yên',
+  'Quy Nhơn': 'Bình Định',
+  'Buôn Ma Thuột': 'Đắk Lắk',
+  'Pleiku': 'Gia Lai',
+  'Hà Tiên': 'Kiên Giang',
+  'Phú Quốc': 'Kiên Giang',
+  'Mũi Né': 'Bình Thuận',
+  'Bắc Hà': 'Lào Cai',
+  'Mộc Châu': 'Sơn La',
+  'Mai Châu': 'Hòa Bình',
+  'Tam Đảo': 'Vĩnh Phúc',
+  'Ninh Bình': 'Ninh Bình',
+  'Mỹ Tho': 'Tiền Giang',
+  'Cần Giờ': 'TP Hồ Chí Minh',
+  'Tây Ninh': 'Tây Ninh',
+  'Cát Bà': 'Hải Phòng',
+  'Sầm Sơn': 'Thanh Hóa',
+  'Cửa Lò': 'Nghệ An',
+  'Bảo Lộc': 'Lâm Đồng',
+  'Hồ Tràm': 'Bà Rịa - Vũng Tàu',
+  'Long Khánh': 'Đồng Nai',
+  'Phan Rang': 'Ninh Thuận',
+  'Cam Ranh': 'Khánh Hòa',
+  'Quảng Ngãi': 'Quảng Ngãi',
+  'Tam Kỳ': 'Quảng Nam',
+  'Hà Giang': 'Hà Giang',
+  'Cao Bằng': 'Cao Bằng',
+  'Lạng Sơn': 'Lạng Sơn',
+  'Móng Cái': 'Quảng Ninh',
+  'Uông Bí': 'Quảng Ninh',
+  'Cẩm Phả': 'Quảng Ninh',
+  'Thái Nguyên': 'Thái Nguyên',
+  'Việt Trì': 'Phú Thọ',
+  'Lào Cai': 'Lào Cai'
+};
 
 const CreateSchedule = () => {
   const navigate = useNavigate();
@@ -39,6 +86,7 @@ const CreateSchedule = () => {
     dates: '',
     types: ''
   });
+  const [validDestination, setValidDestination] = useState(false);
 
   const travelTypes = [
     'Du lịch vui chơi',
@@ -71,6 +119,9 @@ const CreateSchedule = () => {
     // Validate điểm đến
     if (!destination.trim()) {
       tempErrors.destination = 'Vui lòng chọn điểm đến';
+      isValid = false;
+    } else if (!validDestination) {
+      tempErrors.destination = 'Vui lòng chọn điểm đến từ danh sách gợi ý';
       isValid = false;
     }
 
@@ -107,6 +158,9 @@ const CreateSchedule = () => {
       tempErrors.budget = 'Vui lòng nhập ngân sách dự kiến';
       isValid = false;
     }
+
+    // Thêm dòng sau đây để debug
+    console.log('validDestination:', validDestination);
 
     setErrors(tempErrors);
     return isValid;
@@ -184,37 +238,42 @@ const CreateSchedule = () => {
   };
 
   const handleInputChange = (e) => {
-    const input = e.target.value;
-    setDestination(input);
-
-    if (input.length > 0) {
-      const filtered = cities.filter(city =>
-        city.toLowerCase().includes(input.toLowerCase())
+    const inputValue = e.target.value;
+    setDestination(inputValue);
+    setValidDestination(false);
+    
+    if (inputValue.trim() !== '') {
+      // Tìm trong cities 
+      const filteredRegularCities = cities.filter(city => 
+        city.toLowerCase().includes(inputValue.toLowerCase())
       );
-      setFilteredCities(filtered);
+      
+      // Tìm trong popularCities
+      const filteredPopularCities = Object.keys(popularCities)
+        .filter(city => city.toLowerCase().includes(inputValue.toLowerCase()))
+        .map(city => `${city}, ${popularCities[city]}`);
+      
+      // Kết hợp cả hai kết quả
+      setFilteredCities([...filteredPopularCities, ...filteredRegularCities]);
     } else {
       setFilteredCities([]);
     }
   };
 
-  const handleCityClick = (city) => {
-    setDestination(city);
+  const handleCitySelect = (selectedCity) => {
+    // Kiểm tra xem có phải định dạng "Thành phố, Tỉnh" không
+    if (selectedCity.includes(', ')) {
+      const [cityName, province] = selectedCity.split(', ');
+      setDestination(province); // Lưu tên tỉnh/thành làm giá trị thực
+      console.log(`Đã chọn ${cityName} thuộc ${province}`); // Ghi log để tận dụng cityName
+    } else {
+      setDestination(selectedCity);
+    }
     setFilteredCities([]);
-  };
-
-  // Get today's date in 'YYYY-MM-DD' format
-  const today = new Date().toISOString().split('T')[0];
-
-  const handleDepartureDateChange = (e) => {
-    setDepartureDate(e.target.value);
-  };
-
-  const handleReturnDateChange = (e) => {
-    setReturnDate(e.target.value);
-
-    // Reset departure date if it is before the selected return date
-    if (departureDate && e.target.value > departureDate) {
-      setDepartureDate('');
+    setValidDestination(true);
+    
+    if (errors.destination) {
+      setErrors(prev => ({...prev, destination: null}));
     }
   };
 
@@ -243,13 +302,16 @@ const CreateSchedule = () => {
           />
           {errors.destination && <div className="error-message">{errors.destination}</div>}
           {filteredCities.length > 0 && (
-            <ul className="suggestions-list">
+            <ul className="suggestions-list-create-schedule">
               {filteredCities.map((city, index) => (
-                <li key={index} onClick={() => handleCityClick(city)}>
+                <li key={index} onClick={() => handleCitySelect(city)}>
                   {city}
                 </li>
               ))}
             </ul>
+          )}
+          {destination && !validDestination && filteredCities.length === 0 && (
+            <div className="error-message">Vui lòng chọn điểm đến từ danh sách gợi ý</div>
           )}
         </div>
         <div className="form-group">

@@ -390,7 +390,7 @@
   font-style: italic;
 }
 
-/* Suggestions List Styles */
+/* Suggestions List Styles
 .suggestions-list {
   position: absolute;
   top: calc(100% + 8px);
@@ -417,7 +417,7 @@
 
 .suggestion-item:hover {
   background-color: #f0f8f7;
-}
+} */
 
 .search-button {
   margin-left: 20px;

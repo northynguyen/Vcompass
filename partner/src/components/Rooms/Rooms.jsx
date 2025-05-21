@@ -153,7 +153,7 @@ const Rooms = ({ onBack, hotel }) => {
           onClick={() => handleRoomSelect(room)}
         >
           <img
-            src={room.images[0].includes('http') ? room.images[0] : `${url}/images/${room.images[0]}`}
+            src={room.images?.[0]?.includes('http') ? room.images[0] : `${url}/images/${room.images[0]}`}
             alt={room.nameRoomType}
             className="room-image"
           />

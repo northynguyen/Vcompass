@@ -211,23 +211,38 @@ const Home = () => {
 
   // Xử lý sự kiện nhập liệu
   const handleAddressChange = (e) => {
-    const value = e.target.value;
-    setAddress(value);
+    const input = e.target.value;
+    setAddress(input);
 
     // Lọc danh sách gợi ý dựa trên dữ liệu nhập vào
-    if (value) {
-      const filtered = cities.filter((city) =>
-        city.toLowerCase().includes(value.toLowerCase())
+    if (input) {
+      // Lọc các thành phố thông thường
+      const filteredRegular = cities.filter(city =>
+        city.toLowerCase().includes(input.toLowerCase())
       );
-      setSuggestions(filtered);
+      
+      // Lọc các thành phố/địa điểm du lịch nổi tiếng
+      const filteredPopular = Object.keys(popularCities).filter(city =>
+        city.toLowerCase().includes(input.toLowerCase())
+      ).map(city => `${city}, ${popularCities[city]}`);
+      
+      // Kết hợp cả hai kết quả
+      setSuggestions([...filteredPopular, ...filteredRegular]);
     } else {
       setSuggestions([]);
     }
   };
 
   // Xử lý khi chọn một gợi ý
-  const handleSuggestionClick = (city) => {
-    setAddress(city);
+  const handleSuggestionClick = (selectedCity) => {
+    // Kiểm tra nếu là định dạng "Tên thành phố, Tên tỉnh"
+    if (selectedCity.includes(', ')) {
+      const parts = selectedCity.split(', ');
+      const province = parts[1];
+      setAddress(province); // Lưu tên tỉnh làm giá trị thực tế
+    } else {
+      setAddress(selectedCity);
+    }
     setSuggestions([]); // Xóa gợi ý sau khi chọn
   };
 
@@ -296,6 +311,69 @@ const Home = () => {
     "Vĩnh Phúc",
     "Yên Bái",
   ];
+
+  // Popular cities and their provinces
+  const popularCities = {
+    'Đà Lạt': 'Lâm Đồng',
+    'Hạ Long': 'Quảng Ninh',
+    'Long Hải': 'Bà Rịa - Vũng Tàu',
+    'Nha Trang': 'Khánh Hòa',
+    'Phan Thiết': 'Bình Thuận',
+    'Huế': 'Thừa Thiên Huế',
+    'Hội An': 'Quảng Nam',
+    'Sapa': 'Lào Cai',
+    'Vũng Tàu': 'Bà Rịa - Vũng Tàu',
+    'Đồng Hới': 'Quảng Bình',
+    'Tuy Hòa': 'Phú Yên',
+    'Quy Nhơn': 'Bình Định',
+    'Buôn Ma Thuột': 'Đắk Lắk',
+    'Pleiku': 'Gia Lai',
+    'Hà Tiên': 'Kiên Giang',
+    'Phú Quốc': 'Kiên Giang',
+    'Mũi Né': 'Bình Thuận',
+    'Bắc Hà': 'Lào Cai',
+    'Mộc Châu': 'Sơn La',
+    'Mai Châu': 'Hòa Bình',
+    'Tam Đảo': 'Vĩnh Phúc',
+    'Ninh Bình': 'Ninh Bình',
+    'Mỹ Tho': 'Tiền Giang',
+    'Cần Giờ': 'TP Hồ Chí Minh',
+    'Tây Ninh': 'Tây Ninh',
+    'Cát Bà': 'Hải Phòng',
+    'Sầm Sơn': 'Thanh Hóa',
+    'Cửa Lò': 'Nghệ An',
+    'Bảo Lộc': 'Lâm Đồng',
+    'Hồ Tràm': 'Bà Rịa - Vũng Tàu',
+    'Long Khánh': 'Đồng Nai',
+    'Phan Rang': 'Ninh Thuận',
+    'Cam Ranh': 'Khánh Hòa',
+    'Quảng Ngãi': 'Quảng Ngãi',
+    'Tam Kỳ': 'Quảng Nam',
+    'Hà Giang': 'Hà Giang',
+    'Cao Bằng': 'Cao Bằng',
+    'Lạng Sơn': 'Lạng Sơn',
+    'Móng Cái': 'Quảng Ninh',
+    'Uông Bí': 'Quảng Ninh',
+    'Cẩm Phả': 'Quảng Ninh',
+    'Thái Nguyên': 'Thái Nguyên',
+    'Việt Trì': 'Phú Thọ',
+    'Lào Cai': 'Lào Cai',
+    'Hà Tĩnh': 'Hà Tĩnh',
+    'Đông Hà': 'Quảng Trị',
+    'Phan Rang - Tháp Chàm': 'Ninh Thuận',
+    'Kon Tum': 'Kon Tum',
+    'Gia Nghĩa': 'Đắk Nông',
+    'Bến Tre': 'Bến Tre',
+    'Trà Vinh': 'Trà Vinh',
+    'Vĩnh Long': 'Vĩnh Long',
+    'Cao Lãnh': 'Đồng Tháp',
+    'Long Xuyên': 'An Giang',
+    'Châu Đốc': 'An Giang',
+    'Rạch Giá': 'Kiên Giang',
+    'Cà Mau': 'Cà Mau',
+    'Bạc Liêu': 'Bạc Liêu',
+    'Sóc Trăng': 'Sóc Trăng'
+  };
 
   return (
     <div className="home-layout">

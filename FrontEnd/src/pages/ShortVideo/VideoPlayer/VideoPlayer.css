@@ -228,10 +228,8 @@
 }
 
 .error-message {
-  text-align: center;
   color: #fff;
   padding: 20px;
-  background-color: rgba(255, 0, 0, 0.1);
   border-radius: 8px;
   max-width: 80%;
 }
