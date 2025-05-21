@@ -18,16 +18,16 @@ const Notification = ({ userData, accommodationData, foodserviceData, scheduleDa
             let statusMessage = "";
             switch (accommodationData.status) {
                 case "active":
-                    statusMessage = `Chỗ ở ${accommodationData.partnerName} hiện đang hoạt động. Cảm ơn bạn đã hợp tác cùng chúng tôi!`;
+                    statusMessage = `Chỗ ở ${accommodationData.name} hiện đang hoạt động. Cảm ơn bạn đã hợp tác cùng chúng tôi!`;
                     break;
                 case "inactive":
-                    statusMessage = `Chỗ ở ${accommodationData.partnerName} hiện không hoạt động. Nếu cần hỗ trợ, vui lòng liên hệ với chúng tôi.`;
+                    statusMessage = `Chỗ ở ${accommodationData.name} hiện không hoạt động. Nếu cần hỗ trợ, vui lòng liên hệ với chúng tôi.`;
                     break;
                 case "pending":
-                    statusMessage = `Chỗ ở ${accommodationData.partnerName} đang chờ duyệt. Chúng tôi sẽ sớm cập nhật trạng thái cho bạn.`;
+                    statusMessage = `Chỗ ở ${accommodationData.name} đang chờ duyệt. Chúng tôi sẽ sớm cập nhật trạng thái cho bạn.`;
                     break;
                 case "block":
-                    statusMessage = `Chỗ ở ${accommodationData.partnerName} đã bị khóa. Vui lòng liên hệ với bộ phận hỗ trợ để giải quyết.`;
+                    statusMessage = `Chỗ ở ${accommodationData.name} đã bị khóa. Vui lòng liên hệ với bộ phận hỗ trợ để giải quyết.`;
                     break;
                 default:
                     statusMessage = `Thông báo trạng thái chỗ ở.`;
@@ -38,16 +38,16 @@ const Notification = ({ userData, accommodationData, foodserviceData, scheduleDa
             let statusMessage = "";
             switch (foodserviceData.status) {
                 case "active":
-                    statusMessage = `Dịch vụ ăn uống ${foodserviceData.partnerName} hiện đang hoạt động. Cảm ơn bạn đã hợp tác cùng chúng tôi!`;
+                    statusMessage = `Dịch vụ ăn uống ${foodserviceData.foodServiceName} hiện đang hoạt động. Cảm ơn bạn đã hợp tác cùng chúng tôi!`;
                     break;
                 case "inactive":
-                    statusMessage = `Dịch vụ ăn uống ${foodserviceData.partnerName} hiện không hoạt động. Nếu cần hỗ trợ, vui lòng liên hệ với chúng tôi.`;
+                    statusMessage = `Dịch vụ ăn uống ${foodserviceData.foodServiceName} hiện không hoạt động. Nếu cần hỗ trợ, vui lòng liên hệ với chúng tôi.`;
                     break;
                 case "pending":
-                    statusMessage = `Dịch vụ ăn uống ${foodserviceData.partnerName} đang chờ duyệt. Chúng tôi sẽ sớm cập nhật trạng thái cho bạn.`;
+                    statusMessage = `Dịch vụ ăn uống ${foodserviceData.foodServiceName} đang chờ duyệt. Chúng tôi sẽ sớm cập nhật trạng thái cho bạn.`;
                     break;
                 case "block":
-                    statusMessage = `Dịch vụ ăn uống ${foodserviceData.partnerName} đã bị khóa. Vui lòng liên hệ với bộ phận hỗ trợ để giải quyết.`;
+                    statusMessage = `Dịch vụ ăn uống ${foodserviceData.foodServiceName} đã bị khóa. Vui lòng liên hệ với bộ phận hỗ trợ để giải quyết.`;
                     break;
                 default:
                     statusMessage = `Thông báo trạng thái dịch vụ ăn uống.`;

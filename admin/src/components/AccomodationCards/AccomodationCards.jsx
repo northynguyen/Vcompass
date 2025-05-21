@@ -8,7 +8,7 @@ const AccomodationCards = ({ partnerId, onStatusChange, accomList }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedAccommodation, setSelectedAccommodation] = useState(null);
-    const { url } = useContext(StoreContext);
+    const { url, getImageUrl } = useContext(StoreContext);
 
     const handleStatusChange = (id, status) => {
         const updatedAccommodation = accommodations.find((acc) => acc._id === id);
@@ -67,7 +67,7 @@ const AccomodationCards = ({ partnerId, onStatusChange, accomList }) => {
                 // Add click handler
                 >
                     <div className="card-image" onClick={() => handleCardClick(accommodation)}>
-                        <img src={`${url}/images/${accommodation.images[0] || 'placeholder.jpg'}`} alt={accommodation.name} />
+                        <img src={getImageUrl(accommodation)} alt={accommodation.name} />
                     </div>
                     <div className="card-content">
                         <h3 onClick={() => handleCardClick(accommodation)}>{accommodation.name}</h3>

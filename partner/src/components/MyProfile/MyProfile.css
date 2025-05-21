@@ -5,7 +5,7 @@
     margin: 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     gap: 20px;
-    min-height: 80vh;
+    margin-bottom: 100px;
 }
 
 /* Sidebar Styles */

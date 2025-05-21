@@ -83,7 +83,8 @@ export const generateSchedule = async (req, res) => {
       **Yêu cầu:**
       - Phân bổ ngân sách hợp lý để không quá chênh lệch với budget.
       - Chỉ định chi phí cho từng hoạt động dựa trên ngân sách đã cho (dựa vào cost của mỗi destination được cung cấp).
-      - Mỗi ngày có ít nhất 2-3 hoạt động với chi tiết đầy đủ (giờ bắt đầu, giờ kết thúc, mô tả...).
+      - Mỗi ngày có ít nhất 4-5 hoạt động với chi tiết đầy đủ (giờ bắt đầu, giờ kết thúc, mô tả...).
+      - Nếu có những địa điểm hay (nhưng bắt buộc phải cùng city nhé) nhưng lại không có trong data tôi cung cấp thì type của nó là Other(những biến này để lưu thông tin của Other: name, address, imgSrc, cost), idDestination của Other là sẽ được tạo ngẫu nhiên tuy nhiên nó cũng phải là Types.ObjectId (random mã hex 24 ký tự)
       
       **Danh sách điểm đến:**
       ${JSON.stringify(allDestinations, null, 2)}
@@ -107,13 +108,14 @@ export const generateSchedule = async (req, res) => {
             "day": 1,
             "activity": [
               {
-                "activityType": "Attraction || Accommodation || FoodService",
+                "activityType": "Attraction || Accommodation || FoodService || Other",
                 "idDestination": "destination._id",
                 "cost": "Phân bổ hợp lí",
+                "address": "Địa chỉ của type Other, bình thường thì null"
                 "costDescription": "Chi phí vé vào cửa",
                 "description": "Mô tả hoạt động",
-                "timeStart": "Sắp xếp hợp lý",
-                "timeEnd": "Sắp xếp hợp lý"
+                "timeStart": "Sắp xếp hợp lý" (format: "HH:mm"),
+                "timeEnd": "Sắp xếp hợp lý" (format: "HH:mm")
               }
             ]
           }
@@ -135,6 +137,7 @@ export const generateSchedule = async (req, res) => {
     let reply =
       response.data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
     reply = reply.replace(/```json|```/g, "").trim();
+    console.log(reply);
     return res.status(200).json(JSON.parse(reply));
     //return res.status(200).json({ reply, allDestinations });
   } catch (error) {

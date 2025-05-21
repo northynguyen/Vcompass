@@ -483,10 +483,13 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
       updates.password = await bcrypt.hash(password, salt);
     }
     if (address) updates.address = address;
-    if (date_of_birth) {
+    if (date_of_birth && !isNaN(new Date(date_of_birth).getTime())) {
       updates.date_of_birth = new Date(date_of_birth)
         .toISOString()
         .split("T")[0];
+    } else {
+      console.error("Invalid date_of_birth:", date_of_birth);
+      // hoặc xử lý fallback tùy bạn
     }
     if (gender) updates.gender = gender;
     if (status) updates.status = status;
@@ -702,8 +705,7 @@ export {
   getAllPartners,
   getAllUsers,
   getPartnerById,
-  getUserById,
-  googleCallback,
+  getUserById, getUserByIdHaveFollower, googleCallback,
   googleSignIn,
   loginAdmin,
   loginPartner,
@@ -712,6 +714,6 @@ export {
   registerAdmin,
   registerPartner,
   registerUser,
-  updateUserOrPartnerOrAdmin,
-  getUserByIdHaveFollower
+  updateUserOrPartnerOrAdmin
 };
+

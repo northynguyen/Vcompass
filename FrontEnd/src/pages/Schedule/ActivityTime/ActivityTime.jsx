@@ -199,7 +199,6 @@ export const AccomActivity = ({
   };
 
 
-
   if (!data) {
     return <div className="div">...</div>;
   }
@@ -235,7 +234,7 @@ export const AccomActivity = ({
       <div className="activity-content-card" onClick={onNavigateToDetails}>
         <div className="time-schedule-left">
           <img
-            src={getImageUrl( data)}
+            src={getImageUrl(data)}
             alt={data.title || "Image"}
             onError={(e) => {
               e.target.onerror = null; // Prevent infinite loop
@@ -418,7 +417,7 @@ export const FoodServiceActivity = ({
       <div className="activity-content-card" onClick={onNavigateToDetails}>
         <div className="time-schedule-left">
           <img
-            src={getImageUrl(data)} 
+            src={getImageUrl(data)}
             alt={data.title || "Image"}
             className="time-schedule-image"
           />
@@ -596,7 +595,7 @@ export const AttractionActivity = ({
       <div className="activity-content-card" onClick={onNavigateToDetails}>
         <div className="time-schedule-left">
           <img
-            src={getImageUrl(data)} 
+            src={getImageUrl(data)}
             alt={data.title || "Image"}
             className="time-schedule-image"
           />
@@ -662,7 +661,7 @@ export const OtherActivity = ({
   setIsOpenModal,
   mode, socket
 }) => {
-  const { url } = useContext(StoreContext);
+  const { url, getImageUrl } = useContext(StoreContext);
 
   // State điều khiển modal
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -153,7 +153,7 @@ const Rooms = ({ onBack, hotel }) => {
           onClick={() => handleRoomSelect(room)}
         >
           <img
-            src={room.images?.[0]?.includes('http') ? room.images[0] : `${url}/images/${room.images[0]}`}
+            src={room?.images?.[0]?.includes('http') ? room.images[0] : `${url}/images/${room.images[0]}`}
             alt={room.nameRoomType}
             className="room-image"
           />
@@ -211,7 +211,7 @@ const Rooms = ({ onBack, hotel }) => {
           <div className="room-detail-info">
             <div className="room-images">
               {selectedRoom.images.map((img, idx) => (
-                <img key={idx} src={img.includes('http') ? img :  `${url}/images/${img}`} alt={`${selectedRoom.nameRoomType} ${idx + 1}`} className="detail-image" />
+                <img key={idx} src={img?.includes('http') ? img :  `${url}/images/${img}`} alt={`${selectedRoom.nameRoomType} ${idx + 1}`} className="detail-image" />
               ))}
             </div>
             <p><strong>Kích thước:</strong> {selectedRoom.roomSize} m²</p>

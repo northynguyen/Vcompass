@@ -1,5 +1,5 @@
-import { createContext, useState, useEffect } from 'react'
 import axios from 'axios'
+import { createContext, useEffect, useState } from 'react'
 
 export const StoreContext = createContext(null)
 const StoreContextProvider = (props) => {
@@ -17,6 +17,18 @@ const StoreContextProvider = (props) => {
         console.error("Error loading admin data:", error);
       }
     }
+  };
+  const getImageUrl = (place, index) => {
+    if (!place.images || !place.images.length) {
+      return 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+    }
+
+    const image = index ? place.images[index] : place.images[0];
+    if (image.includes('http')) {
+      return image;
+    }
+
+    return `${url}/images/${image}`;
   };
 
 
@@ -39,7 +51,8 @@ const StoreContextProvider = (props) => {
     setToken,
     url,
     admin,
-    setAdmin
+    setAdmin,
+    getImageUrl
   }
   return (
     <StoreContext.Provider value={contextValue}>
