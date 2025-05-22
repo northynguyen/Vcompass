@@ -12,7 +12,8 @@
 
 /* Khi hiển thị comments, điều chỉnh container */
 .short-video-container.with-comments {
-  padding-right: 400px; /* Để dành chỗ cho phần comments */
+  padding-right: 400px;
+  /* Để dành chỗ cho phần comments */
 }
 
 /* Sidebar */
@@ -103,7 +104,8 @@
   background-color: #000;
   overflow: hidden;
   margin-left: 50px;
-  margin-right: 2px; /* Match sidebar width */
+  margin-right: 2px;
+  /* Match sidebar width */
   transition: none;
 }
 
@@ -222,7 +224,8 @@
 
 /* Điều chỉnh vị trí khi có comments */
 .with-comments .video-actions-sidebar {
-  right: 100px; /* 400px (width của comments) + 20px (padding ban đầu) */
+  right: 100px;
+  /* 400px (width của comments) + 20px (padding ban đầu) */
 }
 
 .user-avatar-container {
@@ -264,8 +267,9 @@
   color: white;
   cursor: pointer;
 }
+
 .action-button:hover {
-  color:rgb(135, 129, 130);
+  color: rgb(135, 129, 130);
   transition: color 0.2s;
 }
 
@@ -300,8 +304,13 @@
 }
 
 @keyframes rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Video Info */
@@ -371,8 +380,13 @@
 }
 
 @keyframes slideIn {
-  from { transform: translateX(400px); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(400px);
+  }
+
+  to {
+    transform: translateX(0);
+  }
 }
 
 .comments-header {
@@ -429,8 +443,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Empty container */
@@ -458,6 +477,39 @@
   cursor: pointer;
 }
 
+/* Empty following container */
+.empty-following-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  padding: 20px;
+  background-color: #000;
+  color: #fff;
+}
+
+.empty-following-container p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.empty-following-container button {
+  padding: 10px 20px;
+  background-color: #fe2c55;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.empty-following-container button:hover {
+  background-color: #e62a4d;
+}
+
 /* Responsive styles */
 /* Large desktop (1200px and up) */
 @media (min-width: 1200px) {
@@ -465,22 +517,22 @@
     max-width: 1000px;
     margin: 0 auto;
   }
-  
+
   .video-info {
     left: 50px;
     bottom: 120px;
     max-width: 400px;
   }
-  
+
   .video-actions-sidebar {
     right: 50px;
     bottom: 120px;
   }
-  
+
   .username {
     font-size: 18px;
   }
-  
+
   .video-description {
     font-size: 16px;
   }
@@ -492,12 +544,12 @@
     max-width: 800px;
     margin: 0 auto;
   }
-  
+
   .video-info {
     left: 40px;
     bottom: 100px;
   }
-  
+
   .video-actions-sidebar {
     right: 40px;
     bottom: 100px;
@@ -509,47 +561,47 @@
   .tiktok-sidebar {
     width: 60px;
   }
-  
+
   .menu-item svg {
     font-size: 20px;
   }
-  
+
   .menu-item span {
     font-size: 10px;
   }
-  
+
   .short-video-container.with-comments {
     padding-right: 350px;
   }
-  
+
   .comments-container {
     width: 350px;
   }
-  
+
   .with-comments .video-actions-sidebar {
     right: 370px;
   }
-  
+
   .video-actions-sidebar {
     right: 15px;
     bottom: 80px;
   }
-  
+
   .video-info {
     left: 15px;
     bottom: 80px;
     max-width: 300px;
   }
-  
+
   .user-avatar {
     width: 40px;
     height: 40px;
   }
-  
+
   .action-icon {
     font-size: 22px;
   }
-  
+
   .action-button span {
     font-size: 12px;
   }
@@ -560,33 +612,34 @@
   .tiktok-sidebar {
     width: 50px;
   }
-  
+
   .menu-item {
     padding: 10px 0;
   }
-  
+
   .menu-item svg {
     font-size: 18px;
     margin-bottom: 2px;
   }
-  
+
   .menu-item span {
     font-size: 9px;
   }
-  
+
   .short-video-container.with-comments {
     padding-right: 0;
   }
-  
+
   .comments-container {
     width: 100%;
     z-index: 30;
   }
-  
+
   .navigation-buttons {
-    display: none; /* Ẩn nút lên xuống */
+    display: none;
+    /* Ẩn nút lên xuống */
   }
-  
+
   .video-actions-sidebar {
     position: fixed;
     flex-direction: column;
@@ -596,25 +649,25 @@
     gap: 15px;
     padding: 0;
   }
-  
- 
-  
+
+
+
   .music-disc {
     display: none;
   }
-  
+
   .video-info {
     left: 10px;
     bottom: 80px;
     width: 80%;
     max-width: 350px;
   }
-  
+
   .action-icon {
     font-size: 22px;
     margin-bottom: 3px;
   }
-  
+
   .action-button span {
     font-size: 10px;
   }
@@ -625,33 +678,34 @@
   .tiktok-sidebar {
     width: 45px;
   }
-  
+
   .menu-item {
     padding: 8px 0;
   }
-  
+
   .menu-item svg {
     font-size: 16px;
     margin-bottom: 2px;
   }
-  
+
   .menu-item span {
     font-size: 8px;
   }
-  
+
   .short-video-container.with-comments {
     padding-right: 0;
   }
-  
+
   .comments-container {
     width: 100%;
     z-index: 9999;
   }
-  
+
   .navigation-buttons {
-    display: none; /* Ẩn nút lên xuống */
+    display: none;
+    /* Ẩn nút lên xuống */
   }
-  
+
   .video-actions-sidebar {
     position: fixed;
     flex-direction: column;
@@ -662,42 +716,42 @@
     padding: 0;
     background: none;
   }
-  
 
-  
+
+
   .music-disc {
     display: none;
   }
-  
+
   .video-info {
     left: 10px;
     bottom: 60px;
     width: 75%;
     max-width: 320px;
   }
-  
+
   .username {
     font-size: 14px;
   }
-  
+
   .follow-button-inline {
     font-size: 12px;
     padding: 1px 6px;
   }
-  
+
   .video-description {
     font-size: 12px;
   }
-  
+
   .video-tag {
     font-size: 12px;
   }
-  
+
   .action-icon {
     font-size: 22px;
     margin-bottom: 2px;
   }
-  
+
   .action-button span {
     font-size: 10px;
   }
@@ -708,7 +762,7 @@ body .header {
   z-index: 999;
 }
 
-.short-video-container ~ .header {
+.short-video-container~.header {
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -724,12 +778,12 @@ body .header {
   background: transparent;
 }
 
-.short-video-container:hover::before ~ .header,
-.short-video-container:hover ~ .header {
+.short-video-container:hover::before~.header,
+.short-video-container:hover~.header {
   opacity: 1;
 }
 
-body .short-video-container ~ .header:hover,
+body .short-video-container~.header:hover,
 body .header:hover {
   opacity: 1;
 }
@@ -758,10 +812,21 @@ body .header:hover {
 }
 
 @keyframes fadeInOut {
-  0% { opacity: 0; }
-  10% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 /* Explore Tab Styles */
@@ -802,7 +867,7 @@ body .header:hover {
   left: 0;
   right: 0;
   padding: 10px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
   color: white;
 }
 

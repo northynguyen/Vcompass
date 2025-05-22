@@ -1,6 +1,176 @@
 {
-  "userId": "682e1d46b53cdbd474cc49c4",
-  "schedules": [],
-  "interactionSummary": [],
-  "topTags": []
+  "userId": "682d8f4b6fe0056c0c71d07e",
+  "schedules": [
+    {
+      "_id": "682dd5406ee643524de200ea",
+      "idUser": "682d8f4b6fe0056c0c71d07e",
+      "address": "Thừa Thiên Huế",
+      "numDays": 3,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Other",
+              "idDestination": "681dae830699cefb82f804d0",
+              "cost": 1
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dce0ca80362ea4bb5418f2",
+              "cost": 1
+            }
+          ],
+          "_id": "682dd5406ee643524de200eb"
+        },
+        {
+          "day": 2,
+          "activity": [],
+          "_id": "682dd5406ee643524de200ec"
+        },
+        {
+          "day": 3,
+          "activity": [],
+          "_id": "682dd5406ee643524de200ed"
+        }
+      ],
+      "tags": [
+        "Thừa Thiên Huế",
+        "3 ngày",
+        "2 đêm",
+        "3N2Đ",
+        "hoạt động khác",
+        "địa điểm",
+        "tham quan",
+        "du lịch",
+        "phượt",
+        "lịch trình"
+      ]
+    },
+    {
+      "_id": "682ddc876ee643524de22d9a",
+      "idUser": "682d8f4b6fe0056c0c71d07e",
+      "address": "Thừa Thiên Huế",
+      "numDays": 1,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "681dae830699cefb82f804d0",
+              "cost": 500000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "68239d034e66ebc3c33959f0",
+              "cost": 80000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dce0ca80362ea4bb5418f2",
+              "cost": 10000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dcdc9080362ea4bb54177f",
+              "cost": 0
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "68239d034e66ebc3c33959f0",
+              "cost": 100000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dce67380362ea4bb541a64",
+              "cost": 0
+            },
+            {
+              "activityType": "Other",
+              "idDestination": "6750a97e2d9f6e222c23a4f5",
+              "cost": 200000
+            }
+          ],
+          "_id": "682ddc876ee643524de22d9b"
+        }
+      ],
+      "tags": [
+        "Thừa Thiên Huế",
+        "1 ngày",
+        "0 đêm",
+        "1N0Đ",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "địa điểm",
+        "tham quan",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình"
+      ]
+    }
+  ],
+  "interactionSummary": [
+    {
+      "scheduleId": "673721fe8199a5bb3cc3c7ed",
+      "viewCount": 1,
+      "editCount": 0,
+      "tags": [
+        "Bà Rịa - Vũng Tàu",
+        "biển",
+        "nghỉ dưỡng",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "ẩm thực",
+        "ăn uống",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình"
+      ],
+      "address": "Bà Rịa - Vũng Tàu"
+    },
+    {
+      "scheduleId": "682ddc876ee643524de22d9a",
+      "viewCount": 1,
+      "editCount": 0,
+      "tags": [
+        "Thừa Thiên Huế",
+        "1 ngày",
+        "0 đêm",
+        "1N0Đ",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "địa điểm",
+        "tham quan",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình"
+      ],
+      "address": "Thừa Thiên Huế"
+    }
+  ],
+  "topTags": [
+    "hoạt động khác",
+    "địa điểm",
+    "tham quan",
+    "du lịch",
+    "phượt",
+    "lịch trình",
+    "Thừa Thiên Huế",
+    "khách sạn",
+    "chỗ ở",
+    "ẩm thực"
+  ]
 }

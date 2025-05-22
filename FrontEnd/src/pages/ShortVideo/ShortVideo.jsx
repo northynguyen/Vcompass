@@ -598,6 +598,11 @@ const ShortVideo = () => {
           <div className="explore-tab">
             <ExploreView onClose={() => setActiveOption('home')} />
           </div>
+        ) : activeOption === 'following' && followingVideos.length === 0 ? (
+          <div className="empty-following-container">
+            <p>Bạn chưa theo dõi ai. Hãy theo dõi thêm người dùng để xem video của họ!</p>
+            <button onClick={handleForYouClick}>Xem video để theo dõi</button>
+          </div>
         ) : !showUpload && !showUserVideos && (
           <div className="video-feed" ref={videoFeedRef}>
             {/* Thông báo cuộn chuột */}
@@ -828,6 +833,7 @@ const ShortVideo = () => {
             <UserShortVideos 
               onClose={() => showTab(null)}
               currentUserId={selectedUserId}
+              setShowUpload={() => showTab('upload')}
             />
           </div>
         )}

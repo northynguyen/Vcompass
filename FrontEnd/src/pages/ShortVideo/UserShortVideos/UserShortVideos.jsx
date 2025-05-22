@@ -5,7 +5,7 @@ import { StoreContext } from '../../../Context/StoreContext';
 import axios from 'axios';
 import './UserShortVideos.css';
 
-const UserShortVideos = ({ onClose, currentUserId, hideHeader = false }) => {
+const UserShortVideos = ({ onClose, currentUserId, hideHeader = false, setShowUpload }) => {
   const { userId } = useParams(); // Lấy userId từ URL nếu có
   const { url, token, user } = useContext(StoreContext);
   const navigate = useNavigate();
@@ -127,7 +127,7 @@ const UserShortVideos = ({ onClose, currentUserId, hideHeader = false }) => {
         <div className="empty-videos">
           <p>Không có video nào</p>
           {targetUserId === (user && user._id) && (
-            <button onClick={() => navigate('/short-video/upload')}>
+            <button onClick={() => setShowUpload(true)}>
               Tạo video mới
             </button>
           )}
