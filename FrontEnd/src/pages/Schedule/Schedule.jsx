@@ -384,8 +384,6 @@ const ActivityItem = ({
       {!isLoading && (
         <>
           {activity.activityType === "Accommodation" &&
-
-
             <AccomActivity
               data={data.accommodation}
               activity={activity}
@@ -414,7 +412,7 @@ const ActivityItem = ({
             />
           )}
           {activity.activityType === "Other" &&
-            (console.log("other"),
+            (
               (
                 <OtherActivity
                   data={data.other}
@@ -507,7 +505,7 @@ const InforScheduleMedal = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-  
+
     if (name === "startDay") {
       const newStartDay = new Date(value);
       setStartDay(newStartDay);
@@ -923,6 +921,7 @@ const DateSchedule = ({
 
   useEffect(() => {
     if (!isModalOpen) {
+      console.log("clear curdess")
       setCurrentActivity(null);
       setCurrentDestination(null);
     }
@@ -935,7 +934,7 @@ const DateSchedule = ({
         // Calculate date difference
         const [day, month, year] = inforSchedule.dateStart.split("-");
         let addressTemp = inforSchedule.address;
-        if(inforSchedule.address == "Bà Rịa - Vũng Tàu"){
+        if (inforSchedule.address == "Bà Rịa - Vũng Tàu") {
           addressTemp = "Vũng Tàu";
         }
         const startDate = new Date(year, month - 1, day);
@@ -944,7 +943,7 @@ const DateSchedule = ({
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         // Only fetch if within 7 days
         if (diffDays < 7) {
-          
+
           const response = await fetch(
             `https://api.openweathermap.org/data/2.5/forecast/daily?q=${addressTemp}&appid=e888d6c55a0c9f77c0f19776c545cd5d&units=metric&lang=vi&cnt=17`
           );
@@ -964,13 +963,13 @@ const DateSchedule = ({
   // Function to get weather for specific day
   const getWeatherForDay = (dayIndex) => {
     if (!weatherData?.list) return null;
-    
+
     const [day, month, year] = inforSchedule.dateStart.split("-");
     const startDate = new Date(year, month - 1, day);
     const currentDate = new Date();
     const diffTime = startDate - currentDate;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     // Get weather data for the specific day
     const weatherIndex = dayIndex + diffDays;
     return weatherData.list[weatherIndex];
@@ -1008,30 +1007,30 @@ const DateSchedule = ({
             <div className="date-section">
               <div className="date-header">
                 <div className="date-header-left">
-                <h2>
-                  Ngày {scheduleDate.day}{" "}
-                  <i
-                    className={`fa-solid ${isOpen ? "fa-chevron-down" : "fa-chevron-left"
-                      }`}
-                    style={{ cursor: "pointer" }}
-                    onClick={toggleDetails}
-                  ></i>
-                </h2>
-                <div className="weather-container">
-                  {getWeatherForDay(index) && (
-                    <div className="weather-info">
-                      <img 
-                        src={`http://openweathermap.org/img/wn/${getWeatherForDay(index).weather[0].icon}@2x.png`}
-                        alt={getWeatherForDay(index).weather[0].description}
-                      />
-                      <div className="weather-details">
-                        <span className="temperature">{Math.round(getWeatherForDay(index).temp.day)} / {Math.round(getWeatherForDay(index).temp.night)}°C</span>
-                        <span className="description">{getWeatherForDay(index).weather[0].description}</span>
+                  <h2>
+                    Ngày {scheduleDate.day}{" "}
+                    <i
+                      className={`fa-solid ${isOpen ? "fa-chevron-down" : "fa-chevron-left"
+                        }`}
+                      style={{ cursor: "pointer" }}
+                      onClick={toggleDetails}
+                    ></i>
+                  </h2>
+                  <div className="weather-container">
+                    {getWeatherForDay(index) && (
+                      <div className="weather-info">
+                        <img
+                          src={`http://openweathermap.org/img/wn/${getWeatherForDay(index).weather[0].icon}@2x.png`}
+                          alt={getWeatherForDay(index).weather[0].description}
+                        />
+                        <div className="weather-details">
+                          <span className="temperature">{Math.round(getWeatherForDay(index).temp.day)} / {Math.round(getWeatherForDay(index).temp.night)}°C</span>
+                          <span className="description">{getWeatherForDay(index).weather[0].description}</span>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-                <div></div>
+                    )}
+                  </div>
+                  <div></div>
                 </div>
                 <div className="date-actions">
                   <button
@@ -1119,13 +1118,15 @@ const DateSchedule = ({
 
               {isOpen && mode === "edit" && (
                 <div className="add-new">
-                  <button onClick={openModal}>
+                  <button onClick={() => {
+                    setCurrentActivity(null);
+                    openModal();
+                  }}>
                     <i className="fa-solid fa-plus add-icon"></i>
                     Thêm mới
                   </button>
                 </div>
               )}
-
               {isOpen && mode === "edit" && (
                 <RecommendPlace
                   city={city}

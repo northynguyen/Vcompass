@@ -19,7 +19,7 @@ const MyBooking = ({ send }) => {
     const [highlightFirstBooking, setHighlightFirstBooking] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const bookingsPerPage = 2;
-    const { token, url } = useContext(StoreContext);
+    const { token, url, getImageUrl } = useContext(StoreContext);
     const reviewPopupRef = useRef(null);
     const cancelPopupRef = useRef(null);
 
@@ -123,7 +123,7 @@ const MyBooking = ({ send }) => {
             {currentBookings.length === 0 ? (
                 <p>Không tìm thấy lịch sử đặt phòng phù hợp.</p>
             ) : (
-                currentBookings.map((booking, index) => {
+                currentBookings.map((booking, index) => {getImageUrl
                     const accommodationData = accommodations.find(accommodation => accommodation._id === booking.accommodationId);
                     const roomInfo = accommodationData ? accommodationData.roomTypes.find(roomType => roomType._id === booking.roomId) : null;
                     return (
@@ -131,7 +131,7 @@ const MyBooking = ({ send }) => {
                             key={booking._id}
                             className={`booking-item ${highlightFirstBooking && index === 0 ? 'highlight' : ''}`}
                         >
-                            {roomInfo && <img src={`${url}/images/${roomInfo.images[0]}`} alt={`${roomInfo.nameRoomType}`} className="hotel-img" />}
+                            {roomInfo && <img src={getImageUrl(roomInfo)} alt={`${roomInfo.nameRoomType}`} className="hotel-img" />}
                             <div className="booking-info">
                                 {accommodationData ? <h3>{accommodationData.name}</h3> : null}
                                 <p><strong>Tên phòng:</strong> {roomInfo ? roomInfo.nameRoomType : "N/A"}</p>

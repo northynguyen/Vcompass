@@ -6,6 +6,9 @@
     padding: 20px;
     font-family: Arial, sans-serif;
   }
+  .search-schedule .heart-container{
+    width: unset !important;
+  }
   
   .search-bar {
     display: flex;

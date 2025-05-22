@@ -5,6 +5,7 @@ import { StoreContext } from '../../../Context/StoreContext';
 import { useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 import { FaHeart } from "react-icons/fa";
+import { get } from 'lodash';
 
 const MyWishList = () => {
     const navigate = useNavigate();
@@ -166,12 +167,12 @@ const MyWishList = () => {
                                     className="schedule-card"
                                     onClick={() => navigate(`/schedule-view/${schedule._id}`)}
                                 >
-                                      <div className="image-container">
+                                    <div className="image-container">
                                         {schedule.imgSrc && schedule.imgSrc[0] ? (
                                         // Hiển thị ảnh nếu có imgSrc
                                         <img
                                             className="content-image"
-                                            src={ schedule.imgSrc[0].includes("http") ? schedule.imgSrc[0] : `${url}/images/${schedule.imgSrc[0]}`}
+                                            src={getImageUrl(schedule)}
                                             alt="Schedule Image"
                                         />
                                         ) : schedule.videoSrc ? (

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import Modal from "react-modal";
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from 'uuid';
 import { StoreContext } from "../../../Context/StoreContext";
 import ListPlaces, { ListItem as PlaceItem } from "../../../components/ListPlaces";
 import "./AddActivity.css";
@@ -293,6 +292,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   useEffect(() => {
     if (isOpen) {
       if (activity) {
+        console.log("curdes",destination)
         setCurDes(destination)
         setCost(activity.cost)
         setCostDes(activity.costDescription)
@@ -304,6 +304,12 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         setDescription("")
       }
       setOption(activity ? activity.activityType : "Accommodation");
+    } else{
+      setCurDes(null);
+      setCostDes("")
+      setCost("")
+      setDescription("")
+      setOption("Accommodation")
     }
   }, [isOpen, activity, destination]);
 
@@ -311,7 +317,6 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
     if (listData.length > 0) {
       const locationData = listData.map(item => {
         let latitude, longitude;
-        console.log(item);
         if (option === 'Accommodation') {
 
           latitude = item.location?.latitude;
@@ -353,7 +358,6 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
 
   const handleSave = async () => {
     try {
-      // Kiểm tra các trường bắt buộc
       const newErrors = {
         costName: costDes === null || costDes === undefined || costDes === '',
         cost: cost === null || cost === undefined || cost === '',
@@ -433,8 +437,8 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
 
       // Chuẩn bị dữ liệu activity mới
       const newActivity = {
-        activityType: curDes?.activityType || "Other",
-        idDestination: curDes?._id || uuidv4(),
+        activityType: curDes?.activityType || option,
+        idDestination: curDes?._id || new mongoose.Types.ObjectId(),
         address: curDes.address || "default-address",
         imgSrc: curDes.imgSrc ? curDes.imgSrc.filter(img => typeof img === 'string') : ["default-image"],
         name: curDes.name || "default-name",
@@ -765,8 +769,6 @@ const LocationsMapView = ({ locations, selectedLocation }) => {
     : selectedLocation?.latitude && selectedLocation?.longitude
       ? [selectedLocation.latitude, selectedLocation.longitude]
       : defaultPosition;
-
-  console.log("selectedLocation", selectedLocation);
 
   return (
     <div className="locations-map-container">

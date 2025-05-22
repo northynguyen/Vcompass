@@ -71,8 +71,7 @@ const ListPlaces = ({ status, setCurDes, city, setListData, type }) => {
       if (status === "WishList") {
         processedData = Array.isArray(data.favorites) ? data.favorites : [];
       }
-      
-      console.log(`Fetched ${processedData.length} items for ${type}`, processedData);
+
       setItems(processedData);
       
       // If this is used within a Trip Planner context, update parent component

@@ -22,16 +22,21 @@ const StoreContextProvider = (props) => {
     fetchUser(token);
   }, [])
 
-  const getImageUrl = (place, index) => {
-    if (!place.images || !place.images.length) {
-      return 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
-    }
-
-    const image = index ? place.images[index] : place.images[0];
-    if (image.includes('http')) {
-      return image;
-    }
-
+  const getImageUrl = (place, index = 0) => {
+    const fallbackNoImage = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
+    const fallbackCloudinary = 'https://res.cloudinary.com/dmdzku5og/image/upload/v1745247680/images/c0cq2ohjqvqu7bhl3x8r.jpg';
+  
+    if (!place) return fallbackNoImage;
+  
+    // Ưu tiên: place.images > place.imgSrc
+    let image = place.images?.[index] || place.images?.[0] || place.imgSrc?.[index] || place.imgSrc?.[0];
+  
+    if (!image) return fallbackCloudinary;
+  
+    // Nếu là URL hoàn chỉnh
+    if (image.startsWith('http')) return image;
+  
+    // Nếu là tên file - ghép với URL host
     return `${url}/images/${image}`;
   };
 
