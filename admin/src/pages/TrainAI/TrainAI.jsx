@@ -7,7 +7,7 @@ import 'react-tabs/style/react-tabs.css';
 import { Cell, Legend, Pie, PieChart, Tooltip } from 'recharts';
 import Loading from '../../components/Loading/Loading';
 import { StoreContext } from '../../Context/StoreContext';
-import './TrainAI.css';
+import './TrainAi.css';
 const TrainAI = () => {
     const [userSatisfactions, setUserSatisfactions] = useState();
     const { token, url, user } = useContext(StoreContext);
