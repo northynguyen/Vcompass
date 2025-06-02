@@ -192,7 +192,7 @@ const SlideBar = ({ type }) => {
                 spaceBetween={10}
                 slidesPerView={1}
                 breakpoints={{
-                    480: { slidesPerView: 2, spaceBetween: 10 },
+                    380: { slidesPerView: 2, spaceBetween: 10 },
                     768: { slidesPerView: 3, spaceBetween: 15 },
                     1024: { slidesPerView: 4, spaceBetween: 20 }
                 }}

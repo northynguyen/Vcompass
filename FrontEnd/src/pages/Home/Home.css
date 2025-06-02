@@ -35,6 +35,10 @@
   z-index: 1000;
 }
 
+.sidebar-toggle-container.closed-sidebar-toggle {
+  display: none;
+}
+
 .sidebar-toggle {
   background-color: #009688;
   color: white;
@@ -111,7 +115,7 @@
     top: 0;
     left: 0;
     height: 100vh;
-    z-index: 999;
+    z-index: 9999999999;
     background-color: white;
     box-shadow: 3px 0 15px rgba(0, 0, 0, 0.2);
     transform: translateX(-100%);
@@ -256,18 +260,37 @@
 }
 
 .hero-section {
-  margin-top: 30px;
+  position: relative;
+  margin-top:40px;
   text-align: center;
-
   background-color: #fff;
   padding: 60px;
-  min-height: 250px;
+  min-height: 280px;
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   background-image: url('https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/full-shot-travel-concept-with-landmarks.jpg');
   background-size: cover;
   background-position: center;
 
+  .hero-section-content {
+    background-color: #ffffff;
+    border-radius: 12px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    opacity: 0.5;
+  }
+  .hero-section-content-text {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
 }
 .create-schedule-btn {
   display: flex;
@@ -365,7 +388,11 @@
 
 }
 
-
+.city-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 8px; /* tránh che bởi scrollbar */
+}
 
 .search-input {
   width: 100%;
@@ -647,6 +674,10 @@
     width: 100%;
   }
 
+  .cities-description{
+    display: none;
+  }
+
   .search-subtitle {
     font-size: var(--font-size-base);
   }
@@ -699,13 +730,12 @@
   }
 
   .city-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: 8px;
+    margin-top: 10px;
   }
 
   .city-button {
-    width: 100%;
+    width: max-content;
     padding: 8px 10px;
     font-size: 0.85rem;
   }
@@ -725,6 +755,8 @@
   
   .cities-title {
     font-size: 1.3rem;
+    margin-bottom: 0px !important;
+    margin-top: 10px !important;
   }
   .search-container {
     width: 100%;
@@ -775,7 +807,7 @@
 }
 }
 
-/* Short Videos Section */
+/* Short Videos Section
 .short-videos-section {
   margin: 40px 0;
   padding: 20px;
@@ -802,7 +834,6 @@
   margin: 0;
 }
 
-/* Responsive for Short Videos Section */
 @media (max-width: 768px) {
   .short-videos-section {
     margin: 20px 0;
@@ -817,6 +848,6 @@
   .short-videos-section .post-card-header p {
     font-size: 0.9rem;
   }
-}
+} */
 
 

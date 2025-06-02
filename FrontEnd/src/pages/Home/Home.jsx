@@ -29,6 +29,15 @@ const Home = ({ setShowLogin }) => {
   const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState([]);
   const [scheduleAI, setScheduleAI] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Update window width on resize
   useEffect(() => {
@@ -299,7 +308,7 @@ const Home = ({ setShowLogin }) => {
 
   return (
     <div className="home-layout">
-      <div className="sidebar-toggle-container">
+      <div className={`sidebar-toggle-container ${sidebarOpen ? 'closed-sidebar-toggle' : ''}`}>
         <button className="sidebar-toggle" onClick={toggleSidebar}>
           <FaBars />
         </button>
@@ -311,9 +320,12 @@ const Home = ({ setShowLogin }) => {
         <LeftSideBar setShowLogin={setShowLogin} />
       </div>
 
+      
+
       <div className="home-main-content">
-        <div className="home-container">
-          <header className="hero-section">
+      <header className="hero-section">
+            <div className="hero-section-content"> </div>
+            <div className="hero-section-content-text">
             <h1 className="create-schedule-title">Tạo lịch trình du lịch dễ dàng cho chuyến đi của bạn</h1>
             <p className="create-schedule-description">Chỉ mất 3-5 phút, bạn có thể tạo ngay cho mình lịch trình du lịch</p>
             <div className="create-schedule-btn-container">
@@ -326,7 +338,10 @@ const Home = ({ setShowLogin }) => {
                 <p>Tạo lịch trình với AI</p>
               </div>
             </div>
+            </div>
           </header>
+        <div className="home-container">
+          
           <div className="tour-search">
             <div className="search-container">
               <div className="search-title">
@@ -397,6 +412,12 @@ const Home = ({ setShowLogin }) => {
               </button>
             </div>
 
+
+            {/* Short Videos Section */}
+           <div className="short-videos-section">      
+            <ShortSwiper category="all" limit={8} />
+          </div>
+
             {/* Popular Cities Section */}
             <section className="popular-cities">
               <h2 className="cities-title">Khám phá các thành phố nổi tiếng</h2>
@@ -410,37 +431,44 @@ const Home = ({ setShowLogin }) => {
               </p>
 
               {/* City Buttons */}
-              <div className="city-buttons">
-                {topCity.map((city, index) => (
-                  <button
-                    key={index}
-                    className="city-button"
-                    onClick={() => navigate(`/searchSchedule`, {
-                      state: {
-                        city: city.name,
-                        name: "",
-                      },
-                    })}
-                  >
-                    {city.name}
-                  </button>
-                ))}
+              <div className="city-scroll-wrapper">
+
+                <div className="city-buttons">
+                  {topCity.map((city, index) => (
+                    <button
+                      key={index}
+                      className="city-button"
+                      onClick={() => navigate(`/searchSchedule`, {
+                        state: {
+                          city: city.name,
+                          name: "",
+                        },
+                      })}
+                    >
+                      {city.name}
+                    </button>
+                  ))}
+              </div>
               </div>
             </section>
           </div>
+
+
+          {/* Short Videos Section */}
+           
 
           <div className="city-slider">
             <Swiper
               modules={[Navigation, Pagination, Autoplay]}
               spaceBetween={30}
               slidesPerView={1}
-              navigation
+              navigation={!isMobile}
               pagination={{ clickable: true }}
               autoplay={{ delay: 4000 }}
             >
               {topCity.map((city, index) => (
                 <SwiperSlide key={index}>
-                  <AccommodationBanner cityName={city.name} />
+                  <AccommodationBanner cityName={city.name} scheduleSize={city.count} />
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -466,7 +494,7 @@ const Home = ({ setShowLogin }) => {
                     modules={[Navigation, Pagination, Autoplay]}
                     spaceBetween={30}
                     slidesPerView={1}
-                    navigation
+                    navigation={!isMobile}
                     pagination={{ clickable: true }}
                     autoplay={{
                       delay: 4000,
@@ -521,7 +549,7 @@ const Home = ({ setShowLogin }) => {
                   modules={[Navigation, Pagination, Autoplay]}
                   spaceBetween={30}
                   slidesPerView={1}
-                  navigation
+                  navigation={!isMobile}
                   breakpoints={{
                     768: { slidesPerView: 1 },
                   }}
@@ -555,14 +583,7 @@ const Home = ({ setShowLogin }) => {
             </div>
           </div>
 
-          {/* Short Videos Section */}
-          <div className="short-videos-section">
-            <div className="post-card-header">
-              <h3>Video ngắn nổi bật</h3>
-              <p>Khám phá những video du lịch thú vị từ cộng đồng</p>
-            </div>
-            <ShortSwiper category="all" limit={8} />
-          </div>
+         
 
           <SlideBar type="accommodation" />
           <span></span>

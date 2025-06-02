@@ -1,15 +1,14 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { FaPlay } from 'react-icons/fa';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { Navigation, Autoplay } from 'swiper/modules';
 import { StoreContext } from '../../Context/StoreContext';
 import PropTypes from 'prop-types';
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
-import 'swiper/css/pagination';
 import './ShortSwiper.css';
 
 const ShortSwiper = ({ category = 'all', limit = 8 }) => {
@@ -17,6 +16,15 @@ const ShortSwiper = ({ category = 'all', limit = 8 }) => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Fetch videos từ API
   useEffect(() => {
@@ -62,10 +70,12 @@ const ShortSwiper = ({ category = 'all', limit = 8 }) => {
     window.open(`/short-video?videoId=${video._id}`, '_blank');
   };
 
+ 
+
   if (isLoading) {
     return (
       <div className="short-swiper-loading">
-        {[...Array(5)].map((_, index) => (
+        {[...Array(isMobile ? 4 : 8)].map((_, index) => (
           <div key={index} className="short-swiper-skeleton">
             <div className="skeleton-video"></div>
             <div className="skeleton-avatar"></div>
@@ -94,59 +104,27 @@ const ShortSwiper = ({ category = 'all', limit = 8 }) => {
   return (
     <div className="short-swiper-container">
       <Swiper
-        modules={[Navigation, Pagination, Autoplay]}
-        spaceBetween={20}
-        slidesPerView="auto"
-        centeredSlides={true}
-        navigation={{
-          nextEl: '.short-swiper-button-next',
-          prevEl: '.short-swiper-button-prev',
-        }}
-        pagination={{
-          el: '.short-swiper-pagination',
-          clickable: true,
-          dynamicBullets: true,
-          dynamicMainBullets: 3,
-        }}
+        modules={[Navigation, Autoplay]}
+        spaceBetween={5}
+        pagination={{ clickable: true }}
         autoplay={{
-          delay: 4000,
+          delay: 3000,
           disableOnInteraction: false,
           pauseOnMouseEnter: true,
         }}
-        loop={videos.length > 5}
-        grabCursor={true}
-        watchOverflow={true}
+        navigation={!isMobile}
+        loop={videos.length > 8}
         breakpoints={{
-          320: {
-            slidesPerView: 2,
-            spaceBetween: 15,
-            centeredSlides: false,
-          },
-          480: {
-            slidesPerView: 3,
-            spaceBetween: 15,
-            centeredSlides: false,
-          },
-          768: {
-            slidesPerView: 4,
-            spaceBetween: 20,
-            centeredSlides: true,
-          },
           1024: {
-            slidesPerView: 5,
-            spaceBetween: 20,
-            centeredSlides: true,
+            slidesPerView: 8,
           },
-          1200: {
-            slidesPerView: 6,
-            spaceBetween: 25,
-            centeredSlides: true,
+          300: {
+            slidesPerView: 4,
           },
         }}
-        className="short-swiper"
       >
         {videos.map((video) => (
-          <SwiperSlide key={video._id} className="short-swiper-slide">
+          <SwiperSlide key={video._id}>
             <div 
               className="short-swiper-item"
               onClick={() => handleVideoClick(video)}
@@ -157,29 +135,26 @@ const ShortSwiper = ({ category = 'all', limit = 8 }) => {
                   <img 
                     src={video.thumbnailUrl} 
                     alt={video.title || 'Video thumbnail'}
-                    className="video-thumbnail"
+                    className="video-thumbnail-swiper "
                   />
                 ) : (
-                  <div className="video-placeholder">
-                    <FaPlay className="play-icon" />
+                  <div className="video-placeholder-swiper">
+                    <FaPlay className="play-icon-swiper" />
                   </div>
                 )}
                 
                 {/* Play Overlay */}
-                <div className="video-overlay">
-                  <FaPlay className="play-button" />
+                <div className="video-overlay-swiper">
+                  <div className="play-button-swiper">
+                    <FaPlay className="" />
+                  </div>
                 </div>
 
-                {/* Duration Badge */}
-                {video.duration && (
-                  <div className="duration-badge">
-                    {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, '0')}
-                  </div>
-                )}
+                
               </div>
 
               {/* User Avatar */}
-              <div className="user-avatar">
+              <div className="user-avatar-short-swiper">
                 <img 
                   src={
                     video.userId?.avatar?.includes('http') 
@@ -210,21 +185,6 @@ const ShortSwiper = ({ category = 'all', limit = 8 }) => {
           </SwiperSlide>
         ))}
       </Swiper>
-
-      {/* Custom Navigation Buttons */}
-      <div className="short-swiper-button-prev short-swiper-nav">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </div>
-      <div className="short-swiper-button-next short-swiper-nav">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      </div>
-
-      {/* Custom Pagination */}
-      <div className="short-swiper-pagination"></div>
     </div>
   );
 };
