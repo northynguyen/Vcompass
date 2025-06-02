@@ -107,6 +107,14 @@ async def recommend_schedules(request: UserRequest):
     users = data['users']
     schedules = data['schedules']
     max_schedules = len(schedules)
+    
+    # Check if data is loaded successfully
+    if not users:
+        raise HTTPException(status_code=500, detail="No user data available - failed to load ALL_users.json")
+    if not schedules:
+        raise HTTPException(status_code=500, detail="No schedule data available - failed to load All_schedules.json")
+    
+    print(f"Loaded {len(users)} users and {len(schedules)} schedules")
 
     # Preprocess data
     user_data = preprocess_users(users)
@@ -275,6 +283,42 @@ async def recommend_schedules(request: UserRequest):
         recommendedSchedules=recommended_schedule_ids,
         totalSchedules=total_schedules
     )
+
+# Debug endpoint to check file system
+@app.get("/debug")
+async def debug_info():
+    import os
+    current_dir = os.getcwd()
+    files_in_current = os.listdir(".")
+    
+    # Try to find JSON files
+    json_files = [f for f in files_in_current if f.endswith('.json')]
+    
+    debug_info = {
+        "current_working_directory": current_dir,
+        "files_in_current_directory": files_in_current,
+        "json_files": json_files,
+        "environment": {
+            "PORT": os.environ.get("PORT", "Not set"),
+            "PYTHONPATH": os.environ.get("PYTHONPATH", "Not set")
+        }
+    }
+    
+    # Check specific paths
+    paths_to_check = [
+        'ALL_users.json',
+        'All_schedules.json',
+        '../Schedule_AI/ALL_users.json',
+        'Schedule_AI/ALL_users.json'
+    ]
+    
+    path_status = {}
+    for path in paths_to_check:
+        path_status[path] = os.path.exists(path)
+    
+    debug_info["path_existence"] = path_status
+    
+    return debug_info
 
 if __name__ == "__main__":
     import uvicorn

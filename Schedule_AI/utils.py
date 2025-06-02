@@ -6,22 +6,29 @@ from collections import Counter
 import gymnasium as gym
 from gymnasium import spaces
 import random
+import os
 
 # Load input data
 def load_input():
+    # Debug: print current working directory and files
+    print(f"Current working directory: {os.getcwd()}")
+    print(f"Files in current directory: {os.listdir('.')}")
+    
     # Try multiple possible paths for the JSON files
     user_file_paths = [
         'ALL_users.json',  # Same directory
         './ALL_users.json',  # Explicit current directory  
         '../Schedule_AI/ALL_users.json',  # Parent directory
-        '/opt/render/project/src/Schedule_AI/ALL_users.json'  # Render absolute path
+        '/opt/render/project/src/Schedule_AI/ALL_users.json',  # Render absolute path
+        'Schedule_AI/ALL_users.json'  # From root directory
     ]
     
     schedule_file_paths = [
         'All_schedules.json',  # Same directory
         './All_schedules.json',  # Explicit current directory
         '../Schedule_AI/All_schedules.json',  # Parent directory  
-        '/opt/render/project/src/Schedule_AI/All_schedules.json'  # Render absolute path
+        '/opt/render/project/src/Schedule_AI/All_schedules.json',  # Render absolute path
+        'Schedule_AI/All_schedules.json'  # From root directory
     ]
     
     users = []
@@ -30,26 +37,40 @@ def load_input():
     # Try to load users file
     for path in user_file_paths:
         try:
-            with open(path, 'r', encoding='utf-8') as user_file:
-                users = json.load(user_file)
-                print(f"Successfully loaded users from: {path}")
-                break
+            if os.path.exists(path):
+                print(f"Found users file at: {path}")
+                with open(path, 'r', encoding='utf-8') as user_file:
+                    users = json.load(user_file)
+                    print(f"Successfully loaded {len(users)} users from: {path}")
+                    break
+            else:
+                print(f"Users file not found at: {path}")
         except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Error loading users from {path}: {e}")
             continue
     else:
         print("Error: Could not load ALL_users.json from any path")
+        # Return empty but valid structure to prevent crashes
+        users = []
     
     # Try to load schedules file  
     for path in schedule_file_paths:
         try:
-            with open(path, 'r', encoding='utf-8') as schedules_file:
-                schedules = json.load(schedules_file)
-                print(f"Successfully loaded schedules from: {path}")
-                break
+            if os.path.exists(path):
+                print(f"Found schedules file at: {path}")
+                with open(path, 'r', encoding='utf-8') as schedules_file:
+                    schedules = json.load(schedules_file)
+                    print(f"Successfully loaded {len(schedules)} schedules from: {path}")
+                    break
+            else:
+                print(f"Schedules file not found at: {path}")
         except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Error loading schedules from {path}: {e}")
             continue
     else:
         print("Error: Could not load All_schedules.json from any path")
+        # Return empty but valid structure to prevent crashes
+        schedules = []
     
     return {'users': users, 'schedules': schedules}
 

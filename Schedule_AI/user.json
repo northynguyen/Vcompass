@@ -1160,6 +1160,25 @@
       "address": "Hà Nội"
     },
     {
+      "scheduleId": "6754f65787e4ec7d4e66432b",
+      "viewCount": 0,
+      "editCount": 0,
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình"
+      ],
+      "address": "Hà Nội"
+    },
+    {
       "scheduleId": "6755132c2e3ea6637d0c84db",
       "viewCount": 0,
       "editCount": 0,
@@ -1186,6 +1205,27 @@
         "phí",
         "đêm",
         "hấp"
+      ],
+      "address": "Hà Nội"
+    },
+    {
+      "scheduleId": "6756ca591928dd4d5ec0bbb4",
+      "viewCount": 2,
+      "editCount": 0,
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "địa điểm",
+        "tham quan",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình"
       ],
       "address": "Hà Nội"
     },
@@ -1300,6 +1340,28 @@
         "ẩm thực"
       ],
       "address": "Phú Yên"
+    },
+    {
+      "scheduleId": "682ddc876ee643524de22d9a",
+      "viewCount": 0,
+      "editCount": 0,
+      "tags": [
+        "Thừa Thiên Huế",
+        "1 ngày",
+        "0 đêm",
+        "1N0Đ",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "địa điểm",
+        "tham quan",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình"
+      ],
+      "address": "Thừa Thiên Huế"
     },
     {
       "scheduleId": "683d4651c0f6af55e023b6aa",
