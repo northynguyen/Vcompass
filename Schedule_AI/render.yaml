@@ -3,7 +3,7 @@ services:
     name: vcompass-schedule-ai
     env: python
     region: singapore
-    plan: starter
+    plan: free
     buildCommand: |
       cd Schedule_AI && 
       pip install --upgrade pip && 
