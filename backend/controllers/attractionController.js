@@ -10,11 +10,6 @@ const getAttractions = async (req, res) => {
     try {
         const { name, minPrice, maxPrice, city, page = 1, limit = 10 } = req.query;
 
-        // Chuyển đổi page và limit sang số
-        const pageNumber = Math.max(1, Number(page));
-        const limitNumber = Math.max(1, Number(limit));
-        const skip = (pageNumber - 1) * limitNumber;
-
         // Tạo query object
         const query = {};
 
@@ -38,20 +33,36 @@ const getAttractions = async (req, res) => {
             query.city = { $regex: city, $options: 'i' };
         }
 
-        // Lấy tổng số bản ghi (cho frontend phân trang)
-        const totalAttractions = await Attraction.countDocuments(query);
+        // Lấy dữ liệu và tính rating trung bình
+        let attractions = await Attraction.find(query);
+        
+        // Tính rating trung bình và sort theo rating giảm dần
+        attractions = attractions.map(attraction => {
+            const ratings = attraction.ratings || [];
+            const averageRating = ratings.length > 0
+                ? ratings.reduce((sum, rating) => sum + rating.rate, 0) / ratings.length
+                : 0;
+            
+            const attractionObj = attraction.toObject ? attraction.toObject() : attraction;
+            return {
+                ...attractionObj,
+                averageRating: parseFloat(averageRating.toFixed(1))
+            };
+        }).sort((a, b) => b.averageRating - a.averageRating);
 
-        // Thực hiện truy vấn với phân trang
-        const attractions = await Attraction.find(query)
-            .skip(skip)
-            .limit(limitNumber);
-
+        // Áp dụng phân trang sau khi sort
+        const pageNumber = Math.max(1, Number(page));
+        const limitNumber = Math.max(1, Number(limit));
+        const skip = (pageNumber - 1) * limitNumber;
+        const totalAttractions = attractions.length;
+        const paginatedAttractions = attractions.slice(skip, skip + limitNumber);
+        
         res.status(200).json({
             success: true,
             total: totalAttractions,
             page: pageNumber,
             totalPages: Math.ceil(totalAttractions / limitNumber),
-            attractions
+            attractions: paginatedAttractions
         });
     } catch (error) {
         console.error(error);

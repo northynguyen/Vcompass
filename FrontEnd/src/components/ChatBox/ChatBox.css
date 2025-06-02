@@ -189,6 +189,7 @@ img.chat-user-avatar {
   width: 40px;
   border-radius: 999px;
   margin-right: 10px;
+  object-fit: cover;
 }
 .chat-user-info {
   display: flex;

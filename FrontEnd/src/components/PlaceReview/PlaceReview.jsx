@@ -95,7 +95,7 @@ const ReviewCard = ({ review, type }) => (
 );
 
 
-const PlaceReview = ({ type, id, isPopup }) => {
+const PlaceReview = ({ type, id, isPopup , setShowLogin }) => {
   const [reviews, setReviews] = useState([]);
   const [visibleReviews, setVisibleReviews] = useState(5);
   const [filterRating, setFilterRating] = useState(0);
@@ -218,7 +218,7 @@ const PlaceReview = ({ type, id, isPopup }) => {
           <div className="popup-review ">
             <div className="popup-content" >
               <button className="close-popup-review " onClick={() => setShowAddReview(false)}>×</button>
-              <Review id={id} type={type} />
+              <Review id={id} type={type} setShowLogin={setShowLogin}/>
             </div>
           </div>
         </div>

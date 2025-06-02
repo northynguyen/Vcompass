@@ -12,7 +12,7 @@ import './HotelDetailsInfo.css';
 import RoomCard from './RoomCard'; // Nhập RoomCard từ file mới
 import RoomDetail from './RoomDetail/RoomDetail';
 
-const HotelDetailsInfo = ({ serviceId, filterData }) => {
+const HotelDetailsInfo = ({ serviceId, filterData, setShowLogin }) => {
   const [dateRange, setDateRange] = useState([
     filterData?.startDay ? new Date(filterData.startDay) : null,
     filterData?.endDay ? new Date(filterData.endDay) : null,
@@ -48,6 +48,10 @@ const HotelDetailsInfo = ({ serviceId, filterData }) => {
   });
   const toggleWishlist = async () => {
     try {
+      if (!user) {
+        setShowLogin(true);
+        return;
+      }
       const newStatus = !isSave;
       setIsSave(newStatus);
       const action = newStatus ? "add" : "remove";

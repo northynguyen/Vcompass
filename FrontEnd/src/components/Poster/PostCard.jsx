@@ -12,7 +12,7 @@ import { FiFlag } from "react-icons/fi";
 import "./PostCard.css";
 import ReportForm from "../Report/ReportForm";
 
-const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartClick }) => {
+const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartClick, setShowLogin }) => {
   const { url, user, token } = useContext(StoreContext);
   const [likes, setLikes] = useState(schedule?.likes || []);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -50,7 +50,7 @@ const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartCl
   };
   const handleLike = async () => {
     if (!user) {
-      alert("Vui lòng đăng nhập trước");
+      setShowLogin(true);
       return;
     }
     try {
@@ -185,7 +185,7 @@ const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartCl
 
   const handleHeartClick = async (id) => {
     if (!user) {
-      alert("Vui lòng đăng nhập trước");
+      setShowLogin(true);
       return;
     }
     try {
@@ -309,7 +309,7 @@ const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartCl
           )}
 
           <button
-            className={isFavorite === true ? "heart-icon" : "heart-icon-empty"}
+            className={isFavorite ? "heart-icon" : "heart-icon-empty"}
             title={isFavorite ? "Xóa khỏi wishlist" : "Lưu vào wishlist"}
             onClick={() => {
               handleHeartClick(schedule._id);
@@ -456,7 +456,8 @@ const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartCl
 PostCard.propTypes = {
   schedule: PropTypes.object.isRequired,
   handleScheduleClick: PropTypes.func.isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
+  setShowLogin: PropTypes.func
 };
 
 export default PostCard;

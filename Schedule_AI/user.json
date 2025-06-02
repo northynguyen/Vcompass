@@ -627,9 +627,7 @@
         "tham quan",
         "du lịch",
         "phượt",
-        "lịch trình",
-        "male",
-        "trẻ"
+        "lịch trình"
       ]
     },
     {
@@ -707,19 +705,7 @@
         "hoạt động khác",
         "du lịch",
         "phượt",
-        "lịch trình",
-        "male",
-        "trẻ",
-        "tour",
-        "rịa",
-        "-",
-        "vũng",
-        "tàu",
-        "đêm",
-        "uống",
-        "thả",
-        "ga",
-        "a"
+        "lịch trình"
       ]
     },
     {
@@ -822,9 +808,156 @@
         "du lịch",
         "phượt",
         "lịch trình",
+        "ẩm thực"
+      ]
+    },
+    {
+      "_id": "68318b9a487f689e54b8dda2",
+      "idUser": "67128427a9cdb6c151e91e14",
+      "address": "Thừa Thiên Huế",
+      "numDays": 3,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [],
+          "_id": "68318b9a487f689e54b8dda3"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "681dae830699cefb82f804d0",
+              "cost": 800000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dcdc9080362ea4bb54177f",
+              "cost": 200000
+            }
+          ],
+          "_id": "68318b9a487f689e54b8dda4"
+        },
+        {
+          "day": 3,
+          "activity": [],
+          "_id": "68318b9a487f689e54b8dda5"
+        }
+      ],
+      "tags": [
+        "Thừa Thiên Huế",
+        "3 ngày",
+        "2 đêm",
+        "3N2Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "du lịch",
+        "phượt",
+        "lịch trình"
+      ]
+    },
+    {
+      "_id": "68318e29487f689e54b8ed2c",
+      "idUser": "67128427a9cdb6c151e91e14",
+      "address": "Thừa Thiên Huế",
+      "numDays": 3,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "68242d01eee7a2e9e6d16f4b",
+              "cost": 2000000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dcdc9080362ea4bb54177f",
+              "cost": 0
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "68239d034e66ebc3c33959f0",
+              "cost": 80000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dce0ca80362ea4bb5418f2",
+              "cost": 10000
+            },
+            {
+              "activityType": "Other",
+              "idDestination": "64e8a97e2d9f6e222c23a4f6",
+              "cost": 50000
+            }
+          ],
+          "_id": "68318e29487f689e54b8ed2d"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dce67380362ea4bb541a64",
+              "cost": 0
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "68239d034e66ebc3c33959f0",
+              "cost": 60000
+            },
+            {
+              "activityType": "Other",
+              "idDestination": "64e8a97e2d9f6e222c23a4f7",
+              "cost": 100000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "68239d034e66ebc3c33959f0",
+              "cost": 80000
+            }
+          ],
+          "_id": "68318e29487f689e54b8ed33"
+        },
+        {
+          "day": 3,
+          "activity": [
+            {
+              "activityType": "Other",
+              "idDestination": "64e8a97e2d9f6e222c23a4f8",
+              "cost": 150000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "68239d034e66ebc3c33959f0",
+              "cost": 70000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "68242d01eee7a2e9e6d16f4b",
+              "cost": 0
+            }
+          ],
+          "_id": "68318e29487f689e54b8ed38"
+        }
+      ],
+      "tags": [
+        "Thừa Thiên Huế",
+        "3 ngày",
+        "2 đêm",
+        "3N2Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
         "ẩm thực",
-        "male",
-        "trẻ"
+        "ăn uống",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình"
       ]
     }
   ],
@@ -840,16 +973,18 @@
         "2 ngày",
         "1 đêm",
         "2N1Đ",
-        "ẩm thực",
-        "ăn uống",
         "khách sạn",
         "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
         "địa điểm",
         "tham quan",
         "hoạt động khác",
         "du lịch",
         "phượt",
-        "lịch trình"
+        "lịch trình",
+        "male",
+        "trẻ"
       ],
       "address": "Bà Rịa - Vũng Tàu"
     },
@@ -946,10 +1081,30 @@
         "tham quan",
         "du lịch",
         "phượt",
-        "lịch trình",
-        "trẻ"
+        "lịch trình"
       ],
       "address": "Bà Rịa - Vũng Tàu"
+    },
+    {
+      "scheduleId": "6761c82276de7ada521d6026",
+      "viewCount": 0,
+      "editCount": 0,
+      "tags": [
+        "Hà Nội",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "địa điểm",
+        "tham quan",
+        "khách sạn",
+        "chỗ ở",
+        "ẩm thực",
+        "ăn uống",
+        "du lịch",
+        "phượt",
+        "lịch trình"
+      ],
+      "address": "Hà Nội"
     },
     {
       "scheduleId": "68158cc7ee0fb25d292e58f4",
@@ -971,15 +1126,13 @@
         "tham quan",
         "du lịch",
         "phượt",
-        "lịch trình",
-        "male",
-        "trẻ"
+        "lịch trình"
       ],
       "address": "Bà Rịa - Vũng Tàu"
     },
     {
       "scheduleId": "6815a3318253043388ed8345",
-      "viewCount": 0,
+      "viewCount": 1,
       "editCount": 0,
       "tags": [
         "Bà Rịa - Vũng Tàu",
@@ -997,21 +1150,28 @@
         "hoạt động khác",
         "du lịch",
         "phượt",
-        "lịch trình",
-        "male",
-        "trẻ",
-        "tour",
-        "rịa",
-        "-",
-        "vũng",
-        "tàu",
-        "đêm",
-        "uống",
-        "thả",
-        "ga",
-        "a"
+        "lịch trình"
       ],
       "address": "Bà Rịa - Vũng Tàu"
+    },
+    {
+      "scheduleId": "682394f9c9d6a89c2af74377",
+      "viewCount": 0,
+      "editCount": 0,
+      "tags": [
+        "Phú Yên",
+        "3 ngày",
+        "2 đêm",
+        "3N2Đ",
+        "địa điểm",
+        "tham quan",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình",
+        "ẩm thực"
+      ],
+      "address": "Phú Yên"
     }
   ],
   "topTags": [
@@ -1024,6 +1184,6 @@
     "chỗ ở",
     "ẩm thực",
     "ăn uống",
-    "trẻ"
+    "hoạt động khác"
   ]
 }

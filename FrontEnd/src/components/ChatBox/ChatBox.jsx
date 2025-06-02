@@ -352,7 +352,7 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
                                         <div className="chat-logo-container">
                                             <img src={logo} className="chat-logo-image"></img>
                                         </div>
-                                        <div className="chat-head-text">Hi {user.name} 👋 </div>
+                                        <div className="chat-head-text">Hi {user?.name} 👋 </div>
                                         <div className="chat-desc-container" onClick={() => handleChatAIClick()}>
                                             <div className="chat-desc-left">
                                                 <p className="chat-desc-title">Đặt câu hỏi</p>

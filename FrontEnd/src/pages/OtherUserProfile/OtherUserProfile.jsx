@@ -1,8 +1,8 @@
 import axios from "axios";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { FaTransgender } from "react-icons/fa";
-import { FaLocationDot, FaPlay } from "react-icons/fa6";
+import { FaLocationDot } from "react-icons/fa6";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { RiUserUnfollowLine } from "react-icons/ri";
 import { useNavigate, useParams } from 'react-router-dom';
@@ -12,8 +12,9 @@ import ImagesModal from '../../components/ImagesModal/ImagesModal';
 import PostCard from "../../components/Poster/PostCard";
 import ProfileShortVideos from "../../components/ProfileShortVideos/ProfileShortVideos";
 import "./OtherUserProfile.css";
+import PropTypes from 'prop-types';
 
-export default function OtherUserProfile({setCurrentConversation}) {
+export default function OtherUserProfile({setCurrentConversation, setShowLogin}) {
   const [isFollow, setIsFollow] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const { url, token, user } = useContext(StoreContext);
@@ -26,22 +27,29 @@ export default function OtherUserProfile({setCurrentConversation}) {
   const [totalPosts, setTotalPosts] = useState(0);
   const [imageList, setImageList] = useState([]);
   const [videoList, setVideoList] = useState([]);
-  const [shortVideoList, setShortVideoList] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMyProfile, setIsMyProfile] = useState(false);
   const [openFollowerMenu, setOpenFollowerMenu] = useState(null);
   const [unfollowerList, setUnfollowerList] = useState([]);
-  const [activeTab, setActiveTab] = useState("schedule");
 
   const navigate = useNavigate();
   const onFollowClick = () => {
+    if (!user) {
+      setShowLogin(true);
+      return;
+    }
     handleToggleFollow()
   }
   const toggleFollowerMenu = (id) => {
     setOpenFollowerMenu(openFollowerMenu === id ? null : id); // Nếu bấm lại sẽ ẩn menu
   };
   const onChatClick = async () => {
+    if (!user) {
+      setShowLogin(true);
+      return;
+    }
+    
     const senderId = user._id;
     const receiverId = currentUser._id
     try {
@@ -77,6 +85,10 @@ export default function OtherUserProfile({setCurrentConversation}) {
     }
   };
   const onCreateNewPostClick = () => {
+    if (!user) {
+      setShowLogin(true);
+      return;
+    }
     navigate("/create-schedule/manual")
   }
   const calculateTotalLikes = () => {
@@ -180,6 +192,11 @@ export default function OtherUserProfile({setCurrentConversation}) {
     }
   };
   const handleToggleFollowForFollower = async (id, action) => {
+    if (!user) {
+      setShowLogin(true);
+      return;
+    }
+    
     try {
       const response = await fetch(
         `${url}/api/user/user/follow-or-unfollow?otherUserId=${id}&action=${action}`,
@@ -210,9 +227,8 @@ export default function OtherUserProfile({setCurrentConversation}) {
     const fetchSchedulesData = async () => {
       try {
         const schedulesResponse = await axios.get(
-          `${url}/api/schedule/user/getSchedules?type=follower`, {
-            headers: { token },
-            params: {id: id},
+          `${url}/api/schedule/getSchedule/${id}`, {
+            params: {userId: id},
           }
         );
         if (schedulesResponse.data.success) {
@@ -227,7 +243,9 @@ export default function OtherUserProfile({setCurrentConversation}) {
         setIsLoading(false);
       }
     };
+
     const fetchUser = async () => {
+      
       try {
         const response = await axios.get(`${url}/api/user/user/${id}/followers`);
         if (response.data.success) {
@@ -239,10 +257,10 @@ export default function OtherUserProfile({setCurrentConversation}) {
       }
     };
 
-    if (token) {
+   
       fetchUser()
       fetchSchedulesData();
-    }
+    
   }, [token, url]);
   useEffect(() => {
     if (currentUser && user) {
@@ -269,65 +287,7 @@ export default function OtherUserProfile({setCurrentConversation}) {
   // Thêm dữ liệu mẫu cho video ngắn (sẽ được thay thế bằng dữ liệu thực từ API)
   useEffect(() => {
     if (!isLoading && currentUser) {
-      // Giả lập dữ liệu video ngắn cho demo
-      setShortVideoList([
-        {
-          id: 1,
-          thumbnail: 'https://picsum.photos/300/500?random=1',
-          title: "WORLD'S HIGHEST BASKETBALL SHOT",
-          views: '7.8M',
-          isPinned: true
-        },
-        {
-          id: 2,
-          thumbnail: 'https://picsum.photos/300/500?random=2',
-          title: '',
-          views: '12.7M',
-          isPinned: true
-        },
-        {
-          id: 3,
-          thumbnail: 'https://picsum.photos/300/500?random=3',
-          title: 'If sports were played by their literal name',
-          views: '17.4M',
-          isPinned: true
-        },
-        {
-          id: 4,
-          thumbnail: 'https://picsum.photos/300/500?random=4',
-          title: 'Every kid did this while shooting in the driveway',
-          views: '283.8K',
-          isPinned: true
-        },
-        {
-          id: 5,
-          thumbnail: 'https://picsum.photos/300/500?random=5',
-          title: '',
-          views: '746K',
-          isPinned: false
-        },
-        {
-          id: 6,
-          thumbnail: 'https://picsum.photos/300/500?random=6',
-          title: 'Oreo Roll Roulette 🥝',
-          views: '570.8K',
-          isPinned: false
-        },
-        {
-          id: 7,
-          thumbnail: 'https://picsum.photos/300/500?random=7',
-          title: 'Spoiler: it was 😎',
-          views: '894K',
-          isPinned: false
-        },
-        {
-          id: 8,
-          thumbnail: 'https://picsum.photos/300/500?random=8',
-          title: 'IMPOSSIBLE FOOTBALL WALL 🤯',
-          views: '6.5M',
-          isPinned: false
-        }
-      ]);
+      // Logic này có thể được sử dụng sau
     }
   }, [isLoading, currentUser]);
 
@@ -349,20 +309,31 @@ export default function OtherUserProfile({setCurrentConversation}) {
           </div>
           {!isMyProfile &&
             <div className="profile-button-container">
-              <button
-                className={`fanpage-watch-button ${isFollow ? "followed" : ""}`}
-                onClick={onFollowClick}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-              >
-                {isFollow ? (isHovered ? "Bỏ theo dõi" : "Đang theo dõi") : "Theo dõi"}
-              </button>
-              <button
-                className={`fanpage-watch-button`}
-                onClick={onChatClick}
-              >
-                Nhắn tin
-              </button>
+              {!user ? (
+                <button
+                  className="fanpage-watch-button"
+                  onClick={() => setShowLogin(true)}
+                >
+                  Đăng nhập để theo dõi
+                </button>
+              ) : (
+                <>
+                  <button
+                    className={`fanpage-watch-button ${isFollow ? "followed" : ""}`}
+                    onClick={onFollowClick}
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                  >
+                    {isFollow ? (isHovered ? "Bỏ theo dõi" : "Đang theo dõi") : "Theo dõi"}
+                  </button>
+                  <button
+                    className={`fanpage-watch-button`}
+                    onClick={onChatClick}
+                  >
+                    Nhắn tin
+                  </button>
+                </>
+              )}
             </div>
           }
           {isMyProfile &&
@@ -524,3 +495,8 @@ export default function OtherUserProfile({setCurrentConversation}) {
 
   );
 }
+
+OtherUserProfile.propTypes = {
+  setCurrentConversation: PropTypes.func.isRequired,
+  setShowLogin: PropTypes.func.isRequired
+};

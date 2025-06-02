@@ -119,6 +119,7 @@ export const AccomActivity = ({
   handleEdit,
   setIsOpenModal,
   mode,
+  setShowLogin
 }) => {
 
 
@@ -127,7 +128,7 @@ export const AccomActivity = ({
   const toggleWishlist = async () => {
     try {
       if (!user) {
-        toast.error("Vui lòng đăng nhập !");
+        setShowLogin(true);
         return;
       }
       const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại
@@ -305,14 +306,14 @@ export const FoodServiceActivity = ({
   data,
   handleEdit,
   setIsOpenModal,
-  mode, socket
+  mode, socket, setShowLogin
 }) => {
   const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
   const { url, user, token, getImageUrl } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
       if (!user) {
-        toast.error("Vui lòng đăng nhập !");
+        setShowLogin(true);
         return;
       }
       const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại
@@ -482,14 +483,14 @@ export const AttractionActivity = ({
   data,
   handleEdit,
   setIsOpenModal,
-  mode, socket
+  mode, socket, setShowLogin
 }) => {
   const [isSaved, setIsSaved] = useState(false); // State to track wishlist status
   const { url, user, token, getImageUrl } = useContext(StoreContext);
   const toggleWishlist = async () => {
     try {
       if (!user) {
-        toast.error("Vui lòng đăng nhập !");
+        setShowLogin(true);
         return;
       }
       const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại

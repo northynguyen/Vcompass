@@ -3,7 +3,7 @@ import { StoreContext } from "../../Context/StoreContext";
 import PlaceReview from "../PlaceReview/PlaceReview";
 import "./Review.css";
 
-const Review = ({ type, id, booking, onClose }) => {
+const Review = ({ type, id, booking, onClose, setShowLogin  }) => {
     const [rating, setRating] = useState({
         overall: 0,
         room: 0,
@@ -35,6 +35,7 @@ const Review = ({ type, id, booking, onClose }) => {
     };
 
     const handleSubmit = async (e) => {
+       
         e.preventDefault();
         console.log("Rating:", rating);
         console.log("Comments:", comments);
@@ -44,6 +45,11 @@ const Review = ({ type, id, booking, onClose }) => {
                 : type === "food"
                 ? `${url}/api/foodservices/addReview/${id}`
                 : `${url}/api/attractions/addReview/${id}`;
+
+        if (!user) {
+            setShowLogin(true);
+            return;
+        }
 
         try {
             const response = await fetch(href, {

@@ -252,6 +252,7 @@
 }
 
 .content-container {
+  position: relative;
   width: 100%;
   overflow: hidden;
   height: fit-content;
@@ -537,7 +538,6 @@ label.action-text {
 }
 
 .heart-container {
- position: relative;
 }
 
 .heart-container .heart-icon {

@@ -9,7 +9,7 @@ import { uploadToCloudinaryV2, deleteImage } from './videoController.js';
 
 const getListFoodService = async (req, res) => {
   try {
-    const { name, minPrice, maxPrice, city, status } = req.query;
+    const { name, minPrice, maxPrice, city, status= "active" } = req.query;
     // Build query object
     const query = {};
 
@@ -36,12 +36,26 @@ const getListFoodService = async (req, res) => {
     }
     
     // Execute query with population
-    const foodService = await FoodService.find(query)
+    let foodService = await FoodService.find(query)
       .populate({
         path: 'ratings.idUser',
         model: 'user',
         select: 'name avatar email'
       });
+
+    // Tính rating trung bình và sort theo rating giảm dần
+    foodService = foodService.map(food => {
+      const ratings = food.ratings || [];
+      const averageRating = ratings.length > 0
+        ? ratings.reduce((sum, rating) => sum + rating.rate, 0) / ratings.length
+        : 0;
+      
+      const foodObj = food.toObject ? food.toObject() : food;
+      return {
+        ...foodObj,
+        averageRating: parseFloat(averageRating.toFixed(1))
+      };
+    }).sort((a, b) => b.averageRating - a.averageRating);
 
     res.status(200).json({
       success: true,

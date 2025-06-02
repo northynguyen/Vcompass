@@ -63,25 +63,25 @@ const AppContent = () => {
         />
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/place-details/:type/:serviceId" element={<PlaceDetails />} />
+            <Route path="/" element={<Home setShowLogin={setShowLogin} />} />
+            <Route path="/place-details/:type/:serviceId" element={<PlaceDetails setShowLogin={setShowLogin} />} />
             <Route path="/partnership" element={<Partnership />} />
             <Route path="/about" element={<Schedule />} />
-            <Route path="/create-schedule/:type" element={<CreateSchedule />} />
+            <Route path="/create-schedule/:type" element={<CreateSchedule setShowLogin={setShowLogin} />} />
             <Route path="/user-service/*" element={<UserService setShowLogin={setShowLogin} />} />
             <Route path="/booking" element={<HomeBooking />} />
             <Route path="/attractions" element={<HomeAttractions />} />
             <Route path="/foodservices" element={<HomeFoodService />} />
             <Route path="/schedule/validate-email" element={<ValidateEmail setShowLogin={setShowLogin}/>} />
             <Route path="/my-schedule" element={<MySchedule setShowLogin={setShowLogin} />} />
-            <Route path="/schedule-edit/:id" element={<Schedule mode="edit" />} />
-            <Route path="/schedule-view/:id" element={<Schedule mode="view" />} />
-            <Route path="/booking-process/step2" element={<BookingProcess />} />
-            <Route path="/searchSchedule" element={<SearchSchedule />} />
-            <Route path="/otherUserProfile/:id" element={<OtherUserProfile setCurrentConversation={setCurrentConversation} />} />
-            <Route path="/booking-process/finalstep" element={<BookingProcess />} />
-            <Route path="/short-video" element={<ShortVideo />} />
-            <Route path="/schedules/:type" element={<PageSchedules />} />
+            <Route path="/schedule-edit/:id" element={<Schedule mode="edit" setShowLogin={setShowLogin} />} />
+            <Route path="/schedule-view/:id" element={<Schedule mode="view" setShowLogin={setShowLogin} />} />
+            <Route path="/booking-process/step2" element={<BookingProcess setShowLogin={setShowLogin} />} />
+            <Route path="/searchSchedule" element={<SearchSchedule setShowLogin={setShowLogin} />} />
+            <Route path="/otherUserProfile/:id" element={<OtherUserProfile setCurrentConversation={setCurrentConversation} setShowLogin={setShowLogin} />} />
+            <Route path="/booking-process/finalstep" element={<BookingProcess setShowLogin={setShowLogin} />} />
+            <Route path="/short-video" element={<ShortVideo setShowLogin={setShowLogin} />} />
+            <Route path="/schedules/:type" element={<PageSchedules setShowLogin={setShowLogin} />} />
             <Route path="*" element={<Page404 />} />
             <Route path="/404" element={<Page404 />} />
             <Route path="/mapplace" element={<MapTest />} />

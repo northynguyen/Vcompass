@@ -1,15 +1,19 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
 import { 
   FaRegBookmark, 
   FaPlus, 
-  FaPhotoVideo, 
   FaHome
 } from 'react-icons/fa';
 import { MdTravelExplore, MdOutlineRecommend } from 'react-icons/md';
+import { StoreContext } from '../../Context/StoreContext';
+import PropTypes from 'prop-types';
 import './LeftSideBar.css';
 
-const LeftSideBar = () => {
+const LeftSideBar = ({ setShowLogin }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useContext(StoreContext);
   const { pathname } = location;
 
   // Function to check if a link is active
@@ -18,6 +22,26 @@ const LeftSideBar = () => {
       return true;
     }
     return pathname.startsWith(path) && path !== '/';
+  };
+
+  // Handle follow schedules click
+  const handleFollowClick = (e) => {
+    e.preventDefault();
+    if (!user) {
+      setShowLogin(true);
+    } else {
+      navigate('/schedules/follow');
+    }
+  };
+
+  // Handle create schedule click
+  const handleCreateScheduleClick = (e) => {
+    e.preventDefault();
+    if (!user) {
+      setShowLogin(true);
+    } else {
+      navigate('/create-schedule/manual');
+    }
   };
 
   return (
@@ -32,27 +56,34 @@ const LeftSideBar = () => {
         <span>Dành cho bạn</span>
       </Link>
 
-
-      <Link to="/schedules/follow" className={`left-side-bar-item ${isActive('/schedules/follow') ? 'active' : ''}`}>
+      <div 
+        onClick={handleFollowClick} 
+        className={`left-side-bar-item ${isActive('/schedules/follow') ? 'active' : ''}`}
+        style={{ cursor: 'pointer' }}
+      >
         <FaRegBookmark className="left-side-bar-icon" />
         <span>Đang theo dõi</span>
-      </Link>
+      </div>
 
       <Link to="/short-video" className={`left-side-bar-item ${isActive('/short-video') ? 'active' : ''}`}>
         <MdTravelExplore className="left-side-bar-icon" />
         <span>Khám phá</span>
-
       </Link>
 
-      <Link to="/create-schedule/manual" className={`left-side-bar-item ${isActive('/create-schedule') ? 'active' : ''}`}>
+      <div 
+        onClick={handleCreateScheduleClick} 
+        className={`left-side-bar-item ${isActive('/create-schedule') ? 'active' : ''}`}
+        style={{ cursor: 'pointer' }}
+      >
         <FaPlus className="left-side-bar-icon" />
         <span>Tạo lịch trình</span>
-      </Link>
-
-
-      
+      </div>
     </div>
   );
+};
+
+LeftSideBar.propTypes = {
+  setShowLogin: PropTypes.func.isRequired,
 };
 
 export default LeftSideBar; 

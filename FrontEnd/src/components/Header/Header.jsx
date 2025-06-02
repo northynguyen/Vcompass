@@ -221,6 +221,15 @@ const Header = ({ setShowLogin }) => {
 
   const isHomePage = location.pathname === '/';
 
+  // Handle my schedule click
+  const handleMyScheduleClick = (e) => {
+    e.preventDefault();
+    if (!user) {
+      setShowLogin(true);
+    } else {
+      navigate('/my-schedule');
+    }
+  };
 
   return (
     <div className={ 'header'}>
@@ -244,7 +253,12 @@ const Header = ({ setShowLogin }) => {
           <Link to="/foodservices" className="header-menu-page">
             Nhà hàng
           </Link>
-          <Link to="/my-schedule" className="header-menu-page">
+          <Link
+            onClick={handleMyScheduleClick} 
+            className="header-menu-page" 
+            style={{ cursor: 'pointer' }}
+            
+          >
             Lịch trình của tôi
           </Link>
           <Link to="/partnership" className="header-menu-page">
@@ -271,9 +285,25 @@ const Header = ({ setShowLogin }) => {
               <Link to="/foodservices" onClick={toggleSidebar}>
                 Nhà hàng
               </Link>
-              <Link to="/my-schedule" onClick={toggleSidebar}>
+              <div 
+                onClick={(e) => { handleMyScheduleClick(e); toggleSidebar(); }} 
+                style={{ 
+                  display: 'block',
+                  padding: '10px 20px',
+                  textDecoration: 'none',
+                  color: '#333',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  marginBottom: '10px',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.3s ease-in-out'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#f0f0f0'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+              >
                 Lịch trình của tôi
-              </Link>
+              </div>
               <Link to="/partnership" onClick={toggleSidebar}>
                 Quan hệ đối tác
               </Link>

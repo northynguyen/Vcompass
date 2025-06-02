@@ -14,6 +14,7 @@
     justify-content: center;
     margin: 15px auto;
     font-size: 20px;
+    object-fit: cover;
 }
 
 .my-account .tab-navigation button {

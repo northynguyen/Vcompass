@@ -775,4 +775,48 @@
 }
 }
 
+/* Short Videos Section */
+.short-videos-section {
+  margin: 40px 0;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.short-videos-section .post-card-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.short-videos-section .post-card-header h3 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.short-videos-section .post-card-header p {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Responsive for Short Videos Section */
+@media (max-width: 768px) {
+  .short-videos-section {
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .short-videos-section .post-card-header h3 {
+    font-size: 1.4rem;
+  }
+  
+  .short-videos-section .post-card-header p {
+    font-size: 0.9rem;
+  }
+}
+
 

@@ -71,11 +71,12 @@ const formatDate = (timestamp) => {
     return time.format('MMM DD, YYYY, HH:mm');
 };
 
-const Comment = ({ schedule, onLikeClick, onComment }) => {
+const Comment = ({ schedule, onLikeClick, onComment, setShowLogin }) => {
     const { url, user, token } = useContext(StoreContext);
     const [comments, setComments] = useState(schedule?.comments || []);
     const [likes, setLikes] = useState(schedule?.likes || []);
     const [newComment, setNewComment] = useState('');
+
     const logActivity = async (actionType, content) => {
         try {
             await axios.post(
@@ -113,7 +114,7 @@ const Comment = ({ schedule, onLikeClick, onComment }) => {
 
     const handleLike = async () => {
         if (!user) {
-            alert("Vui lòng đăng nhập trước");
+            setShowLogin(true);
             return;
         }
         try {
@@ -143,7 +144,7 @@ const Comment = ({ schedule, onLikeClick, onComment }) => {
 
     const handleNewCommentSubmit = async () => {
         if (!user) {
-            alert("Vui lòng đăng nhập trước");
+            setShowLogin(true);
             return;
         }
         if (!newComment.trim()) return;
@@ -198,6 +199,7 @@ const Comment = ({ schedule, onLikeClick, onComment }) => {
                             url={url}
                             user={user}
                             logActivity={logActivity}
+                            setShowLogin={setShowLogin}
                         />
                     </div>
                 ))}
@@ -221,14 +223,14 @@ const Comment = ({ schedule, onLikeClick, onComment }) => {
     );
 };
 
-const CommentContent = ({ comment, scheduleId, token, updateComments, url, user, logActivity }) => {
+const CommentContent = ({ comment, scheduleId, token, updateComments, url, user, logActivity, setShowLogin }) => {
     const [replyText, setReplyText] = useState('');
     const [activeReplyInputId, setActiveReplyInputId] = useState(null);
     const [showReplies, setShowReplies] = useState(false);
 
     const handleReplySubmit = async () => {
         if (!user) {
-            alert("Vui lòng đăng nhập trước");
+            setShowLogin(true);
             return;
         }
         if (!replyText.trim()) return;

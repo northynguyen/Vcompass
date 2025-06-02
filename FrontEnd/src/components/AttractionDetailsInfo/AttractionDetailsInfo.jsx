@@ -9,7 +9,7 @@ import ImagesModal from '../ImagesModal/ImagesModal';
 import { StarRating } from '../PlaceReview/PlaceReview';
 import './AttractionDetailsInfo.css';
 
-const AttractionDetailsInfo = ({ serviceId }) => {
+const AttractionDetailsInfo = ({ serviceId, setShowLogin }) => {
     const { url, token, user } = useContext(StoreContext);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,6 +47,10 @@ const AttractionDetailsInfo = ({ serviceId }) => {
         fetchAttraction();
     }, [serviceId, url]);
     const toggleWishlist = async () => {
+        if (!user) {
+            setShowLogin(true);
+            return;
+        }
         try {
             const newStatus = !isSave;
             setIsSave(newStatus);

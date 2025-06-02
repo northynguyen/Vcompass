@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, Outlet } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import './Booking.css';
 import BookingFinalStep from './BookingFinalStep/BookingFinalStep';
 import BookingStep2 from './BookingStep2/BookingStep2';
-const BookingProcess = () => {
+import PropTypes from 'prop-types';
+
+const BookingProcess = ({ setShowLogin }) => {
   const [currentStep, setCurrentStep] = useState(2);
   const [hotelInfo, setHotelInfo] = useState(null);
   const [roomInfo, setRoomInfo] = useState(null);
@@ -180,11 +182,15 @@ const BookingProcess = () => {
         )}
 
         {currentStep === 3 && (
-          <BookingFinalStep bookingDetails={dataSend}/>
+          <BookingFinalStep bookingDetails={dataSend} setShowLogin={setShowLogin}/>
         )}
       </div>
     </div>
   );
+};
+
+BookingProcess.propTypes = {
+  setShowLogin: PropTypes.func.isRequired
 };
 
 export default BookingProcess;

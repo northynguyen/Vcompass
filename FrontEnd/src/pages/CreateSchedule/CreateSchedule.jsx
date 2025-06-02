@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { StoreContext } from '../../Context/StoreContext';
+import PropTypes from 'prop-types';
 import './CreateSchedule.css';
 
 const cities = [
@@ -68,16 +69,19 @@ const popularCities = {
   'Lào Cai': 'Lào Cai'
 };
 
-const CreateSchedule = () => {
+const CreateSchedule = ({ setShowLogin }) => {
   const navigate = useNavigate();
   const { type } = useParams();
   const [destination, setDestination] = useState('');
   const [budget, setBudget] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [filteredCities, setFilteredCities] = useState([]);
-  const [departureDate, setDepartureDate] = useState('');
-  const [returnDate, setReturnDate] = useState('');
+  const [departureDate, setDepartureDate] = useState(new Date().toISOString().split('T')[0]);
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const [returnDate, setReturnDate] = useState(tomorrow.toISOString().split('T')[0]);
   const [selectedTypes, setSelectedTypes] = useState([]);
+  const [hasShownLoginPopup, setHasShownLoginPopup] = useState(false);
   const { user, url, token } = useContext(StoreContext);
 
   // Thêm state để quản lý lỗi
@@ -88,15 +92,43 @@ const CreateSchedule = () => {
   });
   const [validDestination, setValidDestination] = useState(false);
 
+  // Check if user is logged in on component mount
+  useEffect(() => {
+    if (!user && !hasShownLoginPopup) {
+      setShowLogin(true);
+      setHasShownLoginPopup(true);
+    }
+  }, [user, setShowLogin, hasShownLoginPopup]);
+
+  // Check for redirect to home after popup shown but user still not logged in
+  useEffect(() => {
+    if (hasShownLoginPopup && !user) {
+      const timeoutId = setTimeout(() => {
+        navigate('/');
+      }, 2000); // Wait 2 seconds for user to potentially complete login
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [hasShownLoginPopup, user, navigate]);
+
   const travelTypes = [
     'Du lịch vui chơi',
     'Du lịch học tập',
     'Du lịch nghỉ dưỡng',
     'Du lịch thương mại',
     'Du lịch văn hóa',
-    'Du lịch ẩm thực'
+    'Du lịch ẩm thực',
+    'Du lịch mạo hiểm',
+    'Du lịch sinh thái',
+    'Du lịch tâm linh',
+    'Du lịch cộng đồng',
+    'Du lịch khám phá thiên nhiên',
+    'Du lịch tự túc (backpacking)',
+    'Du lịch lịch sử',
+    'Du lịch tình nguyện',
+    'Du lịch chữa lành',
   ];
-
+  
   const handleTypeSelection = (selectedType) => {
     setSelectedTypes(prev => {
       if (prev.includes(selectedType)) {
@@ -344,7 +376,7 @@ const CreateSchedule = () => {
               <button
                 key={index}
                 type="button"
-                className={`type-button ${selectedTypes.includes(travelType) ? 'selected' : ''} ${errors.types ? 'error-input' : ''}`}
+                className={`type-button ${selectedTypes.includes(travelType) ? 'selected' : ''}`}
                 onClick={() => handleTypeSelection(travelType)}
               >
                 {travelType}
@@ -397,4 +429,9 @@ const convertDateFormat = (date) => {
   const [year, month, day] = date.split("-");
   return `${day}-${month}-${year}`;
 };
+
+CreateSchedule.propTypes = {
+  setShowLogin: PropTypes.func.isRequired,
+};
+
 export default CreateSchedule;

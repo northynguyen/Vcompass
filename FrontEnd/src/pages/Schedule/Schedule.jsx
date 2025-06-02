@@ -227,7 +227,8 @@ const Activity = ({
   setInforSchedule,
   mode,
   inforSchedule,
-  socket
+  socket,
+  setShowLogin
 }) => {
   //console.log("activities", activity);
   return (
@@ -253,6 +254,7 @@ const Activity = ({
                   openModal={openModal}
                   mode={mode}
                   socket={socket}
+                  setShowLogin={setShowLogin}
                 />
               </div>
             )}
@@ -271,7 +273,8 @@ const ActivityItem = ({
   setInforSchedule,
   mode,
   inforSchedule,
-  socket
+  socket,
+  setShowLogin
 }) => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -390,16 +393,17 @@ const ActivityItem = ({
               handleEdit={handleEdit}
               setIsOpenModal={setIsModalOpen}
               mode={mode}
+              setShowLogin={setShowLogin}
             />
           }
           {activity.activityType === "FoodService" && (
-            //.log("11111111" + data.foodService),
             <FoodServiceActivity
               data={data.foodService}
               activity={activity}
               handleEdit={handleEdit}
               setIsOpenModal={setIsModalOpen}
               mode={mode}
+              setShowLogin={setShowLogin}
             />
           )}
           {activity.activityType === "Attraction" && data.attraction && (
@@ -409,6 +413,7 @@ const ActivityItem = ({
               handleEdit={handleEdit}
               setIsOpenModal={setIsModalOpen}
               mode={mode}
+              setShowLogin={setShowLogin}
             />
           )}
           {activity.activityType === "Other" &&
@@ -901,6 +906,7 @@ const DateSchedule = ({
   inforSchedule,
   index,
   socket,
+  setShowLogin
 }) => {
   const [scheduleDate, setScheduleDate] = useState(schedule);
   const [isOpen, setIsOpen] = useState(true);
@@ -1073,6 +1079,7 @@ const DateSchedule = ({
                       setCurrentDestination={setCurrentDestination}
                       mode={mode}
                       socket={socket}
+                      setShowLogin={setShowLogin}
                     />
                   ) : (
                     <p>Chưa có hoạt động nào</p>
@@ -1203,7 +1210,7 @@ const DateSchedule = ({
 
 
 
-const Schedule = ({ mode }) => {
+const Schedule = ({ mode, setShowLogin }) => {
   const { url, token, user } = useContext(StoreContext);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -1307,6 +1314,10 @@ const Schedule = ({ mode }) => {
 
   const toggleWishlist = async () => {
     try {
+      if (!user) {
+        setShowLogin(true);
+        return;
+      }
       const newStatus = !isSaved;
       setIsSaved(newStatus);
 
@@ -1940,7 +1951,8 @@ const Schedule = ({ mode }) => {
                   setInforSchedule={setInforSchedule}
                   mode={mode}
                   inforSchedule={inforSchedule}
-                  socket={socket}
+                  socket={socket} 
+                  setShowLogin={setShowLogin}
                 />
               );
             })
@@ -1974,6 +1986,7 @@ const Schedule = ({ mode }) => {
           onLikeClick: handleLike,
           onComment: handleComment
         })}
+        setShowLogin={setShowLogin}
       />
       <InforScheduleMedal
         isOpen={isOpenInforSchedule}

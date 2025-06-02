@@ -6,7 +6,7 @@ import PostCard from "../../components/Poster/PostCard";
 import { StoreContext } from "../../Context/StoreContext";
 import "./SearchSchedule.css";
 
-const SearchSchedule = () => {
+const SearchSchedule = ({ setShowLogin }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { url, user } = useContext(StoreContext);
@@ -370,6 +370,7 @@ const SearchSchedule = () => {
                 key={index}
                 schedule={schedule}
                 handleScheduleClick={handleScheduleClick}
+                setShowLogin={setShowLogin}
               />
             ))}
           </div>

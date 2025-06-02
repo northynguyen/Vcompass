@@ -1800,13 +1800,13 @@ textarea.input-field {
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-.travel-types-container .type-button.selected {
+/* .travel-types-container .type-button.selected {
   border: 2px solid #7BBCB0;
   background: linear-gradient(45deg, #f0fffc, #e5f8f5);
   font-weight: 500;
   box-shadow: 0 3px 8px rgba(123, 188, 176, 0.2);
   transform: translateY(-1px);
-}
+} */
 
 .travel-types-container .type-button:hover {
   background: #f8f8f8;

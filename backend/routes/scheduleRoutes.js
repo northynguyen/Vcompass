@@ -8,7 +8,7 @@ import {
   getTopAddressSchedule,
   updateLikeComment,
   trainScheduleModel,
-  deleteActivity, uploadFiles ,deleteSchedule,getFollowingSchedules,getScheduleByIdForMobile ,scheduleAI
+  deleteActivity, uploadFiles ,deleteSchedule,getFollowingSchedules,getScheduleByIdForMobile ,scheduleAI,getScheduleByUserId
   
 
 } from "../controllers/scheduleController.js";
@@ -32,7 +32,7 @@ scheduleRouter.delete('/:id', deleteSchedule);
 
 scheduleRouter.get('/getSchedules/followingSchedules',authMiddleware, getFollowingSchedules);
 scheduleRouter.post('/trainAI', trainScheduleModel);
-
+scheduleRouter.get('/getSchedule/:userId', getScheduleByUserId);
 // Mobile
 
 scheduleRouter.get("/mobile/:id", getScheduleByIdForMobile);

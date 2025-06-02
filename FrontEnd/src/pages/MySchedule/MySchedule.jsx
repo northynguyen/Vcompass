@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
-import { FaGlobe, FaTrash, FaUserSecret } from "react-icons/fa";
+import { FaGlobe, FaTrash, FaUserSecret, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ConfirmDialog from "../../components/Dialog/ConfirmDialog";
 import { StoreContext } from "../../Context/StoreContext";
 import { VscCopilot } from "react-icons/vsc";
@@ -10,7 +10,7 @@ import "./MySchedule.css";
 import ScheduleSkeleton from './ScheduleSkeleton';
 import PropTypes from 'prop-types';
 
-const MySchedule = ({ setShowLogin }) => {
+const MySchedule = () => {
   const { url, token } = useContext(StoreContext);
   const [schedules, setSchedules] = useState([]);
   const [groupSchedules, setGroupSchedules] = useState([]);
@@ -24,19 +24,38 @@ const MySchedule = ({ setShowLogin }) => {
   const [action, setAction] = useState("");
   const [scheduleType, setScheduleType] = useState("my-schedule");
   const [listRender, setListRender] = useState([]);
+  
+  // Pagination states
+  const [pagination, setPagination] = useState({
+    mySchedule: { currentPage: 1, totalPages: 1, total: 0 },
+    groupSchedule: { currentPage: 1, totalPages: 1, total: 0 },
+    wishlist: { currentPage: 1, totalPages: 1, total: 0 }
+  });
+  const [searchParams, setSearchParams] = useSearchParams();
+  
   const navigate = useNavigate();
   const popupRef = useRef(null);
+  const ITEMS_PER_PAGE = 5;
+  const ITEMS_SAVE_PAGE = 4;
+
+  // Get current page from URL params
+  const getCurrentPage = (type) => {
+    const pageParam = searchParams.get(`${type}Page`);
+    return pageParam ? parseInt(pageParam) : 1;
+  };
+
+  // Update URL params
+  const updateUrlParams = (type, page) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set(`${type}Page`, page.toString());
+    setSearchParams(newParams);
+  };
 
   // Toggle action menu
   const handleToggleActions = (scheduleId) => {
     setActiveScheduleId((prev) => (prev === scheduleId ? null : scheduleId));
   };
 
-  useEffect(() => {
-    if (!token) {
-      setShowLogin(true);
-    }
-  })
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (popupRef.current && !popupRef.current.contains(event.target)) {
@@ -52,55 +71,123 @@ const MySchedule = ({ setShowLogin }) => {
     };
   }, []);
 
-  useEffect(() => {
-    const fetchSchedulesData = async () => {
-      setIsLoading(true);
-      try {
-        const schedulesResponse = await axios.get(
-          `${url}/api/schedule/user/getSchedules`,
-          { headers: { token } }
-        );
+  // Fetch individual sections
+  const fetchMySchedules = async (page = 1) => {
+    try {
+      const response = await axios.get(
+        `${url}/api/schedule/user/getSchedules?page=${page}&limit=${ITEMS_PER_PAGE}`,
+        { headers: { token } }
+      );
 
-        const groupSchedulesResponse = await axios.get(
-          `${url}/api/schedule/user/getSchedules?type=group`,
-          { headers: { token } }
-        );
-
-        const wishlistsResponse = await axios.get(
-          `${url}/api/schedule/user/getSchedules?type=wishlist`,
-          { headers: { token } }
-        );
-        if (groupSchedulesResponse.data.success) {
-          setGroupSchedules(groupSchedulesResponse.data.schedules);
-        } else {
-          setGroupSchedules([]);
-          console.error("Failed to fetch group schedules:", groupSchedulesResponse.data.message);
-        }
-
-        if (schedulesResponse.data.success) {
-          setSchedules(schedulesResponse.data.schedules);
-        } else {
-          setSchedules([]);
-          console.error("Failed to fetch schedules:", schedulesResponse.data.message);
-        }
-
-        if (wishlistsResponse.data.success) {
-          setWishlists(wishlistsResponse.data.schedules);
-        } else {
-          setWishlists([]);
-          console.error("Failed to fetch wishlists:", wishlistsResponse.data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching schedules or wishlists:", error);
+      if (response.data.success) {
+        setSchedules(response.data.schedules);
+        setPagination(prev => ({
+          ...prev,
+          mySchedule: {
+            currentPage: response.data.currentPage || page,
+            totalPages: response.data.totalPages || 1,
+            total: response.data.total || 0
+          }
+        }));
+      } else {
         setSchedules([]);
-        setGroupSchedules([]);
-        setWishlists([]);
-      } finally {
-        setIsLoading(false);
+        setPagination(prev => ({
+          ...prev,
+          mySchedule: { currentPage: 1, totalPages: 1, total: 0 }
+        }));
       }
-    };
+    } catch (error) {
+      console.error("Error fetching my schedules:", error);
+      setSchedules([]);
+    }
+  };
 
-    if (token) fetchSchedulesData();
+  const fetchGroupSchedules = async (page = 1) => {
+    try {
+      const response = await axios.get(
+        `${url}/api/schedule/user/getSchedules?type=group&page=${page}&limit=${ITEMS_PER_PAGE}`,
+        { headers: { token } }
+      );
+
+      if (response.data.success) {
+        setGroupSchedules(response.data.schedules);
+        setPagination(prev => ({
+          ...prev,
+          groupSchedule: {
+            currentPage: response.data.currentPage || page,
+            totalPages: response.data.totalPages || 1,
+            total: response.data.total || 0
+          }
+        }));
+      } else {
+        setGroupSchedules([]);
+        setPagination(prev => ({
+          ...prev,
+          groupSchedule: { currentPage: 1, totalPages: 1, total: 0 }
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching group schedules:", error);
+      setGroupSchedules([]);
+    }
+  };
+
+  const fetchWishlists = async (page = 1) => {
+    try {
+      const response = await axios.get(
+        `${url}/api/schedule/user/getSchedules?type=wishlist&page=${page}&limit=${ITEMS_SAVE_PAGE}`,
+        { headers: { token } }
+      );
+
+      if (response.data.success) {
+        setWishlists(response.data.schedules);
+        setPagination(prev => ({
+          ...prev,
+          wishlist: {
+            currentPage: response.data.currentPage || page,
+            totalPages: response.data.totalPages || 1,
+            total: response.data.total || 0
+          }
+        }));
+      } else {
+        setWishlists([]);
+        setPagination(prev => ({
+          ...prev,
+          wishlist: { currentPage: 1, totalPages: 1, total: 0 }
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching wishlists:", error);
+      setWishlists([]);
+    }
+  };
+
+  // Fetch data with pagination - initial load
+  const fetchSchedulesData = async () => {
+    if (!token) return;
+    
+    setIsLoading(true);
+    try {
+      const mySchedulePage = getCurrentPage('my-schedule');
+      const groupSchedulePage = getCurrentPage('group-schedule');
+      const wishlistPage = getCurrentPage('wishlist');
+
+      // Fetch tất cả khi lần đầu load
+      await Promise.all([
+        fetchMySchedules(mySchedulePage),
+        fetchGroupSchedules(groupSchedulePage),
+        fetchWishlists(wishlistPage)
+      ]);
+
+    } catch (error) {
+      console.error("Error fetching schedules:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSchedulesData();
   }, [token, url, isConfirmOpen]);
 
   useEffect(() => {
@@ -108,11 +195,70 @@ const MySchedule = ({ setShowLogin }) => {
 
     if (scheduleType === "my-schedule") {
       setListRender(schedules);
-    }
-    else if (scheduleType === "group-schedule") {
+    } else if (scheduleType === "group-schedule") {
       setListRender(groupSchedules);
     }
   }, [scheduleType, schedules, groupSchedules, isLoading]);
+
+  // Handle page change - chỉ fetch section được thay đổi
+  const handlePageChange = (type, newPage) => {
+    updateUrlParams(type, newPage);
+    
+    // Chỉ fetch section tương ứng
+    if (type === 'my-schedule') {
+      fetchMySchedules(newPage);
+    } else if (type === 'group-schedule') {
+      fetchGroupSchedules(newPage);
+    } else if (type === 'wishlist') {
+      fetchWishlists(newPage);
+    }
+  };
+
+  // Get current pagination info
+  const getCurrentPagination = () => {
+    if (scheduleType === "my-schedule") return pagination.mySchedule;
+    if (scheduleType === "group-schedule") return pagination.groupSchedule;
+    return pagination.wishlist;
+  };
+
+  // Pagination component
+  const PaginationComponent = ({ type, paginationInfo }) => {
+    const { currentPage, totalPages } = paginationInfo;
+    
+    if (totalPages <= 1) return null;
+
+    return (
+      <div className="pagination-my-schedule">
+        <button 
+          onClick={() => handlePageChange(type, currentPage - 1)}
+          disabled={currentPage <= 1}
+          className="pagination-btn"
+        >
+          <FaChevronLeft />
+        </button>
+        
+        <span className="pagination-info">
+          Trang {currentPage} / {totalPages}
+        </span>
+        
+        <button 
+          onClick={() => handlePageChange(type, currentPage + 1)}
+          disabled={currentPage >= totalPages}
+          className="pagination-btn"
+        >
+          <FaChevronRight />
+        </button>
+      </div>
+    );
+  };
+
+  PaginationComponent.propTypes = {
+    type: PropTypes.string.isRequired,
+    paginationInfo: PropTypes.shape({
+      currentPage: PropTypes.number.isRequired,
+      totalPages: PropTypes.number.isRequired
+    }).isRequired
+  };
 
   const calculateDaysAndNights = (startDateStr, endDateStr) => {
     const parseDate = (dateStr) => {
@@ -236,13 +382,13 @@ const MySchedule = ({ setShowLogin }) => {
       <section className="my-schedule-section">
         <div className="schedule-type-buttons">
           <button
-            className={scheduleType === "my-schedule" ? "active" : ""}
+            className={scheduleType === "my-schedule" ? "active" : "button-schedule-type"}
             onClick={() => setScheduleType("my-schedule")}
           >
             Lịch trình của bạn
           </button>
           <button
-            className={scheduleType === "group-schedule" ? "active" : ""}
+            className={scheduleType === "group-schedule" ? "active" : "button-schedule-type"}
             onClick={() => setScheduleType("group-schedule")}
           >
             Lịch trình nhóm
@@ -256,64 +402,69 @@ const MySchedule = ({ setShowLogin }) => {
             <ScheduleSkeleton />
           </>
         ) : listRender.length > 0 ? (
-          listRender.map((schedule) => (
-            <div
-              key={schedule._id}
-              className="my-schedule-card"
-              onClick={() => navigate(`/schedule-edit/${schedule._id}`)}
-            >
-              <img
-                src="https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"
-                alt="My Schedule"
-              />
-              <div className="schedule-info">
-                <h3>{schedule.scheduleName}</h3>
-                <p>
-                  {schedule.dateStart} - {schedule.dateEnd}
-                </p>
-              </div>
+          <>
+            {listRender.map((schedule) => (
               <div
-                className="action-toggle-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleToggleActions(schedule._id);
-                }}
+                key={schedule._id}
+                className="my-schedule-card"
+                onClick={() => navigate(`/schedule-edit/${schedule._id}`)}
               >
-                <span className="vertical-dots">⋮</span>
-              </div>
-              {activeScheduleId === schedule._id && (
-                <div className="action-buttons" ref={popupRef}>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenConfirm(schedule, "delete");
-                    }}
-                  >
-                    <FaTrash /> Xóa
-                  </button>
-                  {schedule.isPublic === true ? (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenConfirm(schedule, "private");
-                      }}
-                    >
-                      <FaUserSecret /> Ẩn danh
-                    </button>
-                  ) : (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenConfirm(schedule, "public");
-                      }}
-                    >
-                      <FaGlobe /> Công khai
-                    </button>
-                  )}
+                <img
+                  src="https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"
+                  alt="My Schedule"
+                />
+                <div className="schedule-info">
+                  <h3>{schedule.scheduleName}</h3>
+                  <p>
+                    {schedule.dateStart} - {schedule.dateEnd}
+                  </p>
                 </div>
-              )}
-            </div>
-          ))
+                <div
+                  className="action-toggle-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleActions(schedule._id);
+                  }}
+                >
+                  <span className="vertical-dots">⋮</span>
+                </div>
+                {activeScheduleId === schedule._id && (
+                  <div className="action-buttons" ref={popupRef}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenConfirm(schedule, "delete");
+                      }}
+                    >
+                      <FaTrash /> Xóa
+                    </button>
+                    {schedule.isPublic === true ? (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenConfirm(schedule, "private");
+                        }}
+                      >
+                        <FaUserSecret /> Ẩn danh
+                      </button>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenConfirm(schedule, "public");
+                        }}
+                      >
+                        <FaGlobe /> Công khai
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+            
+            {/* Pagination cho từng loại schedule */}
+            <PaginationComponent type={scheduleType} paginationInfo={getCurrentPagination()} />
+          </>
         ) : (
           <p>Không có lịch trình nào.</p>
         )}
@@ -323,43 +474,48 @@ const MySchedule = ({ setShowLogin }) => {
       <section className="featured-schedules-section">
         <h2>Lịch trình đã lưu</h2>
         {!isLoading && wishlists.length > 0 ? (
-          <div className="featured-schedules">
-            {wishlists.map((schedule) => (
-              <div
-                key={schedule._id}
-                className="schedule-card"
-                onClick={() => navigate(`/schedule-view/${schedule._id}`)}
-              >
-                <div className="schedule-header">
-                  <img
-                    src={schedule.imgSrc[0] && schedule.imgSrc[0].includes("http") ? schedule.imgSrc[0] : schedule.imgSrc[0] ? `${url}/images/${schedule.imgSrc[0]}` : "https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"}
-                    alt={schedule.scheduleName}
-                  />
-                  <div className="schedule-date">
-                    <h3> {calculateDaysAndNights(schedule.dateStart, schedule.dateEnd)}</h3>
-                    <span>Ngày</span>
+          <>
+            <div className="featured-schedules">
+              {wishlists.map((schedule) => (
+                <div
+                  key={schedule._id}
+                  className="schedule-card"
+                  onClick={() => navigate(`/schedule-view/${schedule._id}`)}
+                >
+                  <div className="schedule-header">
+                    <img
+                      src={schedule.imgSrc[0] && schedule.imgSrc[0].includes("http") ? schedule.imgSrc[0] : schedule.imgSrc[0] ? `${url}/images/${schedule.imgSrc[0]}` : "https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"}
+                      alt={schedule.scheduleName}
+                    />
+                    <div className="schedule-date">
+                      <h3> {calculateDaysAndNights(schedule.dateStart, schedule.dateEnd)}</h3>
+                      <span>Ngày</span>
+                    </div>
+
                   </div>
 
-                </div>
+                  <div className="schedule-info">
+                    <h3>{schedule.scheduleName}</h3>
+                    <p> Địa điểm: {schedule.address}</p>
+                    <p>Ngày bắt đầu: {schedule.dateStart}</p>
+                    <p>Ngày kết thúc: {schedule.dateEnd}</p>
+                  </div>
 
-                <div className="schedule-info">
-                  <h3>{schedule.scheduleName}</h3>
-                  <p> Địa điểm: {schedule.address}</p>
-                  <p>Ngày bắt đầu: {schedule.dateStart}</p>
-                  <p>Ngày kết thúc: {schedule.dateEnd}</p>
+                  <div className="schedule-user">
+                    <img
+                      className="avatar"
+                      src={schedule.idUser.avatar && schedule.idUser.avatar.includes("http") ?  schedule.idUser.avatar: schedule.idUser.avatar? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                      alt={schedule.userName}
+                    />
+                    <p>{schedule.idUser.name || "Unknown User"}</p>
+                  </div>
                 </div>
-
-                <div className="schedule-user">
-                  <img
-                    className="avatar"
-                    src={schedule.idUser.avatar && schedule.idUser.avatar.includes("http") ?  schedule.idUser.avatar: schedule.idUser.avatar? `${url}/images/${schedule.idUser.avatar}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-                    alt={schedule.userName}
-                  />
-                  <p>{schedule.idUser.name || "Unknown User"}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+            
+            {/* Pagination cho wishlist */}
+            <PaginationComponent type="wishlist" paginationInfo={pagination.wishlist} />
+          </>
         ) : (
           <>
             {!isLoading && <p>Không có lịch trình đã lưu.</p>}
@@ -380,7 +536,7 @@ const MySchedule = ({ setShowLogin }) => {
 };
 
 MySchedule.propTypes = {
-  setShowLogin: PropTypes.func
+  // Remove setShowLogin prop validation since it's not used anymore
 };
 
 export default MySchedule;

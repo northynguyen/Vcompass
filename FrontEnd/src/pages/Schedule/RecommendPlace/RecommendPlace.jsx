@@ -19,7 +19,7 @@ const RecommendPlace = ({ city, onSelectPlace }) => {
         setLoading(true);
         // Fetch attractions and food services near the city
         const attractionsResponse = await axios.get(`${url}/api/attractions?city=${city}&limit=5`);
-        const foodServicesResponse = await axios.get(`${url}/api/foodservices/search?city=${city}&limit=5`);
+        const foodServicesResponse = await axios.get(`${url}/api/foodservices/search?keyword=${city}&limit=5`);
         
         // Combine and organize the data
         const attractions = attractionsResponse.data.attractions || [];

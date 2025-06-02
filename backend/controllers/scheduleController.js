@@ -141,7 +141,7 @@ export const updateSchedule = async (req, res) => {
 
 export const getSchedulesByIdUser = async (req, res) => {
   const { userId } = req.body; // Replace with user ID extraction from token, if needed.
-  const { type, id } = req.query;
+  const { type, page = 1, limit = 10 } = req.query;
 
   if (!userId) {
     return res.status(400).json({
@@ -151,24 +151,36 @@ export const getSchedulesByIdUser = async (req, res) => {
   }
 
   try {
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
     if (type === "group") {
       console.log("type group -------");
-      const schedules = await Schedule.find({
+      
+      const total = await Schedule.countDocuments({
         idInvitee: new mongoose.Types.ObjectId(userId),
       });
-      if (!schedules.length) {
-        return res.json({
-          success: false,
-          message: "No schedules found for this user",
-        });
-      }
+      
+      const schedules = await Schedule.find({
+        idInvitee: new mongoose.Types.ObjectId(userId),
+      })
+        .skip(skip)
+        .limit(limitNum)
+        .sort({ createdAt: -1 });
+
+      const totalPages = Math.ceil(total / limitNum);
 
       return res.json({
         success: true,
-        message: "Schedules retrieved successfully",
+        message: "Group schedules retrieved successfully",
         schedules,
+        total,
+        currentPage: pageNum,
+        totalPages,
       });
     }
+    
     if (type === "wishlist") {
       const user = await User.findById(userId);
       if (!user) {
@@ -177,46 +189,48 @@ export const getSchedulesByIdUser = async (req, res) => {
           .json({ success: false, message: "User not found" });
       }
 
+      // Đếm số schedules thực sự tồn tại trong wishlist
+      const total = await Schedule.countDocuments({
+        _id: { $in: user.favorites.schedule || [] },
+      });
+      
       const schedules = await Schedule.find({
-        _id: { $in: user.favorites.schedule },
-      }).populate("idUser");
-      if (!schedules.length) {
-        return res.json({
-          success: true,
-          message: "No schedules found in wishlist",
-          schedules: [],
-        });
-      }
+        _id: { $in: user.favorites.schedule || [] },
+      })
+        .populate("idUser")
+        .skip(skip)
+        .limit(limitNum)
+        .sort({ createdAt: -1 });
+
+      const totalPages = Math.ceil(total / limitNum);
 
       return res.json({
         success: true,
         message: "Wishlist schedules retrieved successfully",
         schedules,
+        total,
+        currentPage: pageNum,
+        totalPages,
       });
-    } else {
-      const idUserFind = type === "follower" ? id : userId;
-      console.log("idUserFind : ", idUserFind);
-      if (!idUserFind) {
-        return res.status(400).json({
-          success: false,
-          message: "User ID is required",
-        });
-      }
-
-      const schedules = await Schedule.find({ idUser: idUserFind }).populate(
-        "idUser"
-      );
-      if (!schedules.length) {
-        return res.status(404).json({
-          success: false,
-          message: "No schedules found for this user",
-        });
-      }
+    } 
+    else {
+      // Default case - user's own schedules
+      const total = await Schedule.countDocuments({ idUser: userId });
+      const totalPages = Math.ceil(total / limitNum);
+      
+      const schedules = await Schedule.find({ idUser: userId })
+        .populate("idUser")
+        .skip(skip)
+        .limit(limitNum)
+        .sort({ createdAt: -1 });
 
       return res.json({
         success: true,
         message: "Schedules retrieved successfully",
         schedules,
+        total,
+        currentPage: pageNum,
+        totalPages,
       });
     }
   } catch (error) {
@@ -248,8 +262,9 @@ export const getAllSchedule = async (req, res) => {
     const query = { isPublic: true };
 
     // Loại bỏ lịch trình của user hiện tại nếu có userId được cung cấp
-    if (userId) {
-      query.idUser = { $ne: userId }; // Không lấy lịch trình của user hiện tại
+    if (userId && mongoose.Types.ObjectId.isValid(userId)) {
+      query.idUser = { $ne: new mongoose.Types.ObjectId(userId) }; // Chuyển đổi string thành ObjectId
+      console.log("Excluding schedules from userId:", userId);
     }
 
     if (cityList.length > 0) {
@@ -268,54 +283,44 @@ export const getAllSchedule = async (req, res) => {
 
     // Nếu request từ trang Home, xử lý theo yêu cầu đặc biệt
     if (forHomePage === "true") {
-      if (cityList.length > 0) {
-        // Lấy schedule được like nhiều nhất cho mỗi thành phố
-        const schedulesByCity = [];
 
-        // Lấy schedule phổ biến nhất cho mỗi thành phố
-        for (const city of cityList) {
-          const cityQuery = { address: city, isPublic: true };
+      const homeQuery = { isPublic: true };
 
-          // Loại bỏ lịch trình của user hiện tại
-          if (userId) {
-            cityQuery.idUser = { $ne: userId };
-          }
+      // Loại bỏ lịch trình của user hiện tại
+      if (userId && mongoose.Types.ObjectId.isValid(userId)) {
+        homeQuery.idUser = { $ne: new mongoose.Types.ObjectId(userId) };
+        console.log("Home page - Excluding schedules from userId:", userId);
+      }
 
-          const citySchedule = await Schedule.findOne(cityQuery)
-            .populate("idUser")
-            .sort(sortOptions)
-            .limit(1);
+        // Tự động sắp xếp theo likes và comments cho homepage
+        const schedules = await Schedule.aggregate([
+          { $match: homeQuery },
+          {
+            $addFields: {
+              likesCount: { $size: "$likes" },
+              commentsCount: { $size: "$comments" },
+              popularityScore: { 
+                $add: [
+                  { $multiply: [{ $size: "$likes" }, 2] }, // Likes có trọng số cao hơn
+                  { $size: "$comments" }
+                ]
+              }
+            }
+          },
+          { $sort: { popularityScore: -1, createdAt: -1 } }, // Sắp xếp theo điểm phổ biến, rồi đến ngày tạo
+          { $limit: parseInt(limit) },
+          {
+            $lookup: {
+              from: "users",
+              localField: "idUser",
+              foreignField: "_id",
+              as: "idUser"
+            }
+          },
+          { $unwind: "$idUser" }
+        ]);
 
-          if (citySchedule) {
-            schedulesByCity.push(citySchedule);
-          }
-        }
-
-        if (schedulesByCity.length === 0) {
-          return res.status(404).json({
-            success: false,
-            message: "Không tìm thấy lịch trình phù hợp.",
-          });
-        }
-
-        return res.json({
-          success: true,
-          message: "Lấy danh sách lịch trình thành công.",
-          schedules: schedulesByCity,
-        });
-      } else {
-        // Nếu không có danh sách thành phố, lấy 6 lịch trình được like nhiều nhất
-        const homeQuery = { isPublic: true };
-
-        // Loại bỏ lịch trình của user hiện tại
-        if (userId) {
-          homeQuery.idUser = { $ne: userId };
-        }
-
-        const schedules = await Schedule.find(homeQuery)
-          .populate("idUser")
-          .sort(sortOptions)
-          .limit(6);
+        console.log(`Found ${schedules.length} schedules for home page, excluded user: ${userId}`);
 
         if (!schedules || schedules.length === 0) {
           return res.status(404).json({
@@ -329,7 +334,6 @@ export const getAllSchedule = async (req, res) => {
           message: "Lấy danh sách lịch trình thành công.",
           schedules,
         });
-      }
     } else {
       // Phân trang như cũ nếu không phải request từ trang Home
       const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -1279,4 +1283,15 @@ const getAllScheduleToTrainAI = async () => {
   }
 
   fs.writeFileSync('../Schedule_AI/ALL_schedules.json', JSON.stringify(result, null, 2));
+};
+
+export const getScheduleByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const schedules = await Schedule.find({ idUser: userId , isPublic: true }).populate("idUser");
+    res.status(200).json({ success: true, schedules });
+  } catch (error) {
+    console.error("Error fetching schedules:", error);
+    res.status(500).json({ success: false, message: "Error fetching schedules" });
+  }
 };

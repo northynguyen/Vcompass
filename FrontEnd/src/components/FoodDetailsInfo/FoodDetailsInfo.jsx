@@ -6,7 +6,7 @@ import { StoreContext } from '../../Context/StoreContext';
 import ImagesModal from '../ImagesModal/ImagesModal';
 import { StarRating } from '../PlaceReview/PlaceReview';
 import './FoodDetailsInfo.css';
-const FoodDetailsInfo = ({ serviceId }) => {
+const FoodDetailsInfo = ({ serviceId, setShowLogin }) => {
     const { url, token, user , getImageUrl } = useContext(StoreContext);
     const [isSave, setIsSave] = useState(false);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -49,6 +49,10 @@ const FoodDetailsInfo = ({ serviceId }) => {
     };
     const toggleWishlist = async () => {
         try {
+            if (!user) {
+                setShowLogin(true);
+                return;
+            }
             const newStatus = !isSave;
             setIsSave(newStatus);
             const action = newStatus ? "add" : "remove";

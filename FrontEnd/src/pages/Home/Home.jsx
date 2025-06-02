@@ -8,17 +8,18 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 import PostCardSkeleton from "../../components/Poster/PostCardSkeleton";
+import PropTypes from 'prop-types';
 
 import LeftSideBar from "../../components/LeftSideBar/LeftSideBar";
 import AccommodationBanner from "../../components/Poster/AccommodationBanner ";
 import PostCard from "../../components/Poster/PostCard";
 import SlideBar from "../../components/SlideBar/SlideBar";
+import ShortSwiper from "../../components/ShortSwiper/ShortSwiper";
 import { StoreContext } from "../../Context/StoreContext";
 import "./Home.css";
 
-const Home = () => {
-  const { url, token, user } = useContext(StoreContext);
-  const [schedules, setSchedules] = useState([]);
+const Home = ({ setShowLogin }) => {
+  const { url, user } = useContext(StoreContext);
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [topCity, setTopCity] = useState([]);
   const [address, setAddress] = useState("");
@@ -63,10 +64,12 @@ const Home = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  // Fetching all necessary data (Top Cities, Schedules, User Schedules) in a single useEffect
+  // Fetching top cities and featured schedules
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
+
         // Fetch top cities
         const cityResponse = await axios.get(
           `${url}/api/schedule/getByCity/Top`
@@ -74,51 +77,15 @@ const Home = () => {
         if (cityResponse.data.success) {
           setTopCity(cityResponse.data.addresses);
         }
-
-        // Fetch user schedules (to get cities)
-        const userScheduleResponse = await axios.get(
-          `${url}/api/schedule/user/getSchedules`,
-          { headers: { token } }
-        );
-
-        // Extract unique cities from user schedules
-        let userCities = [];
-        if (userScheduleResponse.data.success && userScheduleResponse.data.schedules.length > 0) {
-          userCities = [...new Set(userScheduleResponse.data.schedules
-            .map(schedule => schedule.address)
-            .filter(city => city))]; // Filter out undefined/null/empty values and remove duplicates
+        const href = user ? 
+          `${url}/api/schedule/getAllSchedule?forHomePage=true&limit=10&userId=${user._id}` : 
+          `${url}/api/schedule/getAllSchedule?forHomePage=true&limit=10`;
+        const scheduleResponse = await axios.get(href);
+        if (scheduleResponse.data.success) {
+          const featuredSchedules = scheduleResponse.data.schedules;
+          setFilteredSchedules(featuredSchedules);
+          console.log("Featured schedules (auto-sorted by popularity)", featuredSchedules);
         }
-
-        console.log("User cities:", userCities);
-
-        // If we have cities from user schedules, get schedules for those cities
-        // if (userCities.length > 0) {
-        //   const scheduleResponse = await axios.get(
-        //     `${url}/api/schedule/getAllSchedule?cities=${userCities.join(",")}&forHomePage=true&userId=${user._id}`
-        //   );
-        //   console.log("scheduleResponse", scheduleResponse);
-        //   if (scheduleResponse.data.success) {
-        //     const publicSchedules = scheduleResponse.data.schedules;
-        //     setSchedules(publicSchedules);
-        //     console.log("publicSchedules for user cities", publicSchedules);
-        //   }
-        // } else {
-        //   // If no user cities, set schedules to empty array
-        //   setSchedules([]);
-        // }
-        const scheduleResponse2 = await axios.get(
-          user ?
-            `${url}/api/schedule/getAllSchedule?forHomePage=true&userId=${user._id}`
-            :
-            `${url}/api/schedule/getAllSchedule?forHomePage=true`
-        );
-        if (scheduleResponse2.data.success) {
-          const publicSchedules = scheduleResponse2.data.schedules;
-          setFilteredSchedules(publicSchedules);
-          console.log("Most liked schedules", publicSchedules);
-        }
-
-
 
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -127,62 +94,8 @@ const Home = () => {
       }
     };
 
-    const fetchData2 = async () => {
-      try {
-        const cityResponse = await axios.get(
-          `${url}/api/schedule/getByCity/Top`
-        );
-        if (cityResponse.data.success) {
-          setTopCity(cityResponse.data.addresses);
-        }
-        const scheduleResponse2 = await axios.get(
-          `${url}/api/schedule/getAllSchedule?forHomePage=true`
-        );
-        if (scheduleResponse2.data.success) {
-          const publicSchedules = scheduleResponse2.data.schedules;
-          setFilteredSchedules(publicSchedules);
-          console.log("Most liked schedules", publicSchedules);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (user) {
-      fetchData();
-    } else {
-      // Define a separate function for fetching data when user is not logged in
-      const fetchData2 = async () => {
-        try {
-          setIsLoading(true);
-
-          const cityResponse = await axios.get(
-            `${url}/api/schedule/getByCity/Top`
-          );
-          if (cityResponse.data.success) {
-            setTopCity(cityResponse.data.addresses);
-          }
-
-          const scheduleResponse = await axios.get(
-            `${url}/api/schedule/getAllSchedule?forHomePage=true`
-          );
-          if (scheduleResponse.data.success) {
-            const publicSchedules = scheduleResponse.data.schedules;
-            setFilteredSchedules(publicSchedules);
-            console.log("Most liked schedules", publicSchedules);
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      fetchData2();
-    }
-  }, [url, token]);
+    fetchData();
+  }, [url]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -375,6 +288,15 @@ const Home = () => {
     'Sóc Trăng': 'Sóc Trăng'
   };
 
+  // Handle create schedule click
+  const handleCreateScheduleClick = (type = 'manual') => {
+    if (!user) {
+      setShowLogin(true);
+    } else {
+      navigate(`/create-schedule/${type}`);
+    }
+  };
+
   return (
     <div className="home-layout">
       <div className="sidebar-toggle-container">
@@ -386,7 +308,7 @@ const Home = () => {
       {sidebarOpen && (<div className="sidebar-overlay" onClick={toggleSidebar}></div>)}
 
       <div className={`sidebar-container ${sidebarOpen ? 'open' : ''}`}>
-        <LeftSideBar />
+        <LeftSideBar setShowLogin={setShowLogin} />
       </div>
 
       <div className="home-main-content">
@@ -395,11 +317,11 @@ const Home = () => {
             <h1 className="create-schedule-title">Tạo lịch trình du lịch dễ dàng cho chuyến đi của bạn</h1>
             <p className="create-schedule-description">Chỉ mất 3-5 phút, bạn có thể tạo ngay cho mình lịch trình du lịch</p>
             <div className="create-schedule-btn-container">
-              <div className="create-schedule-btn" onClick={() => navigate("/create-schedule/manual")}>
+              <div className="create-schedule-btn" onClick={() => handleCreateScheduleClick('manual')}>
                 <FiPlus style={{ marginRight: "6px" }} />
                 <p>Tạo lịch trình</p>
               </div>
-              <div className="create-schedule-btn" onClick={() => navigate("/create-schedule/ai")}>
+              <div className="create-schedule-btn" onClick={() => handleCreateScheduleClick('ai')}>
                 <VscCopilot style={{ marginRight: "6px" }} />
                 <p>Tạo lịch trình với AI</p>
               </div>
@@ -563,6 +485,7 @@ const Home = () => {
                             schedule={schedule}
                             handleScheduleClick={handleScheduleClick}
                             style={{ width: windowWidth < 780 ? "100%" : "80%" }}
+                            setShowLogin={setShowLogin}
                           />
                         </SwiperSlide>
                       ))}
@@ -616,6 +539,7 @@ const Home = () => {
                         schedule={schedule}
                         handleScheduleClick={handleScheduleClick}
                         style={{ width: windowWidth < 780 ? "100%" : "80%" }}
+                        setShowLogin={setShowLogin}
                       />
                     </SwiperSlide>
                   ))}
@@ -631,6 +555,15 @@ const Home = () => {
             </div>
           </div>
 
+          {/* Short Videos Section */}
+          <div className="short-videos-section">
+            <div className="post-card-header">
+              <h3>Video ngắn nổi bật</h3>
+              <p>Khám phá những video du lịch thú vị từ cộng đồng</p>
+            </div>
+            <ShortSwiper category="all" limit={8} />
+          </div>
+
           <SlideBar type="accommodation" />
           <span></span>
           <SlideBar type="food" />
@@ -640,6 +573,10 @@ const Home = () => {
       </div>
     </div>
   );
+};
+
+Home.propTypes = {
+  setShowLogin: PropTypes.func.isRequired,
 };
 
 export default Home;

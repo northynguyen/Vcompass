@@ -19,20 +19,18 @@ const ListItem = ({ item, type, additionalData, status = "Default", setCurDes })
     switch (type) {
       case 'accommodation':
         route = `/place-details/accommodation/${safeEncryptedServiceId}`;
-        state = { filterData: additionalData };
+        state = { filterData: additionalData };       
         break;
       case 'attraction':
         route = `/place-details/attraction/${safeEncryptedServiceId}`;
         break;
-      case 'food':
+      case 'foodService':
         route = `/place-details/food/${safeEncryptedServiceId}`;
         break;
       default:
         route = `/place-details/${safeEncryptedServiceId}`;
     }
-    
-    navigate(route, state.filterData ? { state } : undefined);
-    window.scrollTo(0, 0);
+    window.open(route, '_blank');
   };
 
   const handleSelect = () => {
@@ -84,7 +82,7 @@ const ListItem = ({ item, type, additionalData, status = "Default", setCurDes })
         </p>
       );
       break;
-    case 'food':
+    case 'foodService':
       name = item.foodServiceName;
       priceDisplay = (
         <>

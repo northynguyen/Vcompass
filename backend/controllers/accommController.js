@@ -10,7 +10,7 @@ import Booking from "../models/booking.js";
 export const getListAccomm = async (req, res) => { 
   try {
 
-    const { name, minPrice, maxPrice, city, status, filterData } = req.query;
+    const { name, minPrice, maxPrice, city, status= "active", filterData } = req.query;
     const query = {};
 
     if (name) {
@@ -30,6 +30,7 @@ export const getListAccomm = async (req, res) => {
     if (filterData) {
       console.log(filterData);
     }
+
     // Fetch accommodations based on the constructed query
     let accommodations = await Accommodation.find(query);
 
@@ -56,6 +57,20 @@ export const getListAccomm = async (req, res) => {
           return meetsMinPrice && meetsMaxPrice;
         });
     }
+
+    // Tính rating trung bình và sort theo rating giảm dần
+    accommodations = accommodations.map(accommodation => {
+      const ratings = accommodation.ratings || [];
+      const averageRating = ratings.length > 0
+        ? ratings.reduce((sum, rating) => sum + rating.rate, 0) / ratings.length
+        : 0;
+      
+      const accommodationObj = accommodation.toObject ? accommodation.toObject() : accommodation;
+      return {
+        ...accommodationObj,
+        averageRating: parseFloat(averageRating.toFixed(1))
+      };
+    }).sort((a, b) => b.averageRating - a.averageRating);
 
     res.json({
       success: true,

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   FaHeart, FaCommentDots, FaShare, FaBookmark, FaHome, 
   FaCompass, FaUser, FaUpload, FaEllipsisH,
-  FaUserFriends, FaBell, FaEnvelope, FaVideo,
+  FaUserFriends,
   FaChevronUp, FaChevronDown, FaTimes, FaInfoCircle
 } from 'react-icons/fa';
 import { StoreContext } from '../../Context/StoreContext';
@@ -16,8 +16,9 @@ import UserShortVideos from './UserShortVideos/UserShortVideos';
 import PostCard from '../../components/Poster/PostCard';
 import './ShortVideo.css';
 import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 
-const ShortVideo = () => {
+const ShortVideo = ({ setShowLogin }) => {
   const { url, token, user } = useContext(StoreContext);
   const [videos, setVideos] = useState([]);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
@@ -187,10 +188,22 @@ const ShortVideo = () => {
   
   // Cập nhật các hàm xử lý để sử dụng hàm showTab
   const handleCommentsClick = () => {
+    console.log('Comments clicked, user:', user);
+    if (!user) {
+      console.log('No user, showing login popup');
+      setShowLogin(true);
+      return;
+    }
     showTab('comments');
   };
   
   const handleUploadClick = () => {
+    console.log('Upload clicked, user:', user);
+    if (!user) {
+      console.log('No user, showing login popup');
+      setShowLogin(true);
+      return;
+    }
     showTab('upload');
   };
   
@@ -201,6 +214,12 @@ const ShortVideo = () => {
 
   
   const handleMyVideosClick = () => {
+    console.log('Profile clicked, user:', user);
+    if (!user) {
+      console.log('No user, showing login popup');
+      setShowLogin(true);
+      return;
+    }
     if (user) {
       setSelectedUserId(user._id);
       showTab('userVideos');
@@ -216,6 +235,12 @@ const ShortVideo = () => {
   }
   
   const handleFollowingClick = () => {
+    console.log('Following clicked, user:', user);
+    if (!user) {
+      console.log('No user, showing login popup');
+      setShowLogin(true);
+      return;
+    }
     showTab('following');
   };
 
@@ -314,7 +339,8 @@ const ShortVideo = () => {
   // Xử lý khi like video
   const handleLike = async () => {
     if (!user) {
-      // Xử lý khi chưa đăng nhập
+      // Hiển thị popup đăng nhập khi chưa đăng nhập
+      setShowLogin(true);
       return;
     }
     
@@ -441,6 +467,11 @@ const ShortVideo = () => {
   
   // Hàm xử lý follow/unfollow
   const handleFollow = async (id) => {
+    if (!user) {
+      setShowLogin(true);
+      return;
+    }
+
     try {
       const response = await fetch(
         `${url}/api/user/user/follow-or-unfollow?otherUserId=${id}&action=add`,
@@ -463,32 +494,9 @@ const ShortVideo = () => {
     }
   };
   
-  const handleUnfollow = async (userId) => {
-    try {
-      const response = await axios.put(
-        `${url}/api/user/user/follow-or-unfollow`,
-        {
-          otherUserId: userId,
-          action: 'unfollow'
-        },
-        { headers: { token } }
-      );
-      
-      if (response.data.success) {
-        // Cập nhật danh sách following
-        setFollowingUsers(prev => prev.filter(id => id !== userId));
-        toast.success('Đã bỏ theo dõi người dùng');
-      } else {
-        toast.error(response.data.message);
-      }
-    } catch (error) {
-      console.error('Error unfollowing user:', error);
-      toast.error('Có lỗi xảy ra khi bỏ theo dõi');
-    }
-  };
-  
   // Kiểm tra xem đã follow người dùng chưa
   const isFollowing = (userId) => {
+    if (!user) return false; // Nếu chưa đăng nhập, trả về false
     return followingUsers.includes(userId) || userId === user._id;
   // Kiểm tra nếu người dùng là chính mình
   };
@@ -528,7 +536,15 @@ const ShortVideo = () => {
     return (
       <div className="empty-container">
         <p>Không có video nào.</p>
-        <button onClick={() => showTab('upload')}>Tạo video mới</button>
+        <button onClick={() => {
+          if (!user) {
+            setShowLogin(true);
+          } else {
+            showTab('upload');
+          }
+        }}>
+          {!user ? 'Đăng nhập để tạo video' : 'Tạo video mới'}
+        </button>
       </div>
     );
   }
@@ -598,10 +614,19 @@ const ShortVideo = () => {
           <div className="explore-tab">
             <ExploreView onClose={() => setActiveOption('home')} />
           </div>
-        ) : activeOption === 'following' && followingVideos.length === 0 ? (
+        ) : activeOption === 'following' && (!user || followingVideos.length === 0) ? (
           <div className="empty-following-container">
-            <p>Bạn chưa theo dõi ai. Hãy theo dõi thêm người dùng để xem video của họ!</p>
-            <button onClick={handleForYouClick}>Xem video để theo dõi</button>
+            {!user ? (
+              <>
+                <p>Bạn cần đăng nhập để xem video từ những người bạn theo dõi!</p>
+                <button onClick={() => setShowLogin(true)}>Đăng nhập</button>
+              </>
+            ) : (
+              <>
+                <p>Bạn chưa theo dõi ai. Hãy theo dõi thêm người dùng để xem video của họ!</p>
+                <button onClick={handleForYouClick}>Xem video để theo dõi</button>
+              </>
+            )}
           </div>
         ) : !showUpload && !showUserVideos && (
           <div className="video-feed" ref={videoFeedRef}>
@@ -858,6 +883,10 @@ const ShortVideo = () => {
       </div>
     </div>
   );
+};
+
+ShortVideo.propTypes = {
+  setShowLogin: PropTypes.func.isRequired
 };
 
 export default ShortVideo; 

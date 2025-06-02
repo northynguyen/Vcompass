@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import './BookingFinalStep.css';
 import Modal from 'react-modal';
 import { FaLock } from 'react-icons/fa';
 import { StoreContext } from '../../../Context/StoreContext';
 import {toast} from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const BookingModal = ({ isOpen, onRequestClose, bookingDetails , onSubmit}) => {
     Modal.setAppElement('#root');
@@ -73,15 +74,40 @@ const BookingModal = ({ isOpen, onRequestClose, bookingDetails , onSubmit}) => {
     );
 };
 
-const BookingFinalStep = ({bookingDetails}) => {
+BookingModal.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onRequestClose: PropTypes.func.isRequired,
+    bookingDetails: PropTypes.object.isRequired,
+    onSubmit: PropTypes.func.isRequired
+};
+
+const BookingFinalStep = ({bookingDetails, setShowLogin}) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const {url, user} = useContext(StoreContext);
     const [loading, setLoading] = useState(false);
+    const [hasShownLoginPopup, setHasShownLoginPopup] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!user && !hasShownLoginPopup) {
+            setShowLogin(true);
+            setHasShownLoginPopup(true);
+            
+            // Sau 2 giây, redirect về home nếu user vẫn chưa đăng nhập
+            const timer = setTimeout(() => {
+                if (!user) {
+                    navigate('/');
+                }
+            }, 2000);
+            
+            return () => clearTimeout(timer);
+        }
+    }, [user, hasShownLoginPopup, setShowLogin, navigate]);
+
     const handleSubmit = async () => {
         window.scrollTo(0, 0);
         if(!user){
-            toast.error("Bạn cần đăng nhập để đặt phòng. Vui lòng đăng nhập trên trang chính.");
+            setShowLogin(true);
             return
         }
         try {
@@ -179,6 +205,11 @@ const BookingFinalStep = ({bookingDetails}) => {
             )}
         </div>
     );
+};
+
+BookingFinalStep.propTypes = {
+    bookingDetails: PropTypes.object.isRequired,
+    setShowLogin: PropTypes.func.isRequired
 };
 
 export default BookingFinalStep;

@@ -225,7 +225,7 @@ if __name__ == "__main__":
         exploration_final_eps=0.01,
         verbose=0
     )
-    model.learn(total_timesteps=500000)
+    model.learn(total_timesteps=10000)
     model.save("../Schedule_AI/dqn_travel_recommendation_train")
 
     # Evaluate on training set

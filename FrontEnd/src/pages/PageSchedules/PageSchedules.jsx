@@ -14,7 +14,7 @@ import './PageSchedules.css';
 // since we're using an external library where we can't control the prop validation
 /* eslint-disable react/prop-types */
 
-const PageSchedules = () => {
+const PageSchedules = ({ setShowLogin }) => {
   const { type } = useParams();
   const navigate = useNavigate();
   const { url, user, token } = useContext(StoreContext);
@@ -233,7 +233,7 @@ const PageSchedules = () => {
         {sidebarOpen && <div className="sidebar-overlay" onClick={toggleSidebar}></div>}
 
         <div className={`sidebar-container ${sidebarOpen ? 'open' : ''}`}>
-          <LeftSideBar />
+          <LeftSideBar setShowLogin={setShowLogin} />
         </div>
       </div>
       <div className="main-content">
@@ -251,6 +251,7 @@ const PageSchedules = () => {
                     onLikeClick: handleLike,
                     onHeartClick: handleSave
                   })}
+                  setShowLogin={setShowLogin}
                 />
               ))
             }
