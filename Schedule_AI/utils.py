@@ -9,18 +9,48 @@ import random
 
 # Load input data
 def load_input():
-    try:
-        with open('../Schedule_AI/All_users.json', 'r', encoding='utf-8') as user_file:
-            users = json.load(user_file)
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error loading All_users.json: {e}")
-        users = []
-    try:
-        with open('../Schedule_AI/All_schedules.json', 'r', encoding='utf-8') as schedules_file:
-            schedules = json.load(schedules_file)
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error loading All_schedules.json: {e}")
-        schedules = []
+    # Try multiple possible paths for the JSON files
+    user_file_paths = [
+        'ALL_users.json',  # Same directory
+        './ALL_users.json',  # Explicit current directory  
+        '../Schedule_AI/ALL_users.json',  # Parent directory
+        '/opt/render/project/src/Schedule_AI/ALL_users.json'  # Render absolute path
+    ]
+    
+    schedule_file_paths = [
+        'All_schedules.json',  # Same directory
+        './All_schedules.json',  # Explicit current directory
+        '../Schedule_AI/All_schedules.json',  # Parent directory  
+        '/opt/render/project/src/Schedule_AI/All_schedules.json'  # Render absolute path
+    ]
+    
+    users = []
+    schedules = []
+    
+    # Try to load users file
+    for path in user_file_paths:
+        try:
+            with open(path, 'r', encoding='utf-8') as user_file:
+                users = json.load(user_file)
+                print(f"Successfully loaded users from: {path}")
+                break
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            continue
+    else:
+        print("Error: Could not load ALL_users.json from any path")
+    
+    # Try to load schedules file  
+    for path in schedule_file_paths:
+        try:
+            with open(path, 'r', encoding='utf-8') as schedules_file:
+                schedules = json.load(schedules_file)
+                print(f"Successfully loaded schedules from: {path}")
+                break
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            continue
+    else:
+        print("Error: Could not load All_schedules.json from any path")
+    
     return {'users': users, 'schedules': schedules}
 
 # Preprocess user data

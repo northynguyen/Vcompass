@@ -139,7 +139,26 @@ async def recommend_schedules(request: UserRequest):
 
     # Load trained model
     try:
-        model = DQN.load("../Schedule_AI/dqn_travel_recommendation_train")
+        # Try relative path first, then absolute path for production
+        model_paths = [
+            "dqn_travel_recommendation_train",  # Same directory
+            "./dqn_travel_recommendation_train",  # Explicit current directory
+            "../Schedule_AI/dqn_travel_recommendation_train",  # Parent directory
+            "/opt/render/project/src/Schedule_AI/dqn_travel_recommendation_train"  # Render absolute path
+        ]
+        
+        model = None
+        for path in model_paths:
+            try:
+                model = DQN.load(path)
+                print(f"Successfully loaded model from: {path}")
+                break
+            except:
+                continue
+        
+        if model is None:
+            raise Exception("Could not load model from any path")
+            
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading model: {str(e)}")
 
