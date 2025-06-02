@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List
 import numpy as np
+import os
 from stable_baselines3 import DQN
 from utils import load_input, preprocess_users, preprocess_schedules, create_state, TravelRecommendationEnv
 from sklearn.metrics.pairwise import cosine_similarity
@@ -258,4 +259,5 @@ async def recommend_schedules(request: UserRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
