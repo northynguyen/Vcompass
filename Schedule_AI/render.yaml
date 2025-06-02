@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: vcompass-schedule-ai
+    env: python
+    region: singapore
+    plan: starter
+    buildCommand: |
+      cd Schedule_AI && 
+      pip install --upgrade pip && 
+      pip install -r requirements.txt
+    startCommand: |
+      cd Schedule_AI && 
+      uvicorn server:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /docs
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: PIP_VERSION
+        value: 23.0.1
+    disk:
+      name: vcompass-ai-disk
+      mountPath: /data
+      sizeGB: 1
+    autoDeploy: true
+    scaling:
+      minInstances: 1
+      maxInstances: 3
+    branch: main 
