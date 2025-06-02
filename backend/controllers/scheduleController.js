@@ -974,7 +974,7 @@ export const scheduleAI = async (req, res) => {
       "../Schedule_AI/user.json",
       JSON.stringify(exportData, null, 2)
     );
-    const apiUrl = "http://127.0.0.1:8000/recommend_schedules/";
+    const apiUrl = "https://scheduleai.onrender.com/recommend_schedules/";
     const response = await axios.post(apiUrl, exportData, {
       headers: {
         "Content-Type": "application/json",
