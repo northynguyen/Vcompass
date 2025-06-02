@@ -84,12 +84,11 @@ const PageSchedules = ({ setShowLogin }) => {
             setFilteredSchedules(response.data.schedules);
           }
         } else {
-          toast.error(response.data.message || 'Failed to fetch schedules');
+          console.log(response)
         }
         setLoading(false);
       } catch (error) {
         console.error('Error fetching schedules:', error);
-        toast.error('Failed to fetch schedules');
         setLoading(false);
       }
     };

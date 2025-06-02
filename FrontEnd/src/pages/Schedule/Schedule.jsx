@@ -398,7 +398,7 @@ const ActivityItem = ({
           }
           {activity.activityType === "FoodService" && (
             <FoodServiceActivity
-              data={data.foodService}
+              data={data?.foodService}
               activity={activity}
               handleEdit={handleEdit}
               setIsOpenModal={setIsModalOpen}
@@ -1211,7 +1211,7 @@ const DateSchedule = ({
 
 
 const Schedule = ({ mode, setShowLogin }) => {
-  const { url, token, user } = useContext(StoreContext);
+  const { url, token, user, getImageUrl } = useContext(StoreContext);
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -1865,7 +1865,7 @@ const Schedule = ({ mode, setShowLogin }) => {
 
               <img
                 className="custom-schedule-image"
-                src={inforSchedule.imgSrc[0] && inforSchedule.imgSrc[0].includes("http") ? inforSchedule.imgSrc[0] : `${url}/images/${inforSchedule.imgSrc[0]}`}
+                src={getImageUrl(inforSchedule)}
                 alt="Schedule Image"
               />
             ) : inforSchedule.videoSrc ? (
@@ -1874,7 +1874,7 @@ const Schedule = ({ mode, setShowLogin }) => {
                   className="custom-schedule-video"
                   controls
                   src={inforSchedule.videoSrc}
-                  poster="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
+                  poster="https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg"
                 >
                   Your browser does not support the video tag.
                 </video>
@@ -1886,7 +1886,7 @@ const Schedule = ({ mode, setShowLogin }) => {
               // Nếu không có cả ảnh lẫn video, hiển thị ảnh mặc định
               <img
                 className="custom-schedule-image"
-                src="https://www.travelalaska.com/sites/default/files/2022-01/Haida-GlacierBay-GettyImages-1147753605.jpg"
+                src="https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg"
                 alt="Default Alaska"
               />
             )}

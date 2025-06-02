@@ -157,11 +157,11 @@ export const getSchedulesByIdUser = async (req, res) => {
 
     if (type === "group") {
       console.log("type group -------");
-      
+
       const total = await Schedule.countDocuments({
         idInvitee: new mongoose.Types.ObjectId(userId),
       });
-      
+
       const schedules = await Schedule.find({
         idInvitee: new mongoose.Types.ObjectId(userId),
       })
@@ -180,7 +180,7 @@ export const getSchedulesByIdUser = async (req, res) => {
         totalPages,
       });
     }
-    
+
     if (type === "wishlist") {
       const user = await User.findById(userId);
       if (!user) {
@@ -193,7 +193,7 @@ export const getSchedulesByIdUser = async (req, res) => {
       const total = await Schedule.countDocuments({
         _id: { $in: user.favorites.schedule || [] },
       });
-      
+
       const schedules = await Schedule.find({
         _id: { $in: user.favorites.schedule || [] },
       })
@@ -212,12 +212,11 @@ export const getSchedulesByIdUser = async (req, res) => {
         currentPage: pageNum,
         totalPages,
       });
-    } 
-    else {
+    } else {
       // Default case - user's own schedules
       const total = await Schedule.countDocuments({ idUser: userId });
       const totalPages = Math.ceil(total / limitNum);
-      
+
       const schedules = await Schedule.find({ idUser: userId })
         .populate("idUser")
         .skip(skip)
@@ -283,7 +282,6 @@ export const getAllSchedule = async (req, res) => {
 
     // Nếu request từ trang Home, xử lý theo yêu cầu đặc biệt
     if (forHomePage === "true") {
-
       const homeQuery = { isPublic: true };
 
       // Loại bỏ lịch trình của user hiện tại
@@ -292,48 +290,50 @@ export const getAllSchedule = async (req, res) => {
         console.log("Home page - Excluding schedules from userId:", userId);
       }
 
-        // Tự động sắp xếp theo likes và comments cho homepage
-        const schedules = await Schedule.aggregate([
-          { $match: homeQuery },
-          {
-            $addFields: {
-              likesCount: { $size: "$likes" },
-              commentsCount: { $size: "$comments" },
-              popularityScore: { 
-                $add: [
-                  { $multiply: [{ $size: "$likes" }, 2] }, // Likes có trọng số cao hơn
-                  { $size: "$comments" }
-                ]
-              }
-            }
+      // Tự động sắp xếp theo likes và comments cho homepage
+      const schedules = await Schedule.aggregate([
+        { $match: homeQuery },
+        {
+          $addFields: {
+            likesCount: { $size: "$likes" },
+            commentsCount: { $size: "$comments" },
+            popularityScore: {
+              $add: [
+                { $multiply: [{ $size: "$likes" }, 2] }, // Likes có trọng số cao hơn
+                { $size: "$comments" },
+              ],
+            },
           },
-          { $sort: { popularityScore: -1, createdAt: -1 } }, // Sắp xếp theo điểm phổ biến, rồi đến ngày tạo
-          { $limit: parseInt(limit) },
-          {
-            $lookup: {
-              from: "users",
-              localField: "idUser",
-              foreignField: "_id",
-              as: "idUser"
-            }
+        },
+        { $sort: { popularityScore: -1, createdAt: -1 } }, // Sắp xếp theo điểm phổ biến, rồi đến ngày tạo
+        { $limit: parseInt(limit) },
+        {
+          $lookup: {
+            from: "users",
+            localField: "idUser",
+            foreignField: "_id",
+            as: "idUser",
           },
-          { $unwind: "$idUser" }
-        ]);
+        },
+        { $unwind: "$idUser" },
+      ]);
 
-        console.log(`Found ${schedules.length} schedules for home page, excluded user: ${userId}`);
+      console.log(
+        `Found ${schedules.length} schedules for home page, excluded user: ${userId}`
+      );
 
-        if (!schedules || schedules.length === 0) {
-          return res.status(404).json({
-            success: false,
-            message: "Không tìm thấy lịch trình phù hợp.",
-          });
-        }
-
-        return res.json({
-          success: true,
-          message: "Lấy danh sách lịch trình thành công.",
-          schedules,
+      if (!schedules || schedules.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Không tìm thấy lịch trình phù hợp.",
         });
+      }
+
+      return res.json({
+        success: true,
+        message: "Lấy danh sách lịch trình thành công.",
+        schedules,
+      });
     } else {
       // Phân trang như cũ nếu không phải request từ trang Home
       const skip = (parseInt(page) - 1) * parseInt(limit);
@@ -377,6 +377,11 @@ export const getAllSchedule = async (req, res) => {
 export const getTopAddressSchedule = async (req, res) => {
   try {
     const result = await Schedule.aggregate([
+      {
+        $match: {
+          isPublic: true,
+        },
+      },
       {
         $group: {
           _id: "$address",
@@ -923,8 +928,7 @@ export const scheduleAI = async (req, res) => {
           return schedules;
         });
       const logs = await Log.find({ userId });
-      user = await User.findById(userId)
-        .select("_id");
+      user = await User.findById(userId).select("_id");
       // Thống kê tương tác
       const logStats = {};
       logs.forEach((log) => {
@@ -973,14 +977,15 @@ export const scheduleAI = async (req, res) => {
     const apiUrl = "http://127.0.0.1:8000/recommend_schedules/";
     const response = await axios.post(apiUrl, exportData, {
       headers: {
-        'Content-Type': 'application/json',
-      }
+        "Content-Type": "application/json",
+      },
     });
     if (response.data.status === "success") {
       const recommendedScheduleIds = response.data.recommendedSchedules || [];
       const recommendedSchedules = await Schedule.find({
         _id: { $in: recommendedScheduleIds },
-      }).populate("idUser")
+      })
+        .populate("idUser")
         .populate("idInvitee", "name avatar email")
         .lean(); // dùng lean để thao tác dễ hơn
       res.status(200).json({
@@ -1009,22 +1014,25 @@ export const trainScheduleModel = async (req, res) => {
     getAllUserDataToTrainAI();
 
     // Gọi lệnh train bằng Python
-    exec("python ../Schedule_AI/travel_recommendation_dqn.py", (err, stdout, stderr) => {
-      if (err) {
-        console.error("Lỗi khi train AI:", err.message);
-        return res
-          .status(500)
-          .json({ success: false, message: "AI training error" });
+    exec(
+      "python ../Schedule_AI/travel_recommendation_dqn.py",
+      (err, stdout, stderr) => {
+        if (err) {
+          console.error("Lỗi khi train AI:", err.message);
+          return res
+            .status(500)
+            .json({ success: false, message: "AI training error" });
+        }
+        if (stderr) {
+          console.warn("Train stderr:", stderr);
+        }
+        console.log("Train stdout:", stdout);
+        return res.json({
+          success: true,
+          message: "Model retrained successfully!",
+        });
       }
-      if (stderr) {
-        console.warn("Train stderr:", stderr);
-      }
-      console.log("Train stdout:", stdout);
-      return res.json({
-        success: true,
-        message: "Model retrained successfully!",
-      });
-    });
+    );
   } catch (error) {
     console.error("Lỗi trong trainScheduleModel:", error);
     res.status(500).json({
@@ -1034,7 +1042,6 @@ export const trainScheduleModel = async (req, res) => {
     });
   }
 };
-
 
 //// Application
 
@@ -1131,7 +1138,7 @@ export const getScheduleByIdForMobile = async (req, res) => {
   }
 };
 const getAllUserDataToTrainAI = async () => {
-  const users = await User.find().populate('following.idUser').lean();
+  const users = await User.find().populate("following.idUser").lean();
   const allData = [];
 
   for (const user of users) {
@@ -1145,36 +1152,39 @@ const getAllUserDataToTrainAI = async () => {
     let totalCost = 0;
 
     // Favorite của user
-    user.favorites?.foodService?.forEach(r => restaurants.add(r.toString()));
-    user.favorites?.accommodation?.forEach(a => accommodations.add(a.toString()));
-    user.favorites?.attraction?.forEach(t => attractions.add(t.toString()));
+    user.favorites?.foodService?.forEach((r) => restaurants.add(r.toString()));
+    user.favorites?.accommodation?.forEach((a) =>
+      accommodations.add(a.toString())
+    );
+    user.favorites?.attraction?.forEach((t) => attractions.add(t.toString()));
 
     // Lịch trình user tạo
     const schedules = await Schedule.find({ idUser: user._id }).lean();
-    schedules.forEach(schedule => {
+    schedules.forEach((schedule) => {
       totalDays += schedule.numDays || 0;
       allTags.push(...(schedule.tags || []));
 
-      schedule.activities?.forEach(day => {
-        day.activity.forEach(act => {
+      schedule.activities?.forEach((day) => {
+        day.activity.forEach((act) => {
           totalCost += act.cost || 0;
-          if (act.activityType === 'FoodService') {
+          if (act.activityType === "FoodService") {
             restaurants.add(act.idDestination);
-
           }
-          if (act.activityType === 'Accommodation') {
+          if (act.activityType === "Accommodation") {
             accommodations.add(act.idDestination);
           }
-          if (act.activityType === 'Attraction') {
+          if (act.activityType === "Attraction") {
             attractions.add(act.idDestination);
           }
         });
       });
     });
     // Lịch trình user tương tác
-    const logs = await Log.find({ userId: user._id }).populate('scheduleId').lean();
+    const logs = await Log.find({ userId: user._id })
+      .populate("scheduleId")
+      .lean();
 
-    logs.forEach(log => {
+    logs.forEach((log) => {
       // Đếm số lượng hành động (dùng actionType chứ không phải action)
       actionCounts[log.actionType] = (actionCounts[log.actionType] || 0) + 1;
 
@@ -1182,15 +1192,17 @@ const getAllUserDataToTrainAI = async () => {
       if (sched) {
         allTags.push(...(sched.tags || []));
 
-        sched.activities?.forEach(day => {
-          day.activity.forEach(act => {
-            if (act.activityType === 'FoodService') {
+        sched.activities?.forEach((day) => {
+          day.activity.forEach((act) => {
+            if (act.activityType === "FoodService") {
               restaurants.add(act.idDestination || act.activityId?.toString());
             }
-            if (act.activityType === 'Accommodation') {
-              accommodations.add(act.idDestination || act.activityId?.toString());
+            if (act.activityType === "Accommodation") {
+              accommodations.add(
+                act.idDestination || act.activityId?.toString()
+              );
             }
-            if (act.activityType === 'Attraction') {
+            if (act.activityType === "Attraction") {
               attractions.add(act.idDestination || act.activityId?.toString());
             }
           });
@@ -1199,26 +1211,28 @@ const getAllUserDataToTrainAI = async () => {
     });
     // Đếm số lần xuất hiện của từng tag
     const tagCounts = {};
-    allTags.forEach(tag => {
+    allTags.forEach((tag) => {
       tagCounts[tag] = (tagCounts[tag] || 0) + 1;
     });
 
     // Sắp xếp tag theo tần suất giảm dần và lấy top 10
     const topTags = Object.entries(tagCounts)
       .sort((a, b) => b[1] - a[1]) // sắp giảm dần theo count
-      .slice(0, 10)                 // lấy top 10
-      .map(entry => entry[0]);      // chỉ lấy tên tag
+      .slice(0, 10) // lấy top 10
+      .map((entry) => entry[0]); // chỉ lấy tên tag
     allData.push({
       userId: user._id,
       age,
-      address: user.address || '',
-      gender: user.gender || '',
+      address: user.address || "",
+      gender: user.gender || "",
       restaurants: Array.from(restaurants),
       accommodations: Array.from(accommodations),
       attractions: Array.from(attractions),
-      following: Array.isArray(user.following) ? user.following.map(f => f.toString()) : [],
-      averageDays: schedules.length ? (totalDays / schedules.length) : 0,
-      averageCost: schedules.length ? (totalCost / schedules.length) : 0,
+      following: Array.isArray(user.following)
+        ? user.following.map((f) => f.toString())
+        : [],
+      averageDays: schedules.length ? totalDays / schedules.length : 0,
+      averageCost: schedules.length ? totalCost / schedules.length : 0,
       topTags: topTags,
       numRestaurants: restaurants.size,
       numAccommodations: accommodations.size,
@@ -1227,11 +1241,14 @@ const getAllUserDataToTrainAI = async () => {
       totalComments: actionCounts.comment,
       totalEdits: actionCounts.edit,
       totalViews: actionCounts.view,
-      totalShares: actionCounts.share
+      totalShares: actionCounts.share,
     });
   }
 
-  fs.writeFileSync('../Schedule_AI/ALL_users.json', JSON.stringify(allData, null, 2));
+  fs.writeFileSync(
+    "../Schedule_AI/ALL_users.json",
+    JSON.stringify(allData, null, 2)
+  );
 };
 const getAllScheduleToTrainAI = async () => {
   const schedules = await Schedule.find().lean();
@@ -1243,16 +1260,16 @@ const getAllScheduleToTrainAI = async () => {
     const accommodations = new Set();
     const attractions = new Set();
 
-    sched.activities?.forEach(day => {
-      day.activity.forEach(act => {
+    sched.activities?.forEach((day) => {
+      day.activity.forEach((act) => {
         totalCost += act.cost || 0;
-        if (act.activityType === 'FoodService') {
+        if (act.activityType === "FoodService") {
           restaurants.add(act.idDestination.toString());
         }
-        if (act.activityType === 'Accommodation') {
+        if (act.activityType === "Accommodation") {
           accommodations.add(act.idDestination.toString());
         }
-        if (act.activityType === 'Attraction') {
+        if (act.activityType === "Attraction") {
           attractions.add(act.idDestination.toString());
         }
       });
@@ -1262,15 +1279,15 @@ const getAllScheduleToTrainAI = async () => {
     const totalLikes = sched.likes ? sched.likes.length : 0;
     const totalComments = sched.comments
       ? sched.comments.reduce((sum, comment) => {
-        const repliesCount = comment.replies ? comment.replies.length : 0;
-        return sum + 1 + repliesCount; // 1 comment + số reply
-      }, 0)
+          const repliesCount = comment.replies ? comment.replies.length : 0;
+          return sum + 1 + repliesCount; // 1 comment + số reply
+        }, 0)
       : 0;
 
     result.push({
       scheduleId: sched._id,
       userId: sched.idUser,
-      address: sched.address || '',
+      address: sched.address || "",
       numDays: sched.numDays || 0,
       totalLikes,
       totalComments,
@@ -1282,16 +1299,24 @@ const getAllScheduleToTrainAI = async () => {
     });
   }
 
-  fs.writeFileSync('../Schedule_AI/ALL_schedules.json', JSON.stringify(result, null, 2));
+  fs.writeFileSync(
+    "../Schedule_AI/ALL_schedules.json",
+    JSON.stringify(result, null, 2)
+  );
 };
 
 export const getScheduleByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
-    const schedules = await Schedule.find({ idUser: userId , isPublic: true }).populate("idUser");
+    const schedules = await Schedule.find({
+      idUser: userId,
+      isPublic: true,
+    }).populate("idUser");
     res.status(200).json({ success: true, schedules });
   } catch (error) {
     console.error("Error fetching schedules:", error);
-    res.status(500).json({ success: false, message: "Error fetching schedules" });
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching schedules" });
   }
 };

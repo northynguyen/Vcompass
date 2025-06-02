@@ -393,7 +393,7 @@ const handleBudgetChange = (e) => {
               <button
                 key={index}
                 type="button"
-                className={`type-button ${selectedTypes.includes(travelType) ? 'selected' : ''}`}
+                className={`type-button-schedule ${selectedTypes.includes(travelType) ? 'selected' : ''}`}
                 onClick={() => handleTypeSelection(travelType)}
               >
                 {travelType}

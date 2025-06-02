@@ -260,7 +260,7 @@
 
 .hero-section {
   position: relative;
-  margin-top:40px;
+  margin-top:50px;
   text-align: center;
   background-color: #fff;
   padding: 60px;
@@ -289,6 +289,9 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
   }
 }
 .create-schedule-btn {
@@ -703,6 +706,9 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+  .hero-section-content-text {
+    display: unset !important;
   }
   .create-schedule-btn {
     padding: 8px 16px;

@@ -11,7 +11,7 @@ import ScheduleSkeleton from './ScheduleSkeleton';
 import PropTypes from 'prop-types';
 
 const MySchedule = () => {
-  const { url, token } = useContext(StoreContext);
+  const { url, token, getImageUrl } = useContext(StoreContext);
   const [schedules, setSchedules] = useState([]);
   const [groupSchedules, setGroupSchedules] = useState([]);
   const [wishlists, setWishlists] = useState([]);
@@ -365,19 +365,22 @@ const MySchedule = () => {
   return (
     <div className="my-schedule-container">
       <header className="hero-section">
-        <h1>Tạo lịch trình du lịch dễ dàng cho chuyến đi của bạn</h1>
-        <p>Chỉ mất 3-5 phút, bạn có thể tạo ngay cho mình lịch trình du lịch</p>
-        <div className="create-schedule-btn-container">
-          <div className="create-schedule-btn" onClick={() => navigate("/create-schedule/manual")}>
-            <FiPlus style={{ marginRight: "6px" }} />
-            <p>Tạo lịch trình</p>
-          </div>
-          <div className="create-schedule-btn" onClick={() => navigate("/create-schedule/ai")}>
-            <VscCopilot style={{ marginRight: "6px" }} />
-            <p>Tạo lịch trình với AI</p>
-          </div>
-        </div>
-      </header>
+            <div className="hero-section-content"> </div>
+            <div className="hero-section-content-text">
+            <h1 className="create-schedule-title">Tạo lịch trình du lịch dễ dàng cho chuyến đi của bạn</h1>
+            <p className="create-schedule-description">Chỉ mất 3-5 phút, bạn có thể tạo ngay cho mình lịch trình du lịch</p>
+            <div className="create-schedule-btn-container">
+              <div className="create-schedule-btn" onClick={() => handleCreateScheduleClick('manual')}>
+                <FiPlus style={{ marginRight: "6px" }} />
+                <p>Tạo lịch trình</p>
+              </div>
+              <div className="create-schedule-btn" onClick={() => handleCreateScheduleClick('ai')}>
+                <VscCopilot style={{ marginRight: "6px" }} />
+                <p>Tạo lịch trình với AI</p>
+              </div>
+            </div>
+            </div>
+          </header>
 
       <section className="my-schedule-section">
         <div className="schedule-type-buttons">
@@ -410,7 +413,7 @@ const MySchedule = () => {
                 onClick={() => navigate(`/schedule-edit/${schedule._id}`)}
               >
                 <img
-                  src="https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"
+                  src={getImageUrl(schedule)}
                   alt="My Schedule"
                 />
                 <div className="schedule-info">
@@ -484,7 +487,7 @@ const MySchedule = () => {
                 >
                   <div className="schedule-header">
                     <img
-                      src={schedule.imgSrc[0] && schedule.imgSrc[0].includes("http") ? schedule.imgSrc[0] : schedule.imgSrc[0] ? `${url}/images/${schedule.imgSrc[0]}` : "https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"}
+                      src={getImageUrl(schedule)}
                       alt={schedule.scheduleName}
                     />
                     <div className="schedule-date">

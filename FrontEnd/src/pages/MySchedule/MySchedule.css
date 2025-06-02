@@ -4,7 +4,6 @@
   font-family: 'Poppins', sans-serif;
   color: #333;
   background-color: #f9f9f9;
-  margin-top: 80px;
 
 
   /* Hero Section */
@@ -157,8 +156,8 @@
 
   .action-buttons {
     position: absolute;
-    top: 60px;
-    right: 30px;
+    top: 0;
+    right: 50px;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -419,9 +418,6 @@
 }
 
 @media (max-width: 768px) {
-  .my-schedule-container .hero-section h1 {
-    font-size: 1.1rem !important;
-  }
 
   .my-schedule-container.hero-section p {
     font-size: 0.9rem !important;
@@ -430,10 +426,15 @@
 
   .my-schedule-container {
     padding: 10px 1% !important;
+    margin-top: 10px;
   }
 
   .my-schedule-card {
     max-width: 100% !important;
+  }
+  .hero-section-content-text{
+    padding: 20px 0px;
+    display: unset !important;
   }
 }
 
