@@ -157,8 +157,8 @@
 
   .action-buttons {
     position: absolute;
-    top: 60px;
-    right: 30px;
+    top: 0;
+    right: 50px;
     display: flex;
     flex-direction: column;
     gap: 5px;

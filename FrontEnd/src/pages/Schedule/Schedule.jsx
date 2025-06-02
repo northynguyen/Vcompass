@@ -398,7 +398,7 @@ const ActivityItem = ({
           }
           {activity.activityType === "FoodService" && (
             <FoodServiceActivity
-              data={data.foodService}
+              data={data?.foodService}
               activity={activity}
               handleEdit={handleEdit}
               setIsOpenModal={setIsModalOpen}

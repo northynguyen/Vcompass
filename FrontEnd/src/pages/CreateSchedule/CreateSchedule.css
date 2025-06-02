@@ -122,7 +122,7 @@
     margin-top: 10px;
   }
   
-  .type-button {
+  .type-button-schedule {
     padding: 8px 16px;
     border: 1px solid #ddd;
     border-radius: 20px;
@@ -131,11 +131,11 @@
     transition: all 0.3s ease;
   }
   
-  .type-button:hover {
+  .type-button-schedule:hover {
     background-color: #f0f0f0;
   }
   
-  .type-button.selected {
+  .type-button-schedule.selected {
     background-color: #007bff;
     color: white;
     border-color: #007bff;

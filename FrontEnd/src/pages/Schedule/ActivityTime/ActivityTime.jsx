@@ -366,10 +366,10 @@ export const FoodServiceActivity = ({
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
-    if (userData && userData.favorites.foodService && userData.favorites.foodService.includes(data._id)) {
+    if (userData && userData.favorites.foodService && userData.favorites.foodService.includes(data?._id)) {
       setIsSaved(true)
     }
-  }, [user, data._id])
+  }, [user, data?._id])
 
   const onNavigateToDetails = () => {
     const encryptedServiceId = CryptoJS.AES.encrypt(

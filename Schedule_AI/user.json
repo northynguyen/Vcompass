@@ -424,9 +424,7 @@
         "ăn uống",
         "du lịch",
         "phượt",
-        "lịch trình",
-        "male",
-        "trẻ"
+        "lịch trình"
       ]
     },
     {
@@ -812,53 +810,6 @@
       ]
     },
     {
-      "_id": "68318b9a487f689e54b8dda2",
-      "idUser": "67128427a9cdb6c151e91e14",
-      "address": "Thừa Thiên Huế",
-      "numDays": 3,
-      "activities": [
-        {
-          "day": 1,
-          "activity": [],
-          "_id": "68318b9a487f689e54b8dda3"
-        },
-        {
-          "day": 2,
-          "activity": [
-            {
-              "activityType": "Accommodation",
-              "idDestination": "681dae830699cefb82f804d0",
-              "cost": 800000
-            },
-            {
-              "activityType": "Attraction",
-              "idDestination": "67dcdc9080362ea4bb54177f",
-              "cost": 200000
-            }
-          ],
-          "_id": "68318b9a487f689e54b8dda4"
-        },
-        {
-          "day": 3,
-          "activity": [],
-          "_id": "68318b9a487f689e54b8dda5"
-        }
-      ],
-      "tags": [
-        "Thừa Thiên Huế",
-        "3 ngày",
-        "2 đêm",
-        "3N2Đ",
-        "khách sạn",
-        "chỗ ở",
-        "địa điểm",
-        "tham quan",
-        "du lịch",
-        "phượt",
-        "lịch trình"
-      ]
-    },
-    {
       "_id": "68318e29487f689e54b8ed2c",
       "idUser": "67128427a9cdb6c151e91e14",
       "address": "Thừa Thiên Huế",
@@ -948,6 +899,185 @@
         "3 ngày",
         "2 đêm",
         "3N2Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "ẩm thực",
+        "ăn uống",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình"
+      ]
+    },
+    {
+      "_id": "683dccd979a92a147ce3f9be",
+      "idUser": "67128427a9cdb6c151e91e14",
+      "address": "Bà Rịa - Vũng Tàu",
+      "numDays": 2,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "670e86affe137be97dd5e67d",
+              "cost": 1000000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "6740730ba908719dec998c5d",
+              "cost": 0
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6740698911b863a2ca68167c",
+              "cost": 50000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e519ebfd28456dcbaf6937",
+              "cost": 10000
+            },
+            {
+              "activityType": "Other",
+              "idDestination": "64e9295106466072e0a632a4",
+              "cost": 50000
+            }
+          ],
+          "_id": "683dccd979a92a147ce3f9bf"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e51c0efd28456dcbaf6962",
+              "cost": 500000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "67e8d84d43ea4eedd3f53784",
+              "cost": 40000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e51d65fd28456dcbaf69a8",
+              "cost": 70000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67e53a2a77a3301c455bdc77",
+              "cost": 40000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "67ea63713dcaf8dca374b791",
+              "cost": 500000
+            }
+          ],
+          "_id": "683dccd979a92a147ce3f9c5"
+        }
+      ],
+      "tags": [
+        "Bà Rịa - Vũng Tàu",
+        "biển",
+        "nghỉ dưỡng",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "ẩm thực",
+        "ăn uống",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình"
+      ]
+    },
+    {
+      "_id": "683dd5c68596c4dc338eb4b1",
+      "idUser": "67128427a9cdb6c151e91e14",
+      "address": "Lâm Đồng",
+      "numDays": 2,
+      "activities": [
+        {
+          "day": 1,
+          "activity": [
+            {
+              "activityType": "Accommodation",
+              "idDestination": "682786c4f76797874cfac394",
+              "cost": 1000000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dce30580362ea4bb541958",
+              "cost": 0
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "682793a3f76797874cfae215",
+              "cost": 30000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "6827a7439472bc0d915e0673",
+              "cost": 5000
+            },
+            {
+              "activityType": "Other",
+              "idDestination": "64e9f96e76f69170458a9c7b",
+              "cost": 50000
+            }
+          ],
+          "_id": "683dd5c68596c4dc338eb4b2"
+        },
+        {
+          "day": 2,
+          "activity": [
+            {
+              "activityType": "Attraction",
+              "idDestination": "68279b349472bc0d915d9b7f",
+              "cost": 50000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "6827949af76797874cfae41b",
+              "cost": 30000
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "67dce14480362ea4bb541914",
+              "cost": 0
+            },
+            {
+              "activityType": "Attraction",
+              "idDestination": "68279bfa9472bc0d915d9b85",
+              "cost": 50000
+            },
+            {
+              "activityType": "FoodService",
+              "idDestination": "68279691f76797874cfae88d",
+              "cost": 35000
+            },
+            {
+              "activityType": "Accommodation",
+              "idDestination": "682786c4f76797874cfac394",
+              "cost": 1000000
+            }
+          ],
+          "_id": "683dd5c68596c4dc338eb4b8"
+        }
+      ],
+      "tags": [
+        "Lâm Đồng",
+        "2 ngày",
+        "1 đêm",
+        "2N1Đ",
         "khách sạn",
         "chỗ ở",
         "địa điểm",
@@ -1172,6 +1302,28 @@
         "ẩm thực"
       ],
       "address": "Phú Yên"
+    },
+    {
+      "scheduleId": "683d4651c0f6af55e023b6aa",
+      "viewCount": 1,
+      "editCount": 0,
+      "tags": [
+        "Đà Lạt, Lâm Đồng",
+        "4 ngày",
+        "3 đêm",
+        "4N3Đ",
+        "khách sạn",
+        "chỗ ở",
+        "địa điểm",
+        "tham quan",
+        "ẩm thực",
+        "ăn uống",
+        "hoạt động khác",
+        "du lịch",
+        "phượt",
+        "lịch trình"
+      ],
+      "address": "Lâm Đồng"
     }
   ],
   "topTags": [
@@ -1180,9 +1332,9 @@
     "lịch trình",
     "địa điểm",
     "tham quan",
+    "ẩm thực",
     "khách sạn",
     "chỗ ở",
-    "ẩm thực",
     "ăn uống",
     "hoạt động khác"
   ]
