@@ -73,7 +73,6 @@ const CreateSchedule = ({ setShowLogin }) => {
   const navigate = useNavigate();
   const { type } = useParams();
   const [destination, setDestination] = useState('');
-  const [budget, setBudget] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [filteredCities, setFilteredCities] = useState([]);
   const [departureDate, setDepartureDate] = useState(new Date().toISOString().split('T')[0]);
@@ -83,6 +82,24 @@ const CreateSchedule = ({ setShowLogin }) => {
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [hasShownLoginPopup, setHasShownLoginPopup] = useState(false);
   const { user, url, token } = useContext(StoreContext);
+  const [budgetInput, setBudgetInput] = useState('');
+const [budget, setBudget] = useState(null); // số thực tế (2000000)
+
+const formatNumber = (value) => {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+};
+
+// const unformatNumber = (value) => {
+//   return value.replace(/\./g, '');
+// };
+
+const handleBudgetChange = (e) => {
+  const rawValue = e.target.value.replace(/\./g, '');
+  if (!/^\d*$/.test(rawValue)) return; // chỉ cho phép số
+
+  setBudgetInput(formatNumber(rawValue));
+  setBudget(Number(rawValue));
+};
 
   // Thêm state để quản lý lỗi
   const [errors, setErrors] = useState({
@@ -392,11 +409,12 @@ const CreateSchedule = ({ setShowLogin }) => {
             <input
               type="text"
               id="budget"
-              placeholder='Từ 2.000.000 - 5.000.000'
-              value={budget}
-              onChange={(e) => setBudget(e.target.value)}
+              placeholder="Từ 2.000.000 - 5.000.000"
+              value={budgetInput}
+              onChange={handleBudgetChange}
               className={errors.budget ? 'error-input' : ''}
             />
+
             {errors.budget && <div className="error-message">{errors.budget}</div>}
           </div>
         }

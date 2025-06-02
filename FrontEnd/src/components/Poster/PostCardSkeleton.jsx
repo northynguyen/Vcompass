@@ -11,7 +11,7 @@ const PostCardSkeleton = ({ count = 1 }) => {
         <div key={index} className="skeleton-card-container">
           <header className="skeleton-card-header">
             <div className="skeleton-user-info">
-              <div className="skeleton-avatar"></div>
+              <div className="skeleton-avatar-postcard"></div>
               <div className="skeleton-user-details">
                 <div className="skeleton-username"></div>
                 <div className="skeleton-date"></div>

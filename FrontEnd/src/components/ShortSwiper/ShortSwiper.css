@@ -116,12 +116,12 @@
 
 @keyframes pulse {
   0%, 100% { 
-    transform: scale(1); 
+    background-position: 200% 0;
     opacity: 0.9; 
   }
-  50% { 
-    transform: scale(1.15); 
+  50% {   
     opacity: 1; 
+    background-position: -200% 0;
   }
 }
 

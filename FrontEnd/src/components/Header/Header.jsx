@@ -176,7 +176,7 @@ const Header = ({ setShowLogin }) => {
 
   const handleLogout = () => {
     setShowLogin(false);
-    navigate('/');
+    window.location.href = '/';
     toast.success("Đăng xuất thành công");
     localStorage.removeItem('token');
     localStorage.removeItem('user');

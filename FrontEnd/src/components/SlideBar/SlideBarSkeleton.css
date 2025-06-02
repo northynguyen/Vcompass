@@ -1,13 +1,16 @@
 /* Base animation for all skeleton elements */
 @keyframes pulse {
   0% {
+    background-position: 200% 0;
     opacity: 0.6;
   }
   50% {
     opacity: 0.8;
+    background-position: -200% 0;
   }
   100% {
     opacity: 0.6;
+    background-position: 200% 0;
   }
 }
 

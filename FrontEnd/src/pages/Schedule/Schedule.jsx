@@ -1445,6 +1445,10 @@ const Schedule = ({ mode, setShowLogin }) => {
   };
   const onEdit = async () => {
     try {
+      if (!user) {
+        setShowLogin(true);
+        return;
+      }
       // Copy media from old schedule
       const response = await axios.post(
         `${url}/api/videos/copy-media`,
