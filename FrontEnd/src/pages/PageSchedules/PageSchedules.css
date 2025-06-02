@@ -209,6 +209,11 @@
 }
 
 @media (max-width: 768px) {
+  .schedule-for-you {
+    flex-direction: column;
+    margin-right: 10px;
+    margin-left: 10px;
+  }
   .search-schedule {
     max-width: 100%;
     padding: 10px;
@@ -217,11 +222,17 @@
   .main-content {
     flex-direction: column;
     gap: 20px;
-  }
+    z-index: -1;
+}
 
   .filters-container {
     width: 100%;
+    position: static;
+    margin-bottom: 10px;
   }
+  .filters, .price-slider {
+    z-index: -1;
+}
 
   .schedule-list {
     grid-template-columns: 1fr;

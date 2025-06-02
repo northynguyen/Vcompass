@@ -23,6 +23,9 @@
     flex-shrink: 0;
     transition: all 0.3s ease;
 }
+.accom-banner{
+    font-weight: 500;
+}
 
 .banner-image {
     width: 100%;

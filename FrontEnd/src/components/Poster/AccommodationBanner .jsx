@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AccommodationBanner.css';
 
-const AccommodationBanner = ({ cityName }) => {
+const AccommodationBanner = ({ cityName, scheduleSize }) => {
     const navigate = useNavigate();
 
     const cities = [
@@ -276,11 +276,11 @@ const AccommodationBanner = ({ cityName }) => {
                         <i className="fa-solid fa-star icon-rating"></i>
                         <i className="fa-solid fa-star icon-rating"></i>
                     </div>
-                    <span className="rating accom-banner">4.9 (300 reviews)</span>
+                   <span className="rating accom-banner">{scheduleSize? scheduleSize + " lịch trình" : "0 lịch trình"}</span>
                 </div>
                 <p className="description">{city.description}</p>
                 <div className="actions">
-                    <button className="book-now" onClick={() => navigate(`/searchSchedule`, { state: { city: city.name } })}>Đặt ngay</button>
+                    <button className="book-now" onClick={() => navigate(`/searchSchedule`, { state: { city: city.name } })}>Khám phá ngay</button>
                     <i className="fa-solid fa-heart fa-shake book-schedule-icon"></i>
                     <i className="fa-solid fa-share fa-shake book-schedule-icon"></i>
                 </div>

@@ -236,56 +236,6 @@ const PageSchedules = ({ setShowLogin }) => {
           <LeftSideBar setShowLogin={setShowLogin} />
         </div>
       </div>
-      <div className="main-content">
-        <div>
-          <div className="schedule-for-you-list">
-            {loading && <PostCardSkeleton count={schedulesPerPage} />}
-
-            {!loading && currentSchedules.length > 0 &&
-              currentSchedules.map((schedule) => (
-                <PostCard
-                  key={schedule._id}
-                  schedule={schedule}
-                  handleScheduleClick={handleScheduleClick}
-                  {...(type === "foryou" && {
-                    onLikeClick: handleLike,
-                    onHeartClick: handleSave
-                  })}
-                  setShowLogin={setShowLogin}
-                />
-              ))
-            }
-            {!loading && currentSchedules.length === 0 && (
-              <div className="no-schedule">
-                <h3>Không tìm thấy lịch trình</h3>
-              </div>
-            )}
-          </div>
-
-          {!loading && totalPages > 1 && (
-            <div className="pagination-container">
-              <button
-                className="prev-button"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                Trước
-              </button>
-              <span>
-                Trang {currentPage} / {totalPages}
-              </span>
-              <button
-                className="next-button"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                Sau
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
       <div className="filters-container">
         <div className="filters">
           <h3>Lọc & Sắp xếp</h3>
@@ -410,6 +360,57 @@ const PageSchedules = ({ setShowLogin }) => {
           </div>
         </div>
       </div>
+      <div className="main-content">
+        <div>
+          <div className="schedule-for-you-list">
+            {loading && <PostCardSkeleton count={schedulesPerPage} />}
+
+            {!loading && currentSchedules.length > 0 &&
+              currentSchedules.map((schedule) => (
+                <PostCard
+                  key={schedule._id}
+                  schedule={schedule}
+                  handleScheduleClick={handleScheduleClick}
+                  {...(type === "foryou" && {
+                    onLikeClick: handleLike,
+                    onHeartClick: handleSave
+                  })}
+                  setShowLogin={setShowLogin}
+                />
+              ))
+            }
+            {!loading && currentSchedules.length === 0 && (
+              <div className="no-schedule">
+                <h3>Không tìm thấy lịch trình</h3>
+              </div>
+            )}
+          </div>
+
+          {!loading && totalPages > 1 && (
+            <div className="pagination-container">
+              <button
+                className="prev-button"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Trước
+              </button>
+              <span>
+                Trang {currentPage} / {totalPages}
+              </span>
+              <button
+                className="next-button"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Sau
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+    
     </div>
   );
 };

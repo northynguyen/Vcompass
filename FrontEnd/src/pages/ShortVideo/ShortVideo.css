@@ -650,7 +650,7 @@
     padding: 0;
   }
 
-
+ 
 
   .music-disc {
     display: none;
@@ -717,7 +717,11 @@
     background: none;
   }
 
-
+  .tiktok-content {
+    margin-left: 5px;
+    padding:5px;
+    padding-right: 10px;
+  }
 
   .music-disc {
     display: none;

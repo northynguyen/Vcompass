@@ -1,15 +1,14 @@
 .left-side-bar {
   position: fixed;
   left: 0;
-
   top: 55px; /* Chiều cao của header */
-
   width: 250px;
   height: calc(100vh - 75px); /* Chỉ trừ chiều cao của header */
   background-color: #ffffff;
   padding: 8px 4px;
   overflow-y: auto;
-  z-index: 99;
+  z-index: 9999999
+  ;
 
 
   scroll-behavior: smooth;
