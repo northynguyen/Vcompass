@@ -4,13 +4,14 @@ services:
     runtime: python3
     region: singapore
     plan: starter
-    buildCommand: cd Schedule_AI && pip install --upgrade pip && pip install -r requirements.txt
-    startCommand: cd Schedule_AI && python -m uvicorn server:app --host 0.0.0.0 --port $PORT
+    rootDir: Schedule_AI
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /docs
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: PYTHONPATH
-        value: Schedule_AI
+        value: .
     autoDeploy: true
     branch: main 
