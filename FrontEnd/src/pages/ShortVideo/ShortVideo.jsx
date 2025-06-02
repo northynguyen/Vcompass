@@ -568,7 +568,7 @@ const ShortVideo = ({ setShowLogin }) => {
             onClick={handleForYouClick}
           >
             <FaUser />
-            <span>For You</span>
+            <span>Cho bạn</span>
           </div>
           
           <div 
@@ -576,7 +576,7 @@ const ShortVideo = ({ setShowLogin }) => {
             onClick={handleExploreClick}
           >
             <FaCompass />
-            <span>Explore</span>
+            <span>Danh mục</span>
           </div>
           
           <div 
@@ -584,7 +584,7 @@ const ShortVideo = ({ setShowLogin }) => {
             onClick={handleFollowingClick}
           >
             <FaUserFriends />
-            <span>Following</span>
+            <span>Theo dõi</span>
           </div>
           
        
@@ -594,7 +594,7 @@ const ShortVideo = ({ setShowLogin }) => {
             onClick={handleUploadClick}
           >
             <FaUpload />
-            <span>Upload</span>
+            <span>Thêm mới</span>
           </div>
           
           
@@ -603,7 +603,7 @@ const ShortVideo = ({ setShowLogin }) => {
             onClick={handleMyVideosClick}
           >
             <FaUser />
-            <span>Profile</span>
+            <span>Hồ sơ</span>
           </div>
         </div>
       </div>

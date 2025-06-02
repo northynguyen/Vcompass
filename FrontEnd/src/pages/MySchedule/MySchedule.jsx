@@ -11,7 +11,7 @@ import ScheduleSkeleton from './ScheduleSkeleton';
 import PropTypes from 'prop-types';
 
 const MySchedule = () => {
-  const { url, token } = useContext(StoreContext);
+  const { url, token, getImageUrl } = useContext(StoreContext);
   const [schedules, setSchedules] = useState([]);
   const [groupSchedules, setGroupSchedules] = useState([]);
   const [wishlists, setWishlists] = useState([]);
@@ -410,7 +410,7 @@ const MySchedule = () => {
                 onClick={() => navigate(`/schedule-edit/${schedule._id}`)}
               >
                 <img
-                  src="https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"
+                  src={getImageUrl(schedule)}
                   alt="My Schedule"
                 />
                 <div className="schedule-info">
@@ -484,7 +484,7 @@ const MySchedule = () => {
                 >
                   <div className="schedule-header">
                     <img
-                      src={schedule.imgSrc[0] && schedule.imgSrc[0].includes("http") ? schedule.imgSrc[0] : schedule.imgSrc[0] ? `${url}/images/${schedule.imgSrc[0]}` : "https://h3jd9zjnmsobj.vcdn.cloud/public/v7/banner/tourists-min-02.png"}
+                      src={getImageUrl(schedule)}
                       alt={schedule.scheduleName}
                     />
                     <div className="schedule-date">

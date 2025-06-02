@@ -56,23 +56,23 @@
 
 /* Individual icon styles */
 .left-side-bar-item:nth-child(1) .left-side-bar-icon {
-  color: #1877f2; /* Facebook blue */
+  color: #174b81; /* Facebook blue */
 }
 
 .left-side-bar-item:nth-child(2) .left-side-bar-icon {
-  color: #ff7043; /* Orange - for recommendations */
+  color: #174b81; /* Orange - for recommendations */
 }
 
 .left-side-bar-item:nth-child(3) .left-side-bar-icon {
-  color: #00b0ff; /* Light blue - for explore */
+  color: #174b81; /* Light blue - for explore */
 }
 
 .left-side-bar-item:nth-child(4) .left-side-bar-icon {
-  color: #8e24aa; /* Purple - for follow */
+  color: #174b81; /* Purple - for follow */
 }
 
 .left-side-bar-item:nth-child(5) .left-side-bar-icon {
-  color: #4caf50; /* Green - for create */
+  color: #174b81; /* Green - for create */
 }
 
 .left-side-bar-item:nth-child(6) .left-side-bar-icon {
@@ -86,7 +86,6 @@
 /* Hover effect for just the icon */
 .left-side-bar-item:hover .left-side-bar-icon {
   transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Active state */

@@ -5,6 +5,9 @@ import {
   FaPlus, 
   FaHome
 } from 'react-icons/fa';
+import { BsStars } from "react-icons/bs";
+import { MdBookmarks } from "react-icons/md";
+import { MdExplore } from "react-icons/md";
 import { MdTravelExplore, MdOutlineRecommend } from 'react-icons/md';
 import { StoreContext } from '../../Context/StoreContext';
 import PropTypes from 'prop-types';
@@ -52,7 +55,7 @@ const LeftSideBar = ({ setShowLogin }) => {
       </Link>
       
       <Link to="/schedules/foryou" className={`left-side-bar-item ${isActive('/schedules/foryou') ? 'active' : ''}`}>
-        <MdOutlineRecommend className="left-side-bar-icon" />
+        <BsStars className="left-side-bar-icon" />
         <span>Dành cho bạn</span>
       </Link>
 
@@ -61,12 +64,12 @@ const LeftSideBar = ({ setShowLogin }) => {
         className={`left-side-bar-item ${isActive('/schedules/follow') ? 'active' : ''}`}
         style={{ cursor: 'pointer' }}
       >
-        <FaRegBookmark className="left-side-bar-icon" />
+        <MdBookmarks className="left-side-bar-icon" />
         <span>Đang theo dõi</span>
       </div>
 
       <Link to="/short-video" className={`left-side-bar-item ${isActive('/short-video') ? 'active' : ''}`}>
-        <MdTravelExplore className="left-side-bar-icon" />
+        <MdExplore className="left-side-bar-icon" />
         <span>Khám phá</span>
       </Link>
 
