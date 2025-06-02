@@ -365,19 +365,22 @@ const MySchedule = () => {
   return (
     <div className="my-schedule-container">
       <header className="hero-section">
-        <h1>Tạo lịch trình du lịch dễ dàng cho chuyến đi của bạn</h1>
-        <p>Chỉ mất 3-5 phút, bạn có thể tạo ngay cho mình lịch trình du lịch</p>
-        <div className="create-schedule-btn-container">
-          <div className="create-schedule-btn" onClick={() => navigate("/create-schedule/manual")}>
-            <FiPlus style={{ marginRight: "6px" }} />
-            <p>Tạo lịch trình</p>
-          </div>
-          <div className="create-schedule-btn" onClick={() => navigate("/create-schedule/ai")}>
-            <VscCopilot style={{ marginRight: "6px" }} />
-            <p>Tạo lịch trình với AI</p>
-          </div>
-        </div>
-      </header>
+            <div className="hero-section-content"> </div>
+            <div className="hero-section-content-text">
+            <h1 className="create-schedule-title">Tạo lịch trình du lịch dễ dàng cho chuyến đi của bạn</h1>
+            <p className="create-schedule-description">Chỉ mất 3-5 phút, bạn có thể tạo ngay cho mình lịch trình du lịch</p>
+            <div className="create-schedule-btn-container">
+              <div className="create-schedule-btn" onClick={() => handleCreateScheduleClick('manual')}>
+                <FiPlus style={{ marginRight: "6px" }} />
+                <p>Tạo lịch trình</p>
+              </div>
+              <div className="create-schedule-btn" onClick={() => handleCreateScheduleClick('ai')}>
+                <VscCopilot style={{ marginRight: "6px" }} />
+                <p>Tạo lịch trình với AI</p>
+              </div>
+            </div>
+            </div>
+          </header>
 
       <section className="my-schedule-section">
         <div className="schedule-type-buttons">
