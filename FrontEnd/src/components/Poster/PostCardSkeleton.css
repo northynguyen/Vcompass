@@ -55,6 +55,11 @@
   position: relative;
 }
 
+.max-width-search {
+  min-width: 532px;
+  max-width: 532px;
+}
+
 .skeleton-card-header {
   display: flex;
   justify-content: space-between;
