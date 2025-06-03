@@ -45,8 +45,8 @@ function Footer() {
         <div className="footer">
             <div className="footer-container">
                 <div className="footer-columns">
-                    <div className="footer-column">
-                        <p className="footer-header">Language</p>
+                    <div className="footer-column footer-first-col">
+                        <p className="footer-header">Ngôn ngữ</p>
                         <div className="custom-select">
                             <div
                                 className={`selected-option ${isFlagOpen ? 'open' : ''}`}
@@ -70,7 +70,7 @@ function Footer() {
                                 </div>
                             )}
                         </div>
-                        <p className="footer-header">Currency</p>
+                        <p className="footer-header">Tiền tệ</p>
                         <div className="custom-select">
                             <div
                                 className={`selected-option ${isCurrencyOpen ? 'open' : ''}`}
@@ -92,22 +92,21 @@ function Footer() {
                         </div>
                     </div>
                     <div className="footer-column">
-                        <p className="footer-header">Company</p>
-                        <Link href="#" className="footer-title">Home</Link>
-                        <a href="#" className="footer-title">About us</a>
-                        <a href="#" className="footer-title">Booking</a>
-                        <a href="#" className="footer-title">PartnerShip</a>
+                        <p className="footer-header">Công ty</p>
+                        <Link href="#" className="footer-title">Trang chủ</Link>
+                        <a href="#" className="footer-title">Về chúng tôi</a>
+                        <a href="#" className="footer-title">Đặt phòng</a>
+                        <a href="#" className="footer-title">Quan hệ đối tác</a>
                     </div>
                     <div className="footer-column">
-                        <p className="footer-header">Help</p>
-                        <a href="#" className="footer-title">Contact Us</a>
+                        <p className="footer-header">Trợ giúp</p>
+                        <a href="#" className="footer-title">Liên lạc với chúng tôi</a>
                         <a href="#" className="footer-title">FAQS</a>
-                        <a href="#" className="footer-title">Terms and conditions</a>
-                        <a href="#" className="footer-title">Privacy policy</a>
-                        <a href="#" className="footer-title">Sitemap</a>
+                        <a href="#" className="footer-title">Điều khoản và dịch vụ</a>
+                        <a href="#" className="footer-title">Chính sách bảo mật</a>
                     </div>
                     <div className="footer-column">
-                        <p className="footer-header">Payment methods possible</p>
+                        <p className="footer-header">Các phương thức thanh toán</p>
                         <div className='footer-payment'>
                             <div className='footer-payment-img'></div>
                             <div className='footer-payment-img'></div>
@@ -120,8 +119,8 @@ function Footer() {
                             <div className='footer-payment-img'></div>
                             <div className='footer-payment-img'></div>
                         </div>
-                        <p className="footer-header">Company</p>
-                        <p className="footer-title">Become a Partner for Us</p>
+                        <p className="footer-header">Công ty</p>
+                        <p className="footer-title">Trở thành đối tác của chúng tôi</p>
                     </div>
                 </div>
 

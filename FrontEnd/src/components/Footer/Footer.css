@@ -7,7 +7,6 @@
 .footer .footer-container {
     background-color: #13253F;
     width: 100%;
-    padding: 20px;
 }
 
 .footer .footer-header {
@@ -15,6 +14,9 @@
     font-size: 15px;
     margin-bottom: 10px;
     font-weight: 500;
+}
+.footer-first-col{
+    flex: 1;
 }
 
 .footer .footer-title {
@@ -28,9 +30,8 @@
     justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 0;
+    padding: 20px 0;
     flex-wrap: wrap;
-    gap: 20px;
 }
 
 .footer .footer-column {
@@ -46,8 +47,8 @@
     flex-direction: column;
     align-items: center;
     max-width: 1200px;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     margin: 0 auto;
     text-align: center;
 }
