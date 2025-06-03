@@ -1,13 +1,13 @@
 // SignIn.js
-import React, { useState, useContext } from 'react';
-import './SignIn.css';
+import axios from 'axios';
+import { useContext, useState } from 'react';
 import { toast } from 'react-toastify';
 import cross from '../../assets/cross_icon.png';
 import { StoreContext } from '../../Context/StoreContext';
-import axios from 'axios';
+import './SignIn.css';
 
 const SignIn = ({ setShowLogin }) => {
-    const { url, setToken ,setUser} = useContext(StoreContext);
+    const { url, setToken, setUser } = useContext(StoreContext);
     const [curentState, setCurrentState] = useState("Login");
     const [data, setData] = useState({
         name: '',
@@ -48,8 +48,8 @@ const SignIn = ({ setShowLogin }) => {
             newUrl = `${url}/api/user/login/user`;
         } else if (curentState === "Sign Up") {
             newUrl = `${url}/api/user/register/user`;
-        } 
-        
+        }
+
 
         try {
             const response = await axios.post(newUrl, data);
@@ -59,10 +59,10 @@ const SignIn = ({ setShowLogin }) => {
                     localStorage.setItem("token", response.data.token);
                     setUser(response.data.user);
                     localStorage.setItem("user", JSON.stringify(response.data.user));
-                    toast.success(response.data.message);                
+                    toast.success(response.data.message);
                 }
-                setShowLogin(false);  
-               
+                setShowLogin(false);
+
             } else {
                 toast.error(response.data.message);
             }
@@ -73,12 +73,12 @@ const SignIn = ({ setShowLogin }) => {
             setIsLoading(false); // Set loading to false after the API call
         }
     }
-    
+
     const onForgetPassword = async (event) => {
         event.preventDefault();
         try {
-            setIsLoading(true); 
-            const response = await axios.post(`${url}/api/email/password`, { type : "user", email: data.email });
+            setIsLoading(true);
+            const response = await axios.post(`${url}/api/email/password`, { type: "user", email: data.email });
             if (response.data.success) {
                 toast.success(response.data.message);
             } else {
@@ -89,11 +89,11 @@ const SignIn = ({ setShowLogin }) => {
             toast.error(error.response.data.message);
         }
         finally {
-            setIsLoading(false); 
+            setIsLoading(false);
         }
     }
     const onGoogleLogin = () => {
-        window.open(`${url}/api/user/google`, "_self"); 
+        window.open(`${url}/api/user/google`, "_self");
     }
 
     return (
@@ -108,7 +108,13 @@ const SignIn = ({ setShowLogin }) => {
                             alt="close"
                         />
                     </div>
-                    <h2>{curentState}</h2>
+                    <h2> {
+                        curentState === "Login"
+                            ? "Đăng nhập"
+                            : curentState === "Forgot Password"
+                                ? "Quên mật khẩu"
+                                : "Đăng ký"
+                    }</h2>
                 </div>
                 <div className="login-popup-inputs">
                     {curentState === "Sign Up" && <input name="name" onChange={onChangeHandler} value={data.name} type="text" placeholder="Name" required />}
@@ -120,10 +126,10 @@ const SignIn = ({ setShowLogin }) => {
                                 onChange={onChangeHandler}
                                 value={data.password}
                                 type={passwordVisible ? "text" : "password"}
-                                placeholder="Password"
+                                placeholder="Mật khẩu"
                                 required
                             />
-                            <a onClick={togglePasswordVisibility}>{passwordVisible ? "Hide" : "Show"}</a>
+                            <a onClick={togglePasswordVisibility}>{passwordVisible ? "Ẩn" : "Hiện"}</a>
                         </div>
                     )}
                     {curentState === "Sign Up" && (
@@ -133,18 +139,18 @@ const SignIn = ({ setShowLogin }) => {
                                 onChange={onChangeHandler}
                                 value={data.confirmPassword}
                                 type={passwordConfirm ? "text" : "password"}
-                                placeholder="Confirm Password"
+                                placeholder="Xác nhận mật khẩu"
                                 required
                             />
                             <a onClick={toggleConfirmPasswordVisibility}>
-                                {passwordConfirm ? "Hide" : "Show"}
+                                {passwordConfirm ? "Ẩn" : "Hiện"}
                             </a>
                         </div>
                     )}
                     {curentState === "Login" && (
                         <p style={{ textAlign: "right", color: "#0B69A3 " }}>
                             <span className="link" onClick={() => setCurrentState("Forgot Password")}>
-                                &nbsp;Forgot password?
+                                &nbsp;Quên mật khẩu?
                             </span>
                         </p>
                     )}
@@ -152,7 +158,7 @@ const SignIn = ({ setShowLogin }) => {
                         {isLoading ? (
                             <span className="spinner-1"></span>
                         ) : (
-                            curentState === "Sign Up" ? "Create Account" : (curentState === "Forgot Password" ? "Send Email" : "Login")
+                            curentState === "Sign Up" ? "Tạo tài khoản" : (curentState === "Forgot Password" ? "Gửi Email" : "Đăng nhập")
                         )}
                     </button>
                 </div>
@@ -160,27 +166,27 @@ const SignIn = ({ setShowLogin }) => {
                 {curentState === "Sign Up" && (
                     <div className="login-popup-condition">
                         <input type="checkbox" required />
-                        <p>By creating an account, you agree to our <span>Terms and conditions</span></p>
+                        <p>Bằng cách tạo tài khoản, bạn đồng ý với <span>Điều khoản dịch vụ của chúng tôi.</span></p>
                     </div>
                 )}
 
                 {curentState === "Login" && (
                     <div>
                         <p>
-                            Create a new account.
+                            Tạo tài khoản mới
                             <span className="link" onClick={() => setCurrentState("Sign Up")}>
-                                &nbsp;Click here
+                                &nbsp;Nhấn vào đây
                             </span>
                         </p>
                         <div className="divider-container">
                             <hr className="divider" />
-                            <span className="divider-text">OR</span>
+                            <span className="divider-text">Hoặc</span>
                             <hr className="divider" />
                         </div>
                         <div className='button-container'>
                             <button type="button" className="continue-google" onClick={onGoogleLogin}>
                                 <img src="https://img.icons8.com/color/48/000000/google-logo.png" alt="google" />
-                                <span>Continue with Google</span>
+                                <span>Tiếp tục với Google</span>
                             </button>
                         </div>
                     </div>
@@ -188,18 +194,18 @@ const SignIn = ({ setShowLogin }) => {
 
                 {curentState === "Sign Up" && (
                     <p>
-                        Already have an account?
+                        Đã có tài khoản?
                         <span className="link" onClick={() => setCurrentState("Login")}>
-                            &nbsp;Login here
+                            &nbsp;Đăng nhập ngay
                         </span>
                     </p>
                 )}
 
                 {curentState === "Forgot Password" && (
                     <p>
-                        Remembered your password?
+                        Quay lại
                         <span className="link" onClick={() => setCurrentState("Login")}>
-                            &nbsp;Login here
+                            &nbsp;Đăng nhập
                         </span>
                     </p>
                 )}
