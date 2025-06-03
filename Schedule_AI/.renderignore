@@ -1,0 +1,13 @@
+# Files to exclude from deployment
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+*.md
+
+# Do NOT ignore these files (they are needed)
+!*.json
+!ALL_users.json
+!All_schedules.json
+!user.json 

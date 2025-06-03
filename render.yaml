@@ -5,7 +5,12 @@ services:
     region: singapore
     plan: starter
     rootDir: Schedule_AI
-    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    buildCommand: |
+      ls -la &&
+      pip install --upgrade pip && 
+      pip install -r requirements.txt &&
+      echo "Checking JSON files:" &&
+      ls -la *.json || echo "No JSON files found"
     startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /docs
     envVars:

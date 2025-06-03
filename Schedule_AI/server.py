@@ -8,6 +8,7 @@ from utils import load_input, preprocess_users, preprocess_schedules, create_sta
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import OneHotEncoder
 from collections import Counter
+import glob
 
 app = FastAPI()
 
@@ -288,16 +289,24 @@ async def recommend_schedules(request: UserRequest):
 @app.get("/debug")
 async def debug_info():
     import os
-    current_dir = os.getcwd()
-    files_in_current = os.listdir(".")
+    import glob
     
-    # Try to find JSON files
-    json_files = [f for f in files_in_current if f.endswith('.json')]
+    current_dir = os.getcwd()
+    
+    # Get all files recursively
+    all_files = []
+    for root, dirs, files in os.walk('.'):
+        for file in files:
+            all_files.append(os.path.join(root, file))
+    
+    # Look specifically for JSON files
+    json_files = glob.glob('**/*.json', recursive=True)
     
     debug_info = {
         "current_working_directory": current_dir,
-        "files_in_current_directory": files_in_current,
-        "json_files": json_files,
+        "files_in_current_directory": os.listdir("."),
+        "all_files_recursive": all_files,
+        "json_files_found": json_files,
         "environment": {
             "PORT": os.environ.get("PORT", "Not set"),
             "PYTHONPATH": os.environ.get("PYTHONPATH", "Not set")
@@ -309,14 +318,28 @@ async def debug_info():
         'ALL_users.json',
         'All_schedules.json',
         '../Schedule_AI/ALL_users.json',
-        'Schedule_AI/ALL_users.json'
+        'Schedule_AI/ALL_users.json',
+        './ALL_users.json',
+        './All_schedules.json'
     ]
     
     path_status = {}
     for path in paths_to_check:
-        path_status[path] = os.path.exists(path)
+        exists = os.path.exists(path)
+        path_status[path] = {
+            "exists": exists,
+            "is_file": os.path.isfile(path) if exists else False,
+            "size": os.path.getsize(path) if exists else 0
+        }
     
     debug_info["path_existence"] = path_status
+    
+    # Check if we're in the right directory by looking for server.py
+    debug_info["expected_files"] = {
+        "server.py": os.path.exists("server.py"),
+        "utils.py": os.path.exists("utils.py"),
+        "requirements.txt": os.path.exists("requirements.txt")
+    }
     
     return debug_info
 
