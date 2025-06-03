@@ -13,7 +13,7 @@ import "./PostCard.css";
 import ReportForm from "../Report/ReportForm";
 
 const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartClick, setShowLogin }) => {
-  const { url, user, token } = useContext(StoreContext);
+  const { url, user, token, getImageUrl} = useContext(StoreContext);
   const [likes, setLikes] = useState(schedule?.likes || []);
   const [isFavorite, setIsFavorite] = useState(false);
   const [openScheduleMenu, setOpenScheduleMenu] = useState(null);
@@ -98,28 +98,18 @@ const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartCl
   };
 
   useEffect(() => {
-    const fetchAttractions = async () => {
-      const idAttractions = [];
+    const getAttractionsFromSchedule = () => {
+      const attractions = [];
 
       schedule.activities.forEach((day) => {
         day.activity.forEach((activity) => {
-          if (activity.activityType === "Attraction") {
-            idAttractions.push(activity.idDestination);
+          if (activity.activityType === "Attraction" && activity.destination) {
+            attractions.push(activity.destination);
           }
         });
       });
 
-      try {
-        const response = await axios.get(`${url}/api/attractions`);
-        if (response.data.success) {
-          const attractions = response.data.attractions.filter((attraction) =>
-            idAttractions.includes(attraction._id)
-          );
-          setAttractions(attractions);
-        }
-      } catch (error) {
-        console.error("Error fetching attractions:", error);
-      }
+      setAttractions(attractions);
     };
 
     const fetchUser = async () => {
@@ -141,7 +131,7 @@ const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartCl
     if (user) {
       fetchUser();
     }
-    fetchAttractions();
+    getAttractionsFromSchedule();
   }, [schedule, user, url]);
 
   schedule.activities.forEach((day) => {
@@ -344,12 +334,8 @@ const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartCl
                 onClick={() => onClick(attraction._id)}
               >
                 <img
-                  src={
-                    attraction.images[0]
-                      ? `${url}/images/${attraction.images[0]}`
-                      : "https://bazantravel.com/cdn/medias/uploads/83/83317-khu-nghi-duong-lan-rung-700x420.jpg"
-                  }
-                  alt={attraction.name}
+                  src={getImageUrl(attraction, 0)}
+                  alt={attraction.attractionName}
                 />
                 <p>{attraction.attractionName}</p>
               </div>

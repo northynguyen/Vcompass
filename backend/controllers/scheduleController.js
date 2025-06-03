@@ -329,6 +329,29 @@ export const getAllSchedule = async (req, res) => {
         });
       }
 
+      // ✅ Populate chỉ các activity có activityType là "Attraction" cho homepage
+      await Promise.all(
+        schedules.map(async (schedule) => {
+          await Promise.all(
+            schedule.activities.map(async (day) => {
+              await Promise.all(
+                day.activity.map(async (act) => {
+                  if (
+                    act.activityType === "Attraction" &&
+                    mongoose.Types.ObjectId.isValid(act.idDestination)
+                  ) {
+                    const attraction = await Attraction
+                      .findById(act.idDestination)
+                      .lean();
+                    act.destination = attraction || null;
+                  }
+                })
+              );
+            })
+          );
+        })
+      );
+
       return res.json({
         success: true,
         message: "Lấy danh sách lịch trình thành công.",
@@ -354,6 +377,29 @@ export const getAllSchedule = async (req, res) => {
           message: "Không tìm thấy lịch trình phù hợp.",
         });
       }
+
+      // ✅ Populate chỉ các activity có activityType là "Attraction"
+      await Promise.all(
+        schedules.map(async (schedule) => {
+          await Promise.all(
+            schedule.activities.map(async (day) => {
+              await Promise.all(
+                day.activity.map(async (act) => {
+                  if (
+                    act.activityType === "Attraction" &&
+                    mongoose.Types.ObjectId.isValid(act.idDestination)
+                  ) {
+                    const attraction = await Attraction
+                      .findById(act.idDestination)
+                      .lean();
+                    act.destination = attraction || null;
+                  }
+                })
+              );
+            })
+          );
+        })
+      );
 
       res.json({
         success: true,
@@ -858,6 +904,29 @@ export const getFollowingSchedules = async (req, res) => {
       });
     }
 
+    // ✅ Populate chỉ các activity có activityType là "Attraction"
+    await Promise.all(
+      schedules.map(async (schedule) => {
+        await Promise.all(
+          schedule.activities.map(async (day) => {
+            await Promise.all(
+              day.activity.map(async (act) => {
+                if (
+                  act.activityType === "Attraction" &&
+                  mongoose.Types.ObjectId.isValid(act.idDestination)
+                ) {
+                  const attraction = await Attraction
+                    .findById(act.idDestination)
+                    .lean();
+                  act.destination = attraction || null;
+                }
+              })
+            );
+          })
+        );
+      })
+    );
+
     return res.json({
       success: true,
       message: "Schedules retrieved successfully",
@@ -988,6 +1057,30 @@ export const scheduleAI = async (req, res) => {
         .populate("idUser")
         .populate("idInvitee", "name avatar email")
         .lean(); // dùng lean để thao tác dễ hơn
+
+      // ✅ Populate chỉ các activity có activityType là "Attraction"
+      await Promise.all(
+        recommendedSchedules.map(async (schedule) => {
+          await Promise.all(
+            schedule.activities.map(async (day) => {
+              await Promise.all(
+                day.activity.map(async (act) => {
+                  if (
+                    act.activityType === "Attraction" &&
+                    mongoose.Types.ObjectId.isValid(act.idDestination)
+                  ) {
+                    const attraction = await Attraction
+                      .findById(act.idDestination)
+                      .lean();
+                    act.destination = attraction || null; // thêm field destination
+                  }
+                })
+              );
+            })
+          );
+        })
+      );
+
       res.status(200).json({
         success: true,
         recommendedSchedules,
@@ -1311,7 +1404,31 @@ export const getScheduleByUserId = async (req, res) => {
     const schedules = await Schedule.find({
       idUser: userId,
       isPublic: true,
-    }).populate("idUser");
+    }).populate("idUser").lean();
+
+    // ✅ Populate chỉ các activity có activityType là "Attraction"
+    await Promise.all(
+      schedules.map(async (schedule) => {
+        await Promise.all(
+          schedule.activities.map(async (day) => {
+            await Promise.all(
+              day.activity.map(async (act) => {
+                if (
+                  act.activityType === "Attraction" &&
+                  mongoose.Types.ObjectId.isValid(act.idDestination)
+                ) {
+                  const attraction = await Attraction
+                    .findById(act.idDestination)
+                    .lean();
+                  act.destination = attraction || null;
+                }
+              })
+            );
+          })
+        );
+      })
+    );
+
     res.status(200).json({ success: true, schedules });
   } catch (error) {
     console.error("Error fetching schedules:", error);
