@@ -85,7 +85,7 @@ const Header = () => {
     if (!admin?._id) return;
 
     console.log("Connecting to socket...");
-    const socket = io("http://localhost:4000");
+    const socket = io(url);
 
     socket.on(`admin`, (notification) => {
       console.log("Received notification:", notification);
