@@ -224,7 +224,7 @@ const MySchedule = () => {
     if (!token) return;
     // Fetch toàn bộ khi lần đầu load hoặc khi các dependency chính thay đổi
     fetchSchedulesData();
-  }, [token, url, isConfirmOpen]);
+  }, [token, url]);
 
   // Separate effect for search - chỉ fetch my và group schedules
   useEffect(() => {
