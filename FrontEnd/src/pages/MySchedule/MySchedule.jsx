@@ -205,10 +205,11 @@ const MySchedule = () => {
       const wishlistPage = getCurrentPage('wishlist');
 
       // Fetch tất cả khi lần đầu load hoặc khi search
+      // Chỉ áp dụng search cho my và group schedules, không cho wishlist
       await Promise.all([
         fetchMySchedules(mySchedulePage, searchTerm),
         fetchGroupSchedules(groupSchedulePage, searchTerm),
-        fetchWishlists(wishlistPage)
+        fetchWishlists(wishlistPage) // Không truyền searchTerm cho wishlist
       ]);
 
     } catch (error) {
@@ -218,9 +219,26 @@ const MySchedule = () => {
     }
   };
 
+  // Separate effect for initial load and wishlist changes
   useEffect(() => {
+    if (!token) return;
+    // Fetch toàn bộ khi lần đầu load hoặc khi các dependency chính thay đổi
     fetchSchedulesData();
-  }, [token, url, isConfirmOpen, searchTerm]);
+  }, [token, url, isConfirmOpen]);
+
+  // Separate effect for search - chỉ fetch my và group schedules
+  useEffect(() => {
+    if (!token || !searchTerm) return;
+    
+    const mySchedulePage = getCurrentPage('my-schedule');
+    const groupSchedulePage = getCurrentPage('group-schedule');
+    
+    // Chỉ fetch lại my và group schedules khi search
+    Promise.all([
+      fetchMySchedules(mySchedulePage, searchTerm),
+      fetchGroupSchedules(groupSchedulePage, searchTerm)
+    ]);
+  }, [searchTerm]);
 
   useEffect(() => {
     if (isLoading) return;
