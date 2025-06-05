@@ -138,6 +138,46 @@
   color: #357ab8;
 }
 
+/* Nút lưu yêu thích */
+.favorite-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 8px 15px;
+  background: #ffdab9;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-align: center;
+  justify-content: center;
+  color: #8B4513;
+}
+
+.favorite-button:hover {
+  background: #8B4513;
+  color: #fff;
+  transform: scale(1.05);
+}
+.favorite-button:hover i {
+  color: #fff;
+}
+
+/* Icon */
+.favorite-button i {
+  color: #8B4513;
+  font-size: 1.4rem;
+}
+.saved {
+  background: #acf599;
+  color: #01621a;
+}
+.saved i {
+  color: #01621a;
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
   .food-thumbnails img {

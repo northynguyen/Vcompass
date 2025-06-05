@@ -208,7 +208,7 @@ const MySchedule = () => {
       await Promise.all([
         fetchMySchedules(mySchedulePage, searchTerm),
         fetchGroupSchedules(groupSchedulePage, searchTerm),
-        fetchWishlists(wishlistPage, searchTerm)
+        fetchWishlists(wishlistPage)
       ]);
 
     } catch (error) {

@@ -157,7 +157,7 @@ const AttractionDetailsInfo = ({ serviceId, setShowLogin }) => {
                         <div className={`favorite-button ${isSave ? "saved" : ""} `} onClick={toggleWishlist}>
                             <i className="fa-solid fa-bookmark schedule-icon"></i>
                             <p className="favourite-btn">
-                            {!isSave ? "Lưu địa điểm": "Đã lưu địa điểm"}
+                                {!isSave ? "Lưu địa điểm": "Đã lưu địa điểm"}
                             </p>
                         </div>
                     </div>
