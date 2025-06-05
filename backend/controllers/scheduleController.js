@@ -249,7 +249,7 @@ export const updateSchedule = async (req, res) => {
 
 export const getSchedulesByIdUser = async (req, res) => {
   const { userId } = req.body; // Replace with user ID extraction from token, if needed.
-  const { type, page = 1, limit = 10 } = req.query;
+  const { type, page = 1, limit = 10, search } = req.query;
 
   if (!userId) {
     return res.status(400).json({
@@ -263,16 +263,32 @@ export const getSchedulesByIdUser = async (req, res) => {
     const limitNum = parseInt(limit);
     const skip = (pageNum - 1) * limitNum;
 
+    // Create search condition
+    let searchCondition = {};
+    if (search && search.trim()) {
+      searchCondition = {
+        $or: [
+          { scheduleName: { $regex: search.trim(), $options: 'i' } },
+          { address: { $regex: search.trim(), $options: 'i' } }
+        ]
+      };
+    }
+
     if (type === "group") {
       console.log("type group -------");
 
-      const total = await Schedule.countDocuments({
+      const baseCondition = {
         idInvitee: new mongoose.Types.ObjectId(userId),
-      });
+      };
+      
+      // Combine base condition with search condition
+      const finalCondition = search && search.trim() 
+        ? { ...baseCondition, ...searchCondition }
+        : baseCondition;
 
-      const schedules = await Schedule.find({
-        idInvitee: new mongoose.Types.ObjectId(userId),
-      })
+      const total = await Schedule.countDocuments(finalCondition);
+
+      const schedules = await Schedule.find(finalCondition)
         .skip(skip)
         .limit(limitNum)
         .sort({ createdAt: -1 });
@@ -297,14 +313,19 @@ export const getSchedulesByIdUser = async (req, res) => {
           .json({ success: false, message: "User not found" });
       }
 
-      // Đếm số schedules thực sự tồn tại trong wishlist
-      const total = await Schedule.countDocuments({
+      const baseCondition = {
         _id: { $in: user.favorites.schedule || [] },
-      });
+      };
+      
+      // Combine base condition with search condition
+      const finalCondition = search && search.trim() 
+        ? { ...baseCondition, ...searchCondition }
+        : baseCondition;
 
-      const schedules = await Schedule.find({
-        _id: { $in: user.favorites.schedule || [] },
-      })
+      // Đếm số schedules thực sự tồn tại trong wishlist
+      const total = await Schedule.countDocuments(finalCondition);
+
+      const schedules = await Schedule.find(finalCondition)
         .populate("idUser")
         .skip(skip)
         .limit(limitNum)
@@ -322,10 +343,17 @@ export const getSchedulesByIdUser = async (req, res) => {
       });
     } else {
       // Default case - user's own schedules
-      const total = await Schedule.countDocuments({ idUser: userId });
+      const baseCondition = { idUser: userId };
+      
+      // Combine base condition with search condition
+      const finalCondition = search && search.trim() 
+        ? { ...baseCondition, ...searchCondition }
+        : baseCondition;
+
+      const total = await Schedule.countDocuments(finalCondition);
       const totalPages = Math.ceil(total / limitNum);
 
-      const schedules = await Schedule.find({ idUser: userId })
+      const schedules = await Schedule.find(finalCondition)
         .populate("idUser")
         .skip(skip)
         .limit(limitNum)

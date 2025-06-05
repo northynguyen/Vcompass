@@ -475,7 +475,16 @@ const InforScheduleMedal = ({
     'Du lịch nghỉ dưỡng',
     'Du lịch thương mại',
     'Du lịch văn hóa',
-    'Du lịch ẩm thực'
+    'Du lịch ẩm thực',
+    'Du lịch mạo hiểm',
+    'Du lịch sinh thái',
+    'Du lịch tâm linh',
+    'Du lịch cộng đồng',
+    'Du lịch khám phá thiên nhiên',
+    'Du lịch tự túc (backpacking)',
+    'Du lịch lịch sử',
+    'Du lịch tình nguyện',
+    'Du lịch chữa lành',
   ];
 
   useEffect(() => {
@@ -942,6 +951,9 @@ const DateSchedule = ({
         let addressTemp = inforSchedule.address;
         if (inforSchedule.address == "Bà Rịa - Vũng Tàu") {
           addressTemp = "Vũng Tàu";
+        }
+        if (inforSchedule.address == "Lâm Đồng") {
+          addressTemp = "Đà Lạt";
         }
         const startDate = new Date(year, month - 1, day);
         const currentDate = new Date();

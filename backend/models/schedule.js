@@ -64,8 +64,6 @@ const ScheduleSchema = new Schema(
     status: { type: String, required: true },
     activities: [ActivitySchema],
     additionalExpenses: [AdditionalExpenseSchema],
-
-    
     type: { type: [String], required: true },
     comments: [CommentSchema],
     likes: [LikeSchema],
@@ -76,7 +74,12 @@ const ScheduleSchema = new Schema(
     isPublic: { type: Boolean, default: false },
     tags: [{ type: String }],
   },
+  {
+    timestamps: true,
+  }
 );
+
+
 
 const Schedule =
   mongoose.models.ScheduleSchema || mongoose.model("schedule", ScheduleSchema);
