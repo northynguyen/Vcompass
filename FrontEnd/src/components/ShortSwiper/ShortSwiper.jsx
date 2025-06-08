@@ -16,15 +16,7 @@ const ShortSwiper = ({ category = 'all', limit = 8 }) => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   // Fetch videos từ API
   useEffect(() => {

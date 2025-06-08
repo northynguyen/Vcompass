@@ -129,7 +129,8 @@ export const getAccommodationById = async (req, res) => {
 export const getListAccommbyPartner = async (req, res) => {
   const { partnerId } = req.params;
   try {
-    const accommodations = await Accommodation.find({ idPartner: partnerId });
+    const accommodations = await Accommodation.find({ idPartner: partnerId })
+    .populate({path: 'ratings.idUser',  model: 'user', select: 'name avatar email'})
     res.json({ success: true, accommodations });
   } catch (error) {
     res.json({

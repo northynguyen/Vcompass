@@ -1013,6 +1013,115 @@ const getFollowingVideos = async (req, res) => {
   }
 };
 
+// Meta tags for social sharing
+const getShortVideoMetaTags = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const video = await ShortVideo.findById(id).populate('userId', 'name avatar').lean();
+
+    if (!video) {
+      return res.status(404).send("Video not found");
+    }
+
+    // Get video thumbnail or video URL for preview
+    let imageUrl = video.thumbnailUrl || video.videoUrl || 'https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg';
+    
+    const description = video.description || `Xem video ngắn từ ${video.userId?.name || 'VCompass User'}`;
+    const title = video.title || `Video ngắn - ${video.userId?.name || 'VCompass'}`;
+    const url = `https://vcompass.onrender.com/short-video?videoId=${id}`;
+
+    const html = `
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <meta name="description" content="${description}">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="${title}">
+    <meta property="og:description" content="${description}">
+    <meta property="og:image" content="${imageUrl}">
+    <meta property="og:url" content="${url}">
+    <meta property="og:type" content="video.other">
+    <meta property="og:site_name" content="VCompass">
+    <meta property="og:video" content="${video.videoUrl}">
+    <meta property="og:video:type" content="video/mp4">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="player">
+    <meta name="twitter:title" content="${title}">
+    <meta name="twitter:description" content="${description}">
+    <meta name="twitter:image" content="${imageUrl}">
+    <meta name="twitter:player" content="${video.videoUrl}">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="author" content="${video.userId?.name || 'VCompass User'}">
+    <meta name="keywords" content="video ngắn, ${video.category || ''}, ${video.tags?.join(', ') || ''}, VCompass">
+    
+    <script>
+        // Redirect to main app after 1 second
+        setTimeout(function() {
+            window.location.href = "${url}";
+        }, 1000);
+    </script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+            color: white;
+        }
+        .loading-container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        a {
+            color: #ff6b6b;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <h2>Đang chuyển hướng đến video...</h2>
+        <p>${title}</p>
+        <p>Nếu không tự động chuyển hướng, <a href="${url}">nhấn vào đây</a></p>
+    </div>
+</body>
+</html>`;
+
+    res.send(html);
+  } catch (error) {
+    console.error("Error serving video meta tags:", error);
+    res.status(500).send("Error loading video");
+  }
+};
+
 export {
   createShortVideo,
   getShortVideos,
@@ -1032,5 +1141,6 @@ export {
   getPopularShortVideos,
   togglePin,
   getTrendingVideos,
-  getFollowingVideos
+  getFollowingVideos,
+  getShortVideoMetaTags
 };

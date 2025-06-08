@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
-import { FaGlobe, FaTrash, FaUserSecret, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaGlobe, FaTrash, FaUserSecret, FaChevronLeft, FaChevronRight, FaSearch } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ConfirmDialog from "../../components/Dialog/ConfirmDialog";
@@ -24,6 +24,8 @@ const MySchedule = () => {
   const [action, setAction] = useState("");
   const [scheduleType, setScheduleType] = useState("my-schedule");
   const [listRender, setListRender] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   
   // Pagination states
   const [pagination, setPagination] = useState({
@@ -35,6 +37,7 @@ const MySchedule = () => {
   
   const navigate = useNavigate();
   const popupRef = useRef(null);
+  const searchTimeoutRef = useRef(null);
   const ITEMS_PER_PAGE = 5;
   const ITEMS_SAVE_PAGE = 4;
 
@@ -56,6 +59,10 @@ const MySchedule = () => {
     setActiveScheduleId((prev) => (prev === scheduleId ? null : scheduleId));
   };
 
+  const handleCreateScheduleClick = (type) => {
+    navigate(`/create-schedule/${type}`);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (popupRef.current && !popupRef.current.contains(event.target)) {
@@ -72,10 +79,11 @@ const MySchedule = () => {
   }, []);
 
   // Fetch individual sections
-  const fetchMySchedules = async (page = 1) => {
+  const fetchMySchedules = async (page = 1, search = "") => {
     try {
+      const searchQuery = search ? `&search=${encodeURIComponent(search)}` : '';
       const response = await axios.get(
-        `${url}/api/schedule/user/getSchedules?page=${page}&limit=${ITEMS_PER_PAGE}`,
+        `${url}/api/schedule/user/getSchedules?page=${page}&limit=${ITEMS_PER_PAGE}${searchQuery}`,
         { headers: { token } }
       );
 
@@ -102,10 +110,11 @@ const MySchedule = () => {
     }
   };
 
-  const fetchGroupSchedules = async (page = 1) => {
+  const fetchGroupSchedules = async (page = 1, search = "") => {
     try {
+      const searchQuery = search ? `&search=${encodeURIComponent(search)}` : '';
       const response = await axios.get(
-        `${url}/api/schedule/user/getSchedules?type=group&page=${page}&limit=${ITEMS_PER_PAGE}`,
+        `${url}/api/schedule/user/getSchedules?type=group&page=${page}&limit=${ITEMS_PER_PAGE}${searchQuery}`,
         { headers: { token } }
       );
 
@@ -132,10 +141,11 @@ const MySchedule = () => {
     }
   };
 
-  const fetchWishlists = async (page = 1) => {
+  const fetchWishlists = async (page = 1, search = "") => {
     try {
+      const searchQuery = search ? `&search=${encodeURIComponent(search)}` : '';
       const response = await axios.get(
-        `${url}/api/schedule/user/getSchedules?type=wishlist&page=${page}&limit=${ITEMS_SAVE_PAGE}`,
+        `${url}/api/schedule/user/getSchedules?type=wishlist&page=${page}&limit=${ITEMS_SAVE_PAGE}${searchQuery}`,
         { headers: { token } }
       );
 
@@ -162,7 +172,29 @@ const MySchedule = () => {
     }
   };
 
-  // Fetch data with pagination - initial load
+  // Handle search
+  const handleSearch = (value) => {
+    setSearchInput(value);
+    
+    // Clear existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    // Set new timeout for debounced search
+    searchTimeoutRef.current = setTimeout(() => {
+      setSearchTerm(value);
+      // Reset to page 1 when searching
+      setPagination(prev => ({
+        ...prev,
+        mySchedule: { ...prev.mySchedule, currentPage: 1 },
+        groupSchedule: { ...prev.groupSchedule, currentPage: 1 },
+        wishlist: { ...prev.wishlist, currentPage: 1 }
+      }));
+    }, 500); // 500ms delay
+  };
+
+  // Fetch data with pagination and search
   const fetchSchedulesData = async () => {
     if (!token) return;
     
@@ -172,11 +204,12 @@ const MySchedule = () => {
       const groupSchedulePage = getCurrentPage('group-schedule');
       const wishlistPage = getCurrentPage('wishlist');
 
-      // Fetch tất cả khi lần đầu load
+      // Fetch tất cả khi lần đầu load hoặc khi search
+      // Chỉ áp dụng search cho my và group schedules, không cho wishlist
       await Promise.all([
-        fetchMySchedules(mySchedulePage),
-        fetchGroupSchedules(groupSchedulePage),
-        fetchWishlists(wishlistPage)
+        fetchMySchedules(mySchedulePage, searchTerm),
+        fetchGroupSchedules(groupSchedulePage, searchTerm),
+        fetchWishlists(wishlistPage) // Không truyền searchTerm cho wishlist
       ]);
 
     } catch (error) {
@@ -186,9 +219,26 @@ const MySchedule = () => {
     }
   };
 
+  // Separate effect for initial load and wishlist changes
   useEffect(() => {
+    if (!token) return;
+    // Fetch toàn bộ khi lần đầu load hoặc khi các dependency chính thay đổi
     fetchSchedulesData();
-  }, [token, url, isConfirmOpen]);
+  }, [token, url]);
+
+  // Separate effect for search - chỉ fetch my và group schedules
+  useEffect(() => {
+    if (!token || !searchTerm) return;
+    
+    const mySchedulePage = getCurrentPage('my-schedule');
+    const groupSchedulePage = getCurrentPage('group-schedule');
+    
+    // Chỉ fetch lại my và group schedules khi search
+    Promise.all([
+      fetchMySchedules(mySchedulePage, searchTerm),
+      fetchGroupSchedules(groupSchedulePage, searchTerm)
+    ]);
+  }, [searchTerm]);
 
   useEffect(() => {
     if (isLoading) return;
@@ -204,13 +254,13 @@ const MySchedule = () => {
   const handlePageChange = (type, newPage) => {
     updateUrlParams(type, newPage);
     
-    // Chỉ fetch section tương ứng
+    // Chỉ fetch section tương ứng với search term hiện tại
     if (type === 'my-schedule') {
-      fetchMySchedules(newPage);
+      fetchMySchedules(newPage, searchTerm);
     } else if (type === 'group-schedule') {
-      fetchGroupSchedules(newPage);
+      fetchGroupSchedules(newPage, searchTerm);
     } else if (type === 'wishlist') {
-      fetchWishlists(newPage);
+      fetchWishlists(newPage, searchTerm);
     }
   };
 
@@ -383,20 +433,35 @@ const MySchedule = () => {
           </header>
 
       <section className="my-schedule-section">
-        <div className="schedule-type-buttons">
-          <button
-            className={scheduleType === "my-schedule" ? "active" : "button-schedule-type"}
-            onClick={() => setScheduleType("my-schedule")}
-          >
-            Lịch trình của bạn
-          </button>
-          <button
-            className={scheduleType === "group-schedule" ? "active" : "button-schedule-type"}
-            onClick={() => setScheduleType("group-schedule")}
-          >
-            Lịch trình nhóm
-          </button>
-
+        <div className="search-and-controls">
+          
+          
+          <div className="schedule-type-buttons">
+            <button
+              className={scheduleType === "my-schedule" ? "active" : "button-schedule-type"}
+              onClick={() => setScheduleType("my-schedule")}
+            >
+              Lịch trình của bạn
+            </button>
+            <button
+              className={scheduleType === "group-schedule" ? "active" : "button-schedule-type"}
+              onClick={() => setScheduleType("group-schedule")}
+            >
+              Lịch trình nhóm
+            </button>
+          </div>
+          <div className="search-bar">
+            <div className="search-input-container">
+              <FaSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="Tìm kiếm theo tên hoặc địa điểm..."
+                value={searchInput}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="search-input"
+              />
+            </div>
+          </div>
         </div>
         {isLoading ? (
           <>

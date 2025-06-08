@@ -1,8 +1,10 @@
 import axios from "axios";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Range } from "react-range"; // Import react-range
 import { useLocation, useNavigate } from "react-router-dom";
 import PostCard from "../../components/Poster/PostCard";
+import PostCardSkeleton from "../../components/Poster/PostCardSkeleton";
 import { StoreContext } from "../../Context/StoreContext";
 import "./SearchSchedule.css";
 
@@ -11,179 +13,167 @@ const SearchSchedule = ({ setShowLogin }) => {
   const location = useLocation();
   const { url, user } = useContext(StoreContext);
   const hasSearchedRef = useRef(false);
-  const [schedules, setSchedules] = useState([]);
+  
+  // State cho search và filters
   const [addressFilter, setAddressFilter] = useState(location.state?.city || "");
   const [scheduleNameFilter, setScheduleNameFilter] = useState("");
-  const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 10000000]);
   const [filters, setFilters] = useState({
     activityType: "",
     sortBy: "",
     hasVideo: false,
     hasImage: false,
+    days: 0,
+  });
+
+  // State cho API response
+  const [schedules, setSchedules] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 0,
+    total: 0,
   });
 
   const [currentPage, setCurrentPage] = useState(1);
   const [schedulesPerPage] = useState(4);
   const [debouncedPriceRange, setDebouncedPriceRange] = useState(priceRange);
 
+  // Debounce price range
   useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedPriceRange(priceRange);
-    }, 1000); // 1 giây
-
+    }, 1000);
     return () => clearTimeout(timeout);
   }, [priceRange]);
 
   const city = location.state?.city || "";
   const name = location.state?.name || "";
-  // Helper function to calculate price
-  const calculateTotalCost = (activities) => {
-    return activities.reduce((sum, day) => {
-      return (
-        sum +
-        day.activity.reduce((acc, act) => {
-          return acc + (act.cost || 0);
-        }, 0)
-      );
-    }, 0);
-  };
 
-  // Fetch all schedules when the component is mounted
-  useEffect(() => {
-    const fetchSchedules = async () => {
-      try {
-        const response = await axios.get(
-          url + "/api/schedule/getAllSchedule?limit=100"
-        );
-        if (response.data.success) {
-          if (user) {
-            setSchedules(
-              response.data.schedules.filter(
-                (schedule) => schedule.isPublic === true && schedule.idUser !== user._id
-              )
-            );
-            setFilteredSchedules(
-              response.data.schedules.filter(
-                (schedule) => schedule.isPublic === true && schedule.idUser !== user._id
-              )
-            )
-          } else {
-            setSchedules(
-              response.data.schedules.filter(
-                (schedule) => schedule.isPublic === true
-              )
-            );
-            setFilteredSchedules(
-              response.data.schedules.filter(
-                (schedule) => schedule.isPublic === true
-              )
-            )
-          }
-
-        } else {
-          console.error("Failed to fetch schedules:", response.data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching schedules:", error);
-      }
-    };
-    fetchSchedules();
-  }, [url]);
-
-  // Handle search based on filters
-  const handleSearch = () => {
-    const filtered = schedules.filter((schedule) => {
-      const matchesSearch =
-        (addressFilter === "" ||
-          schedule.address
-            .toLowerCase()
-            .includes(addressFilter.toLowerCase())) &&
-        (scheduleNameFilter === "" ||
-          schedule.scheduleName
-            .toLowerCase()
-            .includes(scheduleNameFilter.toLowerCase()));
-      const matchesPrice =
-        calculateTotalCost(schedule.activities) >= priceRange[0] &&
-        calculateTotalCost(schedule.activities) <= priceRange[1];
-
-      const matchesType =
-        !filters.activityType ||
-        schedule.activities.some((day) =>
-          day.activity.some(
-            (act) =>
-              act.activityType.toLowerCase() ===
-              filters.activityType.toLowerCase()
-          )
-        );
-
-      const matchesDuration =
-        !filters.days ||
-        filters.days === 0 ||
-        schedule.numDays === filters.days; // Directly compare as numbers
-
-      const matchesMedia =
-        (!filters.hasVideo || schedule.videoSrc) &&
-        (!filters.hasImage || schedule.imgSrc.length > 0);
-
-      return (
-        matchesSearch &&
-        matchesPrice &&
-        matchesType &&
-        matchesDuration &&
-        matchesMedia
-      );
-    });
-    // Sort by likes or comments if specified
-    if (filters.sortBy === "likes") {
-      filtered.sort((a, b) => b.likes.length - a.likes.length);
-    } else if (filters.sortBy === "comments") {
-      filtered.sort(
-        (a, b) =>
-          b.comments.length +
-          b.comments.reduce((sum, comment) => sum + comment.replies.length, 0) -
-          (a.comments.length +
-            a.comments.reduce(
-              (sum, comment) => sum + comment.replies.length,
-              0
-            ))
-      );
+  // Function để build query parameters
+  const buildQueryParams = (page = 1) => {
+    const params = new URLSearchParams();
+    
+    // Basic params
+    params.append('page', page.toString());
+    params.append('limit', schedulesPerPage.toString());
+    
+    // User exclusion
+    if (user?._id) {
+      params.append('userId', user._id);
     }
-
-    setFilteredSchedules(filtered);
+    
+    // Search filters
+    if (addressFilter.trim()) {
+      params.append('cities', addressFilter.trim());
+    }
+    
+    if (scheduleNameFilter.trim()) {
+      params.append('scheduleName', scheduleNameFilter.trim());
+    }
+    
+    // Price range
+    if (debouncedPriceRange[0] > 0) {
+      params.append('priceMin', debouncedPriceRange[0].toString());
+    }
+    if (debouncedPriceRange[1] < 10000000) {
+      params.append('priceMax', debouncedPriceRange[1].toString());
+    }
+    
+    // Activity type
+    if (filters.activityType) {
+      params.append('activityType', filters.activityType);
+    }
+    
+    // Number of days
+    if (filters.days && filters.days > 0) {
+      params.append('numDays', filters.days.toString());
+    }
+    
+    // Media filters
+    if (filters.hasVideo) {
+      params.append('hasVideo', 'true');
+    }
+    if (filters.hasImage) {
+      params.append('hasImage', 'true');
+    }
+    
+    // Sort by
+    if (filters.sortBy) {
+      params.append('sortBy', filters.sortBy);
+    }
+    
+    return params.toString();
   };
 
-  // Handle pagination logic
-  const indexOfLastSchedule = currentPage * schedulesPerPage;
-  const indexOfFirstSchedule = indexOfLastSchedule - schedulesPerPage;
-  const currentSchedules = filteredSchedules.slice(
-    indexOfFirstSchedule,
-    indexOfLastSchedule
-  );
+  // Function để fetch schedules từ API
+  const fetchSchedules = async (page = 1) => {
+    setLoading(true);
+    try {
+      const queryString = buildQueryParams(page);
+      const response = await axios.get(`${url}/api/schedule/getAllSchedule?${queryString}`);
+      
+      if (response.data.success) {
+        setSchedules(response.data.schedules || []);
+        setPagination({
+          currentPage: response.data.currentPage || page,
+          totalPages: response.data.totalPages || 0,
+          total: response.data.total || 0,
+        });
+      } else {
+        console.error("Failed to fetch schedules:", response.data.message);
+        setSchedules([]);
+        setPagination({ currentPage: page, totalPages: 0, total: 0 });
+      }
+    } catch (error) {
+      console.error("Error fetching schedules:", error);
+      setSchedules([]);
+      setPagination({ currentPage: page, totalPages: 0, total: 0 });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  // Handle search button click
+  const handleSearch = () => {
+    setCurrentPage(1);
+    fetchSchedules(1);
+  };
+
+  // Handle pagination
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    fetchSchedules(pageNumber);
+  };
+
   const handleScheduleClick = (id) => {
     navigate(`/schedule-view/${id}`);
   };
 
+  // Initial load và handle URL params
   useEffect(() => {
-    const fetchAccommodations = async () => {
-      if (city) {
-        setScheduleNameFilter(name);
-        setAddressFilter(city);
-        hasSearchedRef.current = true;
-        handleSearch(); // Gọi trực tiếp sau khi set
-      }
-    };
-    fetchAccommodations();
+    if (city) {
+      setScheduleNameFilter(name);
+      setAddressFilter(city);
+      hasSearchedRef.current = true;
+    }
   }, [city, name]);
+
+  // Auto search khi filter thay đổi (debounced)
   useEffect(() => {
-    handleSearch();
-  }, [schedules]);
-  // Re-run search whenever filters change
-  useEffect(() => {
-    handleSearch();
+    if (hasSearchedRef.current) {
+      setCurrentPage(1);
+      fetchSchedules(1);
+    }
   }, [debouncedPriceRange, filters]);
+
+  // Initial fetch
+  useEffect(() => {
+    if (!hasSearchedRef.current) {
+      fetchSchedules(1);
+      hasSearchedRef.current = true;
+    }
+  }, []);
 
   return (
     <div className="search-schedule">
@@ -254,12 +244,11 @@ const SearchSchedule = ({ setShowLogin }) => {
               <span>Số ngày </span>
               <select
                 value={filters.days}
-                onChange={
-                  (e) =>
-                    setFilters({
-                      ...filters,
-                      days: parseInt(e.target.value, 10),
-                    }) // Convert to number
+                onChange={(e) =>
+                  setFilters({
+                    ...filters,
+                    days: parseInt(e.target.value, 10),
+                  })
                 }
               >
                 <option value="0">Tất cả</option>
@@ -365,51 +354,58 @@ const SearchSchedule = ({ setShowLogin }) => {
         {/* Schedule List */}
         <div>
           <div className="schedule-list">
-            {currentSchedules.map((schedule, index) => (
-              <PostCard
-                key={index}
-                schedule={schedule}
-                handleScheduleClick={handleScheduleClick}
-                setShowLogin={setShowLogin}
-              />
-            ))}
+            {loading ? (
+              <PostCardSkeleton count={schedulesPerPage} isSearchSchedule={true} />
+            ) : (
+              schedules.map((schedule, index) => (
+                <PostCard
+                  key={`${schedule._id}-${index}`}
+                  schedule={schedule}
+                  handleScheduleClick={handleScheduleClick}
+                  setShowLogin={setShowLogin}
+                />
+              ))
+            )}
           </div>
 
-          {currentSchedules.length === 0 && (
+          {!loading && schedules.length === 0 && (
             <div className="no-schedule">
               <h3>Không tìm thấy lịch trình</h3>
+              <p>Thử thay đổi bộ lọc để tìm thấy kết quả phù hợp.</p>
             </div>
           )}
-          {currentSchedules.length > 0 && (
+          
+          {!loading && schedules.length > 0 && (
             <div className="pagination-container">
               <button
                 className="prev-button"
                 onClick={() => {
-                  paginate(currentPage - 1), // Cuộn đến vị trí (30px, 30px) với hiệu ứng mượt
-                    window.scrollTo({
-                      top: 10,
-                      left: 10,
-                      behavior: "smooth",
-                    });
+                  paginate(currentPage - 1);
+                  window.scrollTo({
+                    top: 10,
+                    left: 10,
+                    behavior: "smooth",
+                  });
                 }}
-                disabled={currentPage === 1}
+                disabled={pagination.currentPage === 1}
               >
                 Trước
               </button>
-              <span>{currentPage}</span>
+              <span>
+                Trang {pagination.currentPage} / {pagination.totalPages}
+              </span>
+              
               <button
                 className="next-button"
                 onClick={() => {
-                  paginate(currentPage + 1),
-                    window.scrollTo({
-                      top: 10,
-                      left: 10,
-                      behavior: "smooth",
-                    });
+                  paginate(currentPage + 1);
+                  window.scrollTo({
+                    top: 10,
+                    left: 10,
+                    behavior: "smooth",
+                  });
                 }}
-                disabled={
-                  currentPage * schedulesPerPage >= filteredSchedules.length
-                }
+                disabled={pagination.currentPage >= pagination.totalPages}
               >
                 Sau
               </button>
@@ -419,6 +415,10 @@ const SearchSchedule = ({ setShowLogin }) => {
       </div>
     </div>
   );
+};
+
+SearchSchedule.propTypes = {
+  setShowLogin: PropTypes.func.isRequired,
 };
 
 export default SearchSchedule;

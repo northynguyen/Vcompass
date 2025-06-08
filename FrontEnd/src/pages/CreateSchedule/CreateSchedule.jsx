@@ -89,13 +89,10 @@ const formatNumber = (value) => {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 };
 
-// const unformatNumber = (value) => {
-//   return value.replace(/\./g, '');
-// };
 
 const handleBudgetChange = (e) => {
   const rawValue = e.target.value.replace(/\./g, '');
-  if (!/^\d*$/.test(rawValue)) return; // chỉ cho phép số
+  if (!/^\d*$/.test(rawValue)) return; 
 
   setBudgetInput(formatNumber(rawValue));
   setBudget(Number(rawValue));
@@ -166,7 +163,7 @@ const handleBudgetChange = (e) => {
     let isValid = true;
 
     // Validate điểm đến
-    if (!destination.trim()) {
+    if (!destination) {
       tempErrors.destination = 'Vui lòng chọn điểm đến';
       isValid = false;
     } else if (!validDestination) {
@@ -203,7 +200,7 @@ const handleBudgetChange = (e) => {
     }
 
     // Validate budget cho AI tour
-    if (type === "ai" && !budget.trim()) {
+    if (type === "ai" && !budget ) {
       tempErrors.budget = 'Vui lòng nhập ngân sách dự kiến';
       isValid = false;
     }
@@ -330,7 +327,7 @@ const handleBudgetChange = (e) => {
     <div className="create-schedule-container">
       {aiLoading && (
         <div className="loading-indicator">
-          <img src="/src/assets/logo_ai.png" alt="Loading..." />
+          <img src="https://res.cloudinary.com/dmdzku5og/image/upload/v1749395069/logo_ai_qw4nqj.png" alt="Loading..." />
           <p>Đang tạo lịch trình...</p>
         </div>
       )}

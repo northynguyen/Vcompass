@@ -172,15 +172,15 @@ const BookingFinalStep = ({bookingDetails, setShowLogin}) => {
 
             <div className="checkbox-group">
                 <input type="checkbox" id="marketing-emails" />
-                <label htmlFor="marketing-emails">Tôi đồng ý nhận email quảng cáo từ Booking.com, bao gồm các chương trình khuyến mãi, gợi ý cá nhân hóa, phần thưởng, trải nghiệm du lịch và cập nhật về các sản phẩm và dịch vụ của Booking.com.</label>
+                <label htmlFor="marketing-emails">Tôi đồng ý nhận email quảng cáo từ VCompass, bao gồm các chương trình khuyến mãi, gợi ý cá nhân hóa, phần thưởng, trải nghiệm du lịch và cập nhật về các sản phẩm và dịch vụ của VCompass.</label>
             </div>
 
             <div className="checkbox-group">
                 <input type="checkbox" id="transport-emails" />
-                <label htmlFor="transport-emails">Tôi đồng ý nhận email quảng cáo từ Booking.com, bao gồm các chương trình khuyến mãi, gợi ý cá nhân hóa, phần thưởng, trải nghiệm du lịch và cập nhật về các sản phẩm và dịch vụ của Booking.com Transport Limited.</label>
+                <label htmlFor="transport-emails">Tôi đồng ý nhận email quảng cáo từ VCompass, bao gồm các chương trình khuyến mãi, gợi ý cá nhân hóa, phần thưởng, trải nghiệm du lịch và cập nhật về các sản phẩm và dịch vụ của VCompass.</label>
             </div>
 
-            <p className="note">Bằng cách đăng ký, bạn cho phép chúng tôi cá nhân hóa ưu đãi và nội dung phù hợp với sở thích của bạn bằng cách theo dõi cách bạn sử dụng Booking.com thông qua công nghệ theo dõi. Bạn có thể hủy đăng ký bất kỳ lúc nào. Đọc <a href="#">chính sách bảo mật</a> của chúng tôi.</p>
+            <p className="note">Bằng cách đăng ký, bạn cho phép chúng tôi cá nhân hóa ưu đãi và nội dung phù hợp với sở thích của bạn bằng cách theo dõi cách bạn sử dụng VCompass thông qua công nghệ theo dõi. Bạn có thể hủy đăng ký bất kỳ lúc nào. Đọc <a href="#">chính sách bảo mật</a> của chúng tôi.</p>
 
             <p>Đơn đặt phòng của bạn sẽ được thực hiện bởi Joi Hospitality - Hoàng Anh và bằng cách hoàn tất đặt phòng này, bạn đồng ý với các <a href="#">điều kiện đặt phòng</a>, <a href="#">điều khoản chung</a>, và <a href="#">chính sách bảo mật</a>.</p>
 

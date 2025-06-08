@@ -87,17 +87,18 @@ const Review = ({ type, id, booking, onClose, setShowLogin  }) => {
             console.error("Lỗi khi gửi đánh giá:", error);
             alert("Đã xảy ra lỗi khi gửi đánh giá.");
         }
-
-        setRating({
-            overall: 0,
-            room: 0,
-            service: 0,
-            location: 0,
-            food: 0,
-            value: 0,
-        });
-        setComments("");
-        onClose();
+        finally {
+            setRating({
+                overall: 0,
+                room: 0,
+                service: 0,
+                location: 0,
+                food: 0,
+                value: 0,
+            });
+            setComments("");
+            onClose();
+        }
     };
 
     return (

@@ -47,7 +47,7 @@ const BodyPartner = () => {
           <div className="feature">
             <img src="https://t-cf.bstatic.com/design-assets/assets/v3.125.0/illustrations-partner-thumbnails/Review.png" alt="Feature Icon 1" />
             <h3>Nhận đánh giá dành cho chỗ nghỉ</h3>
-            <p>Chúng tôi nhập điểm đánh giá từ các nền tảng khác và hiển thị điểm trong trang chỗ nghỉ của Quý vị trên Booking.com, nên Quý vị luôn có đánh giá của khách ngay từ ban đầu.</p>
+            <p>Chúng tôi nhập điểm đánh giá từ các nền tảng khác và hiển thị điểm trong trang chỗ nghỉ của Quý vị trên VCompass, nên Quý vị luôn có đánh giá của khách ngay từ ban đầu.</p>
           </div>
           <div className="feature">
             <img src="https://t-cf.bstatic.com/design-assets/assets/v3.125.0/illustrations-partner-thumbnails/Puzzle.png" alt="Feature Icon 2" />

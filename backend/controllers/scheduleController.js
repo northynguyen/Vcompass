@@ -13,6 +13,114 @@ import User from "../models/user.js";
 import { createNotification } from "./notiController.js";
 import { uploadToCloudinaryV2 } from "./videoController.js";
 
+// ✅ Utility function để populate attractions nhanh chóng
+const populateAttractionsOptimized = async (schedules) => {
+  if (!schedules || schedules.length === 0) return;
+
+  // Thu thập tất cả attraction IDs
+  const attractionIds = new Set();
+  schedules.forEach((schedule) => {
+    schedule.activities.forEach((day) => {
+      day.activity.forEach((act) => {
+        if (
+          act.activityType === "Attraction" &&
+          mongoose.Types.ObjectId.isValid(act.idDestination)
+        ) {
+          attractionIds.add(act.idDestination.toString());
+        }
+      });
+    });
+  });
+
+  if (attractionIds.size === 0) return;
+
+  // Query tất cả attractions một lần
+  const attractions = await Attraction.find({
+    _id: { $in: Array.from(attractionIds) }
+  }).lean();
+
+  // Tạo Map để lookup nhanh
+  const attractionMap = new Map();
+  attractions.forEach(attraction => {
+    attractionMap.set(attraction._id.toString(), attraction);
+  });
+
+  // Map attractions vào activities
+  schedules.forEach((schedule) => {
+    schedule.activities.forEach((day) => {
+      day.activity.forEach((act) => {
+        if (
+          act.activityType === "Attraction" &&
+          mongoose.Types.ObjectId.isValid(act.idDestination)
+        ) {
+          act.destination = attractionMap.get(act.idDestination.toString()) || null;
+        }
+      });
+    });
+  });
+};
+
+// ✅ Utility function để populate tất cả loại destination nhanh chóng
+const populateAllDestinationsOptimized = async (schedules) => {
+  if (!schedules || schedules.length === 0) return;
+
+  const models = { Accommodation, Attraction, FoodService };
+  
+  // Thu thập IDs theo từng loại
+  const idsByType = {
+    Accommodation: new Set(),
+    Attraction: new Set(),
+    FoodService: new Set()
+  };
+
+  schedules.forEach((schedule) => {
+    schedule.activities.forEach((day) => {
+      day.activity.forEach((act) => {
+        if (
+          act.activityType !== "Other" &&
+          models[act.activityType] &&
+          mongoose.Types.ObjectId.isValid(act.idDestination)
+        ) {
+          idsByType[act.activityType].add(act.idDestination.toString());
+        }
+      });
+    });
+  });
+
+  // Query tất cả destinations theo từng loại
+  const destinationMaps = {};
+  await Promise.all(
+    Object.entries(idsByType).map(async ([type, ids]) => {
+      if (ids.size === 0) return;
+      
+      const destinations = await models[type].find({
+        _id: { $in: Array.from(ids) }
+      }).lean();
+      
+      destinationMaps[type] = new Map();
+      destinations.forEach(dest => {
+        destinationMaps[type].set(dest._id.toString(), dest);
+      });
+    })
+  );
+
+  // Map destinations vào activities
+  schedules.forEach((schedule) => {
+    schedule.activities.forEach((day) => {
+      day.activity.forEach((act) => {
+        if (
+          act.activityType !== "Other" &&
+          models[act.activityType] &&
+          mongoose.Types.ObjectId.isValid(act.idDestination) &&
+          destinationMaps[act.activityType]
+        ) {
+          act.destination = destinationMaps[act.activityType].get(act.idDestination.toString()) || null;
+        }
+      });
+    });
+  });
+};
+
 export const addSchedule = async (req, res) => {
   try {
     const { userId, schedule } = req.body;
@@ -141,7 +249,7 @@ export const updateSchedule = async (req, res) => {
 
 export const getSchedulesByIdUser = async (req, res) => {
   const { userId } = req.body; // Replace with user ID extraction from token, if needed.
-  const { type, page = 1, limit = 10 } = req.query;
+  const { type, page = 1, limit = 10, search } = req.query;
 
   if (!userId) {
     return res.status(400).json({
@@ -155,16 +263,32 @@ export const getSchedulesByIdUser = async (req, res) => {
     const limitNum = parseInt(limit);
     const skip = (pageNum - 1) * limitNum;
 
+    // Create search condition
+    let searchCondition = {};
+    if (search && search.trim()) {
+      searchCondition = {
+        $or: [
+          { scheduleName: { $regex: search.trim(), $options: 'i' } },
+          { address: { $regex: search.trim(), $options: 'i' } }
+        ]
+      };
+    }
+
     if (type === "group") {
       console.log("type group -------");
 
-      const total = await Schedule.countDocuments({
+      const baseCondition = {
         idInvitee: new mongoose.Types.ObjectId(userId),
-      });
+      };
+      
+      // Combine base condition with search condition
+      const finalCondition = search && search.trim() 
+        ? { ...baseCondition, ...searchCondition }
+        : baseCondition;
 
-      const schedules = await Schedule.find({
-        idInvitee: new mongoose.Types.ObjectId(userId),
-      })
+      const total = await Schedule.countDocuments(finalCondition);
+
+      const schedules = await Schedule.find(finalCondition)
         .skip(skip)
         .limit(limitNum)
         .sort({ createdAt: -1 });
@@ -189,14 +313,19 @@ export const getSchedulesByIdUser = async (req, res) => {
           .json({ success: false, message: "User not found" });
       }
 
-      // Đếm số schedules thực sự tồn tại trong wishlist
-      const total = await Schedule.countDocuments({
+      const baseCondition = {
         _id: { $in: user.favorites.schedule || [] },
-      });
+      };
+      
+      // Combine base condition with search condition
+      const finalCondition = search && search.trim() 
+        ? { ...baseCondition, ...searchCondition }
+        : baseCondition;
 
-      const schedules = await Schedule.find({
-        _id: { $in: user.favorites.schedule || [] },
-      })
+      // Đếm số schedules thực sự tồn tại trong wishlist
+      const total = await Schedule.countDocuments(finalCondition);
+
+      const schedules = await Schedule.find(finalCondition)
         .populate("idUser")
         .skip(skip)
         .limit(limitNum)
@@ -214,10 +343,17 @@ export const getSchedulesByIdUser = async (req, res) => {
       });
     } else {
       // Default case - user's own schedules
-      const total = await Schedule.countDocuments({ idUser: userId });
+      const baseCondition = { idUser: userId };
+      
+      // Combine base condition with search condition
+      const finalCondition = search && search.trim() 
+        ? { ...baseCondition, ...searchCondition }
+        : baseCondition;
+
+      const total = await Schedule.countDocuments(finalCondition);
       const totalPages = Math.ceil(total / limitNum);
 
-      const schedules = await Schedule.find({ idUser: userId })
+      const schedules = await Schedule.find(finalCondition)
         .populate("idUser")
         .skip(skip)
         .limit(limitNum)
@@ -247,6 +383,13 @@ export const getAllSchedule = async (req, res) => {
     // Lấy các query từ request
     const {
       cities, // Danh sách thành phố (truyền dưới dạng mảng hoặc chuỗi phân tách bởi dấu phẩy)
+      scheduleName, // Tìm kiếm theo tên lịch trình
+      activityType, // Lọc theo loại hoạt động
+      priceMin, // Giá tối thiểu
+      priceMax, // Giá tối đa
+      numDays, // Số ngày
+      hasVideo, // Có video hay không
+      hasImage, // Có ảnh hay không
       sortBy = "likes", // Default to "likes"
       page = 1, // Trang hiện tại
       limit = 10, // Số lượng mỗi trang
@@ -262,35 +405,52 @@ export const getAllSchedule = async (req, res) => {
 
     // Loại bỏ lịch trình của user hiện tại nếu có userId được cung cấp
     if (userId && mongoose.Types.ObjectId.isValid(userId)) {
-      query.idUser = { $ne: new mongoose.Types.ObjectId(userId) }; // Chuyển đổi string thành ObjectId
+      query.idUser = { $ne: new mongoose.Types.ObjectId(userId) };
       console.log("Excluding schedules from userId:", userId);
     }
 
+    // Lọc theo địa chỉ
     if (cityList.length > 0) {
-      query.address = { $in: cityList }; // Tìm kiếm lịch trình có địa chỉ thuộc danh sách thành phố
+      query.address = { $in: cityList };
+    }
+
+    // Lọc theo tên lịch trình
+    if (scheduleName) {
+      query.scheduleName = { $regex: scheduleName, $options: "i" };
+    }
+
+    // Lọc theo số ngày
+    if (numDays && numDays !== "0") {
+      query.numDays = parseInt(numDays);
+    }
+
+    // Lọc theo media
+    if (hasVideo === "true") {
+      query.videoSrc = { $exists: true, $ne: null };
+    }
+    
+    if (hasImage === "true") {
+      query.imgSrc = { $exists: true, $ne: [], $not: { $size: 0 } };
     }
 
     // Lựa chọn sắp xếp
     let sortOptions = {};
     if (sortBy === "likes") {
-      sortOptions = { "likes.length": -1 }; // Sắp xếp theo số lượng lượt thích giảm dần
+      sortOptions = { "likes.length": -1 };
     } else if (sortBy === "comments") {
-      sortOptions = { "comments.length": -1 }; // Sắp xếp theo số lượng bình luận giảm dần
+      sortOptions = { "comments.length": -1 };
     } else {
-      sortOptions = { createdAt: -1 }; // Mặc định sắp xếp theo ngày tạo mới nhất
+      sortOptions = { createdAt: -1 };
     }
 
     // Nếu request từ trang Home, xử lý theo yêu cầu đặc biệt
     if (forHomePage === "true") {
       const homeQuery = { isPublic: true };
 
-      // Loại bỏ lịch trình của user hiện tại
       if (userId && mongoose.Types.ObjectId.isValid(userId)) {
         homeQuery.idUser = { $ne: new mongoose.Types.ObjectId(userId) };
-        console.log("Home page - Excluding schedules from userId:", userId);
       }
 
-      // Tự động sắp xếp theo likes và comments cho homepage
       const schedules = await Schedule.aggregate([
         { $match: homeQuery },
         {
@@ -299,13 +459,13 @@ export const getAllSchedule = async (req, res) => {
             commentsCount: { $size: "$comments" },
             popularityScore: {
               $add: [
-                { $multiply: [{ $size: "$likes" }, 2] }, // Likes có trọng số cao hơn
+                { $multiply: [{ $size: "$likes" }, 2] },
                 { $size: "$comments" },
               ],
             },
           },
         },
-        { $sort: { popularityScore: -1, createdAt: -1 } }, // Sắp xếp theo điểm phổ biến, rồi đến ngày tạo
+        { $sort: { popularityScore: -1, createdAt: -1 } },
         { $limit: parseInt(limit) },
         {
           $lookup: {
@@ -318,10 +478,6 @@ export const getAllSchedule = async (req, res) => {
         { $unwind: "$idUser" },
       ]);
 
-      console.log(
-        `Found ${schedules.length} schedules for home page, excluded user: ${userId}`
-      );
-
       if (!schedules || schedules.length === 0) {
         return res.status(404).json({
           success: false,
@@ -329,28 +485,7 @@ export const getAllSchedule = async (req, res) => {
         });
       }
 
-      // ✅ Populate chỉ các activity có activityType là "Attraction" cho homepage
-      await Promise.all(
-        schedules.map(async (schedule) => {
-          await Promise.all(
-            schedule.activities.map(async (day) => {
-              await Promise.all(
-                day.activity.map(async (act) => {
-                  if (
-                    act.activityType === "Attraction" &&
-                    mongoose.Types.ObjectId.isValid(act.idDestination)
-                  ) {
-                    const attraction = await Attraction
-                      .findById(act.idDestination)
-                      .lean();
-                    act.destination = attraction || null;
-                  }
-                })
-              );
-            })
-          );
-        })
-      );
+      await populateAttractionsOptimized(schedules);
 
       return res.json({
         success: true,
@@ -362,52 +497,93 @@ export const getAllSchedule = async (req, res) => {
       const skip = (parseInt(page) - 1) * parseInt(limit);
 
       // Tìm kiếm với điều kiện và phân trang
-      const schedules = await Schedule.find(query)
-        .populate("idUser") // Populate thông tin người dùng
-        .sort(sortOptions) // Sắp xếp
-        .skip(skip) // Bỏ qua các bản ghi trước đó
-        .limit(parseInt(limit)); // Giới hạn số bản ghi trả về
+      let schedules = await Schedule.find(query)
+        .populate("idUser")
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(parseInt(limit))
+        .lean();
 
-      // Đếm tổng số lịch trình
-      const total = await Schedule.countDocuments(query);
+      // ✅ Lọc server-side theo activityType và priceRange
+      if (activityType || priceMin || priceMax) {
+        schedules = schedules.filter((schedule) => {
+          // Lọc theo loại hoạt động
+          if (activityType) {
+            const hasActivityType = schedule.activities.some((day) =>
+              day.activity.some(
+                (act) =>
+                  act.activityType.toLowerCase() === activityType.toLowerCase()
+              )
+            );
+            if (!hasActivityType) return false;
+          }
 
-      if (!schedules || schedules.length === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "Không tìm thấy lịch trình phù hợp.",
+          // Lọc theo giá
+          if (priceMin || priceMax) {
+            const totalCost = schedule.activities.reduce((sum, day) => {
+              return sum + day.activity.reduce((acc, act) => acc + (act.cost || 0), 0);
+            }, 0);
+            
+            if (priceMin && totalCost < parseInt(priceMin)) return false;
+            if (priceMax && totalCost > parseInt(priceMax)) return false;
+          }
+
+          return true;
         });
       }
 
-      // ✅ Populate chỉ các activity có activityType là "Attraction"
-      await Promise.all(
-        schedules.map(async (schedule) => {
-          await Promise.all(
-            schedule.activities.map(async (day) => {
-              await Promise.all(
-                day.activity.map(async (act) => {
-                  if (
-                    act.activityType === "Attraction" &&
-                    mongoose.Types.ObjectId.isValid(act.idDestination)
-                  ) {
-                    const attraction = await Attraction
-                      .findById(act.idDestination)
-                      .lean();
-                    act.destination = attraction || null;
-                  }
-                })
-              );
-            })
-          );
-        })
-      );
+      // Đếm tổng số lịch trình phù hợp (trước khi phân trang)
+      let totalQuery = Schedule.find(query);
+      let allSchedules = await totalQuery.lean();
+      
+      // Áp dụng cùng filter cho count
+      if (activityType || priceMin || priceMax) {
+        allSchedules = allSchedules.filter((schedule) => {
+          if (activityType) {
+            const hasActivityType = schedule.activities.some((day) =>
+              day.activity.some(
+                (act) =>
+                  act.activityType.toLowerCase() === activityType.toLowerCase()
+              )
+            );
+            if (!hasActivityType) return false;
+          }
+
+          if (priceMin || priceMax) {
+            const totalCost = schedule.activities.reduce((sum, day) => {
+              return sum + day.activity.reduce((acc, act) => acc + (act.cost || 0), 0);
+            }, 0);
+            
+            if (priceMin && totalCost < parseInt(priceMin)) return false;
+            if (priceMax && totalCost > parseInt(priceMax)) return false;
+          }
+
+          return true;
+        });
+      }
+
+      const total = allSchedules.length;
+
+      if (!schedules || schedules.length === 0) {
+        return res.json({
+          success: true,
+          message: "Không tìm thấy lịch trình phù hợp.",
+          total: 0,
+          currentPage: parseInt(page),
+          totalPages: 0,
+          schedules: [],
+        });
+      }
+
+      await populateAttractionsOptimized(schedules);
 
       res.json({
         success: true,
         message: "Lấy danh sách lịch trình thành công.",
-        total, // Tổng số lịch trình
-        currentPage: parseInt(page), // Trang hiện tại
-        totalPages: Math.ceil(total / limit), // Tổng số trang
-        schedules, // Dữ liệu lịch trình
+        total,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(total / limit),
+        schedules,
       });
     }
   } catch (error) {
@@ -905,27 +1081,7 @@ export const getFollowingSchedules = async (req, res) => {
     }
 
     // ✅ Populate chỉ các activity có activityType là "Attraction"
-    await Promise.all(
-      schedules.map(async (schedule) => {
-        await Promise.all(
-          schedule.activities.map(async (day) => {
-            await Promise.all(
-              day.activity.map(async (act) => {
-                if (
-                  act.activityType === "Attraction" &&
-                  mongoose.Types.ObjectId.isValid(act.idDestination)
-                ) {
-                  const attraction = await Attraction
-                    .findById(act.idDestination)
-                    .lean();
-                  act.destination = attraction || null;
-                }
-              })
-            );
-          })
-        );
-      })
-    );
+    await populateAttractionsOptimized(schedules);
 
     return res.json({
       success: true,
@@ -1059,27 +1215,7 @@ export const scheduleAI = async (req, res) => {
         .lean(); // dùng lean để thao tác dễ hơn
 
       // ✅ Populate chỉ các activity có activityType là "Attraction"
-      await Promise.all(
-        recommendedSchedules.map(async (schedule) => {
-          await Promise.all(
-            schedule.activities.map(async (day) => {
-              await Promise.all(
-                day.activity.map(async (act) => {
-                  if (
-                    act.activityType === "Attraction" &&
-                    mongoose.Types.ObjectId.isValid(act.idDestination)
-                  ) {
-                    const attraction = await Attraction
-                      .findById(act.idDestination)
-                      .lean();
-                    act.destination = attraction || null; // thêm field destination
-                  }
-                })
-              );
-            })
-          );
-        })
-      );
+      await populateAttractionsOptimized(recommendedSchedules);
 
       res.status(200).json({
         success: true,
@@ -1138,12 +1274,6 @@ export const trainScheduleModel = async (req, res) => {
 
 //// Application
 
-const models = {
-  Accommodation,
-  Attraction,
-  FoodService,
-};
-
 export const getScheduleByIdForMobile = async (req, res) => {
   const { id } = req.params;
   const { activityId } = req.query;
@@ -1169,24 +1299,7 @@ export const getScheduleByIdForMobile = async (req, res) => {
     }
 
     // ✅ Populate thủ công cho từng activity nếu cần
-    await Promise.all(
-      schedule.activities.map(async (day) => {
-        await Promise.all(
-          day.activity.map(async (act) => {
-            if (
-              act.activityType !== "Other" &&
-              models[act.activityType] &&
-              mongoose.Types.ObjectId.isValid(act.idDestination)
-            ) {
-              const doc = await models[act.activityType]
-                .findById(act.idDestination)
-                .lean();
-              act.destination = doc || null; // thêm field mới
-            }
-          })
-        );
-      })
-    );
+    await populateAllDestinationsOptimized([schedule]);
 
     // ✅ Check quyền chỉnh sửa
     const canEdit =
@@ -1406,28 +1519,7 @@ export const getScheduleByUserId = async (req, res) => {
       isPublic: true,
     }).populate("idUser").lean();
 
-    // ✅ Populate chỉ các activity có activityType là "Attraction"
-    await Promise.all(
-      schedules.map(async (schedule) => {
-        await Promise.all(
-          schedule.activities.map(async (day) => {
-            await Promise.all(
-              day.activity.map(async (act) => {
-                if (
-                  act.activityType === "Attraction" &&
-                  mongoose.Types.ObjectId.isValid(act.idDestination)
-                ) {
-                  const attraction = await Attraction
-                    .findById(act.idDestination)
-                    .lean();
-                  act.destination = attraction || null;
-                }
-              })
-            );
-          })
-        );
-      })
-    );
+    await populateAttractionsOptimized(schedules);
 
     res.status(200).json({ success: true, schedules });
   } catch (error) {
@@ -1435,5 +1527,117 @@ export const getScheduleByUserId = async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Error fetching schedules" });
+  }
+};
+
+// Meta tags for social sharing
+export const getScheduleMetaTags = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send("Invalid schedule ID");
+    }
+
+    const schedule = await Schedule.findById(id).populate("idUser").lean();
+
+    if (!schedule) {
+      return res.status(404).send("Schedule not found");
+    }
+
+    // Get image URL
+    let imageUrl = 'https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg';
+    if (schedule.imgSrc && schedule.imgSrc[0]) {
+      imageUrl = schedule.imgSrc[0].includes('http') 
+        ? schedule.imgSrc[0] 
+        : `https://vcompass.onrender.com/images/${schedule.imgSrc[0]}`;
+    } else if (schedule.videoSrc) {
+      imageUrl = schedule.videoSrc;
+    }
+
+    const description = schedule.description || `Lịch trình du lịch ${schedule.address} - ${schedule.numDays} ngày với nhiều hoạt động thú vị.`;
+    const title = `${schedule.scheduleName} - Du lịch ${schedule.address}`;
+    const url = `https://vcompass.onrender.com/schedule-view/${id}`;
+
+    const html = `
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <meta name="description" content="${description}">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="${title}">
+    <meta property="og:description" content="${description}">
+    <meta property="og:image" content="${imageUrl}">
+    <meta property="og:url" content="${url}">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="VCompass">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${title}">
+    <meta name="twitter:description" content="${description}">
+    <meta name="twitter:image" content="${imageUrl}">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="author" content="${schedule.idUser?.name || 'VCompass User'}">
+    <meta name="keywords" content="du lịch, ${schedule.address}, lịch trình, VCompass, ${schedule.type?.join(', ') || ''}">
+    
+    <script>
+        // Redirect to main app after 1 second
+        setTimeout(function() {
+            window.location.href = "${url}";
+        }, 1000);
+    </script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .loading-container {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <h2>Đang chuyển hướng đến lịch trình...</h2>
+        <p>${title}</p>
+        <p>Nếu không tự động chuyển hướng, <a href="${url}">nhấn vào đây</a></p>
+    </div>
+</body>
+</html>`;
+
+    res.send(html);
+  } catch (error) {
+    console.error("Error serving meta tags:", error);
+    res.status(500).send("Error loading schedule");
   }
 };

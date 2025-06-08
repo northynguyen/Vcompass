@@ -13,7 +13,6 @@ import { VscCopilot } from "react-icons/vsc";
 import { useNavigate } from 'react-router-dom';
 import io from "socket.io-client";
 import logo from '../../assets/logo.png';
-import logo_ai from '../../assets/logo_ai.png';
 import { StoreContext } from "../../Context/StoreContext";
 import "./ChatBox.css";
 
@@ -501,7 +500,7 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
                                     <IoIosArrowBack />
                                 </div>
                                 <div className="chat-user-left">
-                                    <img src={logo_ai} alt="Avatar" className="chatting-user-avatar" />
+                                    <img src="https://res.cloudinary.com/dmdzku5og/image/upload/v1749395069/logo_ai_qw4nqj.png" alt="Avatar" className="chatting-user-avatar" />
                                     <div className="ai-name-container">
                                         <a className="chatting-user-name">VCompass AI</a>
                                         <p className="ai-name-des">Trợ lý hữu ích của bạn</p>
@@ -510,7 +509,7 @@ const ChatBox = ({ setCurrentConversation, currentConversation }) => {
                             </div>
                             <div className="chat-message-container">
                                 <div className="ai-introduce-container">
-                                    <img src={logo_ai} alt="Avatar" className="chat-ai-avatar" />
+                                    <img src="https://res.cloudinary.com/dmdzku5og/image/upload/v1749395069/logo_ai_qw4nqj.png" alt="Avatar" className="chat-ai-avatar" />
                                     <a className="chatting-ai-name" >VCompass AI</a>
                                     <p className="ai-name-des">Hỏi bất cứ vấn đề gì bạn muốn</p>
                                 </div>

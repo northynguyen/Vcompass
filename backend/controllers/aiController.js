@@ -118,7 +118,7 @@ export const generateSchedule = async (req, res) => {
             ]
           }
         ],
-        "createdAt": "<thời gian hiện tại>",
+        "createdAt": "<thời gian hiện tại> (format: "YYYY-MM-DD HH:mm:ss") type: Date",
       }
     `;
     console.log("prompt:", prompt);

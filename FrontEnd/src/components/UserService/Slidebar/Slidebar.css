@@ -21,6 +21,7 @@
     height: 80px;
     background-color: #007bff;
     border-radius: 50%;
+    object-fit: cover;
     color: white;
     display: flex;
     align-items: center;

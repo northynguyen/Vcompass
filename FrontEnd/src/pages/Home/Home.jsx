@@ -495,7 +495,7 @@ const Home = ({ setShowLogin }) => {
                     spaceBetween={30}
                     slidesPerView={1}
                     navigation={!isMobile}
-                    pagination={{ clickable: true }}
+                    pagination={!isMobile ? { clickable: true } : false}
                     autoplay={{
                       delay: 4000,
                       pauseOnMouseEnter: true,
@@ -553,7 +553,7 @@ const Home = ({ setShowLogin }) => {
                   breakpoints={{
                     768: { slidesPerView: 1 },
                   }}
-                  pagination={{ clickable: true }}
+                  pagination={!isMobile ? { clickable: true } : false}
                   autoplay={{
                     delay: 3000,
                     pauseOnMouseEnter: true,

@@ -281,10 +281,12 @@
   }
 
   .no-schedule{
-    font-size: 20px;
     text-align: center;
-    width: 800px;
-    margin: 10px auto;
+    padding: 50px 20px;
+    color: #666;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    margin: 20px 0;
   }
   
 /* --- Toàn bộ giao diện mặc định (Desktop) đã được định nghĩa --- */
@@ -379,6 +381,13 @@
     object-fit: cover;
     object-position: center;
   }
+}
+
+/* Pagination improvements */
+.total-results {
+  font-size: 12px;
+  color: #666;
+  margin-left: 10px;
 }
 
 

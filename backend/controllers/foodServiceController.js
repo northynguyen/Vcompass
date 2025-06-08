@@ -114,7 +114,9 @@ export const getFoodServiceById = async (req, res) => {
 const getListByPartner = async (req, res) => {
   const partnerId = req.params.partnerId;
   try {
-    const foodService = await FoodService.find({ idPartner: partnerId });
+    const foodService = await FoodService
+    .find({ idPartner: partnerId })
+    .populate({path: 'ratings.idUser',  model: 'user', select: 'name avatar email'})
     if (!foodService) {
       return res
         .status(404)

@@ -531,7 +531,7 @@
   }
   
   .short-swiper-item {
-    width: 95px;
+    width: 90px;
     height: 155px;
     border-radius: 14px;
   }
@@ -595,12 +595,12 @@
   }
 
   .short-swiper-loading {
-    gap: 15px;
+    gap: 5px;
     padding: 20px 0;
   }
   
   .short-swiper-skeleton {
-    width: 95px;
+    width: 80px;
     height: 155px;
   }
   

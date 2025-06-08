@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import './PostCardSkeleton.css';
 
-const PostCardSkeleton = ({ count = 1 }) => {
+const PostCardSkeleton = ({ count = 1, isSearchSchedule = false }) => {
   // Create array based on count parameter
   const skeletonItems = Array(count).fill(null);
   
   return (
     <>
       {skeletonItems.map((_, index) => (
-        <div key={index} className="skeleton-card-container">
+        <div key={index} className={`skeleton-card-container ${isSearchSchedule ? 'max-width-search' : ''}`}>
           <header className="skeleton-card-header">
             <div className="skeleton-user-info">
               <div className="skeleton-avatar-postcard"></div>

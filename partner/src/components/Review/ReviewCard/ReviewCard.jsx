@@ -33,16 +33,16 @@ const ReviewCard = ({ service, rating, handleResponse, url }) => {
             <div className="review-avatar">
             <img 
                 src={
-                    rating.userImage && rating.userImage.includes('http')
-                    ? rating.userImage 
-                    : `${url}/images/${rating.userImage || 'default-avatar.png'}`
+                    rating.idUser.avatar && rating.idUser.avatar.includes('http')
+                    ? rating.idUser.avatar 
+                    : `${url}/images/${rating.idUser.avatar || 'default-avatar.png'}`
                 }
                 alt="User avatar"
                 />
             </div>
             <div className="review-content">
                 <div className="review-header">
-                    <h4>{rating.userName}</h4>
+                    <h4>{rating.idUser.name}</h4>
                     <p><FaRegCalendarAlt /> {new Date(rating.createdAt).toLocaleString('vi-VN')}</p>
                 </div>
                 <div className="review-stars">
