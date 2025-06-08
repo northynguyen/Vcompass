@@ -327,7 +327,7 @@ const handleBudgetChange = (e) => {
     <div className="create-schedule-container">
       {aiLoading && (
         <div className="loading-indicator">
-          <img src="/src/assets/logo_ai.png" alt="Loading..." />
+          <img src="https://res.cloudinary.com/dmdzku5og/image/upload/v1749395069/logo_ai_qw4nqj.png" alt="Loading..." />
           <p>Đang tạo lịch trình...</p>
         </div>
       )}
