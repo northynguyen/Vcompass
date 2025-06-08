@@ -17,6 +17,51 @@ import PostCard from '../../components/Poster/PostCard';
 import './ShortVideo.css';
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
+import { Helmet } from "react-helmet-async";
+
+// Component for dynamic meta tags
+const VideoMetaTags = ({ video }) => {
+  if (!video) return null;
+
+  const currentUrl = window.location.href;
+  const imageUrl = video.thumbnailUrl || video.videoUrl || 'https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg';
+  
+  const description = video.description || `Xem video ngắn từ ${video.userId?.name || 'VCompass User'}`;
+  const title = video.title || `Video ngắn - ${video.userId?.name || 'VCompass'}`;
+
+  return (
+    <Helmet>
+      {/* Basic Meta Tags */}
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      
+      {/* Open Graph Tags */}
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={imageUrl} />
+      <meta property="og:url" content={currentUrl} />
+      <meta property="og:type" content="video.other" />
+      <meta property="og:site_name" content="VCompass" />
+      <meta property="og:video" content={video.videoUrl} />
+      <meta property="og:video:type" content="video/mp4" />
+      
+      {/* Twitter Card Tags */}
+      <meta name="twitter:card" content="player" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={imageUrl} />
+      <meta name="twitter:player" content={video.videoUrl} />
+      
+      {/* Additional Meta Tags */}
+      <meta name="author" content={video.userId?.name || 'VCompass User'} />
+      <meta name="keywords" content={`video ngắn, ${video.category || ''}, ${video.tags?.join(', ') || ''}, VCompass`} />
+    </Helmet>
+  );
+};
+
+VideoMetaTags.propTypes = {
+  video: PropTypes.object
+};
 
 const ShortVideo = ({ setShowLogin }) => {
   const { url, token, user } = useContext(StoreContext);
@@ -397,23 +442,52 @@ const ShortVideo = ({ setShowLogin }) => {
   };
   
   // Xử lý khi share video
-  const handleShare = () => {
-    // Tạo URL để share
-    const shareUrl = `${window.location.origin}/short-video?videoId=${videos[currentVideoIndex]._id}`;
+  const handleShare = async () => {
+    // Use meta tags URL for better social sharing preview
+    const shareUrl = `${url}/api/shortvideo/meta/${videos[currentVideoIndex]._id}`;
+    const shareText = `Xem video ngắn "${videos[currentVideoIndex].title || 'Video thú vị'}" từ ${videos[currentVideoIndex].userId?.name || 'VCompass User'}`;
     
-    // Kiểm tra xem trình duyệt có hỗ trợ Web Share API không
+    // Check if Web Share API is supported
     if (navigator.share) {
-      navigator.share({
-        title: videos[currentVideoIndex].title || 'Check out this video',
-        text: videos[currentVideoIndex].description || 'Watch this awesome video',
-        url: shareUrl
-      })
-      .catch(error => console.error('Error sharing:', error));
+      try {
+        await navigator.share({
+          title: videos[currentVideoIndex].title || 'Video ngắn từ VCompass',
+          text: shareText,
+          url: shareUrl,
+        });
+        toast.success("Chia sẻ thành công!");
+      } catch (error) {
+        if (error.name !== 'AbortError') {
+          console.error('Error sharing:', error);
+          // Fallback to copy link
+          copyToClipboard(shareUrl);
+        }
+      }
     } else {
-      // Fallback: Copy URL vào clipboard
-      navigator.clipboard.writeText(shareUrl)
-        .then(() => alert('Link copied to clipboard!'))
-        .catch(error => console.error('Error copying to clipboard:', error));
+      // Fallback: copy link to clipboard
+      copyToClipboard(shareUrl);
+    }
+  };
+
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Link đã được sao chép vào clipboard!");
+    } catch (error) {
+      console.error('Failed to copy:', error);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        toast.success("Link đã được sao chép vào clipboard!");
+      } catch (fallbackError) {
+        console.error('Fallback copy failed:', fallbackError);
+        toast.error("Không thể sao chép link. Vui lòng thử lại!");
+      }
+      document.body.removeChild(textArea);
     }
   };
   
@@ -546,6 +620,8 @@ const ShortVideo = ({ setShowLogin }) => {
   
   return (
     <div className={`short-video-container ${showComments ? 'with-comments' : ''}`}>
+      {/* Dynamic Meta Tags for Social Sharing */}
+      {videos[currentVideoIndex] && <VideoMetaTags video={videos[currentVideoIndex]} />}
       
       {/* Sidebar Menu - sẽ ẩn trên mobile */}
       <div className="tiktok-sidebar">       

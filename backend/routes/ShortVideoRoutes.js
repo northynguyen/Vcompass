@@ -20,7 +20,8 @@ import {
   removeReply,
   increaseViews,
   getTrendingVideos,
-  getFollowingVideos
+  getFollowingVideos,
+  getShortVideoMetaTags
 } from '../controllers/ShortVideoController.js';
 
 // Cấu hình middleware upload file
@@ -37,6 +38,7 @@ router.use(fileUpload({
 }));
 
 // Routes không cần xác thực
+router.get('/meta/:id', getShortVideoMetaTags);
 router.get('/videos',   getShortVideos);
 router.get('/videos/:id', getShortVideoById);
 router.get('/all/trending', getTrendingVideos);

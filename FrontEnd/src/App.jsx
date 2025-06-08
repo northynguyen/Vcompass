@@ -11,6 +11,8 @@ import ChatBox from "./components/ChatBox/ChatBox";
 import ShortVideo from './pages/ShortVideo/ShortVideo';
 import SignIn from './components/SignIn/SignIn';
 import PageSchedules from './pages/PageSchedules/PageSchedules';
+import { Helmet } from "react-helmet-async";
+import PropTypes from 'prop-types';
 
 const Page404 = lazy(() => import('./components/Page404/Page404'));
 const AuthRedirect = lazy(() => import('./pages/AuthRedirect/AuthRedirect'));
@@ -29,6 +31,38 @@ const OtherUserProfile = lazy(() => import("./pages/OtherUserProfile/OtherUserPr
 const SearchSchedule = lazy(() => import('./pages/SearchSchedule/SearchSchedule'));
 const ValidateEmail = lazy(() => import("./components/ValidateEmail/ValidateEmail"));
 const MapTest = lazy(() => import("./components/MapTest"));
+
+// Component for default meta tags
+const DefaultMetaTags = ({ title, description, image, url }) => {
+  return (
+    <Helmet>
+      <title>{title || "VCompass - Du lịch theo cách của bạn"}</title>
+      <meta name="description" content={description || "VCompass - Nền tảng du lịch thông minh giúp bạn lập kế hoạch, chia sẻ lịch trình và khám phá những điểm đến tuyệt vời tại Việt Nam."} />
+      
+      {/* Open Graph Tags */}
+      <meta property="og:title" content={title || "VCompass - Du lịch theo cách của bạn"} />
+      <meta property="og:description" content={description || "Nền tảng du lịch thông minh giúp bạn lập kế hoạch, chia sẻ lịch trình và khám phá những điểm đến tuyệt vời tại Việt Nam."} />
+      <meta property="og:image" content={image || "https://vcompass.onrender.com/logo_no_cap.png"} />
+      <meta property="og:url" content={url || "https://vcompass.onrender.com"} />
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="VCompass" />
+      
+      {/* Twitter Card Tags */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title || "VCompass - Du lịch theo cách của bạn"} />
+      <meta name="twitter:description" content={description || "Nền tảng du lịch thông minh giúp bạn lập kế hoạch, chia sẻ lịch trình và khám phá những điểm đến tuyệt vời tại Việt Nam."} />
+      <meta name="twitter:image" content={image || "https://vcompass.onrender.com/logo_no_cap.png"} />
+    </Helmet>
+  );
+};
+
+DefaultMetaTags.propTypes = {
+  title: PropTypes.string,
+  description: PropTypes.string,
+  image: PropTypes.string,
+  url: PropTypes.string
+};
+
 // Component wrapper để kiểm tra route hiện tại
 const AppContent = () => {
   const location = useLocation();
@@ -42,9 +76,75 @@ const AppContent = () => {
   useEffect(() => {
     console.log("showLogin changed:", showLogin);
   }, [showLogin]);
+
+  // Function to get meta tags based on current path
+  const getPageMetaTags = () => {
+    const path = location.pathname;
+    const currentUrl = `https://vcompass.onrender.com${path}`;
+    
+    switch (true) {
+      case path === '/':
+        return {
+          title: "VCompass - Du lịch theo cách của bạn",
+          description: "Khám phá Việt Nam với VCompass - Nền tảng du lịch thông minh giúp bạn lập kế hoạch, chia sẻ lịch trình và tìm kiếm điểm đến tuyệt vời.",
+          url: currentUrl
+        };
+      case path === '/short-video':
+        return {
+          title: "Video ngắn du lịch - VCompass",
+          description: "Khám phá những video ngắn thú vị về du lịch Việt Nam. Chia sẻ trải nghiệm và cảm hứng du lịch của bạn.",
+          url: currentUrl
+        };
+      case path.includes('/attractions'):
+        return {
+          title: "Điểm tham quan - VCompass",
+          description: "Khám phá các điểm tham quan hấp dẫn nhất Việt Nam. Tìm kiếm và đặt vé các địa điểm du lịch nổi tiếng.",
+          url: currentUrl
+        };
+      case path.includes('/foodservices'):
+        return {
+          title: "Ẩm thực - VCompass", 
+          description: "Khám phá ẩm thực Việt Nam đa dạng. Tìm kiếm nhà hàng, quán ăn ngon và đặt bàn dễ dàng.",
+          url: currentUrl
+        };
+      case path.includes('/booking'):
+        return {
+          title: "Đặt phòng khách sạn - VCompass",
+          description: "Đặt phòng khách sạn, resort với giá tốt nhất. So sánh và lựa chọn chỗ nghỉ phù hợp cho chuyến đi.",
+          url: currentUrl
+        };
+      case path.includes('/my-schedule'):
+        return {
+          title: "Lịch trình của tôi - VCompass",
+          description: "Quản lý và xem lại các lịch trình du lịch của bạn. Chia sẻ kế hoạch với bạn bè và gia đình.",
+          url: currentUrl
+        };
+      case path.includes('/create-schedule'):
+        return {
+          title: "Tạo lịch trình du lịch - VCompass",
+          description: "Tạo lịch trình du lịch chi tiết với AI thông minh. Lập kế hoạch hoàn hảo cho chuyến đi của bạn.",
+          url: currentUrl
+        };
+      case path.includes('/searchSchedule'):
+        return {
+          title: "Tìm kiếm lịch trình - VCompass",
+          description: "Tìm kiếm và khám phá hàng ngàn lịch trình du lịch được chia sẻ bởi cộng đồng VCompass.",
+          url: currentUrl
+        };
+      default:
+        return {
+          title: "VCompass - Du lịch theo cách của bạn",
+          description: "VCompass - Nền tảng du lịch thông minh giúp bạn lập kế hoạch, chia sẻ lịch trình và khám phá những điểm đến tuyệt vời tại Việt Nam.",
+          url: currentUrl
+        };
+    }
+  };
   
   return (
     <div className="app-container">
+      {/* Dynamic Meta Tags based on current page */}
+      <DefaultMetaTags {...getPageMetaTags()} />
+      
       {/* Only show Header if not on ShortVideo page */}
       {!isShortVideoPage && <Header setShowLogin={setShowLogin} />}
       <div className="app-content">
