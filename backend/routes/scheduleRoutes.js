@@ -8,7 +8,7 @@ import {
   getTopAddressSchedule,
   updateLikeComment,
   trainScheduleModel,
-  deleteActivity, uploadFiles ,deleteSchedule,getFollowingSchedules,getScheduleByIdForMobile ,scheduleAI,getScheduleByUserId
+  deleteActivity, uploadFiles ,deleteSchedule,getFollowingSchedules,getScheduleByIdForMobile ,scheduleAI,getScheduleByUserId, getScheduleMetaTags
   
 
 } from "../controllers/scheduleController.js";
@@ -17,6 +17,7 @@ import upload from "../middleware/upload.js";
 
 const scheduleRouter = express.Router();
 
+scheduleRouter.get("/meta/:id", getScheduleMetaTags);
 scheduleRouter.post("/addNew", authMiddleware, addSchedule);
 scheduleRouter.get("/getAllSchedule", getAllSchedule);
 scheduleRouter.get("/scheduleforuser/:userId?", scheduleAI);

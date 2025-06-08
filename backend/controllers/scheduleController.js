@@ -1530,3 +1530,115 @@ export const getScheduleByUserId = async (req, res) => {
       .json({ success: false, message: "Error fetching schedules" });
   }
 };
+
+// Meta tags for social sharing
+export const getScheduleMetaTags = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send("Invalid schedule ID");
+    }
+
+    const schedule = await Schedule.findById(id).populate("idUser").lean();
+
+    if (!schedule) {
+      return res.status(404).send("Schedule not found");
+    }
+
+    // Get image URL
+    let imageUrl = 'https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg';
+    if (schedule.imgSrc && schedule.imgSrc[0]) {
+      imageUrl = schedule.imgSrc[0].includes('http') 
+        ? schedule.imgSrc[0] 
+        : `${req.protocol}://${req.get('host')}/images/${schedule.imgSrc[0]}`;
+    } else if (schedule.videoSrc) {
+      imageUrl = schedule.videoSrc;
+    }
+
+    const description = schedule.description || `Lịch trình du lịch ${schedule.address} - ${schedule.numDays} ngày với nhiều hoạt động thú vị.`;
+    const title = `${schedule.scheduleName} - Du lịch ${schedule.address}`;
+    const url = `${req.protocol}://${req.get('host')}/schedule-view/${id}`;
+
+    const html = `
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
+    <meta name="description" content="${description}">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="${title}">
+    <meta property="og:description" content="${description}">
+    <meta property="og:image" content="${imageUrl}">
+    <meta property="og:url" content="${url}">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="VCompass">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="${title}">
+    <meta name="twitter:description" content="${description}">
+    <meta name="twitter:image" content="${imageUrl}">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="author" content="${schedule.idUser?.name || 'VCompass User'}">
+    <meta name="keywords" content="du lịch, ${schedule.address}, lịch trình, VCompass, ${schedule.type?.join(', ') || ''}">
+    
+    <script>
+        // Redirect to main app after 1 second
+        setTimeout(function() {
+            window.location.href = "${url}";
+        }, 1000);
+    </script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .loading-container {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <h2>Đang chuyển hướng đến lịch trình...</h2>
+        <p>${title}</p>
+        <p>Nếu không tự động chuyển hướng, <a href="${url}">nhấn vào đây</a></p>
+    </div>
+</body>
+</html>`;
+
+    res.send(html);
+  } catch (error) {
+    console.error("Error serving meta tags:", error);
+    res.status(500).send("Error loading schedule");
+  }
+};
