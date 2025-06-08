@@ -147,7 +147,6 @@ const ShortVideo = ({ setShowLogin }) => {
     switch(tab) {
       case 'comments':
         setShowComments(true);
-        // Không thay đổi activeOption vì comments không phải là tab chính
         break;
       case 'upload':
         setShowUpload(true);
@@ -173,12 +172,7 @@ const ShortVideo = ({ setShowLogin }) => {
       case 'activity':
         setActiveOption('activity');
         break;
-      case 'messages':
-        setActiveOption('messages');
-        break;
-      case 'live':
-        setActiveOption('live');
-        break;
+      
       default:
         // Khi đóng tất cả tab, quay lại tab home
         setActiveOption('home');
@@ -209,6 +203,7 @@ const ShortVideo = ({ setShowLogin }) => {
   
   const handleExploreClick = () => {
     setActiveOption('explore');
+    setShowComments(false);
   };
   
 

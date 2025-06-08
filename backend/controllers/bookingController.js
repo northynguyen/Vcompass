@@ -113,7 +113,6 @@ export const createBooking = async (req, res) => {
       numberOfGuests,
       totalAmount,
       specialRequest,
-      guestInfo
     } = req.body;
 
     // Tính toán thời gian lưu trú
@@ -153,7 +152,6 @@ export const createBooking = async (req, res) => {
       duration,
       totalAmount,
       specialRequest,
-      guestInfo,
       createdAt: new Date(),
     });
 
@@ -310,6 +308,7 @@ export const getAllBookings = async (req, res) => {
 
     // Find bookings with pagination and filters
     const bookings = await Booking.find(filter)
+      .populate({path: 'userId',  model: 'user', select: 'name avatar nationality email phone_number'})   
       .skip((pageNumber - 1) * limitNumber)
       .sort({ createdAt: -1 })
       .limit(limitNumber);

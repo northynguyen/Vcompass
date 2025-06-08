@@ -15,6 +15,7 @@ const UserService = () => {
   const initialTab = location.state?.tab || 'booking'; // Lấy tab từ state hoặc mặc định là 'booking'
   const [activeTab, setActiveTab] = useState(initialTab); // Đặt giá trị tab ban đầu dựa trên state được gửi
   const [send, setSend] = useState(false);
+  
   useEffect(() => {
     if (location.state?.tab) {
       setActiveTab(location.state.tab); // Cập nhật tab nếu có thay đổi

@@ -14,7 +14,7 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
     const fetchBookingHistory = async () => {
       try {
         const response = await fetch(
-          `${url}/api/bookings/user/${selectedReservation.userId}/booking-history?page=${currentPage}&limit=5&partnerId=${selectedReservation.partnerId}`
+          `${url}/api/bookings/user/${selectedReservation.userId._id}/booking-history?page=${currentPage}&limit=5&partnerId=${selectedReservation.partnerId}`
         );
         const data = await response.json();
         setTotalPages(data.totalPages);
@@ -83,22 +83,22 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
           <div className="profile-info">
             <div className="user-infor">
               <img
-                src="https://via.placeholder.com/96"
+                src={`${selectedReservation.userId.avatar}`}
                 alt="Khách hàng"
                 className="profile-photo"
               />
-              <h2>{selectedReservation.guestInfo.name}</h2>
+              <h2>{selectedReservation.userId.name}</h2>
               <hr />
             </div>
             <div className="contact-info">
               <p>
-                <strong>Số điện thoại:</strong> {selectedReservation.guestInfo.phone}
+                <strong>Số điện thoại:</strong> {selectedReservation.userId.phone_number}
               </p>
               <p>
-                <strong>Email:</strong> {selectedReservation.guestInfo.email}
+                <strong>Email:</strong> {selectedReservation.userId.email}
               </p>
               <p>
-                <strong>Quốc tịch:</strong> {selectedReservation.guestInfo.nationality}
+                <strong>Quốc tịch:</strong> {selectedReservation.userId.nationality ? selectedReservation.userId.nationality : "Việt NamNam"}
               </p>
             </div>
           </div>
@@ -197,8 +197,8 @@ const GuestProfile = ({ selectedReservation, onBack }) => {
             <h3>Thông tin phòng</h3>
             <img
               src={
-                (roomInfo.images && `${url}/images/${roomInfo.images[0]}`) ||
-                "https://via.placeholder.com/1024x768"
+                roomInfo.images? roomInfo.images[0].includes("https") ? roomInfo.images[0] : `${url}/images/${roomInfo.images[0]}` : "https://via.placeholder.com/1024x768"
+               
               }
               alt="Phòng"
               className="room-photo"

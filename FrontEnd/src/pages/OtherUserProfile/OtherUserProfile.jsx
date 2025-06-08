@@ -115,7 +115,11 @@ export default function OtherUserProfile({setCurrentConversation, setShowLogin})
     }
   }, [schedules]);
   const handleScheduleClick = (id) => {
-    navigate(`/schedule-view/${id}`);
+    if (isMyProfile) {
+      navigate(`/schedule-edit/${id}`);
+    } else {
+      navigate(`/schedule-view/${id}`);
+    }
   };
   const filterImage = () => {
     const allowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"]; // Danh sách các định dạng ảnh hợp lệ

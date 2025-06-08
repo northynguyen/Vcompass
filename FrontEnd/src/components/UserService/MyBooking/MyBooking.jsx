@@ -146,7 +146,7 @@ const MyBooking = ({ send }) => {
                                 <p><strong>Trạng thái:</strong> {booking.status === "expired" ? "Đã hết hạn" : booking.status === "pending" ? "Chờ xác nhận" : booking.status === "cancelled" ? "Đã hủy" : "Đã xác nhận"}</p>
                             </div>
                             <div className="booking-actions">
-                                {booking.status === "expired" && (
+                                {booking.status === "expired"  && (
                                     <button className="review-btn" onClick={() => { handleReviewClick(booking)}}>Viết đánh giá</button>
                                 )}
                                 {(booking.status === "confirmed" || booking.status === "pending") && (

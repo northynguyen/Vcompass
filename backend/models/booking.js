@@ -4,15 +4,15 @@ const { Schema } = mongoose;
 
 const BookingSchema = new Schema({
   userId: {
-    type: String, // Không cần ObjectId nếu không liên kết
+    type: String,
     required: true,
   },
   partnerId: {
-    type: String, // Không cần ObjectId nếu không liên kết
+    type: String,
     required: true,
   },
   accommodationId: {
-    type: String, // Không cần ObjectId nếu không liên kết
+    type: String,
     required: true,
   },
   roomId: {
@@ -61,12 +61,7 @@ const BookingSchema = new Schema({
     type: Number,
     required: true,
   },
-  guestInfo: {
-    name: { type: String, required: true },
-    email: { type: String, required: true },
-    phone: { type: String, required: true },
-    nationality: { type: String, required: true },
-  },
+
   createdAt: {
     type: Date,
     default: Date.now,
