@@ -145,7 +145,6 @@ const AppContent = () => {
       {/* Dynamic Meta Tags based on current page */}
       <DefaultMetaTags {...getPageMetaTags()} />
       
-      {/* Only show Header if not on ShortVideo page */}
       {!isShortVideoPage && <Header setShowLogin={setShowLogin} />}
       <div className="app-content">
         <ToastContainer
@@ -190,9 +189,7 @@ const AppContent = () => {
         </Suspense>
         <ChatBox currentConversation={currentConversation} setCurrentConversation={setCurrentConversation} />
       </div>
-      {/* Only show Footer if not on ShortVideo page */}
       {!isShortVideoPage && <Footer />}
-      {/* Hiển thị SignIn khi showLogin = true */}
       {showLogin && <SignIn setShowLogin={setShowLogin} />}
     </div>
   );

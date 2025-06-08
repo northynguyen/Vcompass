@@ -1014,7 +1014,7 @@ const getFollowingVideos = async (req, res) => {
 };
 
 // Meta tags for social sharing
-export const getShortVideoMetaTags = async (req, res) => {
+const getShortVideoMetaTags = async (req, res) => {
   const { id } = req.params;
 
   try {
