@@ -1519,7 +1519,6 @@ export const getScheduleByUserId = async (req, res) => {
       isPublic: true,
     }).populate("idUser").lean();
 
-    // ✅ Populate chỉ các activity có activityType là "Attraction"
     await populateAttractionsOptimized(schedules);
 
     res.status(200).json({ success: true, schedules });
@@ -1551,14 +1550,14 @@ export const getScheduleMetaTags = async (req, res) => {
     if (schedule.imgSrc && schedule.imgSrc[0]) {
       imageUrl = schedule.imgSrc[0].includes('http') 
         ? schedule.imgSrc[0] 
-        : `${req.protocol}://${req.get('host')}/images/${schedule.imgSrc[0]}`;
+        : `https://vcompass.onrender.com/images/${schedule.imgSrc[0]}`;
     } else if (schedule.videoSrc) {
       imageUrl = schedule.videoSrc;
     }
 
     const description = schedule.description || `Lịch trình du lịch ${schedule.address} - ${schedule.numDays} ngày với nhiều hoạt động thú vị.`;
     const title = `${schedule.scheduleName} - Du lịch ${schedule.address}`;
-    const url = `${req.protocol}://${req.get('host')}/schedule-view/${id}`;
+    const url = `https://vcompass.onrender.com/schedule-view/${id}`;
 
     const html = `
 <!DOCTYPE html>
