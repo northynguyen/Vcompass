@@ -8,7 +8,7 @@ import {
   updateFoodService, addReview,
   getAdminGetListByPartner,
   updateStatusFoodServiceAdmin, getWishlist, updateRatingResponse,
-  searchFoodServices
+  searchFoodServices, getAllFoodService
 } from "../controllers/foodServiceController.js";
 import authMiddleware from "../middleware/auth.js";
 import { upload } from "../middleware/upload.js";
@@ -16,6 +16,7 @@ import { upload } from "../middleware/upload.js";
 const foodServiceRoutes = express.Router();
 
 foodServiceRoutes.get("/", getListFoodService);
+foodServiceRoutes.get("/all", getAllFoodService);
 foodServiceRoutes.get("/search", searchFoodServices);
 foodServiceRoutes.get("/partner/:partnerId", getListByPartner);
 foodServiceRoutes.post("/add", authMiddleware,
@@ -37,6 +38,6 @@ foodServiceRoutes.post("/delete", authMiddleware, deleteFoodService);
 foodServiceRoutes.get("/:id", getFoodServiceById);
 foodServiceRoutes.post("/addReview/:id", addReview);
 foodServiceRoutes.put('/updateRating/:foodServiceId/ratings/:ratingId', updateRatingResponse);
-foodServiceRoutes.get("/user/get/wishList", authMiddleware, getWishlist);
+foodServiceRoutes.get("/user/wishlist", authMiddleware, getWishlist);
 
 export default foodServiceRoutes;

@@ -313,30 +313,55 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
     }
   }, [isOpen, activity, destination]);
 
+  // Clear listData when switching between List and WishList
+  useEffect(() => {
+    setListData([]);
+    setLocations([]);
+  }, [choice, option]);
+
   useEffect(() => {
     if (listData.length > 0) {
       const locationData = listData.map(item => {
-        let latitude, longitude;
+        let latitude, longitude, name, address, rating, totalReviews;
+        
         if (option === 'Accommodation') {
-
           latitude = item.location?.latitude;
           longitude = item.location?.longitude;
-
+          name = item.name;
+          address = item.location?.address;
         } else if (option === 'FoodService') {
-
           latitude = item.location?.latitude;
           longitude = item.location?.longitude;
-
+          name = item.foodServiceName;
+          address = item.location?.address;
         } else if (option === 'Attraction') {
-
           latitude = item.location?.latitude;
           longitude = item.location?.longitude;
+          name = item.attractionName;
+          address = item.location?.address;
+        }
 
+        // Calculate rating information
+        if (item.ratings && item.ratings.length > 0) {
+          const totalRating = item.ratings.reduce((sum, rating) => sum + (Number(rating.rate) || 0), 0);
+          rating = (totalRating / item.ratings.length).toFixed(1);
+          totalReviews = item.ratings.length;
+        } else if (item.averageRating !== undefined) {
+          rating = item.averageRating.toFixed(1);
+          totalReviews = item.ratings ? item.ratings.length : 0;
+        } else {
+          rating = 'Chưa có đánh giá';
+          totalReviews = 0;
         }
 
         return {
+          ...item, // Include full item data
           latitude,
           longitude,
+          name,
+          address,
+          rating,
+          totalReviews
         };
       });
 
@@ -815,9 +840,29 @@ const LocationsMapView = ({ locations, selectedLocation }) => {
                   closeOnClick={false}
                   keepInView={true}
                 >
-                  <div>
-                    <strong>{location.name}</strong>
-                    <p>{location.address}</p>
+                  <div style={{ minWidth: '150px', textAlign: 'left' }}>
+                    <strong style={{ fontSize: '12px', color: '#333' }}>
+                      {location.name}
+                    </strong>
+                    
+                    {/* Rating display */}
+                    <div style={{ margin: '4px 0', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                      <span style={{ color: '#ff6b35', fontSize: '12px' }}>
+                        {'★'.repeat(Math.floor(Number(location.rating) || 0))}
+                        {'☆'.repeat(5 - Math.floor(Number(location.rating) || 0))}
+                      </span>
+                      <span style={{ fontSize: '10px', color: '#666' }}>
+                        {location.rating !== 'Chưa có đánh giá' 
+                          ? `${location.rating} (${location.totalReviews})`
+                          : 'Chưa có đánh giá'
+                        }
+                      </span>
+                    </div>
+                    
+                    {/* Address */}
+                    <p style={{ margin: '2px 0 0 0', fontSize: '10px', color: '#888', lineHeight: '1.2' }}>
+                      📍 {location.address}
+                    </p>
                   </div>
                 </Popup>
               </Marker>
@@ -849,10 +894,50 @@ const LocationsMapView = ({ locations, selectedLocation }) => {
                 closeOnClick={false}
                 keepInView={true}
               >
-                <div>
-                  <strong>{selectedLocation.name || selectedLocation.foodServiceName || selectedLocation.attractionName}</strong>
-                  <p>{selectedLocation.location.address || "New Address"}</p>
+                <div style={{ minWidth: '150px', textAlign: 'left' }}>
+                  <strong style={{ fontSize: '12px', color: '#333' }}>
+                    {selectedLocation.name || selectedLocation.foodServiceName || selectedLocation.attractionName}
+                  </strong>
+                  
+                  {/* Rating display for selected location */}
+                  {selectedLocation.ratings && (
+                    <div style={{ margin: '4px 0', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                      {(() => {
+                        let rating, totalReviews;
+                        if (selectedLocation.ratings.length > 0) {
+                          const totalRating = selectedLocation.ratings.reduce((sum, r) => sum + (Number(r.rate) || 0), 0);
+                          rating = (totalRating / selectedLocation.ratings.length).toFixed(1);
+                          totalReviews = selectedLocation.ratings.length;
+                        } else if (selectedLocation.averageRating !== undefined) {
+                          rating = selectedLocation.averageRating.toFixed(1);
+                          totalReviews = selectedLocation.ratings.length;
+                        } else {
+                          rating = 'Chưa có đánh giá';
+                          totalReviews = 0;
+                        }
 
+                        return (
+                          <>
+                            <span style={{ color: '#ff6b35', fontSize: '12px' }}>
+                              {'★'.repeat(Math.floor(Number(rating) || 0))}
+                              {'☆'.repeat(5 - Math.floor(Number(rating) || 0))}
+                            </span>
+                            <span style={{ fontSize: '10px', color: '#666' }}>
+                              {rating !== 'Chưa có đánh giá' 
+                                ? `${rating} (${totalReviews})`
+                                : 'Chưa có đánh giá'
+                              }
+                            </span>
+                          </>
+                        );
+                      })()}
+                    </div>
+                  )}
+                  
+                  {/* Address */}
+                  <p style={{ margin: '2px 0 0 0', fontSize: '10px', color: '#888', lineHeight: '1.2' }}>
+                    📍 {selectedLocation.location.address || "New Address"}
+                  </p>
                 </div>
               </Popup>
             </Marker>

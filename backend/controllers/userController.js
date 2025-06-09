@@ -384,6 +384,7 @@ const registerAdmin = async (req, res) => {
 const getUserById = async (req, res) => {
   await handlegetInfoById(req, res, userModel);
 };
+
 const getUserByIdHaveFollower = async (req, res) => {
   await handlegetInfoByIdHaveFollower(req, res, userModel);
 };

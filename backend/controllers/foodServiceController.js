@@ -70,6 +70,16 @@ const getListFoodService = async (req, res) => {
     console.log(error);
   }
 };
+
+export const getAllFoodService = async (req, res) => {
+  try {
+    const foodService = await FoodService.find();
+    res.json({ success: true, foodService });
+  } catch (error) {
+    res.json({ success: false, message: "Error retrieving food service", error });
+  }
+};
+
 export const getFoodServiceById = async (req, res) => {
   const { id } = req.params; // Lấy id từ params
   try {
@@ -722,20 +732,40 @@ export const updateRatingResponse = async (req, res) => {
 };
 
 const getWishlist = async (req, res) => {
-  const { userId } = req.body;
+  const { city, name, minPrice, maxPrice } = req.query;
 
   try {
+    // Get userId from token instead of request body since this is now a GET request
+    const userId = req.body.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "User not authenticated" });
+    }
+
     const user = await userModel.findById(userId);
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    const wishlist = await FoodService.find({ _id: { $in: user.favorites.foodService } });
+    let wishlist = await FoodService.find({ _id: { $in: user.favorites.foodService } });
     if (!wishlist.length) {
-      return res.status(200).json({ success: true, message: "No food services found in wishlist", foodServices: [] });
+      return res.status(200).json({ success: true, message: "No food services found in wishlist", foodService: [] });
     }
 
-    res.status(200).json({ success: true, foodServices: wishlist });
+    // Apply filters
+    if (city) {
+      wishlist = wishlist.filter(foodService => foodService.city.toLowerCase().includes(city.toLowerCase()));
+    }
+    if (name) {
+      wishlist = wishlist.filter(foodService => foodService.foodServiceName.toLowerCase().includes(name.toLowerCase()));
+    }
+    if (minPrice) {
+      wishlist = wishlist.filter(foodService => foodService.price.minPrice >= Number(minPrice));
+    }
+    if (maxPrice) {
+      wishlist = wishlist.filter(foodService => foodService.price.maxPrice <= Number(maxPrice));
+    }
+
+    res.status(200).json({ success: true, foodService: wishlist });
   } catch (error) {
     console.error("Error retrieving wishlist:", error);
     res.status(500).json({ success: false, message: "Error retrieving wishlist" });

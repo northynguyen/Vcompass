@@ -10,6 +10,7 @@ import {
   deleteShortVideo,
   toggleLike,
   addComment,
+  removeComment,
   increaseShares,
   getUserShortVideos,
   getPopularShortVideos,
@@ -49,6 +50,7 @@ router.post('/videos', authMiddleware, createShortVideo);
 router.put('/videos/:id', authMiddleware, updateShortVideo);
 router.delete('/videos/:id', authMiddleware, deleteShortVideo);
 router.post('/videos/:id/comment', authMiddleware, addComment);
+router.delete('/videos/:id/comment/:commentId', authMiddleware, removeComment);
 router.post('/videos/:id/like', authMiddleware, toggleLike);
 router.post('/videos/:videoId/comment/:commentId/reply', authMiddleware, addReply);
 router.post('/videos/:videoId/comment/:commentId/like', authMiddleware, toggleCommentLike);

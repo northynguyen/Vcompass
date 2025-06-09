@@ -58,7 +58,7 @@ const Services = () => {
         const fetchAccommodations = async () => {
             try {
                 const response = await axios.get(
-                    `${url}/api/accommodations`
+                    `${url}/api/accommodations/all`
                 );
                 if (response.data.success) {
                     setAccommodations(response.data.accommodations);
@@ -67,12 +67,13 @@ const Services = () => {
                     console.error("Error fetching accommodations:");
                 }
             } catch (error) {
+                console.error("Error fetching accommodations:", error);
             }
         };
         const fetchFoodServices = async () => {
             try {
                 const response = await axios.get(
-                    `${url}/api/foodservices`
+                    `${url}/api/foodservices/all`
                 );
                 if (response.data.success) {
                     setFoodservices(response.data.foodService);
