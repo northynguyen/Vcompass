@@ -5,15 +5,16 @@ import PropTypes from 'prop-types';
 import { useContext, useEffect, useState } from "react";
 import { AiOutlineMore } from "react-icons/ai";
 import { BsFillInfoCircleFill } from "react-icons/bs";
+import { CgProfile } from "react-icons/cg";
 import { FaHeart } from "react-icons/fa";
+import { FiFlag } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../../Context/StoreContext";
-import { FiFlag } from "react-icons/fi";
-import "./PostCard.css";
 import ReportForm from "../Report/ReportForm";
+import "./PostCard.css";
 
 const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartClick, setShowLogin }) => {
-  const { url, user, token, getImageUrl} = useContext(StoreContext);
+  const { url, user, token, getImageUrl } = useContext(StoreContext);
   const [likes, setLikes] = useState(schedule?.likes || []);
   const [isFavorite, setIsFavorite] = useState(false);
   const [openScheduleMenu, setOpenScheduleMenu] = useState(null);
@@ -63,7 +64,7 @@ const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartCl
         },
         { headers: { token } }
       );
-      if (onLikeClick && !isLike()){
+      if (onLikeClick && !isLike()) {
         onLikeClick()
       }
       if (response.data.success) {
@@ -181,7 +182,7 @@ const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartCl
     try {
       const action = isFavorite ? "remove" : "add";
       const requestUrl = `${url}/api/user/user/${user._id}/addtoWishlist?type=schedule&itemId=${id}&action=${action}`;
-      if (onHeartClick && !isFavorite){
+      if (onHeartClick && !isFavorite) {
         onHeartClick()
       }
       const response = await fetch(requestUrl, {
@@ -254,8 +255,8 @@ const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartCl
           <AiOutlineMore />
           {openScheduleMenu === schedule._id && (
             <div className="schedule-dropdown-menu">
-              <div className="follower-menu-button" >
-                <FiFlag />
+              <div className="follower-menu-button" onClick={() => { handleUserClick(schedule.idUser._id) }}>
+                <CgProfile />
                 <button>Xem hồ sơ</button>
               </div>
               <div className="follower-menu-button" >
@@ -293,7 +294,7 @@ const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartCl
             <img
               className="content-image"
               src="https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg"
-              style = {{ width: "100%", height: "100%" }}
+              style={{ width: "100%", height: "100%" }}
               alt="Default Image"
             />
           )}
