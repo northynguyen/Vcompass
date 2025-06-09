@@ -250,6 +250,7 @@ p.chat-user-time {
   display: flex;
   flex-direction: column;
   background: white;
+  margin-bottom: -18px;
 }
 .chat-message-container::-webkit-scrollbar {
   width: 4px;
@@ -395,10 +396,11 @@ video.sent-video.me {
 
 .slide-in {
   position: absolute;
-  right: -100%;
   top: 0;
   bottom: 0;
-  animation: slideIn 0.5s forwards;
+  right: 0;
+  left: 0;
+  animation: slideIn 0.5s ease forwards;
 }
 .un-read {
   font-weight: 600 !important;
@@ -496,7 +498,7 @@ a.chatting-ai-name {
 }
 
 
-@keyframes slideIn {
+/* @keyframes slideIn {
   from {
     right: -30%;
     left: 50%;
@@ -507,8 +509,19 @@ a.chatting-ai-name {
     left: 0;
     opacity: 1;
   }
-}
+} */
 
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
 
 @media (max-width: 768px) {
   .chat-wrapper {
