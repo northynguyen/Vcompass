@@ -326,6 +326,8 @@ const ShortVideo = ({ setShowLogin }) => {
           headers: { token }
         });
         if (response.data.success) {
+          console.log('Following videos response:', response.data.videos);
+          console.log('First video scheduleId:', response.data.videos[0]?.scheduleId);
           setFollowingVideos(response.data.videos);
         }
       } catch (error) {

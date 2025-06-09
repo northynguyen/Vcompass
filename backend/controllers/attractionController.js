@@ -340,17 +340,37 @@ const addReview = async (req, res) => {
 };
 
 const getAttracWishList = async (req, res) => {
-    const { userId } = req.body;
+    const { city, name, minPrice, maxPrice } = req.query;
 
     try {
+        // Get userId from token instead of request body since this is now a GET request
+        const userId = req.body.userId;
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "User not authenticated" });
+        }
+
         const user = await userModel.findById(userId);
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        const wishListAttractions = await Attraction.find({ _id: { $in: user.favorites.attraction } });
+        let wishListAttractions = await Attraction.find({ _id: { $in: user.favorites.attraction } });
         if (!wishListAttractions.length) {
             return res.json({ success: true, message: "No attractions found in wish list", attractions: [] });
+        }
+
+        // Apply filters
+        if (city) {
+            wishListAttractions = wishListAttractions.filter(attraction => attraction.city.toLowerCase().includes(city.toLowerCase()));
+        }
+        if (name) {
+            wishListAttractions = wishListAttractions.filter(attraction => attraction.attractionName.toLowerCase().includes(name.toLowerCase()));
+        }
+        if (minPrice) {
+            wishListAttractions = wishListAttractions.filter(attraction => attraction.price >= Number(minPrice));
+        }
+        if (maxPrice) {
+            wishListAttractions = wishListAttractions.filter(attraction => attraction.price <= Number(maxPrice));
         }
 
         res.status(200).json({ success: true, attractions: wishListAttractions });
@@ -358,7 +378,7 @@ const getAttracWishList = async (req, res) => {
         console.error("Error retrieving wish list attractions:", error);
         res.status(500).json({ success: false, message: "Error retrieving wish list attractions" });
     }
-}
+};
 
 export const searchAttractions = async (req, res) => {
     try {

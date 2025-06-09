@@ -296,7 +296,7 @@ const getShortVideoById = async (req, res) => {
 const updateShortVideo = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, tags, category, isPublic, isPinned } = req.body;
+    const { title, description, tags, category, isPublic, isPinned, scheduleId } = req.body;
     
     const shortVideo = await ShortVideo.findById(id);
     
@@ -307,8 +307,9 @@ const updateShortVideo = async (req, res) => {
       });
     }
     
-    // Kiểm tra quyền cập nhật
-    if (shortVideo.userId.toString() !== req.user._id.toString()) {
+    // Kiểm tra quyền cập nhật - sử dụng req.user từ auth middleware
+    const userId = req.user?._id || req.body.userId;
+    if (shortVideo.userId.toString() !== userId.toString()) {
       return res.status(403).json({
         success: false,
         message: 'Bạn không có quyền cập nhật video này'
@@ -316,12 +317,17 @@ const updateShortVideo = async (req, res) => {
     }
     
     // Cập nhật thông tin
-    if (title) shortVideo.title = title;
-    if (description) shortVideo.description = description;
-    if (tags) shortVideo.tags = tags.split(',').map(tag => tag.trim());
-    if (category) shortVideo.category = category;
-    if (isPublic !== undefined) shortVideo.isPublic = isPublic === 'true';
-    if (isPinned !== undefined) shortVideo.isPinned = isPinned === 'true';
+    if (title !== undefined) shortVideo.title = title;
+    if (description !== undefined) shortVideo.description = description;
+    if (tags !== undefined) {
+      shortVideo.tags = typeof tags === 'string' ? 
+        tags.split(',').map(tag => tag.trim()).filter(tag => tag) : 
+        tags;
+    }
+    if (category !== undefined) shortVideo.category = category;
+    if (isPublic !== undefined) shortVideo.isPublic = isPublic;
+    if (isPinned !== undefined) shortVideo.isPinned = isPinned;
+    if (scheduleId !== undefined) shortVideo.scheduleId = scheduleId || null;
     
     // Xử lý thumbnail mới nếu có
     if (req.files && req.files.thumbnail) {
@@ -363,7 +369,7 @@ const deleteShortVideo = async (req, res) => {
     }
     
     // Kiểm tra quyền xóa
-    if (shortVideo.userId.toString() !== req.user._id.toString()) {
+    if (shortVideo.userId.toString() !== req.body.userId.toString()) {
       return res.status(403).json({
         success: false,
         message: 'Bạn không có quyền xóa video này'
@@ -974,6 +980,7 @@ const getFollowingVideos = async (req, res) => {
       isPublic: true
     })
     .populate('userId', 'name avatar verified')
+    .populate('scheduleId', 'scheduleName description address dateStart dateEnd')
     .sort({ createdAt: -1 });
 
     // Tính điểm tương tác cho mỗi video

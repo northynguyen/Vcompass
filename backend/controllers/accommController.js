@@ -86,6 +86,15 @@ export const getListAccomm = async (req, res) => {
   }
 };
 
+export const getAllAccomm = async (req, res) => {
+  try {
+    const accommodations = await Accommodation.find();
+    res.json({ success: true, accommodations });
+  } catch (error) {
+    res.json({ success: false, message: "Error retrieving accommodations", error });
+  }
+};
+
 export const getAccommodationById = async (req, res) => {
   const { id } = req.params; // Lấy id từ params
   try {
@@ -838,17 +847,76 @@ export const updateRatingResponse = async (req, res) => {
 };
 
 export const getAccommWishList = async (req, res) => {
-  const { userId } = req.body;
+  const { city, name, minPrice, maxPrice } = req.query;
 
   try {
+    // Get userId from token instead of request body since this is now a GET request
+    const userId = req.body.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "User not authenticated" });
+    }
+
     const user = await userModel.findById(userId);
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    const accomms = await Accommodation.find({ _id: { $in: user.favorites.accommodation } });
+    let accomms = await Accommodation.find({ _id: { $in: user.favorites.accommodation } });
     if (!accomms.length) {
       return res.json({ success: true, message: "No accommodations found in wishlist", accommodations: [] });
+    }
+    
+    // Calculate min and max prices from roomTypes and apply price filtering
+    if (minPrice || maxPrice) {
+      accomms = accomms
+        .map(accommodation => {
+          if (accommodation.roomTypes && accommodation.roomTypes.length > 0) {
+            const prices = accommodation.roomTypes.map(room => room.pricePerNight);
+            const minRoomPrice = Math.min(...prices);
+            const maxRoomPrice = Math.max(...prices);
+
+            const accommodationObj = accommodation.toObject ? accommodation.toObject() : accommodation;
+            return {
+              ...accommodationObj,
+              price: { minPrice: minRoomPrice, maxPrice: maxRoomPrice }
+            };
+          }
+          return accommodation.toObject ? accommodation.toObject() : accommodation;
+        })
+        .filter(accommodation => {
+          if (!accommodation.price) return true; // Keep accommodations without price info
+          
+          const { minPrice: accommodationMinPrice, maxPrice: accommodationMaxPrice } = accommodation.price;
+          
+          const meetsMinPrice = minPrice ? accommodationMaxPrice >= Number(minPrice) : true;
+          const meetsMaxPrice = maxPrice ? accommodationMinPrice <= Number(maxPrice) : true;
+          
+          return meetsMinPrice && meetsMaxPrice;
+        });
+    } else {
+      // If no price filtering, still calculate prices for consistency
+      accomms = accomms.map(accommodation => {
+        if (accommodation.roomTypes && accommodation.roomTypes.length > 0) {
+          const prices = accommodation.roomTypes.map(room => room.pricePerNight);
+          const minRoomPrice = Math.min(...prices);
+          const maxRoomPrice = Math.max(...prices);
+
+          const accommodationObj = accommodation.toObject ? accommodation.toObject() : accommodation;
+          return {
+            ...accommodationObj,
+            price: { minPrice: minRoomPrice, maxPrice: maxRoomPrice }
+          };
+        }
+        return accommodation.toObject ? accommodation.toObject() : accommodation;
+      });
+    }
+    
+    // Apply other filters
+    if (city) {
+      accomms = accomms.filter(accommodation => accommodation.city.toLowerCase().includes(city.toLowerCase()));
+    }
+    if (name) {
+      accomms = accomms.filter(accommodation => accommodation.name.toLowerCase().includes(name.toLowerCase()));
     }
 
     return res.json({
@@ -861,9 +929,9 @@ export const getAccommWishList = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error retrieving wishlist accommodations",
-    })
+    });
   }
-}
+};
 
 export const searchAccommodations = async (req, res) => {
   try {

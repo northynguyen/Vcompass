@@ -53,7 +53,7 @@ const DashBoard = () => {
     const fetchAccommodations = async () => {
       try {
         const response = await axios.get(
-          `${url}/api/accommodations`
+          `${url}/api/accommodations/all`
         );
         if (response.data.success) {
           setAccommodations(response.data.accommodations);
@@ -62,6 +62,7 @@ const DashBoard = () => {
           console.error("Error fetching accommodations:");
         }
       } catch (error) {
+        console.error("Error fetching accommodations:", error);
       }
     };
     const fetchUsers = async () => {
@@ -91,6 +92,7 @@ const DashBoard = () => {
         } else {
         }
       } catch (error) {
+        console.error("Error fetching partners:", error);
       } finally {
         setIsPartnerLoading(false);
       }
@@ -98,7 +100,7 @@ const DashBoard = () => {
     const fetchFoodServices = async () => {
       try {
         const response = await axios.get(
-          `${url}/api/foodservices`
+          `${url}/api/foodservices/all`
         );
         if (response.data.success) {
           setFoodServices(response.data.foodService);

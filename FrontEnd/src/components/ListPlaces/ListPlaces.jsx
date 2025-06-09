@@ -6,7 +6,7 @@ import List from "./List";
 import "./ListPlaces.css";
 
 const ListPlaces = ({ status, setCurDes, city, setListData, type }) => {
-  const { url, user } = useContext(StoreContext);
+  const { url, user, token } = useContext(StoreContext);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [sortOption, setSortOption] = useState("Popularity");
@@ -42,14 +42,27 @@ const ListPlaces = ({ status, setCurDes, city, setListData, type }) => {
     setIsLoading(true);
     try {
       const endpoint = getEndpoint();
-      
+      let response;
       const queryParams = new URLSearchParams();
       if (city) queryParams.append("city", city);
       if (nameFilter) queryParams.append("name", nameFilter);
       queryParams.append("minPrice", minPrice);
       queryParams.append("maxPrice", maxPrice);
-      
-      const response = await fetch(`${url}/api/${endpoint}?${queryParams.toString()}`);
+      if (status === "WishList") {
+        // Fetch wishlist data with POST request
+        response = await fetch(`${url}/api/${endpoint}/user/wishlist?${queryParams.toString()}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            token: token ,
+          },
+        });
+      } else if (status === "Schedule") {
+        // Fetch regular data with query parameters
+       
+        
+        response = await fetch(`${url}/api/${endpoint}?${queryParams.toString()}`);
+      }
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -57,25 +70,33 @@ const ListPlaces = ({ status, setCurDes, city, setListData, type }) => {
       
       const data = await response.json();
       
-      // Xử lý dữ liệu dựa trên từng loại endpoint
+      // Xử lý dữ liệu dựa trên từng loại endpoint và status
       let processedData = [];
-      if (endpoint === "attractions") {
-        processedData = Array.isArray(data.attractions) ? data.attractions : [];
-      } else if (endpoint === "accommodations") {
-        processedData = Array.isArray(data.accommodations) ? data.accommodations : [];
-      } else if (endpoint === "foodservices") {
-        processedData = Array.isArray(data.foodService) ? data.foodService : [];
-      }
       
-      // Nếu là WishList, xử lý dữ liệu khác
       if (status === "WishList") {
-        processedData = Array.isArray(data.favorites) ? data.favorites : [];
+        // For wishlist, use the correct field names from backend response
+        if (endpoint === "attractions") {
+          processedData = Array.isArray(data.attractions) ? data.attractions : [];
+        } else if (endpoint === "accommodations") {
+          processedData = Array.isArray(data.accommodations) ? data.accommodations : [];
+        } else if (endpoint === "foodservices") {
+          processedData = Array.isArray(data.foodService) ? data.foodService : [];
+        }
+      } else {
+        // For regular endpoints
+        if (endpoint === "attractions") {
+          processedData = Array.isArray(data.attractions) ? data.attractions : [];
+        } else if (endpoint === "accommodations") {
+          processedData = Array.isArray(data.accommodations) ? data.accommodations : [];
+        } else if (endpoint === "foodservices") {
+          processedData = Array.isArray(data.foodService) ? data.foodService : [];
+        }
       }
 
       setItems(processedData);
       
       // If this is used within a Trip Planner context, update parent component
-      if (setListData && status === "Schedule") {
+      if (setListData && (status === "Schedule" || status === "WishList")) {
         setListData(processedData);
       }
     } catch (error) {

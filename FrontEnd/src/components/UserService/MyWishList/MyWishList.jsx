@@ -74,7 +74,7 @@ const MyWishList = () => {
                 axios.get(`${url}/api/schedule/user/getSchedules?type=wishlist`, { headers: { token } }),
                 axios.get(`${url}/api/accommodations/user/wishlist`, { headers: { token } }),
                 axios.get(`${url}/api/attractions/user/wishlist`, { headers: { token } }),
-                axios.get(`${url}/api/foodservices/user/get/wishlist`, { headers: { token } }),
+                axios.get(`${url}/api/foodservices/user/wishlist`, { headers: { token } }),
             ]);
 
             setScheduleData(scheduleRes.data.success ? scheduleRes.data.schedules : []);

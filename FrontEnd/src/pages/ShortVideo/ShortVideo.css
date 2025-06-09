@@ -522,6 +522,7 @@
     left: 50px;
     bottom: 120px;
     max-width: 400px;
+    left: 30px;
   }
 
   .video-actions-sidebar {
@@ -732,6 +733,8 @@
     bottom: 60px;
     width: 75%;
     max-width: 320px;
+    left: 50px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.8) 60%, transparent 100%);
   }
 
   .username {

@@ -319,7 +319,7 @@ const UploadVideo = ({ onClose }) => {
 
   const fetchUserSchedules = async () => {
     try {
-      const response = await axios.get(`${url}/api/schedule/user/getSchedules`, {
+      const response = await axios.get(`${url}/api/schedule/user/getSchedules?limit=100`, {
         headers: { token }
       });
       setSchedules(response.data.schedules);
