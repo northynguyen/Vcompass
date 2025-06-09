@@ -12,7 +12,7 @@ router.post("/", verifyUser, createReport);
 router.get("/", verifyAdmin, getReports);
 
 // Admin cập nhật trạng thái report
-router.patch("/:id", verifyAdmin, updateReportStatus);
+router.post("/:id", verifyAdmin, updateReportStatus);
 
 router.get("/:id", verifyUser, getReportById);
 

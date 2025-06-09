@@ -40,7 +40,7 @@ const ReportManagement = () => {
     const handleUpdateStatus = async (reportId, status) => {
         try {
             const response = await fetch(`${url}/api/reports/${reportId}`, {
-                method: "PATCH",
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json", // Đảm bảo header đúng
                     token: token,

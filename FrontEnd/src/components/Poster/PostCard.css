@@ -9,7 +9,11 @@
   padding-top: 2px;
   max-width: 650px;
 }
-
+.follower-menu-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 @media (max-width: 768px) {
   .card-container {
     margin-left: 0;

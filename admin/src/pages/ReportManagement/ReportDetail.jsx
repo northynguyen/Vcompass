@@ -83,7 +83,7 @@ const ReportDetail = ({ report, onClose, onStatusChange }) => {
                 <div className="actions">
                     {report.status === "pending" ? (
                         <>
-                            <button onClick={() => setIsModalOpen(true)}>Duyệt</button>
+                            <button onClick={() => handleUpdate("resolved")}>Duyệt</button>
                             <button onClick={() => handleUpdate("rejected")}>Từ chối</button>
                         </>
                     ) : (
