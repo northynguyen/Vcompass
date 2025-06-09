@@ -24,6 +24,7 @@ const redIcon = new L.Icon({
 });
 
 const AttractionDetails = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const handleback = () => {
         navigate(`/attraction/`);
@@ -229,6 +230,7 @@ const AttractionDetails = () => {
 
     const handleSave = async () => {
         try {
+            setIsLoading(true);
             let response;
             const formDataToSend = new FormData();
 
@@ -290,6 +292,8 @@ const AttractionDetails = () => {
         } catch (error) {
             console.error('Error saving data:', error);
             toast.error('Đã xảy ra lỗi khi lưu dữ liệu. Vui lòng thử lại.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -392,7 +396,7 @@ const AttractionDetails = () => {
                     />
 
                     <div className="buttons">
-                        <button type="button" onClick={handleSave} className="save-button">Lưu</button>
+                        <button type="button" onClick={handleSave} className="save-button" disabled={isLoading}>{isLoading ? "Đang lưu..." : "Lưu"}</button>
                         <button type="button" onClick={() => setIsEditing(false)} className="cancel-button">Hủy</button>
                     </div>
 
