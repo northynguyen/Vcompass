@@ -49,6 +49,8 @@ const getAttractions = async (req, res) => {
                 averageRating: parseFloat(averageRating.toFixed(1))
             };
         }).sort((a, b) => b.averageRating - a.averageRating);
+        
+        attractions = attractions.sort((a, b) => b.createdAt - a.createdAt);
 
         // Áp dụng phân trang sau khi sort
         const pageNumber = Math.max(1, Number(page));
@@ -103,7 +105,6 @@ const getAttractionById = async (req, res) => {
 const addAttraction = async (req, res) => {
     try {
         console.log("Request body:", req.body);
-        console.log("Files received:", req.files ? req.files.length : 'No files');
 
         let attractionData;
         try {
@@ -129,9 +130,9 @@ const addAttraction = async (req, res) => {
         let validImages = [];
 
         // Handle image uploads to Cloudinary
-        if (req.files && req.files.length > 0) {
+        if (req.files && req.files.images && req.files.images.length > 0) {
             console.log("Uploading attraction images to Cloudinary...");
-            const imagePromises = req.files.map(async (file) => {
+            const imagePromises = req.files.images.map(async (file) => {
                 try {
                     if (!file.buffer || file.buffer.length === 0) {
                         console.error("Empty file buffer detected:", file.originalname);
