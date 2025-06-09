@@ -172,9 +172,9 @@ const FoodDetailsInfo = ({ serviceId, setShowLogin }) => {
                     <div className="wrapper">
                         <div className={`favorite-button   ${isSave ? "saved" : ""} `} onClick={toggleWishlist}>
                             <i className="fa-solid fa-bookmark schedule-icon"></i>
-                            <button className="favourite-btn">
+                            <p className="favourite-btn">
                                 {!isSave ? "Lưu địa điểm" : "Đã lưu địa điểm"}
-                            </button>
+                            </p>
                         </div>
                     </div>
                 </div>
