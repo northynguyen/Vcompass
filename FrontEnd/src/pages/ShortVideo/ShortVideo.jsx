@@ -455,7 +455,6 @@ const ShortVideo = ({ setShowLogin }) => {
           text: shareText,
           url: shareUrl,
         });
-        toast.success("Chia sẻ thành công!");
       } catch (error) {
         if (error.name !== 'AbortError') {
           console.error('Error sharing:', error);

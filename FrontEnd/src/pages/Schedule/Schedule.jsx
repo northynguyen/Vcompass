@@ -1860,7 +1860,6 @@ const Schedule = ({ mode, setShowLogin }) => {
           text: shareText,
           url: shareUrl,
         });
-        toast.success("Chia sẻ thành công!");
       } catch (error) {
         if (error.name !== 'AbortError') {
           console.error('Error sharing:', error);
@@ -2095,6 +2094,7 @@ const Schedule = ({ mode, setShowLogin }) => {
           onComment: handleComment
         })}
         setShowLogin={setShowLogin}
+        handleShare={handleShare}
       />
       <InforScheduleMedal
         isOpen={isOpenInforSchedule}

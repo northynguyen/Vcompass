@@ -46,7 +46,7 @@ export const getBookingsByPartner = async (req, res) => {
   const { userId } = req.body;
   const filter = { partnerId: userId };
   try {
-    const bookings = await Booking.find(filter)
+    const bookings = await Booking.find(filter).populate({path: 'userId',  model: 'user', select: 'name avatar nationality email phone_number'})
     res.json({
       success: true,
       bookings,

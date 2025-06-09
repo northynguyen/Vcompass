@@ -6,7 +6,7 @@ import { FaCommentAlt, FaHeart, FaRegPaperPlane, FaShare } from 'react-icons/fa'
 import { StoreContext } from '../../../Context/StoreContext';
 import './Comment.css';
 // Post actions for liking, commenting, and sharing
-export const PostActions = ({ handleLike, likeCount, commentCount, replyCount, isLike, postUrl }) => {
+export const PostActions = ({ handleLike, likeCount, commentCount, replyCount, isLike, postUrl, handleShare }) => {
     //     const handleShare = (platform) => {
     //       const shareUrl = encodeURIComponent(postUrl); // URL to be shared
     //       console.log(shareUrl);
@@ -47,15 +47,10 @@ export const PostActions = ({ handleLike, likeCount, commentCount, replyCount, i
             </div>
 
             {/* Share Action */}
-            <div className="post-action share-action">
+            <div className="post-action share-action" onClick={handleShare}>
                 <FaShare className="post-action-icon" />
                 <span>Chia sẻ</span>
-                <div className="share-dropdown">
-                    <button onClick={() => handleShare('facebook')}>Facebook</button>
-                    <button onClick={() => handleShare('twitter')}>Twitter</button>
-                    <button onClick={() => handleShare('whatsapp')}>WhatsApp</button>
-                    <button onClick={() => handleShare('linkedin')}>LinkedIn</button>
-                </div>
+                
             </div>
         </div>
     );
@@ -71,7 +66,7 @@ const formatDate = (timestamp) => {
     return time.format('MMM DD, YYYY, HH:mm');
 };
 
-const Comment = ({ schedule, onLikeClick, onComment, setShowLogin }) => {
+const Comment = ({ schedule, onLikeClick, onComment, setShowLogin, handleShare }) => {
     const { url, user, token } = useContext(StoreContext);
     const [comments, setComments] = useState(schedule?.comments || []);
     const [likes, setLikes] = useState(schedule?.likes || []);
@@ -187,7 +182,7 @@ const Comment = ({ schedule, onLikeClick, onComment, setShowLogin }) => {
 
     return (
         <>
-            <PostActions handleLike={handleLike} likeCount={likes.length} commentCount={comments.length} replyCount={handleReplyCount(comments)} isLike={isLike()} postUrl={`http://localhost:5173//schedule-view/${schedule._id}`} />
+            <PostActions handleLike={handleLike} likeCount={likes.length} commentCount={comments.length} replyCount={handleReplyCount(comments)} isLike={isLike()} postUrl={`http://localhost:5173//schedule-view/${schedule._id}`} handleShare={handleShare} />
             <div className="comment-large-container">
                 {comments.map((comment) => (
                     <div key={comment._id} className="commentitem-container">

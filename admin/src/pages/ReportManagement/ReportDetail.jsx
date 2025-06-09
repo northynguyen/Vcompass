@@ -60,7 +60,7 @@ const ReportDetail = ({ report, onClose, onStatusChange }) => {
 
                 {report.targetType === "User" && (
                     <a
-                        href={`${url}/otherUserProfile/${report.targetId}`}
+                        href={`https://vcompass.onrender.com/otherUserProfile/${report.targetId}`}
                         target="_blank"
                         rel="noopener noreferrer"
                     >
@@ -70,7 +70,7 @@ const ReportDetail = ({ report, onClose, onStatusChange }) => {
 
                 {report.targetType === "Schedule" && (
                     <a
-                        href={`${url}/schedule-view/${report.targetId}`}
+                        href={`https://vcompass.onrender.com/schedule-view/${report.targetId}`}
                         target="_blank"
                         rel="noopener noreferrer"
                     >

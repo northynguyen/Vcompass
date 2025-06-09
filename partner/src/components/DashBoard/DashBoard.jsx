@@ -236,7 +236,7 @@ const DashBoard = () => {
                   .reverse()
                   .map((booking, index) => (
                     <li key={index}>
-                      {`${booking.guestInfo.name} ${booking.status === "canceled" ? "đã hủy đặt phòng" : "đã đặt phòng"
+                      {`${booking.userId?.name} ${booking.status === "canceled" ? "đã hủy đặt phòng" : "đã đặt phòng"
                         } lúc ${new Date(booking.createdAt).toLocaleString()}`}
                     </li>
                   ))}

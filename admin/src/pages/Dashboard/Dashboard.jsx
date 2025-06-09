@@ -107,18 +107,20 @@ const DashBoard = () => {
           console.error("Error fetching accommodations:");
         }
       } catch (error) {
+        console.error("Error fetching food services:", error);
       }
     };
     const fetchAttractions = async () => {
       try {
         const response = await axios.get(
-          `${url}/api/attractions`
+          `${url}/api/attractions?limit=100`
         );
         if (response.data.success) {
           setAttractions(response.data.attractions);
           console.log("attraction", response.data);
         }
       } catch (error) {
+        console.error("Error fetching attractions:", error);
       }
     };
     const fetchReports = async (status) => {
