@@ -342,6 +342,8 @@ img.chatting-user-avatar {
   font-size: 14px;
   line-height: 1.4;
   margin: 0px 0px 10px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 .message.me {
   align-self: flex-end;
