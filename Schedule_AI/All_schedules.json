@@ -4,7 +4,7 @@
     "userId": "672c8a9f18bd893f40487f9a",
     "address": "Bà Rịa - Vũng Tàu",
     "numDays": 2,
-    "totalLikes": 5,
+    "totalLikes": 7,
     "totalComments": 16,
     "tags": [
       "Bà Rịa - Vũng Tàu",
@@ -13,10 +13,10 @@
       "2 ngày",
       "1 đêm",
       "2N1Đ",
-      "ẩm thực",
-      "ăn uống",
       "khách sạn",
       "chỗ ở",
+      "ẩm thực",
+      "ăn uống",
       "địa điểm",
       "tham quan",
       "hoạt động khác",
@@ -44,7 +44,7 @@
     "userId": "672c8a9f18bd893f40487f9a",
     "address": "Hà Nội",
     "numDays": 2,
-    "totalLikes": 3,
+    "totalLikes": 4,
     "totalComments": 4,
     "tags": [
       "Hà Nội",
@@ -81,7 +81,21 @@
     "numDays": 2,
     "totalLikes": 0,
     "totalComments": 1,
-    "tags": [],
+    "tags": [
+      "Hà Nội",
+      "2 ngày",
+      "1 đêm",
+      "2N1Đ",
+      "ẩm thực",
+      "ăn uống",
+      "khách sạn",
+      "chỗ ở",
+      "địa điểm",
+      "tham quan",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
     "totalCost": 23123,
     "restaurants": [
       "6710eefcfcdfa639cc6468e4"
@@ -95,50 +109,11 @@
     ]
   },
   {
-    "scheduleId": "6748972201b18ae8c44f8dcf",
-    "userId": "67128427a9cdb6c151e91e14",
-    "address": "Bà Rịa - Vũng Tàu",
-    "numDays": 3,
-    "totalLikes": 1,
-    "totalComments": 0,
-    "tags": [
-      "Bà Rịa - Vũng Tàu",
-      "biển",
-      "nghỉ dưỡng",
-      "3 ngày",
-      "2 đêm",
-      "3N2Đ",
-      "hoạt động khác",
-      "khách sạn",
-      "chỗ ở",
-      "địa điểm",
-      "tham quan",
-      "ẩm thực",
-      "ăn uống",
-      "du lịch",
-      "phượt",
-      "lịch trình"
-    ],
-    "totalCost": 2115000,
-    "restaurants": [
-      "67406cf511b863a2ca681730",
-      "67406b7311b863a2ca681720",
-      "6740698911b863a2ca68167c"
-    ],
-    "accommodations": [
-      "670e86f2fe137be97dd5e683"
-    ],
-    "attractions": [
-      "67407405a908719dec998c70",
-      "6740730ba908719dec998c5d"
-    ]
-  },
-  {
     "scheduleId": "674c96c6072ca8b401c4aca3",
     "userId": "67128427a9cdb6c151e91e14",
     "address": "Hà Nội",
     "numDays": 2,
-    "totalLikes": 1,
+    "totalLikes": 2,
     "totalComments": 0,
     "tags": [
       "Hà Nội",
@@ -153,9 +128,7 @@
       "ăn uống",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "male",
-      "trẻ"
+      "lịch trình"
     ],
     "totalCost": 1610000,
     "restaurants": [
@@ -175,7 +148,7 @@
     "userId": "67206ecb0ced73018f8970b1",
     "address": "Hà Nội",
     "numDays": 2,
-    "totalLikes": 3,
+    "totalLikes": 4,
     "totalComments": 0,
     "tags": [
       "Hà Nội",
@@ -190,15 +163,10 @@
       "phượt",
       "lịch trình"
     ],
-    "totalCost": 133123,
+    "totalCost": 0,
     "restaurants": [],
-    "accommodations": [
-      "670e86affe137be97dd5e67d",
-      "670e86f2fe137be97dd5e683"
-    ],
-    "attractions": [
-      "6735627ef4f9ee42b98aa14d"
-    ]
+    "accommodations": [],
+    "attractions": []
   },
   {
     "scheduleId": "6754f65787e4ec7d4e66432b",
@@ -218,9 +186,7 @@
       "ăn uống",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "male",
-      "trẻ"
+      "lịch trình"
     ],
     "totalCost": 133123,
     "restaurants": [
@@ -240,7 +206,19 @@
     "numDays": 2,
     "totalLikes": 1,
     "totalComments": 0,
-    "tags": [],
+    "tags": [
+      "Hà Nội",
+      "2 ngày",
+      "1 đêm",
+      "2N1Đ",
+      "khách sạn",
+      "chỗ ở",
+      "ẩm thực",
+      "ăn uống",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
     "totalCost": 133123,
     "restaurants": [
       "6710ee6ffcdfa639cc6468e1"
@@ -272,11 +250,9 @@
       "ăn uống",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "male",
-      "trẻ"
+      "lịch trình"
     ],
-    "totalCost": 1710000,
+    "totalCost": 1700000,
     "restaurants": [
       "6710ee6ffcdfa639cc6468e1",
       "6710eefcfcdfa639cc6468e4"
@@ -285,8 +261,7 @@
       "670e86affe137be97dd5e67d"
     ],
     "attractions": [
-      "6736f2c80798cfaae0937a41",
-      "6735627ef4f9ee42b98aa14d"
+      "6736f2c80798cfaae0937a41"
     ]
   },
   {
@@ -309,16 +284,7 @@
       "ăn uống",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "male",
-      "trẻ",
-      "tour",
-      "hà",
-      "nội",
-      "chi",
-      "phí",
-      "đêm",
-      "hấp"
+      "lịch trình"
     ],
     "totalCost": 1710000,
     "restaurants": [
@@ -339,8 +305,8 @@
     "userId": "6720663e6bb612e3ed6c47cf",
     "address": "Hà Nội",
     "numDays": 2,
-    "totalLikes": 1,
-    "totalComments": 0,
+    "totalLikes": 2,
+    "totalComments": 4,
     "tags": [
       "Hà Nội",
       "2 ngày",
@@ -348,27 +314,19 @@
       "2N1Đ",
       "địa điểm",
       "tham quan",
-      "khách sạn",
-      "chỗ ở",
       "ẩm thực",
       "ăn uống",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "male",
-      "trẻ"
+      "lịch trình"
     ],
-    "totalCost": 1710000,
+    "totalCost": 600000,
     "restaurants": [
-      "6710ee6ffcdfa639cc6468e1",
       "6710eefcfcdfa639cc6468e4"
     ],
-    "accommodations": [
-      "670e86affe137be97dd5e67d"
-    ],
+    "accommodations": [],
     "attractions": [
-      "6736f2c80798cfaae0937a41",
-      "6735627ef4f9ee42b98aa14d"
+      "6736f2c80798cfaae0937a41"
     ]
   },
   {
@@ -455,8 +413,7 @@
       "tham quan",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "trẻ"
+      "lịch trình"
     ],
     "totalCost": 805000,
     "restaurants": [
@@ -489,15 +446,7 @@
       "ăn uống",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "trẻ",
-      "tour",
-      "hà",
-      "nội",
-      "phạm",
-      "thành",
-      "đêm",
-      "hấp"
+      "lịch trình"
     ],
     "totalCost": 1710000,
     "restaurants": [
@@ -526,19 +475,6 @@
     "attractions": []
   },
   {
-    "scheduleId": "67c458243836490481dcf94e",
-    "userId": "671285595f2c7c6ba9b79850",
-    "address": "Bà Rịa - Vũng Tàu",
-    "numDays": 2,
-    "totalLikes": 0,
-    "totalComments": 0,
-    "tags": [],
-    "totalCost": 0,
-    "restaurants": [],
-    "accommodations": [],
-    "attractions": []
-  },
-  {
     "scheduleId": "67c4599b3836490481dd0135",
     "userId": "671285595f2c7c6ba9b79850",
     "address": "Hà Nội",
@@ -552,34 +488,19 @@
       "2N1Đ",
       "địa điểm",
       "tham quan",
-      "khách sạn",
-      "chỗ ở",
       "ẩm thực",
       "ăn uống",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "male",
-      "trẻ",
-      "tour",
-      "hà",
-      "nội",
-      "phạm",
-      "thành",
-      "đêm",
-      "hấp"
+      "lịch trình"
     ],
-    "totalCost": 1710000,
+    "totalCost": 600000,
     "restaurants": [
-      "6710ee6ffcdfa639cc6468e1",
       "6710eefcfcdfa639cc6468e4"
     ],
-    "accommodations": [
-      "670e86affe137be97dd5e67d"
-    ],
+    "accommodations": [],
     "attractions": [
-      "6736f2c80798cfaae0937a41",
-      "6735627ef4f9ee42b98aa14d"
+      "6736f2c80798cfaae0937a41"
     ]
   },
   {
@@ -594,24 +515,19 @@
       "2 ngày",
       "1 đêm",
       "2N1Đ",
-      "khách sạn",
-      "chỗ ở",
       "địa điểm",
       "tham quan",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "male",
-      "trẻ"
+      "lịch trình"
     ],
-    "totalCost": 133123,
+    "totalCost": 5000,
     "restaurants": [],
-    "accommodations": [
-      "670e86affe137be97dd5e67d",
-      "670e86f2fe137be97dd5e683"
-    ],
+    "accommodations": [],
     "attractions": [
-      "6735627ef4f9ee42b98aa14d"
+      "67dce3e880362ea4bb541a31",
+      "67dce11380362ea4bb541903",
+      "6763198fe229dd5a9cf0ee6d"
     ]
   },
   {
@@ -637,13 +553,7 @@
       "hoạt động khác",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "tour",
-      "rịa",
-      "-",
-      "vũng",
-      "tàu",
-      "đêm"
+      "lịch trình"
     ],
     "totalCost": 2800000,
     "restaurants": [
@@ -682,9 +592,7 @@
       "ăn uống",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "male",
-      "trẻ"
+      "lịch trình"
     ],
     "totalCost": 1610000,
     "restaurants": [
@@ -721,9 +629,7 @@
       "ăn uống",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "male",
-      "trẻ"
+      "lịch trình"
     ],
     "totalCost": 1910010,
     "restaurants": [
@@ -1085,9 +991,7 @@
       "hoạt động khác",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "male",
-      "trẻ"
+      "lịch trình"
     ],
     "totalCost": 10000,
     "restaurants": [],
@@ -1114,8 +1018,7 @@
       "tham quan",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "trẻ"
+      "lịch trình"
     ],
     "totalCost": 1510000,
     "restaurants": [
@@ -1134,7 +1037,7 @@
     "userId": "672c8a9f18bd893f40487f9a",
     "address": "Hà Nội",
     "numDays": 2,
-    "totalLikes": 0,
+    "totalLikes": 1,
     "totalComments": 0,
     "tags": [
       "Hà Nội",
@@ -1149,22 +1052,17 @@
       "phượt",
       "lịch trình"
     ],
-    "totalCost": 133123,
+    "totalCost": 0,
     "restaurants": [],
-    "accommodations": [
-      "670e86affe137be97dd5e67d",
-      "670e86f2fe137be97dd5e683"
-    ],
-    "attractions": [
-      "6735627ef4f9ee42b98aa14d"
-    ]
+    "accommodations": [],
+    "attractions": []
   },
   {
     "scheduleId": "6800ef438bf3587f97a9d61f",
     "userId": "672c8a9f18bd893f40487f9a",
     "address": "Hà Nội",
     "numDays": 2,
-    "totalLikes": 0,
+    "totalLikes": 1,
     "totalComments": 0,
     "tags": [
       "Hà Nội",
@@ -1179,15 +1077,10 @@
       "phượt",
       "lịch trình"
     ],
-    "totalCost": 133123,
+    "totalCost": 0,
     "restaurants": [],
-    "accommodations": [
-      "670e86affe137be97dd5e67d",
-      "670e86f2fe137be97dd5e683"
-    ],
-    "attractions": [
-      "6735627ef4f9ee42b98aa14d"
-    ]
+    "accommodations": [],
+    "attractions": []
   },
   {
     "scheduleId": "680c7d4e6bf83b68938ec60c",
@@ -1287,8 +1180,8 @@
     "userId": "672c8a9f18bd893f40487f9a",
     "address": "Hà Nội",
     "numDays": 2,
-    "totalLikes": 0,
-    "totalComments": 0,
+    "totalLikes": 2,
+    "totalComments": 4,
     "tags": [
       "Hà Nội",
       "2 ngày",
@@ -1296,27 +1189,19 @@
       "2N1Đ",
       "địa điểm",
       "tham quan",
-      "khách sạn",
-      "chỗ ở",
       "ẩm thực",
       "ăn uống",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "male",
-      "trẻ"
+      "lịch trình"
     ],
-    "totalCost": 1610000,
+    "totalCost": 500000,
     "restaurants": [
-      "6710ee6ffcdfa639cc6468e1",
       "6710eefcfcdfa639cc6468e4"
     ],
-    "accommodations": [
-      "670e86affe137be97dd5e67d"
-    ],
+    "accommodations": [],
     "attractions": [
-      "6736f2c80798cfaae0937a41",
-      "6735627ef4f9ee42b98aa14d"
+      "6736f2c80798cfaae0937a41"
     ]
   },
   {
@@ -1342,9 +1227,7 @@
       "tham quan",
       "du lịch",
       "phượt",
-      "lịch trình",
-      "male",
-      "trẻ"
+      "lịch trình"
     ],
     "totalCost": 805000,
     "restaurants": [
@@ -1358,101 +1241,12 @@
     ]
   },
   {
-    "scheduleId": "6815a3318253043388ed8345",
-    "userId": "67128427a9cdb6c151e91e14",
-    "address": "Bà Rịa - Vũng Tàu",
-    "numDays": 2,
-    "totalLikes": 1,
-    "totalComments": 0,
-    "tags": [
-      "Bà Rịa - Vũng Tàu",
-      "biển",
-      "nghỉ dưỡng",
-      "2 ngày",
-      "1 đêm",
-      "2N1Đ",
-      "ẩm thực",
-      "ăn uống",
-      "khách sạn",
-      "chỗ ở",
-      "địa điểm",
-      "tham quan",
-      "hoạt động khác",
-      "du lịch",
-      "phượt",
-      "lịch trình",
-      "male",
-      "trẻ",
-      "tour",
-      "rịa",
-      "-",
-      "vũng",
-      "tàu",
-      "đêm",
-      "uống",
-      "thả",
-      "ga",
-      "a"
-    ],
-    "totalCost": 1310000,
-    "restaurants": [
-      "671f13d35213b114a61b34d7",
-      "67406b7311b863a2ca681720",
-      "67e8d84d43ea4eedd3f53784"
-    ],
-    "accommodations": [
-      "671271acc1f203ea504b6c9c",
-      "670e86affe137be97dd5e67d"
-    ],
-    "attractions": [
-      "6740730ba908719dec998c5d",
-      "67407405a908719dec998c70"
-    ]
-  },
-  {
-    "scheduleId": "6815f5e3c4e7eadcd5fa749d",
-    "userId": "672c8a9f18bd893f40487f9a",
-    "address": "Hà Nội",
-    "numDays": 2,
-    "totalLikes": 0,
-    "totalComments": 0,
-    "tags": [
-      "Hà Nội",
-      "2 ngày",
-      "1 đêm",
-      "2N1Đ",
-      "địa điểm",
-      "tham quan",
-      "khách sạn",
-      "chỗ ở",
-      "ẩm thực",
-      "ăn uống",
-      "du lịch",
-      "phượt",
-      "lịch trình",
-      "male",
-      "trẻ"
-    ],
-    "totalCost": 1710000,
-    "restaurants": [
-      "6710ee6ffcdfa639cc6468e1",
-      "6710eefcfcdfa639cc6468e4"
-    ],
-    "accommodations": [
-      "670e86affe137be97dd5e67d"
-    ],
-    "attractions": [
-      "6736f2c80798cfaae0937a41",
-      "6735627ef4f9ee42b98aa14d"
-    ]
-  },
-  {
     "scheduleId": "682394f9c9d6a89c2af74377",
     "userId": "67128427a9cdb6c151e91e14",
     "address": "Phú Yên",
     "numDays": 3,
-    "totalLikes": 0,
-    "totalComments": 0,
+    "totalLikes": 1,
+    "totalComments": 1,
     "tags": [
       "Phú Yên",
       "3 ngày",
@@ -1464,9 +1258,7 @@
       "du lịch",
       "phượt",
       "lịch trình",
-      "ẩm thực",
-      "male",
-      "trẻ"
+      "ẩm thực"
     ],
     "totalCost": 1626219,
     "restaurants": [],
@@ -1659,8 +1451,8 @@
     "userId": "682d8f4b6fe0056c0c71d07e",
     "address": "Thừa Thiên Huế",
     "numDays": 1,
-    "totalLikes": 1,
-    "totalComments": 1,
+    "totalLikes": 2,
+    "totalComments": 2,
     "tags": [
       "Thừa Thiên Huế",
       "1 ngày",
@@ -1688,6 +1480,644 @@
       "67dce0ca80362ea4bb5418f2",
       "67dcdc9080362ea4bb54177f",
       "67dce67380362ea4bb541a64"
+    ]
+  },
+  {
+    "scheduleId": "68318e29487f689e54b8ed2c",
+    "userId": "67128427a9cdb6c151e91e14",
+    "address": "Thừa Thiên Huế",
+    "numDays": 3,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Thừa Thiên Huế",
+      "3 ngày",
+      "2 đêm",
+      "3N2Đ",
+      "khách sạn",
+      "chỗ ở",
+      "địa điểm",
+      "tham quan",
+      "ẩm thực",
+      "ăn uống",
+      "hoạt động khác",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 2600000,
+    "restaurants": [
+      "68239d034e66ebc3c33959f0"
+    ],
+    "accommodations": [
+      "68242d01eee7a2e9e6d16f4b"
+    ],
+    "attractions": [
+      "67dcdc9080362ea4bb54177f",
+      "67dce0ca80362ea4bb5418f2",
+      "67dce67380362ea4bb541a64"
+    ]
+  },
+  {
+    "scheduleId": "68394e5d42237c9a532d4e86",
+    "userId": "672c8a9f18bd893f40487f9a",
+    "address": "Bà Rịa - Vũng Tàu",
+    "numDays": 3,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Bà Rịa - Vũng Tàu",
+      "biển",
+      "nghỉ dưỡng",
+      "3 ngày",
+      "2 đêm",
+      "3N2Đ",
+      "khách sạn",
+      "chỗ ở",
+      "địa điểm",
+      "tham quan",
+      "ẩm thực",
+      "ăn uống",
+      "du lịch",
+      "phượt",
+      "lịch trình",
+      "male",
+      "trẻ"
+    ],
+    "totalCost": 2190000,
+    "restaurants": [
+      "6740698911b863a2ca68167c",
+      "67e8d84d43ea4eedd3f53784",
+      "67ea5e723dcaf8dca374b643",
+      "67e92576301957bd5c62b60e"
+    ],
+    "accommodations": [
+      "670e86affe137be97dd5e67d"
+    ],
+    "attractions": [
+      "6740730ba908719dec998c5d",
+      "67e519ebfd28456dcbaf6937",
+      "67e51c0efd28456dcbaf6962",
+      "67e51d65fd28456dcbaf69a8",
+      "67e538d277a3301c455bdc44",
+      "67e539d777a3301c455bdc66"
+    ]
+  },
+  {
+    "scheduleId": "68399b2ebfdf648a9e68adbe",
+    "userId": "68399b0cbfdf648a9e68ad3c",
+    "address": "Thừa Thiên Huế",
+    "numDays": 13,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Thừa Thiên Huế",
+      "13 ngày",
+      "12 đêm",
+      "13N12Đ",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 0,
+    "restaurants": [],
+    "accommodations": [],
+    "attractions": []
+  },
+  {
+    "scheduleId": "683d4651c0f6af55e023b6aa",
+    "userId": "675b0e99b13b604873b2c8cd",
+    "address": "Lâm Đồng",
+    "numDays": 4,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Lâm Đồng",
+      "4 ngày",
+      "3 đêm",
+      "4N3Đ",
+      "khách sạn",
+      "chỗ ở",
+      "địa điểm",
+      "tham quan",
+      "ẩm thực",
+      "ăn uống",
+      "hoạt động khác",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 1585000,
+    "restaurants": [
+      "682786c4f76797874cfac394",
+      "68279bb29472bc0d915d9b82",
+      "68279b349472bc0d915d9b7f",
+      "6827a4939472bc0d915e03b1",
+      "6827a4f49472bc0d915e03b4"
+    ],
+    "accommodations": [
+      "682786c4f76797874cfac394"
+    ],
+    "attractions": [
+      "68279c629472bc0d915d9b88",
+      "6827a0c29472bc0d915df25b",
+      "67dce30580362ea4bb541958",
+      "68279bb29472bc0d915d9b82",
+      "68279b349472bc0d915d9b7f",
+      "67dce14480362ea4bb541914",
+      "6827a4939472bc0d915e03b1",
+      "6827a54b9472bc0d915e03b7",
+      "68279bfa9472bc0d915d9b85",
+      "6827a7439472bc0d915e0673",
+      "6827a4f49472bc0d915e03b4",
+      "6827a63f9472bc0d915e03bd"
+    ]
+  },
+  {
+    "scheduleId": "683d4e58c0f6af55e023f0d8",
+    "userId": "68399b0cbfdf648a9e68ad3c",
+    "address": "Lâm Đồng",
+    "numDays": 2,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Đà Lạt, Lâm Đồng",
+      "2 ngày",
+      "1 đêm",
+      "2N1Đ",
+      "khách sạn",
+      "chỗ ở",
+      "địa điểm",
+      "tham quan",
+      "ẩm thực",
+      "ăn uống",
+      "hoạt động khác",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 1635000,
+    "restaurants": [
+      "68279d0a9472bc0d915d9ba1",
+      "68279f229472bc0d915d9e22"
+    ],
+    "accommodations": [
+      "682786c4f76797874cfac394"
+    ],
+    "attractions": [
+      "67dce30580362ea4bb541958",
+      "68279bfa9472bc0d915d9b85",
+      "68279bb29472bc0d915d9b82",
+      "6827a4939472bc0d915e03b1",
+      "67dce14480362ea4bb541914",
+      "6827a7439472bc0d915e0673"
+    ]
+  },
+  {
+    "scheduleId": "683dccd979a92a147ce3f9be",
+    "userId": "67128427a9cdb6c151e91e14",
+    "address": "Bà Rịa - Vũng Tàu",
+    "numDays": 2,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Bà Rịa - Vũng Tàu",
+      "biển",
+      "nghỉ dưỡng",
+      "2 ngày",
+      "1 đêm",
+      "2N1Đ",
+      "khách sạn",
+      "chỗ ở",
+      "địa điểm",
+      "tham quan",
+      "ẩm thực",
+      "ăn uống",
+      "hoạt động khác",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 2260000,
+    "restaurants": [
+      "6740698911b863a2ca68167c",
+      "67e8d84d43ea4eedd3f53784",
+      "67ea63713dcaf8dca374b791"
+    ],
+    "accommodations": [
+      "670e86affe137be97dd5e67d"
+    ],
+    "attractions": [
+      "6740730ba908719dec998c5d",
+      "67e519ebfd28456dcbaf6937",
+      "67e51c0efd28456dcbaf6962",
+      "67e51d65fd28456dcbaf69a8",
+      "67e53a2a77a3301c455bdc77"
+    ]
+  },
+  {
+    "scheduleId": "683dd5c68596c4dc338eb4b1",
+    "userId": "67128427a9cdb6c151e91e14",
+    "address": "Lâm Đồng",
+    "numDays": 2,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Lâm Đồng",
+      "2 ngày",
+      "1 đêm",
+      "2N1Đ",
+      "khách sạn",
+      "chỗ ở",
+      "địa điểm",
+      "tham quan",
+      "ẩm thực",
+      "ăn uống",
+      "hoạt động khác",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 2250000,
+    "restaurants": [
+      "682793a3f76797874cfae215",
+      "6827949af76797874cfae41b",
+      "68279691f76797874cfae88d"
+    ],
+    "accommodations": [
+      "682786c4f76797874cfac394"
+    ],
+    "attractions": [
+      "67dce30580362ea4bb541958",
+      "6827a7439472bc0d915e0673",
+      "68279b349472bc0d915d9b7f",
+      "67dce14480362ea4bb541914",
+      "68279bfa9472bc0d915d9b85"
+    ]
+  },
+  {
+    "scheduleId": "6841de6da46a4a7d6e23f04a",
+    "userId": "672c8a9f18bd893f40487f9a",
+    "address": "Phú Yên",
+    "numDays": 2,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Phú Yên",
+      "2 ngày",
+      "1 đêm",
+      "2N1Đ",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 0,
+    "restaurants": [],
+    "accommodations": [],
+    "attractions": []
+  },
+  {
+    "scheduleId": "6841e0eda46a4a7d6e23f9e1",
+    "userId": "67128427a9cdb6c151e91e14",
+    "address": "Lâm Đồng",
+    "numDays": 7,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Lâm Đồng",
+      "7 ngày",
+      "6 đêm",
+      "7N6Đ",
+      "khách sạn",
+      "chỗ ở",
+      "ẩm thực",
+      "ăn uống",
+      "địa điểm",
+      "tham quan",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 1025000,
+    "restaurants": [
+      "682793a3f76797874cfae215",
+      "682794f9f76797874cfae4e5",
+      "68279691f76797874cfae88d",
+      "6827934ff76797874cfae0ce",
+      "6827949af76797874cfae41b",
+      "6827956bf76797874cfae638",
+      "68279727f76797874cfaeabf",
+      "68279633f76797874cfae7c4",
+      "68279778f76797874cfaeabf",
+      "682795b0f76797874cfae6fd",
+      "68279428f76797874cfae35c"
+    ],
+    "accommodations": [
+      "682786c4f76797874cfac394"
+    ],
+    "attractions": [
+      "67dce30580362ea4bb541958",
+      "68279bfa9472bc0d915d9b85",
+      "6827a0c29472bc0d915df25b",
+      "6827a4f49472bc0d915e03b4",
+      "68279bb29472bc0d915d9b82",
+      "6827a7a69472bc0d915e0676",
+      "68279b349472bc0d915d9b7f",
+      "67dce14480362ea4bb541914",
+      "6827a4939472bc0d915e03b1",
+      "6827a5d39472bc0d915e03ba",
+      "6827a54b9472bc0d915e03b7",
+      "6827a7439472bc0d915e0673",
+      "6827a63f9472bc0d915e03bd",
+      "68279c629472bc0d915d9b88"
+    ]
+  },
+  {
+    "scheduleId": "6841e3cba46a4a7d6e240e59",
+    "userId": "67128427a9cdb6c151e91e14",
+    "address": "Hà Nội",
+    "numDays": 6,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Hà Nội",
+      "6 ngày",
+      "5 đêm",
+      "6N5Đ",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 0,
+    "restaurants": [],
+    "accommodations": [],
+    "attractions": []
+  },
+  {
+    "scheduleId": "6842bedda69337dd6af27664",
+    "userId": "6842ba1da69337dd6af23a3e",
+    "address": "Hà Nội",
+    "numDays": 2,
+    "totalLikes": 0,
+    "totalComments": 1,
+    "tags": [
+      "Hà Nội",
+      "2 ngày",
+      "1 đêm",
+      "2N1Đ",
+      "khách sạn",
+      "chỗ ở",
+      "ẩm thực",
+      "ăn uống",
+      "địa điểm",
+      "tham quan",
+      "hoạt động khác",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 3310000,
+    "restaurants": [
+      "6748491ef8e22e0643c47c30",
+      "6710eefcfcdfa639cc6468e4"
+    ],
+    "accommodations": [
+      "6710b2459ffa18bd1b7faeaa"
+    ],
+    "attractions": [
+      "6763198fe229dd5a9cf0ee6d",
+      "67dce3e880362ea4bb541a31"
+    ]
+  },
+  {
+    "scheduleId": "684595593f044b469e27a7c9",
+    "userId": "684594dc3f044b469e27a3d2",
+    "address": "Lâm Đồng",
+    "numDays": 4,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Lâm Đồng",
+      "4 ngày",
+      "3 đêm",
+      "4N3Đ",
+      "ẩm thực",
+      "ăn uống",
+      "địa điểm",
+      "tham quan",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 45000,
+    "restaurants": [
+      "6827949af76797874cfae41b",
+      "682793a3f76797874cfae215"
+    ],
+    "accommodations": [],
+    "attractions": [
+      "67dce14480362ea4bb541914"
+    ]
+  },
+  {
+    "scheduleId": "6845a0d93f044b469e27f863",
+    "userId": "684594dc3f044b469e27a3d2",
+    "address": "Bà Rịa - Vũng Tàu",
+    "numDays": 2,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Bà Rịa - Vũng Tàu",
+      "biển",
+      "nghỉ dưỡng",
+      "2 ngày",
+      "1 đêm",
+      "2N1Đ",
+      "khách sạn",
+      "chỗ ở",
+      "địa điểm",
+      "tham quan",
+      "ẩm thực",
+      "ăn uống",
+      "hoạt động khác",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 3010000,
+    "restaurants": [
+      "6740698911b863a2ca68167c",
+      "67e8d73343ea4eedd3f53777",
+      "67e8da3f43ea4eedd3f537a1"
+    ],
+    "accommodations": [
+      "670e86affe137be97dd5e67d"
+    ],
+    "attractions": [
+      "67e519ebfd28456dcbaf6937",
+      "67407405a908719dec998c70",
+      "67e51c0efd28456dcbaf6962",
+      "67e538d277a3301c455bdc44"
+    ]
+  },
+  {
+    "scheduleId": "6845ab9a82d574f1dae5988b",
+    "userId": "675fb2a89efd41573be29524",
+    "address": "Bà Rịa - Vũng Tàu",
+    "numDays": 4,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Bà Rịa - Vũng Tàu",
+      "biển",
+      "nghỉ dưỡng",
+      "4 ngày",
+      "3 đêm",
+      "4N3Đ",
+      "khách sạn",
+      "chỗ ở",
+      "địa điểm",
+      "tham quan",
+      "ẩm thực",
+      "ăn uống",
+      "hoạt động khác",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 2915000,
+    "restaurants": [
+      "67406b7311b863a2ca681720",
+      "67e8d73343ea4eedd3f53777",
+      "67ea5cca3dcaf8dca374b602",
+      "6740698911b863a2ca68167c",
+      "67e92825301957bd5c62b6b2",
+      "67e93002301957bd5c62b883"
+    ],
+    "accommodations": [
+      "670e86affe137be97dd5e67d"
+    ],
+    "attractions": [
+      "67407405a908719dec998c70",
+      "67e519ebfd28456dcbaf6937",
+      "67e51cb6fd28456dcbaf6985",
+      "67e51c0efd28456dcbaf6962",
+      "67e520bafd28456dcbaf69b9",
+      "67e538d277a3301c455bdc44",
+      "67e53a2a77a3301c455bdc77",
+      "67e5396377a3301c455bdc55"
+    ]
+  },
+  {
+    "scheduleId": "6846e75768ce82a1b6a062db",
+    "userId": "672c8a9f18bd893f40487f9a",
+    "address": "Bà Rịa - Vũng Tàu",
+    "numDays": 3,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Bà Rịa - Vũng Tàu",
+      "biển",
+      "nghỉ dưỡng",
+      "3 ngày",
+      "2 đêm",
+      "3N2Đ",
+      "khách sạn",
+      "chỗ ở",
+      "ẩm thực",
+      "ăn uống",
+      "địa điểm",
+      "tham quan",
+      "hoạt động khác",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 1080000,
+    "restaurants": [
+      "671f13d35213b114a61b34d7"
+    ],
+    "accommodations": [
+      "670e86affe137be97dd5e67d"
+    ],
+    "attractions": [
+      "6846dc3507d6453abd00019c"
+    ]
+  },
+  {
+    "scheduleId": "6846ea9868ce82a1b6a07243",
+    "userId": "672c8a9f18bd893f40487f9a",
+    "address": "Hà Nội",
+    "numDays": 2,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Hà Nội",
+      "2 ngày",
+      "1 đêm",
+      "2N1Đ",
+      "khách sạn",
+      "chỗ ở",
+      "địa điểm",
+      "tham quan",
+      "ẩm thực",
+      "ăn uống",
+      "hoạt động khác",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 2760000,
+    "restaurants": [
+      "6710eefcfcdfa639cc6468e4",
+      "676311cee229dd5a9cf0d775",
+      "6748491ef8e22e0643c47c30"
+    ],
+    "accommodations": [
+      "67631380e229dd5a9cf0daea"
+    ],
+    "attractions": [
+      "6736f2c80798cfaae0937a41",
+      "6763198fe229dd5a9cf0ee6d",
+      "67dce3e880362ea4bb541a31",
+      "67dce11380362ea4bb541903"
+    ]
+  },
+  {
+    "scheduleId": "6846eb6d68ce82a1b6a07917",
+    "userId": "672c8a9f18bd893f40487f9a",
+    "address": "Thừa Thiên Huế",
+    "numDays": 1,
+    "totalLikes": 0,
+    "totalComments": 0,
+    "tags": [
+      "Thừa Thiên Huế",
+      "1 ngày",
+      "0 đêm",
+      "1N0Đ",
+      "khách sạn",
+      "chỗ ở",
+      "địa điểm",
+      "tham quan",
+      "ẩm thực",
+      "ăn uống",
+      "hoạt động khác",
+      "du lịch",
+      "phượt",
+      "lịch trình"
+    ],
+    "totalCost": 905000,
+    "restaurants": [
+      "68239d034e66ebc3c33959f0"
+    ],
+    "accommodations": [
+      "681dae830699cefb82f804d0"
+    ],
+    "attractions": [
+      "67dce0ca80362ea4bb5418f2",
+      "67dcdc9080362ea4bb54177f",
+      "67dce67380362ea4bb541a64",
+      "682795e59472bc0d915d8de5"
     ]
   }
 ]

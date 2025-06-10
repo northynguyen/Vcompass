@@ -30,7 +30,7 @@ const PlaceDetails = ({ setShowLogin }) => {
       {type === 'attraction' && <AttractionDetailsInfo serviceId={originalServiceId} setShowLogin={setShowLogin} />}
       {type === 'food' && <FoodDetailsInfo serviceId={originalServiceId} setShowLogin={setShowLogin} />}
       <SlideBar type={type} />
-      <PlaceReview id={originalServiceId} type={type} setShowLogin={setShowLogin} setShowLogin={setShowLogin} />
+      <PlaceReview id={originalServiceId} type={type} setShowLogin={setShowLogin} />
     </div>
   )
 }

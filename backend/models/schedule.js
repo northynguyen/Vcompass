@@ -71,7 +71,7 @@ const ScheduleSchema = new Schema(
       type: Date,
       default: Date.now,
     },
-    isPublic: { type: Boolean, default: false },
+    isPublic: { type: Boolean, default: true },
     tags: [{ type: String }],
   },
   {

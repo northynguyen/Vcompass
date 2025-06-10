@@ -181,6 +181,13 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+  .recommend-place-scroll{
+    padding: 0;
+  }
+  .recommend-place-image{
+    width: 40px !important;
+    min-width: 40px !important;
+  }
   .recommend-place-cards {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -188,5 +195,9 @@
   
   .recommend-place-card {
     width: 150px;
+  }
+
+  .recommend-place-nav-btn {
+    display: none;
   }
 } 

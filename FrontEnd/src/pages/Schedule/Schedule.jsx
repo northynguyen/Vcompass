@@ -965,6 +965,18 @@ const DateSchedule = ({
   const [viewMode, setViewMode] = useState("overview");
   const [currentMapIndex, setCurrentMapIndex] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (schedule) {
@@ -1074,7 +1086,7 @@ const DateSchedule = ({
                       onClick={toggleDetails}
                     ></i>
                   </h2>
-                  <div className="weather-container">
+                  <div className={`weather-container ${isMobile ? "is-hidden" : ""}`}>
                     {getWeatherForDay(index) && (
                       <div className="weather-info">
                         <img

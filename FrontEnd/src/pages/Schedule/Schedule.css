@@ -1507,6 +1507,10 @@ i.fa-solid.fa-plus.add-icon {
     }
   }
 
+  .date-header {
+    margin-bottom: 15px;
+  }
+
 }
 
 .cursors-container {
@@ -1899,6 +1903,10 @@ textarea.input-field {
   justify-content: center;
 }
 
+.is-hidden {
+  display: none;
+}
+
 .weather-info {
   display: flex;
   align-items: center;
@@ -1941,7 +1949,6 @@ textarea.input-field {
 }
 @media (max-width: 768px) {
   .date-header-left{
-    justify-content: center;
     margin-top: 10px;
     width: 50%;
   }

@@ -115,7 +115,7 @@ const TrainAI = () => {
                                 </div>
                                 {/* <IoIosArrowForward /> */}
                             </div>
-                            <p className="train-ai-description">Huấn luyện lần cuối: 18/4/2025</p>
+                            {/* <p className="train-ai-description">Huấn luyện lần cuối: 18/4/2025</p> */}
                         </div>
 
                     </div>
