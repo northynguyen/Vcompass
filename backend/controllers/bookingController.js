@@ -377,3 +377,84 @@ export const getBookingHistory = async (req, res) => {
   }
 };
 
+export const getBookingsForSchedule = async (req, res) => {
+  const { dateStart } = req.query;
+  const { userId } = req.body;
+
+  try {
+    // Validate date format
+    if (!dateStart || !Date.parse(dateStart)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid date format. Please provide date in YYYY-MM-DD format"
+      });
+    }
+
+    const filter = { 
+      userId,
+      status: { $in: ['confirmed', 'pending'] },
+      checkInDate: { $gte: new Date(dateStart) }
+    };
+
+    const bookings = await Booking.find(filter)
+      .populate({
+        path: 'accommodationId',
+        model: 'accommodation',
+        select: 'name location images roomTypes'
+      })
+      .sort({ checkInDate: 1 });
+
+    res.json({
+      success: true,
+      bookings
+    });
+  } catch (error) {
+    console.error("Error fetching bookings for schedule:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Error fetching bookings for schedule" 
+    });
+  }
+};
+
+export const getBookingById = async (req, res) => {
+  const { bookingId } = req.params;
+
+  try {
+    const booking = await Booking.findById(bookingId)
+      .populate({
+        path: 'accommodationId',
+        model: 'accommodation',
+        select: 'name location images roomTypes'
+      })
+      .populate({
+        path: 'userId',
+        model: 'user',
+        select: 'name avatar nationality email phone_number'
+      })
+      .populate({
+        path: 'partnerId',
+        model: 'partner',
+        select: 'name avatar email phone_number'
+      });
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: 'Booking not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      booking
+    });
+  } catch (error) {
+    console.error('Error fetching booking details:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching booking details'
+    });
+  }
+};
+

@@ -269,6 +269,61 @@ Header.propTypes = {
   setCurDes: PropTypes.func.isRequired
 };
 
+// Add BookingsList component definition before its usage
+const BookingsList = ({ bookings, onSelectBooking, selectedBooking }) => {
+  return (
+    <div className="bookings-list">
+      {bookings.map((booking) => (
+        <div
+          key={booking._id}
+          className={`booking-item ${selectedBooking?._id === booking._id ? 'selected' : ''}`}
+        >
+          <div className="booking-header">
+            <h4>{booking.accommodationId?.name}</h4>
+            <span className={`status ${booking.status}`}>{booking.status === 'confirmed' ? "Đã duyệt" : "Đang chờ duyệt" }</span>
+          </div>
+          <div className="booking-details">
+            <p><i className="fas fa-calendar"></i> Check-in: {new Date(booking.checkInDate).toLocaleDateString()}</p>
+            <p><i className="fas fa-calendar"></i> Check-out: {new Date(booking.checkOutDate).toLocaleDateString()}</p>
+            <p><i className="fas fa-users"></i> {booking.numberOfGuests.adult} người lớn, {booking.numberOfGuests.child} trẻ em</p>
+            <p><i className="fas fa-money-bill"></i> {booking.totalAmount.toLocaleString()} VND</p>
+            {booking.roomType && (
+              <p><i className="fas fa-bed"></i> Loại phòng: {booking.roomType}</p>
+            )}
+          </div>
+          <button 
+            className="select-booking-btn"
+            onClick={() => onSelectBooking(booking)}
+          >
+            Chọn
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+BookingsList.propTypes = {
+  bookings: PropTypes.arrayOf(PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    accommodation: PropTypes.shape({
+      name: PropTypes.string.isRequired
+    }),
+    status: PropTypes.string.isRequired,
+    checkInDate: PropTypes.string.isRequired,
+    checkOutDate: PropTypes.string.isRequired,
+    numberOfGuests: PropTypes.shape({
+      adult: PropTypes.number.isRequired,
+      child: PropTypes.number.isRequired
+    }).isRequired,
+    totalAmount: PropTypes.number.isRequired
+  })).isRequired,
+  onSelectBooking: PropTypes.func.isRequired,
+  selectedBooking: PropTypes.shape({
+    _id: PropTypes.string.isRequired
+  })
+};
+
 const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSchedule, activity, city, socket, inforSchedule }) => {
   const [option, setOption] = React.useState("Accommodation");
   const [choice, setChoice] = React.useState("List");
@@ -277,7 +332,9 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
   const [description, setDescription] = React.useState("")
   const [curDes, setCurDes] = React.useState(null)
   const [locations, setLocations] = useState([]);
-  const { url,getImageUrl } = useContext(StoreContext);
+  const [bookings, setBookings] = useState([]);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const { url, getImageUrl, token } = useContext(StoreContext);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [listData, setListData] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -391,76 +448,42 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
 
       setErrors(newErrors);
 
-      // Focus vào input đầu tiên có lỗi
-      if (newErrors.costName) {
-        document.getElementById('name-expense').focus();
-        return;
-      } else if (newErrors.cost) {
-        document.getElementById('expense').focus();
-        return;
-      } else if (newErrors.description) {
-        document.getElementById('des').focus();
+      if (newErrors.costName || newErrors.cost || newErrors.description) {
         return;
       }
 
       const formData = new FormData();
 
-      // Kiểm tra nếu có ảnh mới
       if (curDes?.imgSrc && curDes.imgSrc.length > 0) {
-        console.log("Files to upload:", curDes.imgSrc);
-        let fileCount = 0;
         curDes.imgSrc.forEach((file) => {
           if (file instanceof File) {
-            console.log("Appending file:", file.name, file.type, file.size);
             formData.append('files', file);
-            fileCount++;
-          } else if (typeof file === 'string') {
-            console.log("Skipping existing URL:", file);
           }
         });
-        console.log("Total files to upload:", fileCount);
       }
 
-      // Gửi ảnh lên server nếu có
       if (formData.has("files")) {
         try {
           setIsUploading(true);
-          console.log("FormData contents:", Array.from(formData.entries()));
-          console.log("Sending upload request...");
           const uploadResponse = await axios.post(`${url}/api/schedule/images/upload/new`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           });
 
-          console.log("Upload response:", uploadResponse.data);
-
           if (uploadResponse.data.success) {
-            console.log("Upload successful:", uploadResponse.data);
-            // Combine existing string URLs with newly uploaded files
             const existingUrls = curDes.imgSrc.filter(img => typeof img === 'string');
             const newFiles = (uploadResponse.data.files || []).map(file => file.path);
-            console.log("Existing URLs:", existingUrls);
-            console.log("New files:", newFiles);
             curDes.imgSrc = [...existingUrls, ...newFiles];
-          } else {
-            console.error("Upload failed:", uploadResponse.data.message);
-            throw new Error(uploadResponse.data.message || "Upload failed");
           }
         } catch (uploadError) {
           console.error("Error during upload:", uploadError);
-          if (uploadError.response) {
-            console.error("Response data:", uploadError.response.data);
-            console.error("Response status:", uploadError.response.status);
-            console.error("Response headers:", uploadError.response.headers);
-          }
           throw uploadError;
         } finally {
           setIsUploading(false);
         }
       }
 
-      // Chuẩn bị dữ liệu activity mới
       const newActivity = {
         activityType: curDes?.activityType || option,
         idDestination: curDes?._id || new mongoose.Types.ObjectId(),
@@ -474,11 +497,9 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         timeEnd: activity ? activity.timeEnd : "00:30",
         latitude: curDes?.location?.latitude || curDes?.latitude || 0,
         longitude: curDes?.location?.longitude || curDes?.longitude || 0,
+        bookingId: selectedBooking?._id || null
       };
 
-      console.log("Saving new activity:", newActivity);
-
-      // Cập nhật activity trong schedule
       setInforSchedule((prevSchedule) => {
         const updatedActivities = prevSchedule.activities.map((day) => {
           if (day.day === currentDay) {
@@ -502,14 +523,11 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
           return day;
         });
 
-        console.log("updatedActivities", updatedActivities);
-
         const newSchedule = {
           ...prevSchedule,
           activities: updatedActivities
         };
 
-        // Emit sự kiện để update real-time
         if (socket?.current) {
           socket.current.emit('updateActivities', {
             scheduleId: inforSchedule._id,
@@ -540,6 +558,65 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         prev === curDes.images.length - 1 ? 0 : prev + 1
       );
     }
+  };
+
+  // Add useEffect to fetch bookings when tab changes
+  useEffect(() => {
+    const fetchBookings = async () => {
+      if (option === "Accommodation" && choice === "Booked") {
+        try {
+          // Parse and validate the date
+          let formattedDate = null;
+          if (inforSchedule?.dateStart) {
+            // Parse DD-MM-YYYY format
+            const [day, month, year] = inforSchedule.dateStart.split('-');
+            const date = new Date(year, month - 1, day);
+            if (!isNaN(date.getTime())) {
+              // Format as YYYY-MM-DD for the API
+              formattedDate = date.toISOString().split('T')[0];
+            }
+          }
+          
+          if (!formattedDate) {
+            console.error("Invalid date format:", inforSchedule?.dateStart);
+            return;
+          }
+
+          const response = await axios.get(`${url}/api/bookings/user/getBookingForSchedule`, {
+            params: {
+              dateStart: formattedDate
+            },
+            headers: { token }
+          });
+          if (response.data.success) {
+            const validBookings = response.data.bookings.filter(booking => booking.accommodationId.location.address.toLowerCase().includes(city.toLowerCase()));
+            setBookings(validBookings);
+          }
+        } catch (error) {
+          console.error("Error fetching bookings:", error);
+        }
+      }
+    };
+    fetchBookings();
+  }, [choice, option, inforSchedule?.dateStart, token]);
+
+  // Add handler for booking selection
+  const handleBookingSelect = (booking) => {
+    setSelectedBooking(booking);
+    
+    // Create a formatted accommodation object for curDes
+    const accommodationData = {
+      ...booking.accommodationId,
+      name: booking.accommodationId.name,
+      location: booking.accommodationId.location,
+      images: booking.accommodationId.images,
+      activityType: "Accommodation"
+    };
+    
+    setCurDes(accommodationData);
+    setCost(booking.totalAmount.toString());
+    setCostDes(`Đặt phòng ${booking.accommodationId.name} - ${booking.roomType || 'Phòng tiêu chuẩn'}`);
+    setDescription(`Check-in: ${new Date(booking.checkInDate).toLocaleDateString()}\nCheck-out: ${new Date(booking.checkOutDate).toLocaleDateString()}\nSố khách: ${booking.numberOfGuests.adult} người lớn, ${booking.numberOfGuests.child} trẻ em`);
   };
 
   return (
@@ -595,6 +672,9 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
                       >
                         <option value="List">Danh sách</option>
                         <option value="WishList">WishList</option>
+                        {option === "Accommodation" && (
+                          <option value="Booked">Đã đặt</option>
+                        )}
                       </select>
                     </div>
                   )}
@@ -618,6 +698,14 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
                       {option === "Accommodation" && <ListPlaces status="WishList" setCurDes={setCurDes} city={city} setListData={setListData} type="accommodation" />}
                       {option === "FoodService" && <ListPlaces status="WishList" setCurDes={setCurDes} city={city} setListData={setListData} type="foodService" />}
                     </>
+                  )}
+
+                  {choice === "Booked" && option === "Accommodation" && (
+                    <BookingsList
+                      bookings={bookings}
+                      onSelectBooking={handleBookingSelect}
+                      selectedBooking={selectedBooking}
+                    />
                   )}
                 </div>
               ) : (

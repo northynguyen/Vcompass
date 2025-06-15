@@ -113,6 +113,7 @@ const ActivityTime = ({ activity, setInforSchedule, mode, socket, inforSchedule 
   );
 };
 
+
 export const AccomActivity = ({
   activity,
   data,
@@ -121,20 +122,48 @@ export const AccomActivity = ({
   mode,
   setShowLogin
 }) => {
-
-
   const [isSaved, setIsSaved] = useState(false);
+  const [bookingInfo, setBookingInfo] = useState(null);
   const { url, user, token, getImageUrl } = useContext(StoreContext);
+
+  // Fetch booking information if bookingId exists
+  useEffect(() => {
+    const fetchBookingInfo = async () => {
+      if (activity.bookingId) {
+        try {
+          const response = await fetch(`${url}/api/bookings/${activity.bookingId}`);
+          const data = await response.json();
+          if (data.success) {
+            console.log("Booking data:", data.booking);
+            const formatBookingData = (booking) => ({
+              checkIn: booking.checkInDate ? new Date(booking.checkInDate ).toLocaleDateString('vi-VN') : 'Chưa xác định',
+              checkOut: booking.checkOutDate ? new Date(booking.checkOutDate).toLocaleDateString('vi-VN') : 'Chưa xác định',
+              roomType: booking.accommodationId.roomTypes.find(
+                (room) => room._id === booking.roomId
+              )?.nameRoomType || 'Chưa xác định',
+              numberOfGuests: booking.numberOfGuests || 0,
+              totalAmount: booking.totalAmount || 0,
+            });
+            setBookingInfo(formatBookingData(data.booking));
+          }
+        } catch (error) {
+          console.error("Error fetching booking info:", error);
+        }
+      }
+    };
+
+    fetchBookingInfo();
+  }, [activity.bookingId, url]);
+
   const toggleWishlist = async () => {
     try {
       if (!user) {
         setShowLogin(true);
         return;
       }
-      const newStatus = !isSaved; // Đảo ngược trạng thái hiện tại
-      const action = newStatus ? "add" : "remove"; // Chọn hành động dựa trên trạng thái mới
+      const newStatus = !isSaved;
+      const action = newStatus ? "add" : "remove";
 
-      // Gửi yêu cầu tới API
       const response = await fetch(
         `${url}/api/user/user/${user._id}/addtoWishlist?type=accommodation&itemId=${data._id}&action=${action}`,
         {
@@ -146,42 +175,29 @@ export const AccomActivity = ({
       const result = await response.json();
 
       if (result.success) {
-        // Nếu API trả về thành công, cập nhật danh sách `favorites.accommodation`
         const updatedFavorites = newStatus
-          ? [...user.favorites.accommodation, data._id] // Thêm item vào danh sách
-          : user.favorites.accommodation.filter((id) => id !== data._id); // Xóa item khỏi danh sách
+          ? [...user.favorites.accommodation, data._id]
+          : user.favorites.accommodation.filter((id) => id !== data._id);
 
         const updatedUserData = {
           ...user,
           favorites: { ...user.favorites, accommodation: updatedFavorites },
         };
 
-        // Lưu dữ liệu đã cập nhật vào localStorage
         localStorage.setItem("user", JSON.stringify(updatedUserData));
-
-        // Cập nhật trạng thái `isSaved`
         setIsSaved(newStatus);
-
-        // Hiển thị thông báo thành công
         toast.success(result.message);
-        console.log(result.message);
       } else {
-        // Nếu thất bại, hiển thị lỗi
         toast.error(result.message);
       }
     } catch (error) {
-      // Xử lý lỗi khi gửi yêu cầu
       console.error("Failed to update wishlist:", error.message);
-
-      // Đảo lại trạng thái `isSaved` nếu có lỗi
       setIsSaved((prevState) => !prevState);
     }
   };
 
-
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
-    //console.log("user",userData);
     if (userData && userData.favorites.accommodation && userData.favorites.accommodation.includes(data._id)) {
       setIsSaved(true)
     }
@@ -199,15 +215,16 @@ export const AccomActivity = ({
     );
   };
 
-
   if (!data) {
     return <div className="div">...</div>;
   }
+
   return (
     <div className="time-schedule-item">
       <div className="activity-item-header">
         <div className="type-activity">
           <p>NGHỈ NGƠI</p>
+          
         </div>
         {mode === "view" && (
           <div className="expense-actions">
@@ -225,7 +242,6 @@ export const AccomActivity = ({
             <button className="edit-btn" onClick={handleEdit}>
               <FaEdit />
             </button>
-
             <button className="edit-btn" onClick={() => setIsOpenModal(true)}>
               <MdDelete />
             </button>
@@ -238,7 +254,7 @@ export const AccomActivity = ({
             src={getImageUrl(data)}
             alt={data.title || "Image"}
             onError={(e) => {
-              e.target.onerror = null; // Prevent infinite loop
+              e.target.onerror = null;
               e.target.src = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
             }}
             className="time-schedule-image"
@@ -248,9 +264,13 @@ export const AccomActivity = ({
           <div className="time-schedule-header">
             <h3>{data.name}</h3>
             <span className="time-schedule-rating">
-              ★★★★☆ ({data?.ratings?.length || 0} reviews)
-            </span>
-            <div className="time-schedule-location">
+              <i className="fa-solid fa-star"></i>
+              {data.ratings?.length > 0
+                ? (data.ratings.map((rating) => rating.rate ).reduce((a, b) => a + b, 0) / data.ratings.length).toFixed(1)
+                : "Chưa có đánh giá"}
+            </span> 
+          </div>
+          <div className="time-schedule-location">
               <i className="fa-solid fa-location-dot"></i>
               <a
                 href={`https://www.google.com/maps/?q=${data.location.latitude},${data.location.longitude}`}
@@ -258,23 +278,62 @@ export const AccomActivity = ({
                 {data.location.address}
               </a>
             </div>
-            <div className="time-schedule-info">
+            {mode === "edit" && (
+              <div className="time-schedule-info">
+              
+                {activity.bookingId && bookingInfo  ? (
+                  <div className="booking-info">
+                    <div className="booking-info-row">
+                      <div className="booking-info-item">
+                        <i className="fa-solid fa-calendar-check"></i>
+                        <span>Nhận phòng: {bookingInfo.checkIn}</span>
+                      </div>
+                      <div className="booking-info-item">
+                        <i className="fa-solid fa-calendar-xmark"></i>
+                        <span>Trả phòng: {bookingInfo.checkOut}</span>
+                      </div>
+                    </div>
+                    <div className="booking-info-row">
+                      <div className="booking-info-item">
+                        <i className="fa-solid fa-bed"></i>
+                        <span>Loại phòng: {bookingInfo.roomType}</span>
+                      </div>
+                      <div className="booking-info-item">
+                        <i className="fa-solid fa-users"></i>
+                        <span>Số khách: {bookingInfo?.numberOfGuests?.adult} người lớn, {bookingInfo?.numberOfGuests?.children} trẻ em </span>
+                      </div>
+                    </div>
+                    <div className="booking-info-row">
+                      <div className="booking-info-item">
+                        <i className="fa-solid fa-money-bill-wave"></i>
+                        <span>Giá: {bookingInfo.totalAmount?.toLocaleString()} VND</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="booking-warning">
+                    <i className="fa-solid fa-triangle-exclamation"></i>
+                    <span>Phòng này chưa được đặt</span>
+                  </div>
+                )}
+              </div>
+              )}
+          <div className="time-schedule-info">
               <i className="fa-solid fa-file"></i>
               <span>
-                <span>
-                  {data.description.length > 150
-                    ? data.description.substring(0, 150) + "..."
-                    : data.description}
-                </span>
+                {data.description.length > 150
+                  ? data.description.substring(0, 150) + "..."
+                  : data.description}
               </span>
             </div>
+          {data.amenities && data.amenities.length > 0 && (
             <div className="list-accom__tour-facilities">
               {data.amenities.slice(0, 8).map((facility, index) => (
                 <span className="tour-facilities-span" key={index}>{facility}</span>
               ))}
               {data.amenities.length > 8 && <span>...</span>}
             </div>
-          </div>
+          )}
         </div>
         <div className="time-schedule-right">
           <div className="time-schedule-price">
@@ -285,6 +344,11 @@ export const AccomActivity = ({
               })}
             </p>
           </div>
+          {activity.bookingId && (
+            <span className="booking-badge">
+              <i className="fa-solid fa-check"></i> Đã đặt
+            </span>
+          )}
           <div />
         </div>
       </div>
@@ -293,7 +357,6 @@ export const AccomActivity = ({
           <SlNotebook className="note-icon" />
           <p>Ghi chú :</p>
         </div>
-
         <p>{activity.description}</p>
       </div>
     </div>
@@ -427,7 +490,10 @@ export const FoodServiceActivity = ({
           <div className="time-schedule-header">
             <h3>{data.foodServiceName}</h3>
             <span className="time-schedule-rating">
-              ★★★★☆ ({data?.ratings?.length || 0} reviews)
+              <i className="fa-solid fa-star"></i>
+              {data.ratings?.length > 0
+                ? (data.ratings.map((rating) => rating.rate ).reduce((a, b) => a + b, 0) / data.ratings.length).toFixed(1)
+                : "Chưa có đánh giá"}
             </span>
             <div className="time-schedule-location">
               <i className="fa-solid fa-location-dot"></i>
@@ -606,7 +672,10 @@ export const AttractionActivity = ({
           <div className="time-schedule-header">
             <h3>{data.attractionName}</h3>
             <span className="time-schedule-rating">
-              ★★★★☆ ({data?.ratings?.length || 0} reviews)
+              <i className="fa-solid fa-star"></i>
+              {data.ratings?.length > 0
+                ? (data.ratings.map((rating) => rating.rate ).reduce((a, b) => a + b, 0) / data.ratings.length).toFixed(1)
+                : "Chưa có đánh giá"}
             </span>
             <div className="time-schedule-location">
               <i className="fa-solid fa-location-dot"></i>

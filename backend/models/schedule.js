@@ -10,6 +10,7 @@ const ActivitySchema = new Schema({
         refPath: 'activity.activityType',
       },
       name: { type: String },
+      bookingId: { type: mongoose.Schema.Types.ObjectId, ref: "booking" },
       address: { type: String },
       imgSrc: [{ type: String }],
       cost: { type: Number, required: true },
@@ -71,7 +72,7 @@ const ScheduleSchema = new Schema(
       type: Date,
       default: Date.now,
     },
-    isPublic: { type: Boolean, default: true },
+    isPublic: { type: Boolean, default: false },
     tags: [{ type: String }],
   },
   {

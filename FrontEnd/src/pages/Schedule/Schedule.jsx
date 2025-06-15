@@ -1526,6 +1526,17 @@ const Schedule = ({ mode, setShowLogin }) => {
 
       const { imgSrc, videoSrc, activities } = response.data;
 
+      // Reset bookingId for accommodation activities
+      const updatedActivities = activities.map(day => ({
+        ...day,
+        activity: day.activity.map(act => {
+          if (act.activityType === "Accommodation") {
+            return { ...act, bookingId: null };
+          }
+          return act;
+        })
+      }));
+
       const newSchedule = {
         ...inforSchedule,
         status: "Draft",
@@ -1534,7 +1545,7 @@ const Schedule = ({ mode, setShowLogin }) => {
         createdAt: new Date(),
         imgSrc: imgSrc || [],
         videoSrc: videoSrc || null,
-        activities: activities || []
+        activities: updatedActivities
       };
       delete newSchedule._id;
 
