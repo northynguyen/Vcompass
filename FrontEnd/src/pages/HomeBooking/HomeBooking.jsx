@@ -311,8 +311,8 @@ const HomeBooking = () => {
                             dateFormat="dd/MM/yyyy"
                             className="home-booking-datepicker"
                             minDate={new Date()}
-                            calendarClassName="custom-calendar"
                         />
+     
                     </div>
                 </div>
 

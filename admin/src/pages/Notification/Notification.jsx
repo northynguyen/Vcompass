@@ -10,7 +10,7 @@ const Notification = ({ userData, accommodationData, foodserviceData, scheduleDa
     const [userName, setUserName] = useState(userData?.name || "");
     const [content, setContent] = useState("");
     const navigate = useNavigate();
-
+    const [isLoading, setIsLoading] = useState(false);
     useEffect(() => {
         // Set nội dung mẫu khi có userData, accommodationData hoặc foodserviceData
         if (accommodationData) {
@@ -93,6 +93,7 @@ const Notification = ({ userData, accommodationData, foodserviceData, scheduleDa
         event.preventDefault();
 
         try {
+            setIsLoading(true);
             if (accommodationData) {
                 // Gửi thông báo liên quan đến chỗ ở
                 await axios.post(`${url}/api/notifications/notifications/`, {
@@ -178,6 +179,16 @@ const Notification = ({ userData, accommodationData, foodserviceData, scheduleDa
                     imgSender: admin.img || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
 
                 });
+                console.log("userData", userData)
+                await axios.post(`${url}/api/email/user/status`, {
+                    email: userData.email,
+                    reason: content,
+                    admin: {
+                        name: admin.name || "Admin",
+                        email: "weather.api.dashboard.1803@gmail.com"
+                    }    , 
+                    isBlocked: userData.status === "blocked" ? true : false             
+                });
 
                 // Cập nhật trạng thái người dùng/đối tác
                 const response = await axios.put(`${url}/api/user/${userData.type === "user" ? "users" : "partners"}/${userData._id}`, {
@@ -191,11 +202,13 @@ const Notification = ({ userData, accommodationData, foodserviceData, scheduleDa
                     userData.type === "user" ? onClose(true) : onClose();
 
                 }
-
-
             }
         } catch (error) {
             console.error("Error adding notification:", error);
+        }
+        
+        finally {
+            setIsLoading(false);
         }
     };
 
@@ -235,9 +248,13 @@ const Notification = ({ userData, accommodationData, foodserviceData, scheduleDa
                     className="form-control"
                 />
             </div>
-            <div className="form-buttons">
-                <button type="submit" className="btn btn-primary">Gửi </button>
+            <div className={"form-buttons-noti" + (isLoading ? " loading" : "")}>
+                {isLoading && <span className="loading-spinner"></span>}
+                <button type="submit" className="btn btn-primary" disabled={isLoading}>
+                    Gửi
+                </button>
             </div>
+
         </form>
     );
 };

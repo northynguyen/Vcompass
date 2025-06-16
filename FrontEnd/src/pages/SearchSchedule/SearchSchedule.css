@@ -155,12 +155,34 @@
     margin-right: 5px;
   }
   
-  /* Danh sách PostCard */
+  /* Schedule List Container */
+  .schedule-list-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  
   .schedule-list {
     flex: 1;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .post-card-wrapper {
+    width: calc(50% - 10px);
+    flex: 0 0 calc(50% - 10px);
+    box-sizing: border-box;
+    margin-bottom: 20px;
+  }
+  
+  .post-card-wrapper .post-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
   
   .schedule-list .post-card {
@@ -219,18 +241,27 @@
     }
   
     .schedule-list {
-      grid-template-columns: 1fr;
+      justify-content: center;
     }
-
-  .schedule-list {
-    flex: 1;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin: 0 auto;
+  
+    .post-card-wrapper {
+      width: 100%;
+      flex: 0 0 100%;
+      margin-bottom: 15px;
+    }
+  
+    .post-card-wrapper .post-card {
+      width: 100%;
+    }
   }
   
-}
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .post-card-wrapper {
+      width: calc(50% - 10px);
+      flex: 0 0 calc(50% - 10px);
+    }
+  }
+  
   /* Pagination */
 .pagination-container {
     display: flex;

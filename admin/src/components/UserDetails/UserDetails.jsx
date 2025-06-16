@@ -1,37 +1,36 @@
 import React, { useState, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
-import Modal from 'react-modal'; // Import React Modal
+import Modal from 'react-modal';
 import './UserDetails.css';
 import { StoreContext } from '../../Context/StoreContext';
-import Notification from '../../pages/Notification/Notification'; // Import Notification component
+import Notification from '../../pages/Notification/Notification';
 
-// Cấu hình modal
-Modal.setAppElement('#root'); // Đảm bảo modal tuân thủ nguyên tắc truy cập
+Modal.setAppElement('#root');
 
-const UserDetails = () => {
+const ChiTietNguoiDung = () => {
     const location = useLocation();
-    const user = location.state?.profile;
+    const nguoiDung = location.state?.profile;
     const { url } = useContext(StoreContext);
-    const [status, setStatus] = useState(user.status);
-    const [previousStatus, setPreviousStatus] = useState(user.status); // Trạng thái trước đó
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [trangThai, setTrangThai] = useState(nguoiDung.status);
+    const [trangThaiTruoc, setTrangThaiTruoc] = useState(nguoiDung.status);
+    const [moModal, setMoModal] = useState(false);
 
-    if (!user) {
+    if (!nguoiDung) {
         return <div>Lỗi truy cập nguồn dữ liệu</div>;
     }
 
-    const handleStatusChange = (event) => {
-        const newStatus = event.target.value;
-        setPreviousStatus(status); // Lưu trạng thái trước đó
-        setStatus(newStatus);      // Tạm thời cập nhật trạng thái mới
-        setIsModalOpen(true);      // Mở modal
+    const xuLyThayDoiTrangThai = (event) => {
+        const trangThaiMoi = event.target.value;
+        setTrangThaiTruoc(trangThai);
+        setTrangThai(trangThaiMoi);
+        setMoModal(true);
     };
 
-    const closeModal = (isConfirmed) => {
-        if (!isConfirmed) {
-            setStatus(previousStatus); // Quay lại trạng thái cũ nếu không xác nhận
+    const dongModal = (xacNhan) => {
+        if (!xacNhan) {
+            setTrangThai(trangThaiTruoc);
         }
-        setIsModalOpen(false); // Đóng modal
+        setMoModal(false);
     };
 
     return (
@@ -40,43 +39,49 @@ const UserDetails = () => {
                 <div className="partner-avatar">
                     <img
                         src={
-                            user.avatar && user.avatar.includes('http')
-                                ? user.avatar
-                                : `${url}/images/${user.avatar}`
+                            nguoiDung.avatar && nguoiDung.avatar.includes('http')
+                                ? nguoiDung.avatar
+                                : `${url}/images/${nguoiDung.avatar}`
                         }
-                        alt={user.name}
+                        alt={nguoiDung.name}
                     />
                 </div>
                 <div style={{ width: '100%', textAlign: 'center' }}>
-                    <h3>{user.name}</h3>
+                    <h3>{nguoiDung.name}</h3>
                 </div>
                 <div className="info-container">
-                    <p><strong>Gender:</strong> {user.gender}</p>
-                    <p><strong>Date of Birth:</strong> {new Date(user.date_of_birth).toLocaleDateString()}</p>
-                    <p><strong>Email:</strong> {user.email}</p>
-                    <p><strong>Phone:</strong> {user.phone_number}</p>
-                    <p><strong>Address:</strong> {user.address}</p>
-                    <p><strong>Account Created:</strong> {new Date(Date.parse(user.createdAt)).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    <p><strong>Giới tính:</strong> {nguoiDung.gender=== 'male' ? "Nam" : "Nữ"}</p>
+                    <p><strong>Ngày sinh:</strong> {new Date(nguoiDung.date_of_birth).toLocaleDateString()}</p>
+                    <p><strong>Email:</strong> {nguoiDung.email}</p>
+                    <p><strong>Số điện thoại:</strong> {nguoiDung.phone_number}</p>
+                    <p><strong>Địa chỉ:</strong> {nguoiDung.address}</p>
+                    <p><strong>Ngày tạo tài khoản:</strong> {new Date(Date.parse(nguoiDung.createdAt)).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                     <p>
-                        <strong>Status:</strong>
-                        <select value={status} onChange={handleStatusChange}>
-                            <option value="active">Active</option>
-                            <option value="blocked">Blocked</option>
+                        <strong>Trạng thái:</strong>
+                        <select value={trangThai} onChange={xuLyThayDoiTrangThai}>
+                            <option value="active">Hoạt động</option>
+                            <option value="blocked">Khóa tài khoản</option>
                         </select>
                     </p>
                 </div>
 
-                {/* Modal Popup */}
+                {/* Modal thông báo xác nhận */}
                 <Modal
-                    isOpen={isModalOpen}
-                    onRequestClose={() => closeModal(false)}
+                    isOpen={moModal}
+                    onRequestClose={() => dongModal(false)}
                     className="notification-modal"
                     overlayClassName="modal-overlay"
                 >
-                    <button className="close-button" onClick={() => closeModal(false)}>×</button>
+                    <button className="close-button" onClick={() => dongModal(false)}>×</button>
                     <Notification
-                        userData={{ type: "user", _id: user._id, name: user.name, status }}
-                        onClose={closeModal}
+                        userData={{
+                            type: "user",
+                            _id: nguoiDung._id,
+                            name: nguoiDung.name,
+                            status: trangThai,
+                            email: nguoiDung.email
+                        }}
+                        onClose={dongModal}
                     />
                 </Modal>
             </div>
@@ -84,4 +89,4 @@ const UserDetails = () => {
     );
 };
 
-export default UserDetails;
+export default ChiTietNguoiDung;

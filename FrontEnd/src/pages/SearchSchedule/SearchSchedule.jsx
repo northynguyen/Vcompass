@@ -232,10 +232,10 @@ const SearchSchedule = ({ setShowLogin }) => {
                 }
               >
                 <option value="">Tất cả</option>
-                <option value="attraction">Attraction</option>
-                <option value="accommodation">Accommodation</option>
-                <option value="foodservice">FoodService</option>
-                <option value="other">Other</option>
+                <option value="attraction">Điểm tham quan</option>
+                <option value="accommodation">Khách sạn</option>
+                <option value="foodservice">Dịch vụ ăn uống</option>
+                <option value="other">Hoạt động khác</option>
               </select>
             </label>
 
@@ -352,18 +352,19 @@ const SearchSchedule = ({ setShowLogin }) => {
         </div>
 
         {/* Schedule List */}
-        <div>
+        <div className="schedule-list-container">
           <div className="schedule-list">
             {loading ? (
               <PostCardSkeleton count={schedulesPerPage} isSearchSchedule={true} />
             ) : (
               schedules.map((schedule, index) => (
-                <PostCard
-                  key={`${schedule._id}-${index}`}
-                  schedule={schedule}
-                  handleScheduleClick={handleScheduleClick}
-                  setShowLogin={setShowLogin}
-                />
+                <div key={`${schedule._id}-${index}`} className="post-card-wrapper">
+                  <PostCard
+                    schedule={schedule}
+                    handleScheduleClick={handleScheduleClick}
+                    setShowLogin={setShowLogin}
+                  />
+                </div>
               ))
             )}
           </div>

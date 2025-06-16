@@ -39,7 +39,6 @@ const Header = () => {
       );
 
       if (response.status === 200) {
-        toast.success("Thành công!");
         setNotifications((prevNotifications) =>
           prevNotifications.map((notification) =>
             notification._id === id ? { ...notification, status: "read" } : notification

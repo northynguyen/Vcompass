@@ -68,7 +68,6 @@ const Header = () => {
       setUnreadCount(response.data.notifications.filter(notification => notification.status === "unread").length);
     } catch (error) {
       console.error("Error fetching notifications:", error);
-      toast.error("Không thể tải thông báo!");
     } finally {
       setLoading(false); // Tắt trạng thái loading
     }

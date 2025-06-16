@@ -199,8 +199,8 @@ const BookingFinalStep = ({bookingDetails, setShowLogin}) => {
             <p className="note"><a href="#">Điều kiện đặt phòng của tôi là gì?</a></p>
 
             {loading && (
-                <div className="loading-overlay">
-                    <div className="spinner"></div>
+                <div className="loading-overlay-booking ">
+                    <div className="loading-spinner-booking"></div>
                 </div>
             )}
         </div>

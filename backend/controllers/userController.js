@@ -513,6 +513,7 @@ const updateUserOrPartnerOrAdmin = async (req, res) => {
     }
 
     if (isUpdateStatus && updatedUser.status === "blocked") {
+      
       global.io.emit(`${updatedUser._id}status`, updatedUser);
     }
 

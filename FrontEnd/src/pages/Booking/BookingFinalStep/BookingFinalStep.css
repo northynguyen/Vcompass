@@ -225,7 +225,42 @@
   }
 }
 
+.loading-overlay-booking {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  /* Nền mờ */
+  z-index: 9999;
+  /* Đảm bảo overlay nằm trên cùng */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+.loading-overlay-booking .loading-spinner-booking {
+  border: 8px solid rgba(255, 255, 255, 0.3);
+  /* Viền mờ */
+  border-top: 8px solid #fff;
+  /* Viền quay chính */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+/* Hiệu ứng quay */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
 /* BookingFinalStep.css */
 
 /* BookingFinalStep.css */

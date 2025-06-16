@@ -39,6 +39,7 @@ const PartnerDetails = () => {
       _id: partner._id,
       name: partner.name,
       status: newStatus,
+      email: partner.email,
     });
     setIsModalOpen(true); // Open modal
   };
@@ -135,7 +136,7 @@ const PartnerDetails = () => {
                   <strong>Trạng thái:</strong>
                   <select value={status} onChange={handleStatusChange}>
                     <option value="active">Hoạt động</option>
-                    <option value="blocked">Bị chặn</option>
+                    <option value="blocked">Khóa tài khoản</option>
                   </select>
                 </p>
               </div>

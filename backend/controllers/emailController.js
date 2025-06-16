@@ -249,8 +249,6 @@ const generatePartnerCancelEmailContent = (customerName, bookingDetails, cancell
 </div>
 `;
 
-
-
 export const sendCancelBookingEmails = async (user, partner, accommodation, bookingDetails, cancellationReason) => {
   try {
     // Gửi email cho user
@@ -309,8 +307,6 @@ export const sendCancelBookingEmails = async (user, partner, accommodation, book
     throw new Error("Failed to send cancellation emails.");
   }
 };
-
-
 
 const generatePasswordResetContent = (matKhauMoi) => {
   return `
@@ -448,6 +444,66 @@ const sendEmailTripmate = async (req, res) => {
   }
 };
 
-export { sendEmailTripmate };
+const sendEmailBlockStatus = async (req, res) => {
+  const { email, reason, admin, isBlocked } = req.body;
 
-export { sendPasswordReset, sendBookingEmails };
+  if (!email || typeof email !== 'string') {
+    return res.status(400).json({ success: false, message: 'Email không hợp lệ.' });
+  }
+
+  if (typeof isBlocked !== 'boolean') {
+    return res.status(400).json({ success: false, message: 'Trạng thái chặn không hợp lệ.' });
+  }
+
+  if (!reason || typeof reason !== 'string') {
+    return res.status(400).json({ success: false, message: 'Lý do không hợp lệ.' });
+  }
+
+  try {
+    const subject = isBlocked
+      ? 'VCompass: Tài khoản của bạn đã bị chặn'
+      : 'VCompass: Tài khoản của bạn đã được khôi phục';
+
+    const statusColor = isBlocked ? '#dc3545' : '#28a745';
+    const statusTitle = isBlocked ? 'Tài khoản của bạn đã bị chặn' : 'Tài khoản của bạn đã được khôi phục';
+    const reasonNote = isBlocked
+      ? 'Chúng tôi rất tiếc phải thông báo rằng tài khoản của bạn đã bị chặn vì lý do sau:'
+      : 'Tài khoản của bạn đã được mở khóa sau khi xem xét lý do sau:';
+    const footerMessage = isBlocked
+      ? 'Nếu bạn cho rằng đây là sự nhầm lẫn hoặc muốn khiếu nại, vui lòng liên hệ với đội ngũ hỗ trợ của chúng tôi.'
+      : 'Cảm ơn bạn đã hợp tác. Hy vọng bạn sẽ tiếp tục đồng hành cùng VCompass.';
+
+    const contentHTML = `
+      <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <div style="background-color: ${statusColor}; color: #fff; padding: 20px; text-align: center;">
+          <h2 style="margin: 0;">VCompass</h2>
+        </div>
+        <div style="padding: 20px;">
+          <h3 style="color: ${statusColor};">${statusTitle}</h3>
+          <p>${reasonNote}</p>
+          <blockquote style="background-color: #f8d7da; padding: 10px; border-left: 5px solid ${statusColor}; margin: 20px 0;">${reason}</blockquote>
+          <p>${footerMessage}</p>
+          ${
+            admin?.name && admin?.email
+              ? `<p>Liên hệ quản trị viên: <strong>${admin.name}</strong> - <a href="mailto:${admin.email}">${admin.email}</a></p>`
+              : ''
+          }
+        </div>
+        <div style="background-color: #f8f8f8; padding: 10px; text-align: center; font-size: 14px;">
+          <p style="margin: 0;">Cảm ơn bạn đã sử dụng VCompass.</p>
+        </div>
+      </div>
+    `;
+
+    await sendEmail(subject, reason, contentHTML, email);
+
+    console.log(`Block status email sent to: ${email}`);
+    res.json({ success: true, message: 'Email thông báo đã được gửi.' });
+  } catch (error) {
+    console.error("Error sending block status email:", error);
+    res.status(500).json({ success: false, message: 'Gửi email thất bại.' });
+  }
+};
+
+
+export { sendPasswordReset, sendBookingEmails,sendEmailTripmate, sendEmailBlockStatus};

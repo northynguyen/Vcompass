@@ -162,7 +162,7 @@ const HotelDetailsInfo = ({ serviceId, filterData, setShowLogin }) => {
     setIsModalOpen(false);
     const options = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
     if (!startDate || !endDate) {
-      alert('Please select a check-in and check-out date');
+      alert('Vui lòng chọn ngày nhận phòng và trả phòng');
       return;
     }
     // Update bookingInfo state
@@ -198,7 +198,8 @@ const HotelDetailsInfo = ({ serviceId, filterData, setShowLogin }) => {
       }));
     } catch (error) {
       console.error("Error fetching available rooms:", error);
-      alert("Unable to find available rooms for the selected dates.");
+      alert("Không tìm thấy phòng nào phù hợp với yêu cầu của bạn. Vui lòng thử lại với các ngày khác hoặc số lượng người khác.");
+      return;
     }
 
     const element = document.getElementById('rooms-section');
@@ -281,8 +282,9 @@ const HotelDetailsInfo = ({ serviceId, filterData, setShowLogin }) => {
             monthsShown={2}
             placeholderText="Chọn ngày"
             dateFormat="dd/MM/yyyy"
-
+            minDate={new Date()} 
           />
+
           {startDate && endDate && (
             <span> &nbsp;&nbsp;{calculateNights(startDate, endDate)} nights</span>
           )}
