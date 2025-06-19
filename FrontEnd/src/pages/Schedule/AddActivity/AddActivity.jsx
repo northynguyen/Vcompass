@@ -488,7 +488,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         activityType: curDes?.activityType || option,
         idDestination: curDes?._id || new mongoose.Types.ObjectId(),
         address: curDes.address || "default-address",
-        imgSrc: curDes.imgSrc ? curDes.imgSrc.filter(img => typeof img === 'string') : ["default-image"],
+        imgSrc: curDes.imgSrc ? curDes.imgSrc.filter(img => typeof img === 'string') : null ,
         name: curDes.name || "default-name",
         cost: parseInt(cost) || 0,
         costDescription: costDes ? costDes : "",
