@@ -400,7 +400,7 @@ export const getBookingsForSchedule = async (req, res) => {
       .populate({
         path: 'accommodationId',
         model: 'accommodation',
-        select: 'name location images roomTypes'
+        select: 'name location images roomTypes city'
       })
       .sort({ checkInDate: 1 });
 

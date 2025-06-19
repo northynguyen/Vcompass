@@ -589,7 +589,8 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
             headers: { token }
           });
           if (response.data.success) {
-            const validBookings = response.data.bookings.filter(booking => booking.accommodationId.location.address.toLowerCase().includes(city.toLowerCase()));
+            const validBookings = response.data.bookings.filter(booking => booking.accommodationId.city.toLowerCase().includes(city.toLowerCase()));
+            console.log("validBookings",validBookings)
             setBookings(validBookings);
           }
         } catch (error) {
