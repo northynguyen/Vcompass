@@ -61,29 +61,44 @@ export const getAvailableRooms = async (req, res) => {
   const { accommodationId, startDate, endDate, adults, children } = req.query;
 
   try {
-    // Convert dates to Date objects for comparison
+    // Validate input
+    if (!accommodationId || !startDate || !endDate || !adults || !children) {
+      return res.status(400).json({ success: false, message: 'Missing required query parameters' });
+    }
+
     const start = new Date(startDate);
     const end = new Date(endDate);
+    const adultsNum = parseInt(adults);
+    const childrenNum = parseInt(children);
 
-    // Fetch bookings for the accommodation and filter for overlapping dates
-    const bookings = await Booking.find({ accommodationId });
-    const unavailableRoomIds = bookings
+    if (isNaN(start) || isNaN(end) || start >= end) {
+      return res.status(400).json({ success: false, message: 'Invalid date range' });
+    }
+    if (isNaN(adultsNum) || isNaN(childrenNum) || adultsNum < 1 || childrenNum < 0) {
+      return res.status(400).json({ success: false, message: 'Invalid number of adults or children' });
+    }
+
+    // Fetch bookings for the accommodation within the date range, excluding cancelled and expired
+    const bookings = await Booking.find({
+      accommodationId,
+      checkInDate: { $lte: end },
+      checkOutDate: { $gte: start },
+      status: { $nin: ['cancelled', 'expired'] }, // Exclude cancelled and expired
+    });
+
+    // Get unavailable room IDs
+    const unavailableRoomIds = [...new Set(bookings
       .filter(booking => {
         const bookingStart = new Date(booking.checkInDate);
         const bookingEnd = new Date(booking.checkOutDate);
-        // Nếu status là 'confirmed' hoặc 'cancelled' thì coi như phòng trống
-        const isAvailable = booking.status === 'confirmed' || booking.status === 'cancelled';
-        if (isAvailable) return false;
-        // Chỉ các booking còn lại mới kiểm tra overlap
-        return (
-          (start >= bookingStart && start <= bookingEnd) ||
-          (end >= bookingStart && end <= bookingEnd) ||
-          (start <= bookingStart && end >= bookingEnd)
-        );
+        // Validate booking dates
+        if (isNaN(bookingStart) || isNaN(bookingEnd)) return false;
+        // Check for overlap
+        return start < bookingEnd && end > bookingStart;
       })
-      .map(booking => booking.roomId); // Map to unavailable room IDs
+      .map(booking => booking.roomId.toString()))]; // Ensure unique room IDs
 
-    // Fetch accommodation details to get room list
+    // Fetch accommodation details
     const accommodation = await Accommodation.findById(accommodationId);
     if (!accommodation) {
       return res.status(404).json({ success: false, message: 'Accommodation not found' });
@@ -91,16 +106,16 @@ export const getAvailableRooms = async (req, res) => {
 
     // Filter rooms based on availability and capacity requirements
     const availableRooms = accommodation.roomTypes.filter(room => {
-      const isAvailable = !unavailableRoomIds.includes(room._id.toString()); // Check if room is not booked
-      const meetsCapacity =
-        room.numPeople.adult >= adults && room.numPeople.child >= Math.max(0, children - 1); // Check capacity for adults and children
+      const isAvailable = !unavailableRoomIds.includes(room._id.toString());
+      // Assume each room must accommodate all adults and children
+      const meetsCapacity = room.numPeople.adult + room.numPeople.child >= adultsNum + childrenNum;
       return isAvailable && meetsCapacity;
     });
 
     res.json({ success: true, availableRooms });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: 'Error finding available rooms' });
+    console.error('Error finding available rooms:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
