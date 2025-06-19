@@ -52,8 +52,6 @@ const ReportManagement = () => {
                 throw new Error("Lỗi khi cập nhật trạng thái");
             }
 
-            const data = await response.json();
-            console.log("Response from backend:", data);
 
             alert("Cập nhật trạng thái thành công!");
 

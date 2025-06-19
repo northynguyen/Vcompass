@@ -20,7 +20,6 @@ const Register = () => {
     }
     try {
       const response = await axios.post(`${url}/api/user/register/admin`, { name, email, password });
-      console.log(response.data);
       if (response.data.success) {
         setToken(response.data.token);
         localStorage.setItem('token', response.data.token);

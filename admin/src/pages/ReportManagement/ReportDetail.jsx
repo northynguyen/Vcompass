@@ -7,7 +7,6 @@ const ReportDetail = ({ report, onClose, onStatusChange }) => {
     const [profile, setProfile] = useState(null);
     const { url } = useContext(StoreContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    console.log("report", profile);
     const handleUpdate = (status) => {
         onStatusChange(report._id, status);
     };

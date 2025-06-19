@@ -179,7 +179,6 @@ const Notification = ({ userData, accommodationData, foodserviceData, scheduleDa
                     imgSender: admin.img || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
 
                 });
-                console.log("userData", userData)
                 await axios.post(`${url}/api/email/user/status`, {
                     email: userData.email,
                     reason: content,

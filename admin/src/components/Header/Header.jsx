@@ -51,7 +51,6 @@ const Header = () => {
       }
 
     } catch (error) {
-      console.error("Error updating notification status:", error);
       toast.error("Không thể cập nhật trạng thái thông báo!");
     }
   };
@@ -67,7 +66,6 @@ const Header = () => {
       setNotifications(response.data.notifications);
       setUnreadCount(response.data.notifications.filter(notification => notification.status === "unread").length);
     } catch (error) {
-      console.error("Error fetching notifications:", error);
       toast.error("Không thể tải thông báo!");
     } finally {
       setLoading(false); // Tắt trạng thái loading
@@ -87,7 +85,6 @@ const Header = () => {
     const socket = io(url);
 
     socket.on(`admin`, (notification) => {
-      console.log("Received notification:", notification);
       fetchNotifications();
       setUnreadCount((prev) => prev + 1);
       toast.info(

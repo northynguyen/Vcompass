@@ -20,13 +20,12 @@ const TrainAI = () => {
                     `${url}/api/userSatisfaction/getAll`
                 );
                 if (response.data.success) {
-                    console.log(response);
                     setUserSatisfactions(response.data.userSatisfactions);
                 } else {
                     console.error("Error fetching userSatisfaction");
                 }
             } catch (error) {
-                console.log(error);
+                console.error("Error fetching userSatisfaction:", error);
             }
         };
         fetchUserSatisfaction();
@@ -59,9 +58,7 @@ const TrainAI = () => {
         try {
             setIsTrainAILoading(true)
             const response = await axios.post(`${url}/api/schedule/trainAI`);
-            console.log(`Bắt đầu train AI`);
             if (response.data.success) {
-                console.log(response);
                 setIsTrainAILoading(false);
             } else {
                 setIsTrainAILoading(false);

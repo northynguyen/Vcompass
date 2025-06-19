@@ -144,7 +144,7 @@ const HomeAttractions = () => {
                 limit: 6,
                 minPrice: customFilters.minPrice || 0,
                 maxPrice: customFilters.maxPrice || 1000000,
-                minRating: customFilters.minRating || '',
+                minRating: customFilters.rating || '',
                 amenities: customFilters.selectedAmenities?.join(',') || '',
             });
 

@@ -252,7 +252,6 @@ const AttractionDetails = () => {
                     ...formData, 
                     images: formData.images.filter(img => !img.startsWith('blob:')) // Keep only server images
                 };
-                console.log("Updating attraction data:", attrData);
                 
                 formDataToSend.append("attractionData", JSON.stringify(attrData));
                 response = await axios.put(
@@ -267,7 +266,6 @@ const AttractionDetails = () => {
                     images: [], // Start with empty images array, new images will be uploaded
                     status: "active" 
                 };
-                console.log("Creating new attraction data:", attrData);
                 
                 formDataToSend.append("attractionData", JSON.stringify(attrData));
                 response = await axios.post(

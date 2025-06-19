@@ -45,7 +45,6 @@ const StoreContextProvider = (props) => {
     fetchData();
   }, []);
 
-  console.log("admin", admin)
 
   const contextValue = {
     token,

@@ -29,7 +29,6 @@ const Services = () => {
     };
 
     const handleAccommodationNotification = (data) => {
-        console.log(data)
         const enrichedData = {
             ...data,
             partnerId: data.idPartner,
@@ -39,7 +38,6 @@ const Services = () => {
     };
 
     const handleFoodserviceNotification = (data) => {
-        console.log(data)
         const enrichedData = {
             ...data,
             partnerId: data.idPartner,
@@ -62,7 +60,6 @@ const Services = () => {
                 );
                 if (response.data.success) {
                     setAccommodations(response.data.accommodations);
-                    console.log(response);
                 } else {
                     console.error("Error fetching accommodations:");
                 }
@@ -77,11 +74,11 @@ const Services = () => {
                 );
                 if (response.data.success) {
                     setFoodservices(response.data.foodService);
-                    console.log("foodService", response.data);
                 } else {
                     console.error("Error fetching accommodations:");
                 }
             } catch (error) {
+                console.error("Error fetching food services:", error);
             }
         };
         fetchAccommodations()

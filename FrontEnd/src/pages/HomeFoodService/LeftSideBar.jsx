@@ -107,6 +107,37 @@ const LeftSideBar = ({ onFilterChange = () => { } }) => {
                     />
                 </div>
                 <div className="filter-section">
+                    <h3>Xếp hạng</h3>
+                    <div className="rating-options">
+                        {[1,2,3,4,5].map((star) => (
+                        <label key={star} className="rating-option">
+                            <input
+                            type="radio"
+                            name="rating"
+                            value={star}
+                            checked={rating === String(star)}
+                            onChange={(e) => handleCheckboxChange(e, 'rating')}
+                            />
+                            <span className="stars">
+                            {Array(star)
+                                .fill('⭐')
+                                .join('')} ({star}+)
+                            </span>
+                        </label>
+                        ))}
+                        <label className="rating-option">
+                        <input
+                            type="radio"
+                            name="rating"
+                            value=""
+                            checked={rating === ''}
+                            onChange={(e) => handleCheckboxChange(e, 'rating')}
+                        />
+                        <span className="stars">Tất cả</span>
+                        </label>
+                    </div>
+                </div>
+                <div className="filter-section">
                     <h3>Tiện nghi</h3>
                     {Object.keys(groupedAmenities).map((category) => (
                         <div key={category} className="amenity-category">
@@ -125,29 +156,7 @@ const LeftSideBar = ({ onFilterChange = () => { } }) => {
                         </div>
                     ))}
                 </div>
-                <div className="filter-section">
-                    <h3>Xếp hạng</h3>
-                    <label>
-                        <input
-                            type="radio"
-                            name="rating"
-                            value="3"
-                            checked={rating === '3'}
-                            onChange={(e) => handleCheckboxChange(e, 'rating')}
-                        />
-                        Trên 3 sao
-                    </label>
-                    <label>
-                        <input
-                            type="radio"
-                            name="rating"
-                            value="4"
-                            checked={rating === '4'}
-                            onChange={(e) => handleCheckboxChange(e, 'rating')}
-                        />
-                        Trên 4 sao
-                    </label>
-                </div>
+    
             </div>
         </div>
     );

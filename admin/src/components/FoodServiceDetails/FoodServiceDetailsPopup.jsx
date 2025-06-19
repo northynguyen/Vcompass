@@ -7,7 +7,6 @@ import { StoreContext } from '../../Context/StoreContext';
 
 const FoodServiceDetailsPopup = ({ foodService, onClose }) => {
     const { url } = useContext(StoreContext);
-    console.log('foodService:', foodService);
     const redIcon = new L.Icon({
         iconUrl: 'https://cdn.iconscout.com/icon/free/png-256/free-location-icon-download-in-svg-png-gif-file-formats--marker-pointer-map-pin-navigation-finance-and-economy-pack-business-icons-2561454.png?f=webp&w=256', // Update this path as needed
         iconSize: [25, 41],

@@ -57,7 +57,6 @@ const DashBoard = () => {
         );
         if (response.data.success) {
           setAccommodations(response.data.accommodations);
-          console.log(response);
         } else {
           console.error("Error fetching accommodations:");
         }
@@ -73,7 +72,6 @@ const DashBoard = () => {
         );
         if (response.data) {
           setUsers(response.data);
-          console.log("user", response);
         }
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -89,7 +87,6 @@ const DashBoard = () => {
         );
         if (response.data) {
           setPartners(response.data);
-        } else {
         }
       } catch (error) {
         console.error("Error fetching partners:", error);
@@ -104,7 +101,6 @@ const DashBoard = () => {
         );
         if (response.data.success) {
           setFoodServices(response.data.foodService);
-          console.log("foodService", response.data);
         } else {
           console.error("Error fetching accommodations:");
         }
@@ -119,7 +115,6 @@ const DashBoard = () => {
         );
         if (response.data.success) {
           setAttractions(response.data.attractions);
-          console.log("attraction", response.data);
         }
       } catch (error) {
         console.error("Error fetching attractions:", error);
