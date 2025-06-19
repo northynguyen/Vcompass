@@ -8,63 +8,35 @@ import { createNotification } from "./notiController.js";
 // Controller function to get all attractions
 const getAttractions = async (req, res) => {
     try {
-        const { name, minPrice, maxPrice, city, page = 1, limit = 10 } = req.query;
+        const {
+            name, // keyword tìm kiếm theo tên hoặc thành phố
+            minPrice,
+            maxPrice,
+            city,
+            page = 1,
+            limit = 10
+        } = req.query;
 
-        // Tạo query object
-        const query = {};
-
-        // Lọc theo tên hoặc thành phố
-        if (name) {
-            query.$or = [
-                { attractionName: { $regex: name, $options: 'i' } },
-                { city: { $regex: name, $options: 'i' } },
-            ];
-        }
-
-        // Lọc theo khoảng giá
-        if (minPrice || maxPrice) {
-            query.price = {};
-            if (minPrice) query.price.$gte = Number(minPrice);
-            if (maxPrice) query.price.$lte = Number(maxPrice);
-        }
-
-        // Lọc theo thành phố
+        // Xây dựng query cơ bản (dùng buildBaseQuery)
+        // Nếu có city hoặc name thì truyền vào keyword
+        let keyword = name || city || '';
+        const baseQuery = buildBaseQuery(keyword, undefined, minPrice, maxPrice);
+        // Nếu có city riêng thì thêm vào query
         if (city) {
-            query.city = { $regex: city, $options: 'i' };
+            baseQuery.city = { $regex: city, $options: 'i' };
         }
 
-        // Lấy dữ liệu và tính rating trung bình
-        let attractions = await Attraction.find(query);
-        
-        // Tính rating trung bình và sort theo rating giảm dần
-        attractions = attractions.map(attraction => {
-            const ratings = attraction.ratings || [];
-            const averageRating = ratings.length > 0
-                ? ratings.reduce((sum, rating) => sum + rating.rate, 0) / ratings.length
-                : 0;
-            
-            const attractionObj = attraction.toObject ? attraction.toObject() : attraction;
-            return {
-                ...attractionObj,
-                averageRating: parseFloat(averageRating.toFixed(1))
-            };
-        }).sort((a, b) => b.averageRating - a.averageRating);
-        
-        attractions = attractions.sort((a, b) => b.createdAt - a.createdAt);
+        // Lấy dữ liệu attractions (không lọc theo minRating)
+        let results = await fetchAttractions(baseQuery, false, undefined);
 
-        // Áp dụng phân trang sau khi sort
-        const pageNumber = Math.max(1, Number(page));
-        const limitNumber = Math.max(1, Number(limit));
-        const skip = (pageNumber - 1) * limitNumber;
-        const totalAttractions = attractions.length;
-        const paginatedAttractions = attractions.slice(skip, skip + limitNumber);
-        
-        res.status(200).json({
+        // Xử lý phân trang
+        const { paginatedData, paginationInfo } = paginateResults(results, page, limit);
+
+        // Trả về kết quả
+        return res.status(200).json({
             success: true,
-            total: totalAttractions,
-            page: pageNumber,
-            totalPages: Math.ceil(totalAttractions / limitNumber),
-            attractions: paginatedAttractions
+            ...paginationInfo,
+            attractions: paginatedData,
         });
     } catch (error) {
         console.error(error);
