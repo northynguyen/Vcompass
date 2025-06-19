@@ -160,7 +160,7 @@ const ShortSwiper = ({ category = 'all', limit = 8 }) => {
               </div>
 
               {/* Video Info */}
-              <div className="video-info">
+              <div className="video-info-swiper">
                 <h4 className="video-title">
                   {video.title || video.userId?.name || 'Untitled'}
                 </h4>

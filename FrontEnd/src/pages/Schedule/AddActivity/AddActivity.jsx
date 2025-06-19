@@ -497,7 +497,7 @@ const AddActivity = ({ isOpen, closeModal, currentDay, destination, setInforSche
         timeEnd: activity ? activity.timeEnd : "00:30",
         latitude: curDes?.location?.latitude || curDes?.latitude || 0,
         longitude: curDes?.location?.longitude || curDes?.longitude || 0,
-        bookingId: selectedBooking?._id || null
+        bookingId: (option === "Accommodation" && choice === "Booked" && selectedBooking?._id) ? selectedBooking._id : null
       };
 
       setInforSchedule((prevSchedule) => {

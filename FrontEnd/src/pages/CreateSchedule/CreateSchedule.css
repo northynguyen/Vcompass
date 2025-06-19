@@ -188,7 +188,7 @@
   }
 
   /* Keyframes for pulsing animation */
-  @keyframes pulse {
+  /* @keyframes pulse {
     0% {
         background-position: 200% 0;  
         opacity: 1;
@@ -202,5 +202,5 @@
         background-position: 200% 0;
     }
    
-  }
+  } */
 }

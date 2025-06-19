@@ -397,7 +397,6 @@ const ActivityItem = ({
       );
       if (response.status === 200) {
         setIsModalOpen(false);
-        toast.success(response.data.message);
         setInforSchedule((prevSchedule) => {
           const updatedActivities = prevSchedule.activities.map((day) => ({
             ...day,
@@ -998,37 +997,45 @@ const DateSchedule = ({
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        // Calculate date difference
         const [day, month, year] = inforSchedule.dateStart.split("-");
         let addressTemp = inforSchedule.address;
-        if (inforSchedule.address == "Bà Rịa - Vũng Tàu") {
-          addressTemp = "Vũng Tàu";
-        }
-        if (inforSchedule.address == "Lâm Đồng") {
-          addressTemp = "Đà Lạt";
-        }
+  
+        if (addressTemp === "Bà Rịa - Vũng Tàu") addressTemp = "Vũng Tàu";
+        if (addressTemp === "Lâm Đồng") addressTemp = "Đà Lạt";
+  
         const startDate = new Date(year, month - 1, day);
         const currentDate = new Date();
         const diffTime = startDate - currentDate;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        // Only fetch if within 7 days
-        if (diffDays < 7) {
-
-          const response = await fetch(
-            `https://api.openweathermap.org/data/2.5/forecast/daily?q=${addressTemp}&appid=e888d6c55a0c9f77c0f19776c545cd5d&units=metric&lang=vi&cnt=17`
+  
+        if (diffDays < 14) {
+          // Bước 1: Lấy lat, lon từ tên địa điểm
+          const geoRes = await fetch(
+            `https://api.openweathermap.org/geo/1.0/direct?q=${addressTemp}&limit=1&appid=e888d6c55a0c9f77c0f19776c545cd5d`
           );
-          const data = await response.json();
-          setWeatherData(data);
+          const geoData = await geoRes.json();
+          if (!geoData.length) throw new Error("Không tìm thấy địa điểm.");
+  
+          const { lat, lon } = geoData[0];
+  
+          // Bước 2: Lấy dự báo 14 ngày
+          const weatherRes = await fetch(
+            `https://api.openweathermap.org/data/2.5/forecast/daily?lat=${lat}&lon=${lon}&cnt=14&appid=e888d6c55a0c9f77c0f19776c545cd5d&units=metric&lang=vi`
+          );
+          const weatherData = await weatherRes.json();
+  
+          setWeatherData(weatherData);
         }
       } catch (error) {
-        console.error("Error fetching weather:", error);
+        console.error("Lỗi khi lấy dữ liệu thời tiết:", error);
       }
     };
-
+  
     if (inforSchedule?.dateStart && inforSchedule?.address) {
       fetchWeather();
     }
   }, [inforSchedule?.dateStart, inforSchedule?.address]);
+  
 
   // Function to get weather for specific day
   const getWeatherForDay = (dayIndex) => {

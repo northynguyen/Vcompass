@@ -329,7 +329,7 @@ const Header = ({ setShowLogin }) => {
             {notificationsVisible && (
               <div className="notifications-dropdown" ref={notificationRef}>
                 <ul className="notifications-list">
-                  {loading && <p>Loading notifications...</p>}
+                  {loading && <p>...</p>}
                   {!loading && notifications.length === 0 && <p>No notifications</p>}
                   {notifications.map((notification, index) => (
                     <li key={index} className={`notification-item ${notification.status === 'unread' ? 'unread' : ''}`} onClick={() => { notification.status === 'unread' && handleNotificationClick(notification._id) }}>

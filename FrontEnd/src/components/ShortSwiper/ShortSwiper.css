@@ -237,7 +237,7 @@
   transform: scale(1.1);
 }
 
-.video-info {
+.video-info-swiper {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -469,7 +469,7 @@
     border-radius: 14px;
   }
   
-  .video-info {
+  .video-info-swiper {
     border-radius: 0 0 14px 14px;
     padding: 25px 10px 10px 10px;
   }
@@ -545,7 +545,7 @@
     border-radius: 12px;
   }
   
-  .video-info {
+  .video-info-swiper {
     border-radius: 0 0 12px 12px;
     padding: 20px 8px 8px 8px;
   }

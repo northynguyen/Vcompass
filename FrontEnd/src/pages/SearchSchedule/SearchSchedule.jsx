@@ -355,7 +355,15 @@ const SearchSchedule = ({ setShowLogin }) => {
         <div className="schedule-list-container">
           <div className="schedule-list">
             {loading ? (
-              <PostCardSkeleton count={schedulesPerPage} isSearchSchedule={true} />
+              <div className="skeleton-container" style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "20px",
+              }}>
+                <PostCardSkeleton count={1} isSearchSchedule={true} />
+                <PostCardSkeleton count={1} isSearchSchedule={true} />
+              </div>
             ) : (
               schedules.map((schedule, index) => (
                 <div key={`${schedule._id}-${index}`} className="post-card-wrapper">
