@@ -71,7 +71,10 @@ export const getAvailableRooms = async (req, res) => {
       .filter(booking => {
         const bookingStart = new Date(booking.checkInDate);
         const bookingEnd = new Date(booking.checkOutDate);
-        // Check for date overlap
+        // Nếu status là 'confirmed' hoặc 'cancelled' thì coi như phòng trống
+        const isAvailable = booking.status === 'confirmed' || booking.status === 'cancelled';
+        if (isAvailable) return false;
+        // Chỉ các booking còn lại mới kiểm tra overlap
         return (
           (start >= bookingStart && start <= bookingEnd) ||
           (end >= bookingStart && end <= bookingEnd) ||

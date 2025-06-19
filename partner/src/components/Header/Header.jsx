@@ -57,13 +57,16 @@ const Header = () => {
   };
 
   const fetchNotifications = async () => {
-    try {
+      try {
       setLoading(true); // Bật trạng thái loading
       const response = await axios.get(`${url}/api/notifications/${user._id}`, {
         headers: {
-          Authorization: `Bearer ${token}`, // Gửi token để xác thực nếu cần
+          Authorization: `Bearer ${token}`, 
+          token: token
         },
       });
+
+      console.log("response", response);
       setNotifications(response.data.notifications);
       setUnreadCount(response.data.notifications.filter(notification => notification.status === "unread").length);
     } catch (error) {
@@ -74,10 +77,10 @@ const Header = () => {
   };
 
   useEffect(() => {
-    if (token) {
+    if (user && user._id) {
       fetchNotifications();
     }
-  }, [token]);
+  }, [user]);
 
   useEffect(() => {
     if (!user?._id) return;
