@@ -33,10 +33,10 @@ const ScheduleMetaTags = ({ schedule, url: baseUrl }) => {
   if (!schedule) return null;
 
   const currentUrl = window.location.href;
-  const imageUrl = schedule.imgSrc && schedule.imgSrc[0] 
+  const imageUrl = schedule.imgSrc && schedule.imgSrc[0]
     ? (schedule.imgSrc[0].includes('http') ? schedule.imgSrc[0] : `${baseUrl}/images/${schedule.imgSrc[0]}`)
-    : schedule.videoSrc || 'https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg';
-  
+    : schedule.videoSrc || 'https://res.cloudinary.com/dmdzku5og/image/upload/v1753888598/du-lich-viet-nam_a5b5777f771c44a89aee7f59151e7f95_xh9zbs.jpg';
+
   const description = schedule.description || `Lịch trình du lịch ${schedule.address} - ${schedule.numDays} ngày với nhiều hoạt động thú vị.`;
   const title = `${schedule.scheduleName} - Du lịch ${schedule.address}`;
 
@@ -45,7 +45,7 @@ const ScheduleMetaTags = ({ schedule, url: baseUrl }) => {
       {/* Basic Meta Tags */}
       <title>{title}</title>
       <meta name="description" content={description} />
-      
+
       {/* Open Graph Tags */}
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
@@ -53,13 +53,13 @@ const ScheduleMetaTags = ({ schedule, url: baseUrl }) => {
       <meta property="og:url" content={currentUrl} />
       <meta property="og:type" content="article" />
       <meta property="og:site_name" content="VCompass" />
-      
+
       {/* Twitter Card Tags */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={imageUrl} />
-      
+
       {/* Additional Meta Tags */}
       <meta name="author" content={schedule.idUser?.name || 'VCompass User'} />
       <meta name="keywords" content={`du lịch, ${schedule.address}, lịch trình, VCompass, ${schedule.type?.join(', ') || ''}`} />
@@ -999,15 +999,15 @@ const DateSchedule = ({
       try {
         const [day, month, year] = inforSchedule.dateStart.split("-");
         let addressTemp = inforSchedule.address;
-  
+
         if (addressTemp === "Bà Rịa - Vũng Tàu") addressTemp = "Vũng Tàu";
         if (addressTemp === "Lâm Đồng") addressTemp = "Đà Lạt";
-  
+
         const startDate = new Date(year, month - 1, day);
         const currentDate = new Date();
         const diffTime = startDate - currentDate;
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
+
         if (diffDays < 14) {
           // Bước 1: Lấy lat, lon từ tên địa điểm
           const geoRes = await fetch(
@@ -1015,27 +1015,27 @@ const DateSchedule = ({
           );
           const geoData = await geoRes.json();
           if (!geoData.length) throw new Error("Không tìm thấy địa điểm.");
-  
+
           const { lat, lon } = geoData[0];
-  
+
           // Bước 2: Lấy dự báo 14 ngày
           const weatherRes = await fetch(
             `https://api.openweathermap.org/data/2.5/forecast/daily?lat=${lat}&lon=${lon}&cnt=14&appid=e888d6c55a0c9f77c0f19776c545cd5d&units=metric&lang=vi`
           );
           const weatherData = await weatherRes.json();
-  
+
           setWeatherData(weatherData);
         }
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu thời tiết:", error);
       }
     };
-  
+
     if (inforSchedule?.dateStart && inforSchedule?.address) {
       fetchWeather();
     }
   }, [inforSchedule?.dateStart, inforSchedule?.address]);
-  
+
 
   // Function to get weather for specific day
   const getWeatherForDay = (dayIndex) => {
@@ -1881,7 +1881,7 @@ const Schedule = ({ mode, setShowLogin }) => {
     // Use meta tags URL for better social sharing preview
     const shareUrl = `${url}/api/schedule/meta/${id}`;
     const shareText = `Xem lịch trình "${inforSchedule.scheduleName}" tại ${inforSchedule.address}`;
-    
+
     // Check if Web Share API is supported
     if (navigator.share) {
       try {
@@ -1931,7 +1931,7 @@ const Schedule = ({ mode, setShowLogin }) => {
     <div className="custom-schedule">
       {/* Dynamic Meta Tags for Social Sharing */}
       <ScheduleMetaTags schedule={inforSchedule} url={url} />
-      
+
       <div className="custom-schedule-header">
         <div>
           <h1 className="num-title">
@@ -2007,7 +2007,7 @@ const Schedule = ({ mode, setShowLogin }) => {
                   className="custom-schedule-video"
                   controls
                   src={inforSchedule.videoSrc}
-                  poster="https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg"
+                  poster="https://res.cloudinary.com/dmdzku5og/image/upload/v1753888598/du-lich-viet-nam_a5b5777f771c44a89aee7f59151e7f95_xh9zbs.jpg"
                 >
                   Your browser does not support the video tag.
                 </video>
@@ -2019,7 +2019,7 @@ const Schedule = ({ mode, setShowLogin }) => {
               // Nếu không có cả ảnh lẫn video, hiển thị ảnh mặc định
               <img
                 className="custom-schedule-image"
-                src="https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg"
+                src="https://res.cloudinary.com/dmdzku5og/image/upload/v1753888598/du-lich-viet-nam_a5b5777f771c44a89aee7f59151e7f95_xh9zbs.jpg"
                 alt="Default Alaska"
               />
             )}
@@ -2088,7 +2088,7 @@ const Schedule = ({ mode, setShowLogin }) => {
                   setInforSchedule={setInforSchedule}
                   mode={mode}
                   inforSchedule={inforSchedule}
-                  socket={socket} 
+                  socket={socket}
                   setShowLogin={setShowLogin}
                 />
               );

@@ -293,7 +293,7 @@ const PostCard = ({ schedule, handleScheduleClick, style, onLikeClick, onHeartCl
             // Hiển thị ảnh mặc định nếu không có cả imgSrc lẫn videoSrc
             <img
               className="content-image"
-              src="https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg"
+              src="https://res.cloudinary.com/dmdzku5og/image/upload/v1753888598/du-lich-viet-nam_a5b5777f771c44a89aee7f59151e7f95_xh9zbs.jpg"
               style={{ width: "100%", height: "100%" }}
               alt="Default Image"
             />

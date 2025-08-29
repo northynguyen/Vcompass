@@ -25,17 +25,17 @@ const StoreContextProvider = (props) => {
   const getImageUrl = (place, index = 0) => {
     const fallbackNoImage = 'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg';
     const fallbackCloudinary = 'https://res.cloudinary.com/dmdzku5og/image/upload/v1745247680/images/c0cq2ohjqvqu7bhl3x8r.jpg';
-    const scheduleTempImage = "https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg";
+    const scheduleTempImage = "https://res.cloudinary.com/dmdzku5og/image/upload/v1753888598/du-lich-viet-nam_a5b5777f771c44a89aee7f59151e7f95_xh9zbs.jpg";
     if (!place) return fallbackNoImage;
-  
+
     // Ưu tiên: place.images > place.imgSrc
     let image = place.images?.[index] || place.images?.[0] || place.imgSrc?.[index] || place.imgSrc?.[0];
-  
+
     if (!image) return scheduleTempImage;
-  
+
     // Nếu là URL hoàn chỉnh
     if (image.startsWith('http')) return image;
-  
+
     // Nếu là tên file - ghép với URL host
     return `${url}/images/${image}`;
   };

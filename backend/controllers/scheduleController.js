@@ -65,7 +65,7 @@ const populateAllDestinationsOptimized = async (schedules) => {
   if (!schedules || schedules.length === 0) return;
 
   const models = { Accommodation, Attraction, FoodService };
-  
+
   // Thu thập IDs theo từng loại
   const idsByType = {
     Accommodation: new Set(),
@@ -92,11 +92,11 @@ const populateAllDestinationsOptimized = async (schedules) => {
   await Promise.all(
     Object.entries(idsByType).map(async ([type, ids]) => {
       if (ids.size === 0) return;
-      
+
       const destinations = await models[type].find({
         _id: { $in: Array.from(ids) }
       }).lean();
-      
+
       destinationMaps[type] = new Map();
       destinations.forEach(dest => {
         destinationMaps[type].set(dest._id.toString(), dest);
@@ -280,9 +280,9 @@ export const getSchedulesByIdUser = async (req, res) => {
       const baseCondition = {
         idInvitee: new mongoose.Types.ObjectId(userId),
       };
-      
+
       // Combine base condition with search condition
-      const finalCondition = search && search.trim() 
+      const finalCondition = search && search.trim()
         ? { ...baseCondition, ...searchCondition }
         : baseCondition;
 
@@ -316,9 +316,9 @@ export const getSchedulesByIdUser = async (req, res) => {
       const baseCondition = {
         _id: { $in: user.favorites.schedule || [] },
       };
-      
+
       // Combine base condition with search condition
-      const finalCondition = search && search.trim() 
+      const finalCondition = search && search.trim()
         ? { ...baseCondition, ...searchCondition }
         : baseCondition;
 
@@ -344,9 +344,9 @@ export const getSchedulesByIdUser = async (req, res) => {
     } else {
       // Default case - user's own schedules
       const baseCondition = { idUser: userId };
-      
+
       // Combine base condition with search condition
-      const finalCondition = search && search.trim() 
+      const finalCondition = search && search.trim()
         ? { ...baseCondition, ...searchCondition }
         : baseCondition;
 
@@ -428,7 +428,7 @@ export const getAllSchedule = async (req, res) => {
     if (hasVideo === "true") {
       query.videoSrc = { $exists: true, $ne: null };
     }
-    
+
     if (hasImage === "true") {
       query.imgSrc = { $exists: true, $ne: [], $not: { $size: 0 } };
     }
@@ -523,7 +523,7 @@ export const getAllSchedule = async (req, res) => {
             const totalCost = schedule.activities.reduce((sum, day) => {
               return sum + day.activity.reduce((acc, act) => acc + (act.cost || 0), 0);
             }, 0);
-            
+
             if (priceMin && totalCost < parseInt(priceMin)) return false;
             if (priceMax && totalCost > parseInt(priceMax)) return false;
           }
@@ -535,7 +535,7 @@ export const getAllSchedule = async (req, res) => {
       // Đếm tổng số lịch trình phù hợp (trước khi phân trang)
       let totalQuery = Schedule.find(query);
       let allSchedules = await totalQuery.lean();
-      
+
       // Áp dụng cùng filter cho count
       if (activityType || priceMin || priceMax) {
         allSchedules = allSchedules.filter((schedule) => {
@@ -553,7 +553,7 @@ export const getAllSchedule = async (req, res) => {
             const totalCost = schedule.activities.reduce((sum, day) => {
               return sum + day.activity.reduce((acc, act) => acc + (act.cost || 0), 0);
             }, 0);
-            
+
             if (priceMin && totalCost < parseInt(priceMin)) return false;
             if (priceMax && totalCost > parseInt(priceMax)) return false;
           }
@@ -1485,9 +1485,9 @@ const getAllScheduleToTrainAI = async () => {
     const totalLikes = sched.likes ? sched.likes.length : 0;
     const totalComments = sched.comments
       ? sched.comments.reduce((sum, comment) => {
-          const repliesCount = comment.replies ? comment.replies.length : 0;
-          return sum + 1 + repliesCount; // 1 comment + số reply
-        }, 0)
+        const repliesCount = comment.replies ? comment.replies.length : 0;
+        return sum + 1 + repliesCount; // 1 comment + số reply
+      }, 0)
       : 0;
 
     result.push({
@@ -1546,10 +1546,10 @@ export const getScheduleMetaTags = async (req, res) => {
     }
 
     // Get image URL
-    let imageUrl = 'https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg';
+    let imageUrl = 'https://res.cloudinary.com/dmdzku5og/image/upload/v1753888598/du-lich-viet-nam_a5b5777f771c44a89aee7f59151e7f95_xh9zbs.jpg';
     if (schedule.imgSrc && schedule.imgSrc[0]) {
-      imageUrl = schedule.imgSrc[0].includes('http') 
-        ? schedule.imgSrc[0] 
+      imageUrl = schedule.imgSrc[0].includes('http')
+        ? schedule.imgSrc[0]
         : `https://vcompass.onrender.com/images/${schedule.imgSrc[0]}`;
     } else if (schedule.videoSrc) {
       imageUrl = schedule.videoSrc;

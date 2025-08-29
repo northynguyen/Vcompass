@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { 
-  FaHeart, FaCommentDots, FaShare, FaBookmark, FaHome, 
+import {
+  FaHeart, FaCommentDots, FaShare, FaBookmark, FaHome,
   FaCompass, FaUser, FaUpload, FaEllipsisH,
   FaUserFriends,
   FaChevronUp, FaChevronDown, FaTimes, FaInfoCircle
@@ -24,8 +24,8 @@ const VideoMetaTags = ({ video }) => {
   if (!video) return null;
 
   const currentUrl = window.location.href;
-  const imageUrl = video.thumbnailUrl || video.videoUrl || 'https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg';
-  
+  const imageUrl = video.thumbnailUrl || video.videoUrl || 'https://res.cloudinary.com/dmdzku5og/image/upload/v1753888598/du-lich-viet-nam_a5b5777f771c44a89aee7f59151e7f95_xh9zbs.jpg';
+
   const description = video.description || `Xem video ngắn từ ${video.userId?.name || 'VCompass User'}`;
   const title = video.title || `Video ngắn - ${video.userId?.name || 'VCompass'}`;
 
@@ -34,7 +34,7 @@ const VideoMetaTags = ({ video }) => {
       {/* Basic Meta Tags */}
       <title>{title}</title>
       <meta name="description" content={description} />
-      
+
       {/* Open Graph Tags */}
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
@@ -44,14 +44,14 @@ const VideoMetaTags = ({ video }) => {
       <meta property="og:site_name" content="VCompass" />
       <meta property="og:video" content={video.videoUrl} />
       <meta property="og:video:type" content="video/mp4" />
-      
+
       {/* Twitter Card Tags */}
       <meta name="twitter:card" content="player" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={imageUrl} />
       <meta name="twitter:player" content={video.videoUrl} />
-      
+
       {/* Additional Meta Tags */}
       <meta name="author" content={video.userId?.name || 'VCompass User'} />
       <meta name="keywords" content={`video ngắn, ${video.category || ''}, ${video.tags?.join(', ') || ''}, VCompass`} />
@@ -80,32 +80,32 @@ const ShortVideo = ({ setShowLogin }) => {
   const [followingUsers, setFollowingUsers] = useState([]);
   const [showSchedulePopup, setShowSchedulePopup] = useState(false);
   const [currentSchedule, setCurrentSchedule] = useState(null);
-  
+
   const videoFeedRef = useRef(null);
-  
+
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   // Lấy videoId từ URL query parameters
   const queryParams = new URLSearchParams(location.search);
   const videoIdFromUrl = queryParams.get('videoId');
-  
+
   // Lấy danh sách người dùng đang theo dõi
   useEffect(() => {
     const fetchFollowingUsers = async () => {
       if (!user) return;
-      
+
       setFollowingUsers(user.following);
     };
-    
+
     fetchFollowingUsers();
   }, [user, url, token]);
-  
+
   // Lấy video của những người đang theo dõi
   useEffect(() => {
     const fetchFollowingVideos = async () => {
       if (!user || followingUsers.length === 0) return;
-      
+
       try {
         const response = await axios.get(`${url}/api/shortvideo/videos`, {
           headers: { token },
@@ -113,7 +113,7 @@ const ShortVideo = ({ setShowLogin }) => {
             following: true
           }
         });
-        
+
         if (response.data.success) {
           setFollowingVideos(response.data.videos);
         }
@@ -121,12 +121,12 @@ const ShortVideo = ({ setShowLogin }) => {
         console.error('Error fetching following videos:', error);
       }
     };
-    
+
     if (activeOption === 'following') {
       fetchFollowingVideos();
     }
   }, [user, followingUsers, activeOption, url, token]);
-  
+
   // Khởi tạo localLikedVideos từ dữ liệu videos khi videos thay đổi
   useEffect(() => {
     if (user && videos.length > 0) {
@@ -134,32 +134,32 @@ const ShortVideo = ({ setShowLogin }) => {
       const likedVideoIds = videos
         .filter(video => video.likes && Array.isArray(video.likes) && video.likes.includes(user._id))
         .map(video => video._id);
-      
+
       setLocalLikedVideos(likedVideoIds);
     }
   }, [videos, user]);
-  
+
   // Xử lý sự kiện cuộn chuột để chuyển video
   useEffect(() => {
     const handleScroll = (e) => {
       if (!videoFeedRef.current) return;
-      
+
       // Ẩn hướng dẫn scroll sau 3 giây
       if (showScrollHelp) {
         setTimeout(() => {
           setShowScrollHelp(false);
         }, 3000);
       }
-      
+
       // Tính toán hướng cuộn
       const scrollDirection = e.deltaY > 0 ? 'down' : 'up';
-      
+
       // Chỉ xử lý khi cuộn đủ lớn
       if (Math.abs(e.deltaY) < 50) return;
-      
+
       // Ngăn cuộn mặc định của trình duyệt
       e.preventDefault();
-      
+
       // Di chuyển đến video tiếp theo hoặc trước đó
       if (scrollDirection === 'down' && currentVideoIndex < videos.length - 1) {
         setCurrentVideoIndex(currentVideoIndex + 1);
@@ -167,19 +167,19 @@ const ShortVideo = ({ setShowLogin }) => {
         setCurrentVideoIndex(currentVideoIndex - 1);
       }
     };
-    
+
     const feedElement = videoFeedRef.current;
     if (feedElement) {
       feedElement.addEventListener('wheel', handleScroll, { passive: false });
     }
-    
+
     return () => {
       if (feedElement) {
         feedElement.removeEventListener('wheel', handleScroll);
       }
     };
   }, [currentVideoIndex, videos.length, showScrollHelp]);
-  
+
   // Hàm chung để xử lý hiển thị tab
   const showTab = (tab) => {
     // Đóng tất cả các tab
@@ -187,9 +187,9 @@ const ShortVideo = ({ setShowLogin }) => {
     setShowUpload(false);
     setShowExplore(false);
     setShowUserVideos(false);
-    
+
     // Mở tab được chọn và cập nhật activeOption
-    switch(tab) {
+    switch (tab) {
       case 'comments':
         setShowComments(true);
         break;
@@ -217,14 +217,14 @@ const ShortVideo = ({ setShowLogin }) => {
       case 'activity':
         setActiveOption('activity');
         break;
-      
+
       default:
         // Khi đóng tất cả tab, quay lại tab home
         setActiveOption('home');
         break;
     }
   };
-  
+
   // Cập nhật các hàm xử lý để sử dụng hàm showTab
   const handleCommentsClick = () => {
     console.log('Comments clicked, user:', user);
@@ -235,7 +235,7 @@ const ShortVideo = ({ setShowLogin }) => {
     }
     showTab('comments');
   };
-  
+
   const handleUploadClick = () => {
     console.log('Upload clicked, user:', user);
     if (!user) {
@@ -245,14 +245,14 @@ const ShortVideo = ({ setShowLogin }) => {
     }
     showTab('upload');
   };
-  
+
   const handleExploreClick = () => {
     setActiveOption('explore');
     setShowComments(false);
   };
-  
 
-  
+
+
   const handleMyVideosClick = () => {
     console.log('Profile clicked, user:', user);
     if (!user) {
@@ -265,15 +265,15 @@ const ShortVideo = ({ setShowLogin }) => {
       showTab('userVideos');
     }
   };
-  
+
   const handleForYouClick = () => {
     showTab('home');
   };
 
-  const handleHomeClick = () => { 
-    navigate('/') ;
+  const handleHomeClick = () => {
+    navigate('/');
   }
-  
+
   const handleFollowingClick = () => {
     console.log('Following clicked, user:', user);
     if (!user) {
@@ -284,7 +284,7 @@ const ShortVideo = ({ setShowLogin }) => {
     showTab('following');
   };
 
-  
+
   // Lấy danh sách video ngắn
   useEffect(() => {
     const fetchVideos = async () => {
@@ -293,16 +293,16 @@ const ShortVideo = ({ setShowLogin }) => {
         const response = await axios.get(`${url}/api/shortvideo/videos`, {
           headers: { token }
         });
-        
+
         if (response.data.success) {
           setVideos(response.data.videos);
-          
+
           // Nếu có videoId trong URL, tìm index của video đó
           if (videoIdFromUrl) {
             const videoIndex = response.data.videos.findIndex(
               video => video._id === videoIdFromUrl
             );
-            
+
             if (videoIndex !== -1) {
               setCurrentVideoIndex(videoIndex);
             } else {
@@ -336,14 +336,14 @@ const ShortVideo = ({ setShowLogin }) => {
         setLoading(false);
       }
     };
-    
+
     // Lấy thông tin của một video cụ thể
     const fetchSingleVideo = async (videoId) => {
       try {
         const response = await axios.get(`${url}/api/shortvideo/videos/${videoId}`, {
           headers: { token }
         });
-        
+
         if (response.data.success) {
           // Thêm video vào đầu danh sách
           setVideos(prevVideos => [response.data.shortVideo, ...prevVideos]);
@@ -358,26 +358,26 @@ const ShortVideo = ({ setShowLogin }) => {
     } else {
       fetchVideos();
     }
-    
+
     // Xóa videoId khỏi URL sau khi đã xử lý
     if (videoIdFromUrl) {
       navigate('/short-video', { replace: true });
     }
   }, [url, token, videoIdFromUrl, navigate, activeOption, followingUsers]);
-  
+
   // Xử lý khi chuyển video
   const handleNext = () => {
     if (currentVideoIndex < videos.length - 1) {
       setCurrentVideoIndex(currentVideoIndex + 1);
     }
   };
-  
+
   const handlePrev = () => {
     if (currentVideoIndex > 0) {
       setCurrentVideoIndex(currentVideoIndex - 1);
     }
   };
-  
+
   // Xử lý khi like video
   const handleLike = async () => {
     if (!user) {
@@ -385,19 +385,19 @@ const ShortVideo = ({ setShowLogin }) => {
       setShowLogin(true);
       return;
     }
-    
+
     // Lấy ID của video hiện tại
     const videoId = videos[currentVideoIndex]?._id;
     if (!videoId) return;
-    
+
     // Kiểm tra xem video đã được like chưa
     const isLiked = localLikedVideos.includes(videoId);
-    
+
     // Cập nhật UI ngay lập tức
     if (isLiked) {
       // Nếu đã like, bỏ like
       setLocalLikedVideos(prev => prev.filter(id => id !== videoId));
-      
+
       // Cập nhật số lượng like trong videos
       setVideos(prev => {
         const newVideos = [...prev];
@@ -410,7 +410,7 @@ const ShortVideo = ({ setShowLogin }) => {
     } else {
       // Nếu chưa like, thêm like
       setLocalLikedVideos(prev => [...prev, videoId]);
-      
+
       // Cập nhật số lượng like trong videos
       setVideos(prev => {
         const newVideos = [...prev];
@@ -424,7 +424,7 @@ const ShortVideo = ({ setShowLogin }) => {
         return newVideos;
       });
     }
-    
+
     // Gửi request đến server (không đợi phản hồi để cập nhật UI)
     try {
       await axios.post(
@@ -442,13 +442,13 @@ const ShortVideo = ({ setShowLogin }) => {
       }
     }
   };
-  
+
   // Xử lý khi share video
   const handleShare = async () => {
     // Use meta tags URL for better social sharing preview
     const shareUrl = `${url}/api/shortvideo/meta/${videos[currentVideoIndex]._id}`;
     const shareText = `Xem video ngắn "${videos[currentVideoIndex].title || 'Video thú vị'}" từ ${videos[currentVideoIndex].userId?.name || 'VCompass User'}`;
-    
+
     // Check if Web Share API is supported
     if (navigator.share) {
       try {
@@ -491,16 +491,16 @@ const ShortVideo = ({ setShowLogin }) => {
       document.body.removeChild(textArea);
     }
   };
-  
+
   // Thêm hàm để cập nhật comments trong ShortVideo.jsx
   const updateComments = (videoId, newComment, isReply = false) => {
     if (!videos || !videos.length || currentVideoIndex < 0 || currentVideoIndex >= videos.length) {
       return;
     }
-    
+
     if (videos[currentVideoIndex]._id === videoId) {
       const updatedVideos = [...videos];
-      
+
       if (isReply) {
         // Nếu là reply, cập nhật comment hiện có
         updatedVideos[currentVideoIndex] = {
@@ -519,22 +519,22 @@ const ShortVideo = ({ setShowLogin }) => {
           comments: [newComment, ...(updatedVideos[currentVideoIndex].comments || [])]
         };
       }
-      
+
       setVideos(updatedVideos);
     }
   };
-  
+
   // Kiểm tra xem video hiện tại có được like bởi người dùng hiện tại không
   const isLikedByCurrentUser = () => {
     // Kiểm tra nếu user chưa đăng nhập hoặc videos chưa được tải
     if (!user || !videos || !videos[currentVideoIndex]) {
       return false;
     }
-    
+
     // Sử dụng localLikedVideos để kiểm tra
     return localLikedVideos.includes(videos[currentVideoIndex]._id);
   };
-  
+
   // Hàm xử lý follow/unfollow
   const handleFollow = async (id) => {
     if (!user) {
@@ -563,14 +563,14 @@ const ShortVideo = ({ setShowLogin }) => {
       toast.error('Có lỗi xảy ra khi theo dõi');
     }
   };
-  
+
   // Kiểm tra xem đã follow người dùng chưa
   const isFollowing = (userId) => {
     if (!user) return false; // Nếu chưa đăng nhập, trả về false
     return followingUsers.includes(userId) || userId === user._id;
-  // Kiểm tra nếu người dùng là chính mình
+    // Kiểm tra nếu người dùng là chính mình
   };
-  
+
   const handleScheduleClick = async (scheduleId) => {
     try {
       const response = await axios.get(`${url}/api/schedule/${scheduleId._id}`, {
@@ -578,7 +578,7 @@ const ShortVideo = ({ setShowLogin }) => {
       });
 
       console.log(response.data.schedule);
-      
+
       if (response.data.success) {
         setCurrentSchedule(response.data.schedule);
         setShowSchedulePopup(true);
@@ -593,7 +593,7 @@ const ShortVideo = ({ setShowLogin }) => {
   const handleViewSchedule = (id) => {
     navigate(`/schedule-view/${id}`);
   };
-  
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -601,7 +601,7 @@ const ShortVideo = ({ setShowLogin }) => {
       </div>
     );
   }
-  
+
   if (videos.length === 0) {
     return (
       <div className="empty-container">
@@ -618,16 +618,16 @@ const ShortVideo = ({ setShowLogin }) => {
       </div>
     );
   }
-  
+
   return (
     <div className={`short-video-container ${showComments ? 'with-comments' : ''}`}>
       {/* Dynamic Meta Tags for Social Sharing */}
       {videos[currentVideoIndex] && <VideoMetaTags video={videos[currentVideoIndex]} />}
-      
+
       {/* Sidebar Menu - sẽ ẩn trên mobile */}
-      <div className="tiktok-sidebar">       
+      <div className="tiktok-sidebar">
         <div className="sidebar-menu">
-          <div           
+          <div
             onClick={handleHomeClick}
             className={`menu-item `}
           >
@@ -635,42 +635,42 @@ const ShortVideo = ({ setShowLogin }) => {
             <span>Trang chủ </span>
           </div>
 
-          <div 
+          <div
             className={`menu-item ${activeOption === 'home' ? 'active' : ''}`}
             onClick={handleForYouClick}
           >
             <FaUser />
             <span>Cho bạn</span>
           </div>
-          
-          <div 
+
+          <div
             className={`menu-item ${activeOption === 'explore' ? 'active' : ''}`}
             onClick={handleExploreClick}
           >
             <FaCompass />
             <span>Danh mục</span>
           </div>
-          
-          <div 
+
+          <div
             className={`menu-item ${activeOption === 'following' ? 'active' : ''}`}
             onClick={handleFollowingClick}
           >
             <FaUserFriends />
             <span>Theo dõi</span>
           </div>
-          
-       
-          
-          <div 
+
+
+
+          <div
             className={`menu-item ${activeOption === 'upload' ? 'active' : ''}`}
             onClick={handleUploadClick}
           >
             <FaUpload />
             <span>Thêm mới</span>
           </div>
-          
-          
-          <div 
+
+
+          <div
             className={`menu-item ${activeOption === 'profile' ? 'active' : ''}`}
             onClick={handleMyVideosClick}
           >
@@ -679,7 +679,7 @@ const ShortVideo = ({ setShowLogin }) => {
           </div>
         </div>
       </div>
-      
+
       {/* Main Content Area */}
       <div className="tiktok-content">
         {activeOption === 'explore' ? (
@@ -709,176 +709,176 @@ const ShortVideo = ({ setShowLogin }) => {
                 <span>Cuộn lên/xuống để xem video tiếp theo</span>
               </div>
             )}
-            
+
             {/* Video Player Component */}
-            <VideoPlayer 
-              videoUrl={activeOption === 'following' ? 
-                (followingVideos[currentVideoIndex]?.videoUrl || '') : 
+            <VideoPlayer
+              videoUrl={activeOption === 'following' ?
+                (followingVideos[currentVideoIndex]?.videoUrl || '') :
                 (videos[currentVideoIndex]?.videoUrl || '')}
-              videoId={activeOption === 'following' ? 
-                (followingVideos[currentVideoIndex]?._id || '') : 
+              videoId={activeOption === 'following' ?
+                (followingVideos[currentVideoIndex]?._id || '') :
                 (videos[currentVideoIndex]?._id || '')}
               onNext={handleNext}
               onPrev={handlePrev}
-              title={activeOption === 'following' ? 
-                (followingVideos[currentVideoIndex]?.title || '') : 
+              title={activeOption === 'following' ?
+                (followingVideos[currentVideoIndex]?.title || '') :
                 (videos[currentVideoIndex]?.title || '')}
-              subtitle={activeOption === 'following' ? 
-                (followingVideos[currentVideoIndex]?.description || '') : 
+              subtitle={activeOption === 'following' ?
+                (followingVideos[currentVideoIndex]?.description || '') :
                 (videos[currentVideoIndex]?.description || '')}
             />
-            
+
             {/* Navigation Arrows - chỉ hiển thị trên desktop */}
             <div className="navigation-buttons">
-              <button 
-                className="nav-arrow up-arrow" 
+              <button
+                className="nav-arrow up-arrow"
                 onClick={handlePrev}
                 disabled={currentVideoIndex === 0}
               >
                 <FaChevronUp />
               </button>
-              <button 
-                className="nav-arrow down-arrow" 
+              <button
+                className="nav-arrow down-arrow"
                 onClick={handleNext}
                 disabled={currentVideoIndex === (activeOption === 'following' ? followingVideos.length - 1 : videos.length - 1)}
               >
                 <FaChevronDown />
               </button>
             </div>
-            
+
             {/* Video Actions - luôn nằm dọc bên phải video */}
             <div className="video-actions-sidebar">
               <div className="user-avatar-container">
-                <img 
-                  src={activeOption === 'following' ? 
-                    (followingVideos[currentVideoIndex]?.userId?.avatar || "https://via.placeholder.com/40") : 
-                    (videos[currentVideoIndex]?.userId?.avatar || "https://via.placeholder.com/40")} 
-                  alt="User avatar" 
+                <img
+                  src={activeOption === 'following' ?
+                    (followingVideos[currentVideoIndex]?.userId?.avatar || "https://via.placeholder.com/40") :
+                    (videos[currentVideoIndex]?.userId?.avatar || "https://via.placeholder.com/40")}
+                  alt="User avatar"
                   className="user-avatar"
-                  onClick={() => navigate(`/otherUserProfile/${activeOption === 'following' ? 
-                    followingVideos[currentVideoIndex]?.userId?._id : 
+                  onClick={() => navigate(`/otherUserProfile/${activeOption === 'following' ?
+                    followingVideos[currentVideoIndex]?.userId?._id :
                     videos[currentVideoIndex]?.userId?._id}`)}
                 />
-                {!isFollowing(activeOption === 'following' ? 
-                  followingVideos[currentVideoIndex]?.userId?._id : 
+                {!isFollowing(activeOption === 'following' ?
+                  followingVideos[currentVideoIndex]?.userId?._id :
                   videos[currentVideoIndex]?.userId?._id) && (
-                  <div 
-                    className="follow-button"
-                    onClick={() => handleFollow(activeOption === 'following' ? 
-                      followingVideos[currentVideoIndex]?.userId?._id : 
-                      videos[currentVideoIndex]?.userId?._id)}
-                  >
-                    +
-                  </div>
-                )}
+                    <div
+                      className="follow-button"
+                      onClick={() => handleFollow(activeOption === 'following' ?
+                        followingVideos[currentVideoIndex]?.userId?._id :
+                        videos[currentVideoIndex]?.userId?._id)}
+                    >
+                      +
+                    </div>
+                  )}
               </div>
-              
-              <div 
+
+              <div
                 className={`action-button ${isLikedByCurrentUser() ? 'liked' : ''}`}
                 onClick={handleLike}
               >
                 <FaHeart className="action-icon" />
                 <span>
-                  {activeOption === 'following' ? 
-                    (followingVideos[currentVideoIndex]?.likes?.length || 0) : 
+                  {activeOption === 'following' ?
+                    (followingVideos[currentVideoIndex]?.likes?.length || 0) :
                     (videos[currentVideoIndex]?.likes?.length || 0)}
                 </span>
               </div>
-              
-              <div 
+
+              <div
                 className="action-button"
                 onClick={handleCommentsClick}
               >
                 <FaCommentDots className="action-icon" />
                 <span>
-                  {activeOption === 'following' ? 
-                    (followingVideos[currentVideoIndex]?.comments?.length || 0) : 
+                  {activeOption === 'following' ?
+                    (followingVideos[currentVideoIndex]?.comments?.length || 0) :
                     (videos[currentVideoIndex]?.comments?.length || 0)}
                 </span>
               </div>
-              
-              <div 
+
+              <div
                 className="action-button"
                 onClick={handleShare}
               >
                 <FaShare className="action-icon" />
                 <span>
-                  {activeOption === 'following' ? 
-                    (followingVideos[currentVideoIndex]?.shares || 0) : 
+                  {activeOption === 'following' ?
+                    (followingVideos[currentVideoIndex]?.shares || 0) :
                     (videos[currentVideoIndex]?.shares || 0)}
                 </span>
               </div>
-              
+
               <div className="action-button">
                 <FaBookmark className="action-icon" />
               </div>
-              
+
               <div className="action-button">
                 <FaEllipsisH className="action-icon" />
               </div>
-              
+
               <div className="music-disc">
-                <img 
-                  src={activeOption === 'following' ? 
-                    (followingVideos[currentVideoIndex]?.userId?.avatar || "https://via.placeholder.com/40") : 
-                    (videos[currentVideoIndex]?.userId?.avatar || "https://via.placeholder.com/40")} 
-                  alt="Music" 
+                <img
+                  src={activeOption === 'following' ?
+                    (followingVideos[currentVideoIndex]?.userId?.avatar || "https://via.placeholder.com/40") :
+                    (videos[currentVideoIndex]?.userId?.avatar || "https://via.placeholder.com/40")}
+                  alt="Music"
                   className="music-image"
                 />
               </div>
             </div>
-            
+
             {/* Video Info - bottom left */}
             <div className="video-info">
               <div className="user-info">
                 <span className="username">
-                  @{activeOption === 'following' ? 
-                    (followingVideos[currentVideoIndex]?.userId?.name || '') : 
+                  @{activeOption === 'following' ?
+                    (followingVideos[currentVideoIndex]?.userId?.name || '') :
                     (videos[currentVideoIndex]?.userId?.name || '')}
                 </span>
-                {!isFollowing(activeOption === 'following' ? 
-                  followingVideos[currentVideoIndex]?.userId?._id : 
+                {!isFollowing(activeOption === 'following' ?
+                  followingVideos[currentVideoIndex]?.userId?._id :
                   videos[currentVideoIndex]?.userId?._id) && (
-                  <button 
-                    className="follow-button-inline"
-                    onClick={() => handleFollow(activeOption === 'following' ? 
-                      followingVideos[currentVideoIndex]?.userId?._id : 
-                      videos[currentVideoIndex]?.userId?._id)}
-                  >
-                    Follow
-                  </button>
-                )}
+                    <button
+                      className="follow-button-inline"
+                      onClick={() => handleFollow(activeOption === 'following' ?
+                        followingVideos[currentVideoIndex]?.userId?._id :
+                        videos[currentVideoIndex]?.userId?._id)}
+                    >
+                      Follow
+                    </button>
+                  )}
               </div>
-              
-                <div className="video-description">
-                {activeOption === 'following' ? 
-                  (followingVideos[currentVideoIndex]?.description || '') : 
+
+              <div className="video-description">
+                {activeOption === 'following' ?
+                  (followingVideos[currentVideoIndex]?.description || '') :
                   (videos[currentVideoIndex]?.description || '')}
               </div>
-              
+
               <div className="video-tags">
-                {activeOption === 'following' ? 
+                {activeOption === 'following' ?
                   (followingVideos[currentVideoIndex]?.tags || []).map((tag, index) => (
                     <span key={index} className="video-tag">#{tag}</span>
-                  )) : 
+                  )) :
                   (videos[currentVideoIndex]?.tags || []).map((tag, index) => (
                     <span key={index} className="video-tag">#{tag}</span>
                   ))}
               </div>
 
               <div className="video-schedule">
-                {activeOption === 'following' ? 
+                {activeOption === 'following' ?
                   (followingVideos[currentVideoIndex]?.scheduleId?._id && (
-                    <button 
+                    <button
                       className="schedule-button"
                       onClick={() => handleScheduleClick(followingVideos[currentVideoIndex]?.scheduleId)}
                     >
                       <i className="fas fa-calendar-alt"></i>
                       <span>Lịch trình</span>
                     </button>
-                  )) : 
+                  )) :
                   (videos[currentVideoIndex]?.scheduleId?._id && (
-                    <button 
+                    <button
                       className="schedule-button"
                       onClick={() => handleScheduleClick(videos[currentVideoIndex]?.scheduleId)}
                     >
@@ -891,7 +891,7 @@ const ShortVideo = ({ setShowLogin }) => {
             </div>
           </div>
         )}
-        
+
         {/* Comments overlay - full width on mobile, side panel on desktop/tablet */}
         {showComments && videos.length > 0 && (
           <div className="comments-container">
@@ -901,7 +901,7 @@ const ShortVideo = ({ setShowLogin }) => {
                 <FaTimes />
               </button>
             </div>
-            <Comments 
+            <Comments
               videoId={videos[currentVideoIndex]._id}
               commentsData={videos[currentVideoIndex]?.comments || []}
               onClose={() => showTab(null)}
@@ -909,37 +909,37 @@ const ShortVideo = ({ setShowLogin }) => {
             />
           </div>
         )}
-        
+
         {/* Upload overlay */}
         {showUpload && (
           <div className="upload-overlay">
             <UploadVideo onClose={() => showTab(null)} />
           </div>
         )}
-        
+
         {/* Explore overlay */}
         {showExplore && (
           <div className="explore-overlay">
             <ExploreView onClose={() => showTab(null)} />
           </div>
         )}
-        
+
         {/* User videos overlay */}
         {showUserVideos && (
           <div className="user-videos-overlay">
-            <UserShortVideos 
+            <UserShortVideos
               onClose={() => showTab(null)}
               currentUserId={selectedUserId}
               setShowUpload={() => showTab('upload')}
             />
           </div>
         )}
-        
+
         {/* Schedule Popup */}
         {showSchedulePopup && currentSchedule && (
           <div className="schedule-popup">
             <div className="schedule-popup-content">
-              <button 
+              <button
                 className="close-popup"
                 onClick={() => {
                   setShowSchedulePopup(false);

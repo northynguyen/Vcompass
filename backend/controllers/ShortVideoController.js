@@ -5,9 +5,9 @@ import Schedule from '../models/schedule.js';
 
 // Cấu hình Cloudinary
 cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET,
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 
 // Hàm helper để xử lý lỗi
@@ -27,10 +27,10 @@ const uploadToCloudinary = (file, resourceType, folder, transformations) => {
     if (!file || !file.data) {
       return reject(new Error('File không hợp lệ hoặc rỗng'));
     }
-    
+
     // Log kích thước file để debug
     console.log(`Uploading ${resourceType} file, size: ${file.data.length} bytes`);
-    
+
     // Sử dụng phương thức upload thay vì upload_stream
     cloudinary.v2.uploader.upload(
       file.tempFilePath, // Sử dụng tempFilePath thay vì file.data
@@ -56,10 +56,10 @@ const createShortVideo = async (req, res) => {
   try {
     console.log('req.body:', req.body);
     console.log('req.files:', req.files);
-    
+
     const { title, description, tags, category, isPublic, scheduleId } = req.body;
     const userId = req.body.userId || (req.user && req.user._id);
-    
+
     if (!userId) {
       return res.status(400).json({
         success: false,
@@ -84,7 +84,7 @@ const createShortVideo = async (req, res) => {
           message: 'Không tìm thấy lịch trình'
         });
       }
-      
+
       // Kiểm tra quyền sở hữu schedule
       if (schedule.idUser.toString() !== userId.toString()) {
         return res.status(403).json({
@@ -104,7 +104,7 @@ const createShortVideo = async (req, res) => {
         message: 'File không phải là video hợp lệ'
       });
     }
-    
+
     // Kiểm tra file thumbnail có hợp lệ không
     if (thumbnailFile && !thumbnailFile.mimetype.startsWith('image/')) {
       return res.status(400).json({
@@ -112,21 +112,21 @@ const createShortVideo = async (req, res) => {
         message: 'File thumbnail không phải là ảnh hợp lệ'
       });
     }
-    
+
     // Tạo một Promise để xử lý việc upload và lưu video
     const processVideoPromise = (async () => {
       try {
         // Upload video lên Cloudinary
         const result = await uploadToCloudinary(
-          videoFile, 
-          'video', 
-          'videos', 
+          videoFile,
+          'video',
+          'videos',
           [
-            { width: 720, crop: 'scale' },  
-            { quality: 'auto:low' },       
+            { width: 720, crop: 'scale' },
+            { quality: 'auto:low' },
           ]
         );
-        
+
         if (!result) {
           throw new Error('Lỗi khi upload video lên Cloudinary');
         }
@@ -161,21 +161,21 @@ const createShortVideo = async (req, res) => {
 
         await newShortVideo.save();
         console.log('Video ngắn đã được tạo thành công:', newShortVideo);
-        
+
         return newShortVideo;
       } catch (error) {
         console.error('Error processing video:', error);
         throw error;
       }
     })();
-    
+
     // Trả về phản hồi ngay lập tức
     res.status(201).json({
       success: true,
       message: 'Video đang được xử lý',
       processing: true
     });
-    
+
     // Xử lý video trong background
     processVideoPromise
       .then(newShortVideo => {
@@ -186,7 +186,7 @@ const createShortVideo = async (req, res) => {
         console.error('Video processing failed:', error);
         // Có thể gửi thông báo lỗi đến người dùng
       });
-      
+
   } catch (error) {
     console.error('Error in createShortVideo:', error);
     handleError(res, error);
@@ -198,18 +198,18 @@ const getShortVideos = async (req, res) => {
   try {
     const { page = 1, limit = 10, category, userId, search } = req.query;
     const query = {};
-    
+
     // Lọc theo category nếu có
     if (category && category !== 'all') {
       query.category = category;
       console.log('category:', category);
     }
-    
+
     // Lọc theo userId nếu có
     if (userId) {
       query.userId = userId;
     }
-    
+
     // Tìm kiếm theo title hoặc description
     if (search) {
       query.$or = [
@@ -218,7 +218,7 @@ const getShortVideos = async (req, res) => {
         { tags: { $regex: search, $options: 'i' } }
       ];
     }
-    
+
     // Chỉ lấy video công khai hoặc video của người dùng hiện tại
     if (req.user) {
       query.$or = [
@@ -228,10 +228,10 @@ const getShortVideos = async (req, res) => {
     } else {
       query.isPublic = true;
     }
-    
+
     // Đếm tổng số video thỏa mãn điều kiện
     const total = await ShortVideo.countDocuments(query);
-    
+
     // Lấy danh sách video với phân trang
     const videos = await ShortVideo.find(query)
       .sort({ createdAt: -1 })
@@ -241,7 +241,7 @@ const getShortVideos = async (req, res) => {
       .populate('scheduleId', 'scheduleName description address dateStart dateEnd')
       .populate('comments.userId', 'name avatar')
       .populate('comments.replies.userId', 'name avatar');
-    
+
     res.status(200).json({
       success: true,
       videos,
@@ -258,20 +258,20 @@ const getShortVideos = async (req, res) => {
 const getShortVideoById = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const shortVideo = await ShortVideo.findById(id)
       .populate('userId', 'name avatar')
       .populate('comments.userId', 'name avatar')
       .populate('comments.replies.userId', 'name avatar')
       .populate('likes', 'name avatar');
-    
+
     if (!shortVideo) {
       return res.status(404).json({
         success: false,
         message: 'Không tìm thấy video'
       });
     }
-    
+
     // Kiểm tra quyền truy cập nếu video không công khai
     if (!shortVideo.isPublic && (!req.user || shortVideo.userId._id.toString() !== req.user._id.toString())) {
       return res.status(403).json({
@@ -279,10 +279,10 @@ const getShortVideoById = async (req, res) => {
         message: 'Bạn không có quyền xem video này'
       });
     }
-    
+
     // Tăng lượt xem
     await shortVideo.increaseViews();
-    
+
     res.status(200).json({
       success: true,
       shortVideo
@@ -297,16 +297,16 @@ const updateShortVideo = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, description, tags, category, isPublic, isPinned, scheduleId } = req.body;
-    
+
     const shortVideo = await ShortVideo.findById(id);
-    
+
     if (!shortVideo) {
       return res.status(404).json({
         success: false,
         message: 'Không tìm thấy video'
       });
     }
-    
+
     // Kiểm tra quyền cập nhật - sử dụng req.user từ auth middleware
     const userId = req.user?._id || req.body.userId;
     if (shortVideo.userId.toString() !== userId.toString()) {
@@ -315,20 +315,20 @@ const updateShortVideo = async (req, res) => {
         message: 'Bạn không có quyền cập nhật video này'
       });
     }
-    
+
     // Cập nhật thông tin
     if (title !== undefined) shortVideo.title = title;
     if (description !== undefined) shortVideo.description = description;
     if (tags !== undefined) {
-      shortVideo.tags = typeof tags === 'string' ? 
-        tags.split(',').map(tag => tag.trim()).filter(tag => tag) : 
+      shortVideo.tags = typeof tags === 'string' ?
+        tags.split(',').map(tag => tag.trim()).filter(tag => tag) :
         tags;
     }
     if (category !== undefined) shortVideo.category = category;
     if (isPublic !== undefined) shortVideo.isPublic = isPublic;
     if (isPinned !== undefined) shortVideo.isPinned = isPinned;
     if (scheduleId !== undefined) shortVideo.scheduleId = scheduleId || null;
-    
+
     // Xử lý thumbnail mới nếu có
     if (req.files && req.files.thumbnail) {
       // Upload thumbnail mới lên Cloudinary
@@ -338,12 +338,12 @@ const updateShortVideo = async (req, res) => {
         'thumbnails',
         [{ width: 480, crop: 'scale' }]
       );
-      
+
       shortVideo.thumbnailUrl = thumbnailUploadResult.secure_url;
     }
-    
+
     await shortVideo.save();
-    
+
     res.status(200).json({
       success: true,
       message: 'Đã cập nhật video thành công',
@@ -358,16 +358,16 @@ const updateShortVideo = async (req, res) => {
 const deleteShortVideo = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const shortVideo = await ShortVideo.findById(id);
-    
+
     if (!shortVideo) {
       return res.status(404).json({
         success: false,
         message: 'Không tìm thấy video'
       });
     }
-    
+
     // Kiểm tra quyền xóa
     if (shortVideo.userId.toString() !== req.body.userId.toString()) {
       return res.status(403).json({
@@ -375,21 +375,21 @@ const deleteShortVideo = async (req, res) => {
         message: 'Bạn không có quyền xóa video này'
       });
     }
-    
+
     // Xóa video và thumbnail từ Cloudinary nếu cần
     // Lưu ý: Bạn cần trích xuất public_id từ URL để xóa
     if (shortVideo.videoUrl) {
       const videoPublicId = shortVideo.videoUrl.split('/').pop().split('.')[0];
       await cloudinary.uploader.destroy(videoPublicId, { resource_type: 'video' });
     }
-    
+
     if (shortVideo.thumbnailUrl) {
       const thumbnailPublicId = shortVideo.thumbnailUrl.split('/').pop().split('.')[0];
       await cloudinary.uploader.destroy(thumbnailPublicId);
     }
-    
+
     await ShortVideo.findByIdAndDelete(id);
-    
+
     res.status(200).json({
       success: true,
       message: 'Đã xóa video thành công'
@@ -404,20 +404,20 @@ const toggleLike = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.body.userId;
-    
+
     const shortVideo = await ShortVideo.findById(id);
-    
+
     if (!shortVideo) {
       return res.status(404).json({
         success: false,
         message: 'Không tìm thấy video'
       });
     }
-    
+
     await shortVideo.toggleLike(userId);
-    
+
     const isLiked = shortVideo.likes.includes(userId);
-    
+
     res.status(200).json({
       success: true,
       message: isLiked ? 'Đã thích video' : 'Đã bỏ thích video',
@@ -434,19 +434,19 @@ const addComment = async (req, res) => {
   try {
     console.log('req.body:', req.body);
     const { id } = req.params;
-    const userId = req.body.userId ;
+    const userId = req.body.userId;
     const { text } = req.body;
-    
+
     if (!text) {
       return res.status(400).json({ success: false, message: 'Comment text is required' });
     }
-    
+
     const video = await ShortVideo.findById(id);
-    
+
     if (!video) {
       return res.status(404).json({ success: false, message: 'Video not found' });
     }
-    
+
     const newComment = {
       userId,
       text,
@@ -454,24 +454,24 @@ const addComment = async (req, res) => {
       replies: [],
       createdAt: new Date()
     };
-    
+
     video.comments.unshift(newComment); // Thêm comment mới vào đầu mảng
     await video.save();
-    
+
     // Populate thông tin user cho comment mới
     const populatedVideo = await ShortVideo.findById(id)
       .populate('comments.userId', 'name avatar')
       .select('comments');
-    
+
     const addedComment = populatedVideo.comments[0];
-    
-    return res.status(200).json({ 
-      success: true, 
+
+    return res.status(200).json({
+      success: true,
       message: 'Comment added successfully',
       commentId: addedComment._id,
       comment: addedComment
     });
-    
+
   } catch (error) {
     console.error('Error adding comment:', error);
     return res.status(500).json({ success: false, message: 'Server error' });
@@ -484,48 +484,48 @@ const addReply = async (req, res) => {
     const { videoId, commentId } = req.params;
     const userId = req.body.userId;
     const { text } = req.body;
-    
+
     if (!text) {
       return res.status(400).json({ success: false, message: 'Reply text is required' });
     }
-    
+
     const video = await ShortVideo.findById(videoId);
-    
+
     if (!video) {
       return res.status(404).json({ success: false, message: 'Video not found' });
     }
-    
+
     const comment = video.comments.id(commentId);
-    
+
     if (!comment) {
       return res.status(404).json({ success: false, message: 'Comment not found' });
     }
-    
+
     const newReply = {
       userId,
       text,
       likes: [],
       createdAt: new Date()
     };
-    
+
     comment.replies.push(newReply);
     await video.save();
-    
+
     // Populate thông tin user cho reply mới
     const populatedVideo = await ShortVideo.findById(videoId)
       .populate('comments.replies.userId', 'name avatar')
       .select('comments');
-    
+
     const updatedComment = populatedVideo.comments.id(commentId);
     const addedReply = updatedComment.replies[updatedComment.replies.length - 1];
-    
-    return res.status(200).json({ 
-      success: true, 
+
+    return res.status(200).json({
+      success: true,
       message: 'Reply added successfully',
       replyId: addedReply._id,
       reply: addedReply
     });
-    
+
   } catch (error) {
     console.error('Error adding reply:', error);
     return res.status(500).json({ success: false, message: 'Server error' });
@@ -537,21 +537,21 @@ const toggleCommentLike = async (req, res) => {
   try {
     const { videoId, commentId } = req.params;
     const userId = req.body.userId;
-    
+
     const video = await ShortVideo.findById(videoId);
-    
+
     if (!video) {
       return res.status(404).json({ success: false, message: 'Video not found' });
     }
-    
+
     const comment = video.comments.id(commentId);
-    
+
     if (!comment) {
       return res.status(404).json({ success: false, message: 'Comment not found' });
     }
-    
+
     const likeIndex = comment.likes.indexOf(userId);
-    
+
     if (likeIndex === -1) {
       // Chưa like, thêm like
       comment.likes.push(userId);
@@ -559,15 +559,15 @@ const toggleCommentLike = async (req, res) => {
       // Đã like, bỏ like
       comment.likes.splice(likeIndex, 1);
     }
-    
+
     await video.save();
-    
-    return res.status(200).json({ 
-      success: true, 
+
+    return res.status(200).json({
+      success: true,
       message: likeIndex === -1 ? 'Comment liked' : 'Comment unliked',
       likes: comment.likes
     });
-    
+
   } catch (error) {
     console.error('Error liking/unliking comment:', error);
     return res.status(500).json({ success: false, message: 'Server error' });
@@ -579,31 +579,31 @@ const toggleReplyLike = async (req, res) => {
   try {
     const { videoId, commentId, replyId } = req.params;
     const userId = req.body.userId;
-    
+
     // Tìm video
     const video = await ShortVideo.findById(videoId);
-    
+
     if (!video) {
       return res.status(404).json({ success: false, message: 'Video not found' });
     }
-    
+
     // Tìm comment trong video
     const comment = video.comments.id(commentId);
-    
+
     if (!comment) {
       return res.status(404).json({ success: false, message: 'Comment not found' });
     }
-    
+
     // Tìm reply trong comment
     const reply = comment.replies.id(replyId);
-    
+
     if (!reply) {
       return res.status(404).json({ success: false, message: 'Reply not found' });
     }
-    
+
     // Kiểm tra xem user đã like reply chưa
     const likeIndex = reply.likes.indexOf(userId);
-    
+
     if (likeIndex === -1) {
       // Chưa like, thêm like
       reply.likes.push(userId);
@@ -611,15 +611,15 @@ const toggleReplyLike = async (req, res) => {
       // Đã like, bỏ like
       reply.likes.splice(likeIndex, 1);
     }
-    
+
     await video.save();
-    
-    return res.status(200).json({ 
-      success: true, 
+
+    return res.status(200).json({
+      success: true,
       message: likeIndex === -1 ? 'Reply liked' : 'Reply unliked',
       likes: reply.likes
     });
-    
+
   } catch (error) {
     console.error('Error liking/unliking reply:', error);
     return res.status(500).json({ success: false, message: 'Server error' });
@@ -630,18 +630,18 @@ const toggleReplyLike = async (req, res) => {
 const increaseShares = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const shortVideo = await ShortVideo.findById(id);
-    
+
     if (!shortVideo) {
       return res.status(404).json({
         success: false,
         message: 'Không tìm thấy video'
       });
     }
-    
+
     await shortVideo.increaseShares();
-    
+
     res.status(200).json({
       success: true,
       message: 'Đã tăng lượt chia sẻ',
@@ -657,22 +657,22 @@ const getUserShortVideos = async (req, res) => {
   try {
     const { userId } = req.params;
     const { page = 1, limit = 10 } = req.query;
-    
+
     const query = { userId };
-    
+
     // Nếu không phải chủ tài khoản, chỉ hiển thị video công khai
     if (!req.user || req.user._id.toString() !== userId) {
       query.isPublic = true;
     }
-    
+
     const total = await ShortVideo.countDocuments(query);
-    
+
     const shortVideos = await ShortVideo.find(query)
       .sort({ isPinned: -1, createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
       .populate('userId', 'name avatar');
-    
+
     res.status(200).json({
       success: true,
       shortVideos,
@@ -689,15 +689,15 @@ const getUserShortVideos = async (req, res) => {
 const getPopularShortVideos = async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
-    
+
     const shortVideos = await ShortVideo.find({ isPublic: true })
       .sort({ views: -1, likes: -1 })
       .skip((page - 1) * limit)
       .limit(parseInt(limit))
       .populate('userId', 'name avatar');
-    
+
     const total = await ShortVideo.countDocuments({ isPublic: true });
-    
+
     res.status(200).json({
       success: true,
       shortVideos,
@@ -715,16 +715,16 @@ const togglePin = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.body.userId;
-    
+
     const shortVideo = await ShortVideo.findById(id);
-    
+
     if (!shortVideo) {
       return res.status(404).json({
         success: false,
         message: 'Không tìm thấy video'
       });
     }
-    
+
     // Kiểm tra quyền ghim (chỉ chủ video mới được ghim)
     if (shortVideo.userId.toString() !== userId.toString()) {
       return res.status(403).json({
@@ -732,10 +732,10 @@ const togglePin = async (req, res) => {
         message: 'Bạn không có quyền ghim/bỏ ghim video này'
       });
     }
-    
+
     shortVideo.isPinned = !shortVideo.isPinned;
     await shortVideo.save();
-    
+
     res.status(200).json({
       success: true,
       message: shortVideo.isPinned ? 'Đã ghim video' : 'Đã bỏ ghim video',
@@ -751,49 +751,49 @@ const removeComment = async (req, res) => {
   try {
     const { id, commentId } = req.params;
     const userId = req.body.userId;
-    
+
     // Tìm video
     const video = await ShortVideo.findById(id);
-    
+
     if (!video) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Video not found' 
+      return res.status(404).json({
+        success: false,
+        message: 'Video not found'
       });
     }
-    
+
     // Tìm comment
     const comment = video.comments.id(commentId);
-    
+
     if (!comment) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Comment not found' 
+      return res.status(404).json({
+        success: false,
+        message: 'Comment not found'
       });
     }
-    
+
     // Kiểm tra quyền xóa (chỉ người tạo comment hoặc chủ video mới được xóa)
     if (comment.userId.toString() !== userId && video.userId.toString() !== userId) {
-      return res.status(403).json({ 
-        success: false, 
-        message: 'You do not have permission to delete this comment' 
+      return res.status(403).json({
+        success: false,
+        message: 'You do not have permission to delete this comment'
       });
     }
-    
+
     // Xóa comment
     comment.remove();
     await video.save();
-    
-    return res.status(200).json({ 
-      success: true, 
-      message: 'Comment deleted successfully' 
+
+    return res.status(200).json({
+      success: true,
+      message: 'Comment deleted successfully'
     });
-    
+
   } catch (error) {
     console.error('Error removing comment:', error);
-    return res.status(500).json({ 
-      success: false, 
-      message: 'Server error' 
+    return res.status(500).json({
+      success: false,
+      message: 'Server error'
     });
   }
 };
@@ -803,61 +803,61 @@ const removeReply = async (req, res) => {
   try {
     const { videoId, commentId, replyId } = req.params;
     const userId = req.body.userId;
-    
+
     // Tìm video
     const video = await ShortVideo.findById(videoId);
-    
+
     if (!video) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Video not found' 
+      return res.status(404).json({
+        success: false,
+        message: 'Video not found'
       });
     }
-    
+
     // Tìm comment
     const comment = video.comments.id(commentId);
-    
+
     if (!comment) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Comment not found' 
+      return res.status(404).json({
+        success: false,
+        message: 'Comment not found'
       });
     }
-    
+
     // Tìm reply
     const reply = comment.replies.id(replyId);
-    
+
     if (!reply) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Reply not found' 
+      return res.status(404).json({
+        success: false,
+        message: 'Reply not found'
       });
     }
-    
+
     // Kiểm tra quyền xóa (chỉ người tạo reply, người tạo comment hoặc chủ video mới được xóa)
-    if (reply.userId.toString() !== userId && 
-        comment.userId.toString() !== userId && 
-        video.userId.toString() !== userId) {
-      return res.status(403).json({ 
-        success: false, 
-        message: 'You do not have permission to delete this reply' 
+    if (reply.userId.toString() !== userId &&
+      comment.userId.toString() !== userId &&
+      video.userId.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'You do not have permission to delete this reply'
       });
     }
-    
+
     // Xóa reply
     reply.remove();
     await video.save();
-    
-    return res.status(200).json({ 
-      success: true, 
-      message: 'Reply deleted successfully' 
+
+    return res.status(200).json({
+      success: true,
+      message: 'Reply deleted successfully'
     });
-    
+
   } catch (error) {
     console.error('Error removing reply:', error);
-    return res.status(500).json({ 
-      success: false, 
-      message: 'Server error' 
+    return res.status(500).json({
+      success: false,
+      message: 'Server error'
     });
   }
 };
@@ -866,32 +866,32 @@ const removeReply = async (req, res) => {
 const increaseViews = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Tìm video
     const video = await ShortVideo.findById(id);
-    
+
     if (!video) {
-      return res.status(404).json({ 
-        success: false, 
-        message: 'Video not found' 
+      return res.status(404).json({
+        success: false,
+        message: 'Video not found'
       });
     }
-    
+
     // Tăng lượt xem
     video.views += 1;
     await video.save();
-    
-    return res.status(200).json({ 
-      success: true, 
+
+    return res.status(200).json({
+      success: true,
       message: 'View count increased successfully',
       views: video.views
     });
-    
+
   } catch (error) {
     console.error('Error increasing view count:', error);
-    return res.status(500).json({ 
-      success: false, 
-      message: 'Server error' 
+    return res.status(500).json({
+      success: false,
+      message: 'Server error'
     });
   }
 };
@@ -900,26 +900,26 @@ const increaseViews = async (req, res) => {
 const getTrendingVideos = async (req, res) => {
   try {
     const { category, page = 1, limit = 10 } = req.query;
-    
+
     // Xây dựng query cơ bản
     let query = { isPublic: true };
-    
+
     // Thêm điều kiện category nếu có
     if (category && category !== 'all') {
       query.category = category;
     }
-    
+
     // Lấy tất cả video mà không sắp xếp trước
     const videos = await ShortVideo.find(query)
       .populate('userId', 'name avatar')
       .populate('likes', 'name avatar')
       .populate('comments.userId', 'name avatar');
-    
+
     // Tính điểm tương tác cho mỗi video
     const scoredVideos = videos.map(video => {
       const now = new Date();
       const videoAge = (now - video.createdAt) / (1000 * 60 * 60); // Tuổi video tính bằng giờ
-      
+
       // Tính điểm tương tác
       const engagementScore = (
         (video.likes.length * 2) + // Mỗi like = 2 điểm
@@ -927,27 +927,27 @@ const getTrendingVideos = async (req, res) => {
         (video.views * 0.1) + // Mỗi view = 0.1 điểm
         (video.shares * 4) // Mỗi share = 4 điểm
       );
-      
+
       // Giảm điểm theo thời gian (video càng cũ điểm càng thấp)
       const timeDecay = Math.exp(-videoAge / 24); // Giảm 50% mỗi 24 giờ
-      
+
       // Tính điểm cuối cùng
       const finalScore = engagementScore * timeDecay;
-      
+
       return {
         ...video.toObject(),
         score: finalScore
       };
     });
-    
+
     // Sắp xếp theo điểm từ cao đến thấp
     scoredVideos.sort((a, b) => b.score - a.score);
-    
+
     // Phân trang
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     const paginatedVideos = scoredVideos.slice(startIndex, endIndex);
-    
+
     res.status(200).json({
       success: true,
       videos: paginatedVideos,
@@ -967,7 +967,7 @@ const getTrendingVideos = async (req, res) => {
 const getFollowingVideos = async (req, res) => {
   try {
     const userId = req.body.userId;
-    
+
     // Lấy danh sách người dùng đang follow
     const user = await userModel.findById(userId).select('following');
     if (!user) {
@@ -979,9 +979,9 @@ const getFollowingVideos = async (req, res) => {
       userId: { $in: user.following },
       isPublic: true
     })
-    .populate('userId', 'name avatar verified')
-    .populate('scheduleId', 'scheduleName description address dateStart dateEnd')
-    .sort({ createdAt: -1 });
+      .populate('userId', 'name avatar verified')
+      .populate('scheduleId', 'scheduleName description address dateStart dateEnd')
+      .sort({ createdAt: -1 });
 
     // Tính điểm tương tác cho mỗi video
     const videosWithScore = followingVideos.map(video => {
@@ -990,14 +990,14 @@ const getFollowingVideos = async (req, res) => {
       const commentsScore = video.comments.length * 1.5;
       const viewsScore = video.views * 0.1;
       const sharesScore = video.shares * 2;
-      
+
       // Tính thời gian decay (video cũ hơn sẽ có điểm thấp hơn)
       const hoursSinceCreation = (Date.now() - video.createdAt) / (1000 * 60 * 60);
       const timeDecay = Math.exp(-hoursSinceCreation / 24); // Decay trong 24 giờ
-      
+
       // Tính tổng điểm
       const totalScore = (likesScore + commentsScore + viewsScore + sharesScore) * timeDecay;
-      
+
       return {
         ...video.toObject(),
         interactionScore: totalScore
@@ -1032,8 +1032,8 @@ const getShortVideoMetaTags = async (req, res) => {
     }
 
     // Get video thumbnail or video URL for preview
-    let imageUrl = video.thumbnailUrl || video.videoUrl || 'https://phuong3.tayninh.gov.vn/uploads/news/2025_03/tuyen-diem-du-lich-viet-nam-4.jpg';
-    
+    let imageUrl = video.thumbnailUrl || video.videoUrl || 'https://res.cloudinary.com/dmdzku5og/image/upload/v1753888598/du-lich-viet-nam_a5b5777f771c44a89aee7f59151e7f95_xh9zbs.jpg';
+
     const description = video.description || `Xem video ngắn từ ${video.userId?.name || 'VCompass User'}`;
     const title = video.title || `Video ngắn - ${video.userId?.name || 'VCompass'}`;
     const url = `https://vcompass.onrender.com/short-video?videoId=${id}`;
