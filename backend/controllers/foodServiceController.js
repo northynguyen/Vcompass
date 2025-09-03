@@ -909,4 +909,31 @@ function paginateResults(results, page, limit) {
   };
 }
 
-export { getListFoodService, getListByPartner, createFoodService, updateFoodService, deleteFoodService, addReview, getAdminGetListByPartner, updateStatusFoodServiceAdmin, getWishlist };
+export const getMaxFoodServicePrice = async (req, res) => {
+  try {
+    // Sử dụng aggregation để lấy giá cao nhất
+    const result = await FoodService.aggregate([
+      { $match: { status: { $ne: "block" } } }, // loại bỏ dịch vụ bị block nếu muốn
+      { $group: { _id: null, maxPrice: { $max: "$price.maxPrice" } } }
+    ]);
+
+    if (!result || result.length === 0) {
+      return res.status(404).json({ success: false, message: "Không tìm thấy dịch vụ nào" });
+    }
+
+    // Nếu muốn trả về cả dịch vụ có giá cao nhất:
+    const maxPrice = result[0].maxPrice;
+    const foodService = await FoodService.findOne({ "price.maxPrice": maxPrice });
+
+    return res.status(200).json({
+      success: true,
+      maxPrice,
+      foodService
+    });
+  } catch (error) {
+    console.error("Error getting max food service price:", error);
+    return res.status(500).json({ success: false, message: "Lỗi server khi lấy giá cao nhất" });
+  }
+};
+
+export { getListFoodService, getListByPartner, createFoodService, updateFoodService, deleteFoodService, addReview, getAdminGetListByPartner, updateStatusFoodServiceAdmin, getWishlist, getMaxFoodServicePrice };
