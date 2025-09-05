@@ -936,4 +936,4 @@ export const getMaxFoodServicePrice = async (req, res) => {
   }
 };
 
-export { getListFoodService, getListByPartner, createFoodService, updateFoodService, deleteFoodService, addReview, getAdminGetListByPartner, updateStatusFoodServiceAdmin, getWishlist, getMaxFoodServicePrice };
+export { getListFoodService, getListByPartner, createFoodService, updateFoodService, deleteFoodService, addReview, getAdminGetListByPartner, updateStatusFoodServiceAdmin, getWishlist };

@@ -12,6 +12,7 @@ import Schedule from "../models/schedule.js";
 import User from "../models/user.js";
 import { createNotification } from "./notiController.js";
 import { uploadToCloudinaryV2 } from "./videoController.js";
+import { successResponse, errorResponse } from "../utils/response.js";
 
 // ✅ Utility function để populate attractions nhanh chóng
 const populateAttractionsOptimized = async (schedules) => {
@@ -1326,14 +1327,8 @@ export const getScheduleByIdForMobile = async (req, res) => {
         other: activity,
       });
     }
-
-    // ✅ Trả toàn bộ schedule
-    return res.json({
-      success: true,
-      message: "Get schedule success",
-      schedule,
-      canEdit,
-    });
+    schedule.canEdit = canEdit
+    return successResponse(res, schedule, "Get schedule success")
   } catch (error) {
     console.error("Error retrieving schedule:", error);
     res.status(500).json({
