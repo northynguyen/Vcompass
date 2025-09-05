@@ -71,7 +71,7 @@ const AppContent = () => {
   
   // Kiểm tra nếu đang ở trang ShortVideo
   const isShortVideoPage = location.pathname === '/short-video';
-  
+   
   // Log khi showLogin thay đổi (ngoài JSX)
   useEffect(() => {
     console.log("showLogin changed:", showLogin);
