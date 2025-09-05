@@ -26,6 +26,7 @@ import userRoutes from "./routes/userRoute.js";
 import userSatisRouter from "./routes/userSatisfactionRoutes.js";
 import videoRouter from "./routes/videoRoutes.js";
 import { setupScheduleSocket } from "./socket/scheduleSocket.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 // Tạo __dirname cho ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -57,6 +58,7 @@ app.use(
 // Tăng giới hạn kích thước body
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+app.use(errorHandler);
 
 global.io = new Server(server, {
   cors: {

@@ -6,83 +6,80 @@ import partnerModel from "../models/partner.js";
 import { createNotification } from "./notiController.js";
 import { uploadToCloudinaryV2, deleteImageFromCloudinary } from './videoController.js';
 import Booking from "../models/booking.js";
+import { successResponse, errorResponse } from "../utils/response.js";
 
-export const getListAccomm = async (req, res) => { 
+export const getListAccomm = async (req, res, next) => {
   try {
-
-    const { name, minPrice, maxPrice, city, status= "active", filterData } = req.query;
+    const { name, minPrice, maxPrice, city, status = "active", filterData } = req.query;
     const query = {};
 
+    // Search theo tên hoặc city
     if (name) {
-      const regex = new RegExp(name.split('').join('.*'), 'i');
+      const regex = new RegExp(name.split("").join(".*"), "i");
       query.$or = [
         { name: { $regex: regex } },
-        { city: { $regex: regex } }
+        { city: { $regex: regex } },
       ];
     }
 
     if (city) {
-      query.city = { $regex: city, $options: 'i' };
+      query.city = { $regex: city, $options: "i" };
     }
+
     if (status) {
       query.status = status.toLowerCase();
     }
+
     if (filterData) {
-      console.log(filterData);
+      console.log("Filter data:", filterData);
     }
 
-    // Fetch accommodations based on the constructed query
+    // Lấy accommodations từ DB
     let accommodations = await Accommodation.find(query);
 
-    // If minPrice and maxPrice are provided, filter the accommodations by price
+    // Nếu có minPrice và maxPrice thì lọc theo giá
     if (minPrice && maxPrice) {
       accommodations = accommodations
-        .map(accommodation => {
-          const prices = accommodation.roomTypes.map(room => room.pricePerNight);
+        .map((accommodation) => {
+          const prices = accommodation.roomTypes.map((room) => room.pricePerNight);
           const minRoomPrice = Math.min(...prices);
           const maxRoomPrice = Math.max(...prices);
 
           return {
             ...accommodation.toObject(),
-            price: { minPrice: minRoomPrice, maxPrice: maxRoomPrice }
+            price: { minPrice: minRoomPrice, maxPrice: maxRoomPrice },
           };
         })
-        .filter(accommodation => {
-          // Apply minPrice and maxPrice filters if they exist
-          const { minPrice: accommodationMinPrice, maxPrice: accommodationMaxPrice } = accommodation.price;
+        .filter((accommodation) => {
+          const { minPrice: accMinPrice, maxPrice: accMaxPrice } = accommodation.price;
 
-          const meetsMinPrice = minPrice ? accommodationMaxPrice >= Number(minPrice) : true;
-          const meetsMaxPrice = maxPrice ? accommodationMinPrice <= Number(maxPrice) : true;
+          const meetsMinPrice = minPrice ? accMaxPrice >= Number(minPrice) : true;
+          const meetsMaxPrice = maxPrice ? accMinPrice <= Number(maxPrice) : true;
 
           return meetsMinPrice && meetsMaxPrice;
         });
     }
 
     // Tính rating trung bình và sort theo rating giảm dần
-    accommodations = accommodations.map(accommodation => {
-      const ratings = accommodation.ratings || [];
-      const averageRating = ratings.length > 0
-        ? ratings.reduce((sum, rating) => sum + rating.rate, 0) / ratings.length
-        : 0;
-      
-      const accommodationObj = accommodation.toObject ? accommodation.toObject() : accommodation;
-      return {
-        ...accommodationObj,
-        averageRating: parseFloat(averageRating.toFixed(1))
-      };
-    }).sort((a, b) => b.averageRating - a.averageRating);
+    accommodations = accommodations
+      .map((accommodation) => {
+        const ratings = accommodation.ratings || [];
+        const averageRating =
+          ratings.length > 0
+            ? ratings.reduce((sum, rating) => sum + rating.rate, 0) / ratings.length
+            : 0;
 
-    res.json({
-      success: true,
-      message: "Get data accommodation success",
-      accommodations,
-    });
+        const accObj = accommodation.toObject ? accommodation.toObject() : accommodation;
+        return {
+          ...accObj,
+          averageRating: parseFloat(averageRating.toFixed(1)),
+        };
+      })
+      .sort((a, b) => b.averageRating - a.averageRating);
+
+    return successResponse(res, accommodations, "Get data accommodation success");
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Error retrieving accommodations",
-      error,
-    });
+    return errorResponse(res, "Error retrieving accommodations", 500, error.message);
   }
 };
 

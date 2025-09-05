@@ -86,8 +86,8 @@ const Home = ({ setShowLogin }) => {
         if (cityResponse.data.success) {
           setTopCity(cityResponse.data.addresses);
         }
-        const href = user ? 
-          `${url}/api/schedule/getAllSchedule?forHomePage=true&limit=10&userId=${user._id}` : 
+        const href = user ?
+          `${url}/api/schedule/getAllSchedule?forHomePage=true&limit=10&userId=${user._id}` :
           `${url}/api/schedule/getAllSchedule?forHomePage=true&limit=10`;
         const scheduleResponse = await axios.get(href);
         if (scheduleResponse.data.success) {
@@ -142,12 +142,12 @@ const Home = ({ setShowLogin }) => {
       const filteredRegular = cities.filter(city =>
         city.toLowerCase().includes(input.toLowerCase())
       );
-      
+
       // Lọc các thành phố/địa điểm du lịch nổi tiếng
       const filteredPopular = Object.keys(popularCities).filter(city =>
         city.toLowerCase().includes(input.toLowerCase())
       ).map(city => `${city}, ${popularCities[city]}`);
-      
+
       // Kết hợp cả hai kết quả
       setSuggestions([...filteredPopular, ...filteredRegular]);
     } else {
@@ -307,7 +307,7 @@ const Home = ({ setShowLogin }) => {
   };
 
   return (
-    <div className="home-layout">
+    <div className="flex flex-col md:flex-row min-h-screen relative bg-[#f0f2f5] transition-all duration-300 ease-in-out">
       <div className={`sidebar-toggle-container ${sidebarOpen ? 'closed-sidebar-toggle' : ''}`}>
         <button className="sidebar-toggle" onClick={toggleSidebar}>
           <FaBars />
@@ -320,12 +320,12 @@ const Home = ({ setShowLogin }) => {
         <LeftSideBar setShowLogin={setShowLogin} />
       </div>
 
-      
+
 
       <div className="home-main-content">
-      <header className="hero-section">
-            <div className="hero-section-content"> </div>
-            <div className="hero-section-content-text">
+        <header className="hero-section">
+          <div className="hero-section-content"> </div>
+          <div className="hero-section-content-text">
             <h1 className="create-schedule-title">Tạo lịch trình du lịch dễ dàng cho chuyến đi của bạn</h1>
             <p className="create-schedule-description">Chỉ mất 3-5 phút, bạn có thể tạo ngay cho mình lịch trình du lịch</p>
             <div className="create-schedule-btn-container">
@@ -338,10 +338,10 @@ const Home = ({ setShowLogin }) => {
                 <p>Tạo lịch trình với AI</p>
               </div>
             </div>
-            </div>
-          </header>
+          </div>
+        </header>
         <div className="home-container">
-          
+
           <div className="tour-search">
             <div className="search-container">
               <div className="search-title">
@@ -414,9 +414,9 @@ const Home = ({ setShowLogin }) => {
 
 
             {/* Short Videos Section */}
-           <div className="short-videos-section">      
-            <ShortSwiper category="all" limit={8} />
-          </div>
+            <div className="short-videos-section">
+              <ShortSwiper category="all" limit={8} />
+            </div>
 
             {/* Popular Cities Section */}
             <section className="popular-cities">
@@ -448,14 +448,14 @@ const Home = ({ setShowLogin }) => {
                       {city.name}
                     </button>
                   ))}
-              </div>
+                </div>
               </div>
             </section>
           </div>
 
 
           {/* Short Videos Section */}
-           
+
 
           <div className="city-slider">
             <Swiper
@@ -474,7 +474,7 @@ const Home = ({ setShowLogin }) => {
             </Swiper>
           </div>
 
-          {scheduleAI && scheduleAI.length > 0 && (
+          {scheduleAI && scheduleAI.length > 0 && ( 
             <div className="post-card-recommendations">
               <div className="post-card-header">
                 <h3>Lịch trình dành cho bạn </h3>
@@ -583,7 +583,7 @@ const Home = ({ setShowLogin }) => {
             </div>
           </div>
 
-         
+
 
           <SlideBar type="accommodation" />
           <span></span>
