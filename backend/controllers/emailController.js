@@ -20,12 +20,22 @@ const generateRandomPassword = (length) => {
 // Hàm gửi email
 const sendEmail = async (chuDe, noiDungText, noiDungHTML, emailNguoiNhan) => {
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // true cho 465, false cho 587
     auth: {
       user: process.env.EMAIL,
-      pass: process.env.EMAIL_PASSWORD,
+      pass: process.env.EMAIL_PASSWORD, // dùng App Password, KHÔNG dùng password thường
     },
+    connectionTimeout: 10000, // tăng timeout lên 10s
   });
+  // const transporter = nodemailer.createTransport({
+  //   service: 'gmail',
+  //   auth: {
+  //     user: process.env.EMAIL,
+  //     pass: process.env.EMAIL_PASSWORD,
+  //   },
+  // });
 
   const mailOptions = {
     from: process.env.EMAIL,
@@ -380,7 +390,7 @@ const sendPasswordReset = async (req, res) => {
 };
 
 const sendEmailTripmate = async (req, res) => {
-  const { emails, message, user, scheduleId  } = req.body;
+  const { emails, message, user, scheduleId } = req.body;
 
   // Kiểm tra đầu vào
   if (!emails || !Array.isArray(emails) || emails.length === 0) {
@@ -483,11 +493,10 @@ const sendEmailBlockStatus = async (req, res) => {
           <p>${reasonNote}</p>
           <blockquote style="background-color: #f8d7da; padding: 10px; border-left: 5px solid ${statusColor}; margin: 20px 0;">${reason}</blockquote>
           <p>${footerMessage}</p>
-          ${
-            admin?.name && admin?.email
-              ? `<p>Liên hệ quản trị viên: <strong>${admin.name}</strong> - <a href="mailto:${admin.email}">${admin.email}</a></p>`
-              : ''
-          }
+          ${admin?.name && admin?.email
+        ? `<p>Liên hệ quản trị viên: <strong>${admin.name}</strong> - <a href="mailto:${admin.email}">${admin.email}</a></p>`
+        : ''
+      }
         </div>
         <div style="background-color: #f8f8f8; padding: 10px; text-align: center; font-size: 14px;">
           <p style="margin: 0;">Cảm ơn bạn đã sử dụng VCompass.</p>
@@ -506,4 +515,4 @@ const sendEmailBlockStatus = async (req, res) => {
 };
 
 
-export { sendPasswordReset, sendBookingEmails,sendEmailTripmate, sendEmailBlockStatus};
+export { sendPasswordReset, sendBookingEmails, sendEmailTripmate, sendEmailBlockStatus };
