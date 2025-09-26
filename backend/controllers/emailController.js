@@ -20,25 +20,17 @@ const generateRandomPassword = (length) => {
 // Hàm gửi email
 const sendEmail = async (chuDe, noiDungText, noiDungHTML, emailNguoiNhan) => {
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true, // true cho 465, false cho 587
+    host: "smtp-relay.brevo.com",
+    port: 587,
+    secure: false, // dùng TLS (STARTTLS)
     auth: {
-      user: process.env.EMAIL,
-      pass: process.env.EMAIL_PASSWORD, // dùng App Password, KHÔNG dùng password thường
+      user: process.env.BREVO_USER,
+      pass: process.env.BREVO_PASS,
     },
-    connectionTimeout: 10000, // tăng timeout lên 10s
   });
-  // const transporter = nodemailer.createTransport({
-  //   service: 'gmail',
-  //   auth: {
-  //     user: process.env.EMAIL,
-  //     pass: process.env.EMAIL_PASSWORD,
-  //   },
-  // });
 
   const mailOptions = {
-    from: process.env.EMAIL,
+    from: process.env.BREVO_SENDER,
     to: emailNguoiNhan,
     subject: chuDe,
     text: noiDungText,
