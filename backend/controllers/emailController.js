@@ -18,28 +18,41 @@ const generateRandomPassword = (length) => {
 };
 
 // Hàm gửi email
+// Hàm gửi email qua Brevo HTTP API (không dùng SMTP)
 const sendEmail = async (chuDe, noiDungText, noiDungHTML, emailNguoiNhan) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp-relay.brevo.com",
-    port: 587,
-    secure: false, // dùng TLS (STARTTLS)
-    auth: {
-      user: process.env.BREVO_USER,
-      pass: process.env.BREVO_PASS,
-    },
-  });
+  const apiKey = process.env.BREVO_API_KEY;
+  const senderEmail = process.env.BREVO_SENDER;
+  const senderName = process.env.BREVO_SENDER_NAME || "VCompass";
 
-  const mailOptions = {
-    from: process.env.BREVO_SENDER,
-    to: emailNguoiNhan,
+  if (!apiKey || !senderEmail) {
+    throw new Error("Brevo config thiếu: BREVO_API_KEY hoặc BREVO_SENDER");
+  }
+
+  const payload = {
+    sender: { email: senderEmail, name: senderName },
+    to: [{ email: emailNguoiNhan }],
     subject: chuDe,
-    text: noiDungText,
-    html: noiDungHTML,
+    textContent: noiDungText || "",
+    htmlContent: noiDungHTML || "",
   };
 
-  console.log(`Đang gửi email đến: ${emailNguoiNhan}`);
-  await transporter.sendMail(mailOptions);
+  const resp = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "api-key": apiKey,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!resp.ok) {
+    const text = await resp.text().catch(() => "");
+    throw new Error(`Brevo API error ${resp.status}: ${text}`);
+  }
+
+  console.log(`Đã gửi email tới: ${emailNguoiNhan}`);
 };
+
 
 const generateUserBookingEmailContent = (userName, bookingDetails) => `
 <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
